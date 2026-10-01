@@ -13,7 +13,7 @@ The paper is included in this repository:
 * `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-01);
 * `paper/ABGV-5.2-resolution.pdf` — a compiled PDF.
 
-The PDF dates from 2026-09-30 and predates the current TeX source.
+The PDF was compiled from the current TeX source (2026-10-01).
 
 ## Verification code
 
