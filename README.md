@@ -82,6 +82,7 @@ development is pinned to mathlib4 commit
 
 ## License
 
-No license has been chosen for the repository as a whole yet.  The
-supplementary code in `verification/` carries its own MIT license (see
-`verification/LICENSE`).
+The repository — the paper (`paper/`), the Lean development, and the
+verification code — is released under the MIT license (see `LICENSE`).
+The file `verification/LICENSE` carries the same license for the code
+package.
