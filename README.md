@@ -6,6 +6,21 @@ lattice obstruction to stable rationality (Problem 5.2 of the
 Auel--Brussel--Garibaldi--Vishne problem list), for the group
 H = C_3 x C_3 and its generalizations H = C_p x C_p.
 
+## Paper
+
+The paper is included in this repository:
+
+* `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-01);
+* `paper/ABGV-5.2-resolution.pdf` — a compiled PDF.
+
+The PDF dates from 2026-09-30 and predates the current TeX source.
+
+## Verification code
+
+The two verification programs of the paper's Appendix A (Python and GAP
+with HAP) and their recorded output are in `verification/`; see
+`verification/README.md`.  They can be re-run with `verification/run.sh`.
+
 ## Verification status
 
 * The development compiles with no `sorry`.
@@ -51,6 +66,8 @@ H = C_3 x C_3 and its generalizations H = C_p x C_p.
 | `F1`, `R1`, `PC2` | faithfulness of the action, retract-rationality wiring, permutation-class lemma |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
+| `paper/` | the paper: TeX source and compiled PDF |
+| `verification/` | the Python and GAP verification programs of the paper's Appendix A, with recorded output |
 
 ## Build
 
@@ -65,4 +82,6 @@ development is pinned to mathlib4 commit
 
 ## License
 
-To be determined by the author.
+No license has been chosen for the repository as a whole yet.  The
+supplementary code in `verification/` carries its own MIT license (see
+`verification/LICENSE`).

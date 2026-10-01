@@ -1,0 +1,28 @@
+|H| = 9
+
+Z[H]  (Z-rank 9):
+  d^0: 81 x 9  rank = 8
+  d^1: 729 x 81  rank = 73
+  dim(C^1) = 81,  dim(ker d^1) = 8
+  H^1 free rank = dim(ker d^1) - rank(d^0) = 0
+
+I[H]  (Z-rank 8):
+  d^0: 72 x 8  rank = 8
+  d^1: 648 x 72  rank = 64
+  dim(C^1) = 72,  dim(ker d^1) = 8
+  H^1 free rank = dim(ker d^1) - rank(d^0) = 0
+  augmentation coker = Z / 9Z
+
+H^2(H, Z_triv) = [ 3, 3 ]
+
+Summary of computed results:
+  H^1(H, Z[H])      free rank = 0
+  H^2(H, Z[H])      = 0  (Shapiro: Ind_1^H Z)
+  H^1(H, I[H])      free rank = 0,  torsion ~= Z/9Z
+  H^2(H, Z_triv)    = [ 3, 3 ]
+  H^1(H, Z[H]^9)    = 0  (additivity)
+  H^2(H, Z[H]^9)    = 0  (additivity)
+
+Procesi LES:  0 -> H^1(I[H]) -> H^2(M|_H) -> 0
+  =>  H^2(H, M|_H) ~= H^1(H, I[H]) ~= Z/9Z
+  =>  exp H^2(M|_H) = 9

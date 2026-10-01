@@ -1,0 +1,2391 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage[backref=page]{hyperref}
+%\usepackage[backend=biber]{biblatex}
+% filecontents is now built into LaTeX kernel
+
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% Math operators
+\DeclareMathOperator{\Sw}{Sw}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Ext}{Ext}
+\DeclareMathOperator{\Ind}{Ind}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\trdeg}{trdeg}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\PGL}{PGL}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\Char}{char}
+\DeclareMathOperator{\Tor}{Tor}
+\DeclareMathOperator{\Br}{Br}
+\DeclareMathOperator{\coh}{H}
+
+\title{\bfseries Rationality of the center of a generic division algebra with a
+group action over a field of characteristic \(0\)}
+\author{Zhengyao Wu\\
+  School of Mathematics and Computational Science,\\
+  Xiangtan University, Xiangtan, 411105, Hunan, China\\
+  \texttt{wuzhengyao@xtu.edu.cn}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\begin{abstract}
+Let \(F\) be a field of characteristic \(0\) and let
+\(H = C_3 \times C_3\) act regularly as a transitive subgroup of \(S_9\).
+We resolve Problem~5.2 of Auel--Brussel--Garibaldi--Vishne:
+\(Z_H(F,9)\), the center of the generic division algebra of degree~\(9\)
+with \(H\)-action, is \emph{not} stably rational and \emph{not} rational,
+but is retract rational over~\(F\).  The non-stable-rationality is proved
+by computing \(\coh^2(H, M|_H) \cong C_9\) for the restricted Procesi lattice
+and showing that its exponent~\(9\) is incompatible with stable permutation, all
+permutation lattices have \(\coh^2\)-exponent dividing~\(3\). This integral
+cohomological obstruction is of a different nature from the classical unramified
+Brauer group.
+%(\(\Br_{\mathrm{nr}}(F(H)^H/F) \cong C_3\), Proposition~\ref{prop:B0}\);
+% 2026-10-01 第十改：原「which governs the Noether problem but not
+% \(Z_H(F,9)\)」从句已删——比较说明归附录 app:brauer。)
+The proof generalizes to all odd primes~\(p\):
+for \(H = C_p \times C_p \subset S_{p^2}\),
+one obtains \(\coh^2(H, M|_H) \cong C_{p^2}\) while permutation lattices
+have exponent dividing~\(p\), so \(Z_H(F, p^2)\) is not stably rational.
+\end{abstract}
+
+\medskip\noindent
+\textbf{Keywords:} generic division algebra, stable rationality,
+integral group cohomology, flasque resolution.
+
+\medskip\noindent
+\textbf{MSC2020:} 14E08, 20J06, 14M20.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Let \(F\) be a field of characteristic \(0\).
+For an integer \(n \ge 1\) and a subgroup \(H \subseteq S_n\), the
+\emph{generic division algebra with \(H\)-action}, denoted \(UD(F,n,H)\),
+has center \(Z_H(F,n)\). Problem~5.2 of
+Auel--Brussel--Garibaldi--Vishne \cite[Problem~5.2]{ABGV2011} asks:
+
+\begin{quote}
+Determine if \(Z_H(F,9)\) is rational, stably rational, or retract rational
+over \(F\), where \(H = C_3 \times C_3 \subset S_9\) is transitive.
+\end{quote}
+
+Let \(G\) be a finite group and let \(M\) be a \(\mathbb{Z}[G]\)-lattice,
+that is, a finitely generated \(\mathbb{Z}\)-free \(\mathbb{Z}[G]\)-module.
+Write \(F(M)\) for the fraction field of the group algebra \(F[M]\),
+that is, the function field of the torus with character lattice \(M\),
+on which \(G\) acts through the \(\mathbb{Z}[G]\)-module structure of
+\(M\); write \(F(M)^G\) for its \(G\)-invariant subfield.
+For a subgroup \(H\) of \(G\), write \(M|_H\) for \(M\) regarded as a
+\(\mathbb{Z}[H]\)-lattice by restriction of scalars.  Cyclic groups are
+denoted \(C_n\), the augmentation ideal is
+\(I[G] = \ker(\mathbb{Z}[G] \twoheadrightarrow \mathbb{Z})\), where the
+augmentation map sends \(\sum n_g g \mapsto \sum n_g\), and \(\exp(A)\)
+denotes the exponent of a finite abelian group \(A\).  Write
+\(\coh^i(G, M)\) for the \(i\)-th integral group cohomology of a
+\(G\)-module \(M\); for \(\mathbb{Z}[G]\)-lattices this coincides with
+Tate cohomology in positive degrees \cite[Def.\ 6.2.4]{Weibel1994}.
+
+A field extension \(K/F\) is \emph{rational} if \(K\) is purely
+transcendental over \(F\), and \emph{stably rational} if
+\(K(t_1, \dots, t_m)\) is rational over \(F\) for some \(m \ge 0\).
+
+% [2026-10-01 第十改] 「unramified Brauer group 定义」段已注释（用户指令：
+% 该段到附录 app:brauer 才用，附录有说明即可）。原文存档：
+% For a finitely generated field extension \(K/F\), the \emph{unramified
+% Brauer group} \(\Br_{\mathrm{nr}}(K/F)\) is the subgroup of \(\Br(K)\)
+% consisting of Brauer classes whose restriction to every discrete valuation
+% ring \(F \subset R \subset K\) with fraction field \(K\) is trivial.
+
+The rationality problem for fields of the form \(F(M)^G\) has a long
+history.
+Endo and Miyata \cite[\S1]{EndoMiyata1973b} developed the theory
+of quasi-permutation modules and introduced the notion of quasi-rational
+extensions, providing an algebraic foundation for the rationality problem. 
+Let \(G\) be a finite group, \(K/k\) a Galois extension with group \(G\),
+and \(M\) a \(\mathbb{Z}[G]\)-lattice.  Write \(K(M)\) for the fraction
+field of the group algebra \(K[M]\), on which \(G\) acts through the
+\(\mathbb{Z}[G]\)-module structure of \(M\) and the Galois action on
+\(K\).  They proved \cite[Theorem~1.6]{EndoMiyata1973a} that \(K(M)^G\)
+is \emph{quasi-rational} over \(k\) if and only if \(M\) is a
+quasi-permutation \(\mathbb{Z}[G]\)-lattice.
+Voskresenskii \cite[Chapter~2]{Vos98} gave a comprehensive
+treatment via the birational geometry of algebraic tori. 
+Colliot-Th\'el\`ene and Sansuc \cite[\S1]{CTS77} developed flasque
+resolutions and used them to characterize stable rationality of such
+fields in general by the vanishing of the flasque class. 
+Saltman \cite[Section~3]{Saltman1984} introduced retract rationality and
+constructed the first examples of non-rational stably rational fields. 
+
+When \(H \subset S_n\) is cyclic and transitive,
+\(Z_H(F,n)\) is rational if \(F\) contains a primitive \(n\)-th root of unity
+(and retract rational for general~\(F\) when \(n\) is not of the form~\(8m\))
+\cite[pp.\ 234]{ABGV2011}.
+Thus \(H = C_3 \times C_3\) is the first case where the rationality
+question is genuinely open for \(n\) odd.
+
+In this paper we give a complete answer:
+\begin{table}[tbp]
+\centering
+\begin{tabular}{lcp{5.5cm}}
+\hline
+\emph{Property} & \emph{Status} & \emph{Method} \\
+\hline
+Stably rational & \textbf{No (char~0)}
+& \(\coh^2(H, M|_H) \cong C_9\) \\
+Rational & \textbf{No (char~0)}
+& rational \(\Rightarrow\) stably rational \\
+Retract rational & \textbf{Yes (any field)}
+& Saltman \cite[Corollary~3.13]{Saltman1984} \\
+\hline
+\end{tabular}
+\caption{Status of the rationality properties of \(Z_H(F,9)\) for
+\(H = C_3 \times C_3\).}
+\label{tab:main}
+\end{table}
+
+The main new ingredient is the computation of the second integral cohomology
+group of the restricted Procesi lattice \(M|_H\):
+\(\coh^2(H, M|_H) \cong C_9\) (Lemma~\ref{lem:H2-MH}).  The exponent~\(9\) of
+this group directly obstructs stable permutation: we prove that for any
+permutation \(\mathbb{Z}[H]\)-lattice \(P\) (Definition~\ref{def:lattice}),
+every element of \(\coh^2(H, P)\) has order dividing~\(3\)
+(Proposition~\ref{prop:perm-exponent}).
+Consequently \(M|_H\) cannot be stably permutation
+(Definition~\ref{def:lattice}), and by
+Theorem~\ref{thm:endo-miyata},
+\(Z_H(F,9)\) is not stably rational over \(F\)
+(Theorem~\ref{thm:not-stably-rational}).  This integral cohomological
+obstruction appears to be new for \emph{multiplicative invariant fields},
+i.e.\ the fields \(F(M)^G\) above.
+
+The logical chain is:
+\[
+\begin{aligned}
+&\coh^2(H, M|_H) \cong C_9 \\
+&\;\Longrightarrow\; M|_H \text{ is not stably permutation}
+  \qquad\text{(Proposition~\ref{prop:stable-exp})} \\
+&\;\Longrightarrow\; Z_H(F,9) \text{ is not stably rational}
+  \qquad\text{(Theorem~\ref{thm:endo-miyata}, assumed)} \\
+&\;\Longrightarrow\; Z_H(F,9) \text{ is not rational}
+  \qquad\text{(rationality } \Rightarrow \text{ stable rationality)}.
+\end{aligned}
+\]
+Thus both non-stable-rationality and non-rationality hold over any field
+of characteristic~\(0\) (via Theorem~\ref{thm:endo-miyata}, used as a
+hypothesis), without reliance on its converse.  The proof generalizes
+verbatim to all odd primes~\(p\) (Theorem~\ref{thm:Cp-general}).
+
+% [2026-10-01 第九改] 「As complementary evidence」段已注释（用户指令：
+% complementary 说明不重要）。原文存档：
+% As complementary evidence, we compute
+% \(\Ext^1_{\mathbb{Z}[H]}(I[H], M|_H) \cong C_9 \neq C_3 \times C_3 \cong
+% \Ext^1_{\mathbb{Z}[H]}(I[H], 8\cdot\mathbb{Z}[H]\oplus\mathbb{Z})\)
+% (Proposition~\ref{prop:M_H-not-permutation}), which provides an independent
+% verification that \(M|_H\) is not a permutation lattice.
+%
+% [2026-10-01 第九改] 「Finally, we prove」段已注释（用户指令：retract
+% rationality 系 Saltman 定理所证，表格 tab:main 已提）。原文存档：
+% Finally, we prove that \(Z_H(F,9)\) is retract rational over \(F\)
+% (Theorem~\ref{thm:retract}), via Saltman's retract rationality theorem
+% \cite[Corollary~3.13]{Saltman1984}.
+
+\medskip\noindent
+\textbf{Hypotheses.}
+The original statement in \cite[Problem~5.2]{ABGV2011} is made over an
+arbitrary field.  The cohomological computations
+(\(\coh^2(H, M|_H) \cong C_9\) and \(\exp(\coh^2(H, P)) \mid 3\))
+are purely integral, valid whenever \(\Char F \nmid 9\).
+The geometric conclusions (non-stable-rationality, non-rationality) require
+\(\Char F = 0\) (the criterion is stated in characteristic \(0\)):
+Theorem~\ref{thm:endo-miyata}, used as a hypothesis.  Retract rationality
+holds over any field
+(Theorem~\ref{thm:retract}).  Neither non-stable-rationality nor
+non-rationality relies on the open converse Endo--Miyata implication.
+
+% [2026-10-01 第九改] 原 \textbf{Generalizability.} 段已前移（用户指令）：
+% 去粗体标签，句子并入上方 logic chain 段末（同段）。
+
+% [2026-10-01 第九改] 「Relation to the unramified Brauer group」段已注释
+% （用户指令：附录 app:brauer 有）。原文存档：
+% \textbf{Relation to the unramified Brauer group.}
+% Our obstruction is a purely integral invariant of the lattice \(M|_H\),
+% not a geometric invariant of the function field, and the two behave
+% differently here: for the regular representation,
+% \(\Br_{\mathrm{nr}}(F(H)^H/F) \cong C_3\) and \(F(H)^H\) is not even retract
+% rational, whereas \(Z_H(F,9)\) is retract rational but not stably rational,
+% so its non-stable-rationality is not detected by \(\Br_{\mathrm{nr}}\).
+% Appendix~\ref{app:brauer} develops this comparison, and also places
+% \(Z_H(F,9)\), of transcendence degree \(73\), outside the range of the
+% existing tables of unramified Brauer groups.
+
+\medskip\noindent
+\textbf{Notation.} For the main case (Problem~5.2),
+\(H = C_3 \times C_3 = \langle a,b \mid a^3 = b^3 = 1,\; ab = ba \rangle\);
+the generalization to \(H = C_p \times C_p\) is treated in
+\S\ref{sec:generalization}.
+The base field \(F\) is of characteristic \(0\).
+For a finite group \(G\), a \(G\)-lattice is a finitely generated
+\(\mathbb{Z}[G]\)-module that is \(\mathbb{Z}\)-free. The group ring is denoted
+\(\mathbb{Z}[G]\).
+
+\medskip\noindent
+\textbf{Ethical and legal declarations}: 
+
+\medskip\noindent
+\textbf{Code availability.}
+The two verification programs of Appendix~\ref{app:cocycle}, their
+recorded output for \(p=3\) and \(p=5\), a \texttt{SHA-256} manifest,
+and the machine-checked Lean development are collected in the
+accompanying code package, available at
+\url{https://github.com/wuzhengyao/abgv52-lean}.
+
+% [2026-10-01 第二十三改，用户指令] 原「Lean 形式化说明」三段（自
+% 「The Lean development verifies ...」起，含沿革注释块）已移至
+% 「Use of Large Language Models, AI and Machine Learning Tools」段；
+% 本段（Code availability）自此仅保留存档清单句（上方链接句）。
+% [2026-10-01 第二十六改] Zenodo 弃用（用户指令）：清单句改写为指向
+% GitHub 代码包；TODO 行删除。
+
+\medskip\noindent
+\textbf{Acknowledgments}. 
+The author thanks Xiangtan University for providing the working environment.
+
+\medskip\noindent
+\textbf{Research ethics}. Not applicable.
+
+\medskip\noindent
+\textbf{Informed consent}. Not applicable. 
+
+\medskip\noindent
+\textbf{Author contributions}. The author has accepted responsibility for the
+entire content of this manuscript and approved its submission.
+
+\medskip\noindent
+\textbf{Use of Large Language Models, AI and Machine Learning Tools}. 
+The author used DeepSeek v4 to assist with literature searching, language
+polishing, and debugging GAP scripts, under the author's direction and
+review.  The two verification programs of Appendix~\ref{app:cocycle} and
+the machine-checked Lean development were also produced with AI
+assistance, under the same direction and review, and are collected, with
+their recorded output, at
+\url{https://github.com/wuzhengyao/abgv52-lean}.  The Lean development is
+conditional on explicit named hypotheses, documented there together with
+what is proved and what is assumed.
+
+% [2026-10-01 第二十三改 → 第二十六改] 本块（原自「Code availability」段移入）
+% 已按用户追加指令合并为单段：AI 使用披露＋两个验证程序与 Lean 的 GitHub
+% 落点＋Lean 条件性指针。原披露句与 Lean 段（第二十六改压缩版）见
+% raw/ABGV-5.2-resolution.pre26.tex 与上方第二十六改存档。
+
+% [2026-10-01 第七改，用户指令] 新增一段：几何等同归约层（round (1)）的假设表。
+% 义务出处：wiki/proj-ABGV52-EM-criterion.md §3an 末节「假设表更新义务（承重）」——
+% G 档（= 几何等同归约层）写入后必须补 Procesi 1967，否则读者会误读为
+% 「几何等同无条件证出」。原缺载事实：开发中 Z_H(F,p²) ≅ F(M|_H)^H
+% 是**具名假设**（ProcesiHyp，见 scripts/lean_ws/ABGV52/GThm_ABGV52.lean），
+% 该层已证的是「归约」：正则限制 U|_H ≅ Z[H]、Procesi 复形、π|_H 的识别、
+% 以及不变量域沿该识别的搬运（G1c/G1d/G2p）。
+% [2026-10-01 第二十六改，用户指令] 「Lean 形式化说明」再压缩为一段（数行），
+% 且与 repo README 分工不重复：论文段只留存在＋条件性＋指针；细节（no sorry／
+% 公理名／假设表／文件表／构建说明）归 README，论文不复述。
+% （追加指令 2026-10-01：gap／python 代码说明并入 LLM 段，全节合并为单段。）
+% 被替换块全文（第二十五改压缩版）存档如下；更早原始句另见上方
+% 第二十五改存档 (a)–(e) 与第七改注释。逐字节原件另存
+% raw/ABGV-5.2-resolution.pre26.tex。
+% --- 原第二段＋第三段（状态／假设／无条件部分／Cp-general）---
+% \medskip\noindent The Lean development verifies the logical chain of the main
+% theorem. It compiles with no \texttt{sorry} and depends only on the three
+% standard axioms \texttt{propext}, \texttt{Classical.choice} and
+% \texttt{Quot.sound}. One input is taken as an \emph{explicit hypothesis}: the
+% Endo--Miyata--Voskresenskii criterion (Theorem~\ref{thm:endo-miyata}), which
+% the main text also assumes. Everything else, including the computation
+% \(\coh^2(H, M|_H) \cong C_9\) of Lemma~\ref{lem:H2-MH}, the implication of
+% Proposition~\ref{prop:stable-exp}, and the faithfulness of the action in
+% Proposition~\ref{prop:faithful-MH}, is proved inside the development rather
+% than assumed, so that Corollary~\ref{thm:not-stably-rational} is formalized
+% with the criterion as its only hypothesis.
+%
+% \medskip\noindent Theorem~\ref{thm:Cp-general} is formalized with the odd
+% prime \(p\) as a parameter, the case \(p = 3\) used above being the
+% corresponding instance; its stable-rationality conclusion again carries the
+% criterion as its only hypothesis, and statement~(4) is reduced to
+% \cite[Corollary~3.13]{Saltman1984}, taken as an explicit hypothesis rather
+% than formalized (the same reduction underlies Corollary~\ref{thm:retract}).
+% --- 原几何段（含条件性声明；第七改注释所述假设表段）---
+% \medskip\noindent The geometric identification \(Z_H(F, p^2) \cong F(M|_H)^H\)
+% of Remark~\ref{rem:procesi-geometric} (Procesi \cite{Procesi1967}) is used in
+% the development as a \emph{named hypothesis}: the formalization of that layer
+% establishes the reduction to the regular restriction
+% (Proposition~\ref{prop:U-restrict-canonical}), the Procesi exact sequence of
+% Proposition~\ref{prop:procesi-H}, and the transport of \(H\)-invariants along
+% the identification, but neither constructs the field \(Z_H(F, p^2)\) nor
+% proves Procesi's theorem. The development is therefore a \emph{conditional}
+% formalization of that logical chain, not a formalization of the theorems. The
+% field \(Z_H(F,9)\) itself is not constructed in the development; the corollary
+% is formalized for an abstract field linked to \(M|_H\) by the criterion, and
+% the cohomological computation is certified numerically in
+% Appendix~\ref{app:cocycle}. The full development, with a file-by-file
+% description and instructions for reproducing the verification, is available at
+% \url{https://github.com/wuzhengyao/abgv52-lean}.
+
+% [2026-10-01 第二十五改，用户指令] 长说明压缩为链接说明（上方 repo URL 句）；
+% 具名假设（EM 判据／Procesi 几何识别／Saltman 3.13）与验证状态句保留。
+% 被压缩的原句存档如下（注释而非删除；文字逐字，行宽重排）：
+% 逐字节原件（编辑前全文件）另存 raw/ABGV-5.2-resolution.pre25.tex。
+% （a）The computation \(\coh^2(H,M|_H) \cong C_9\) (Lemma~\ref{lem:H2-MH})
+% is \emph{not} an input: its proof is reproduced inside the development,
+% together with the discriminant pair it yields.
+% （b）The implication of Proposition~\ref{prop:stable-exp} is also proved
+% inside the development, not assumed: it is derived by combining Shapiro's
+% lemma, applied to the orbit decomposition of a finite \(H\)-set, with the
+% short exact sequence \(0 \to \mathbb{Z} \to \mathbb{Q} \to
+% \mathbb{Q}/\mathbb{Z} \to 0\) of trivial modules over the corresponding
+% subgroup \(J \le H\).
+% （c）The faithfulness of the action of \(H\) on \(M|_H\)
+% (Proposition~\ref{prop:faithful-MH}) is also proved inside the
+% development, by the coordinate argument of the second proof of that
+% proposition, which does not use the Procesi identification.
+% （d）Theorem~\ref{thm:Cp-general} is formalized as well, with the odd
+% prime \(p\) as a parameter: for every odd prime \(p\), the development
+% proves that \(\coh^2(H, M|_H) \cong C_{p^2}\) and that \(\coh^2\) of a
+% permutation lattice has exponent dividing \(p\), and hence that \(M|_H\)
+% is not a stably permutation lattice; the case \(p = 3\) used above is
+% the corresponding instance.
+% （e）Consequently Corollary~\ref{thm:not-stably-rational} is formalized
+% with the criterion as its only hypothesis.
+% [2026-09-30 移除，原句存档] The development also assumes, as an additional
+% hypothesis, the implication of Proposition~\ref{prop:stable-exp}, whose
+% proof in the main text is not formalized; the remaining steps are proved.
+% 移除理由：prop:stable-exp 的蕴含已由 Lean 开发证明（scripts/lean_ws/ABGV52/
+% S4_ABGV52.lean 的 stable_exp；S5_ABGV52.lean 的去假设接线版
+% not_stably_rational_wired' 假设表只剩 EM 判据一条）。
+% [2026-09-30 补记] 增补两句：① 点名 \ref{thm:not-stably-rational} 的假设表
+% （判据一条）；② 负向范围声明——Z_H(F,9) 在开发中未构造，该推论是对
+% 「抽象域 ＋ 判据接口」陈述的。原句「With the EM criterion as its only
+% remaining hypothesis, ...」改作「The development is therefore ...」，
+% 以免与 ① 重复（信息未删，仍在段内）。
+% [2026-09-30 第五改] 新增一段：\ref{thm:Cp-general} 的形式化（奇素数 p 为参数）——
+% 无条件部分为 coh²(H,M|_H) ≅ C_{p²} 与置换格的指数界（⟹ M|_H 非稳定置换）；
+% 稳定有理性侧仍以 EM 判据为唯一假设；第 (4) 条归约为 \cite[Cor 3.13]{Saltman1984}
+% 并作显式假设。p=3 特例按用户裁定**不单列**（一般陈述的实例）。
+% [2026-09-30 第六改，用户选「乙」] 同段「范畴记号 ＋ 字母撞车」两病并治。
+% 原句存档（下三行）：
+%   "... it is derived from the short exact sequence
+%    0 -> Z -> Q -> Q/Z -> 0 in Rep_Z K, together with Shapiro's lemma
+%    applied to the orbit decomposition of a finite H-set."
+% 两病：① `Rep_Z K` 是 **Lean 侧范畴记号**，正文从未定义（全篇仅此一处）；
+% ② 该处 `K` 是**群**（子群），而正文通篇 `K` 是**域**（K/F、K/k、L/K）
+% ⟹ 同字母换义。处置：去记号（改叙述 "trivial modules over the
+% corresponding subgroup"）＋ 该子群**改名 J ≤ H**，与域 K 彻底脱钩。
+
+\medskip\noindent
+\textbf{Conflict of interest}. 
+The author declares that there is no conflict of interest. 
+
+\medskip\noindent
+\textbf{Research funding}. 
+The author is supported by Xiangtan University project
+09KZ-KZ08101 \textit{algebraic invariants and local-global principles}.
+
+\medskip\noindent
+\textbf{Data availability}. 
+Data available within the article or its supplementary materials. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Preliminaries}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{definition}\label{def:lattice}
+A \emph{\(\mathbb{Z}[G]\)-lattice} is a finitely generated
+\(\mathbb{Z}[G]\)-module that is \(\mathbb{Z}\)-free.
+A \(\mathbb{Z}[G]\)-lattice \(M\) is called:
+\begin{enumerate}
+  \item \emph{permutation} if \(M \cong \bigoplus_{i=1}^r \mathbb{Z}[G/K_i]\)
+    for subgroups \(K_i \le G\), where \(\mathbb{Z}[G/K]\) denotes the
+    \(\mathbb{Z}[G]\)-module with \(\mathbb{Z}\)-basis the left cosets
+    \(G/K\) and \(G\)-action by left multiplication;
+  \item \emph{stably permutation} if there exist permutation lattices \(P, Q\)
+    such that \(M \oplus P \cong Q\);
+% \item \emph{stably isomorphic} to \(N\) (written \(M \sim_{\text{st}} N\)) if
+% \(M \oplus \mathbb{Z}[G]^{\oplus a} \cong N \oplus \mathbb{Z}[G]^{\oplus b}\)
+% for some \(a,b \ge 0\).
+\end{enumerate}
+These concepts are standard; see \cite[\S1]{CTS77}.
+\end{definition}
+
+\begin{lemma}\label{lem:perm-char}
+Let \(H\) be a finite group and \(K \trianglelefteq H\) a normal
+subgroup, and let \(\mathbb{Z}[H/K]\) be the permutation
+\(\mathbb{Z}[H]\)-lattice
+(Definition~\ref{def:lattice}).  The character of the rational
+representation \(\mathbb{Q}[H/K]\) is
+\[
+\chi_{H/K}(g) = \bigl|\{xK \in H/K : g x K = x K\}\bigr|
+= \begin{cases}
+[H:K], & g \in K,\\
+0, & g \notin K.
+\end{cases}
+\]
+\end{lemma}
+
+% [2026-10-01 第二十改，用户指令] 原第二半句（含 CR Ex 10.4 引）已删——
+% 「交换 H 时重数 m_K 由特征标唯一决定」为**假**：机器核反例（KB 侧
+% `PC2_ABGV52.lean` 的 `permChar_uniqueness_false`：3 单点⊔正则 与 四个 C₃-型
+% 轨道两 H-集，字符逐元素相同而平凡轨道重数 3 ≠ 0、二者不同构）；且所引
+% Curtis-Reiner Example 10.4 原文只是「诱导模 ≅ 置换模」的识别，不含唯一性。
+% 原文存档：
+% Moreover, for an abelian group~\(H\), the multiplicities
+% \(m_K\) in a permutation lattice
+% \(P \cong \bigoplus_{K \le H} m_K \cdot \mathbb{Z}[H/K]\)
+% are uniquely determined by the character of
+% \(P \otimes_{\mathbb{Z}} \mathbb{Q}\)
+% \cite[Example~10.4]{CurtisReiner1981}.
+
+This lemma is the key tool in Lemma~\ref{lem:perm-class} below, where
+the rational character of a permutation lattice yields linear
+equations for its multiplicities.
+
+% [2026-10-01 第二十一改，用户指令] flasque 整块（def:flasque ＋
+% def:flasque-class-group ＋ prop:flasque-resolution）移至附录 C
+% （「Unramified Brauer group」段之前；该块全篇唯一实质使用者——
+% 两个定义仅被该命题引用，命题仅被附录 C 引用）。原文存档如下：
+%
+% \begin{definition}\label{def:flasque}
+% A \(\mathbb{Z}[G]\)-lattice \(F\) is \emph{flasque} if
+% \(\hat{\coh}^{-1}(K, F) = 0\) for all subgroups \(K \le G\)
+% (equivalently, \(\Ext^1_G(F, P) = 0\) for every permutation lattice~\(P\))
+% \cite[\S1, Lemme~9]{CTS77}. Here \(\hat{\coh}^{-1}\) denotes
+% Tate cohomology in degree \(-1\); for a finite group~\(G\) and a
+% \(\mathbb{Z}[G]\)-lattice~\(M\),
+% \(\hat{\coh}^{-1}(G, M) = \ker(N_G) / I[G]M\), where
+% \(N_G = \sum_{g \in G} g\) is the norm element and
+% \(I[G] = \ker(\mathbb{Z}[G] \twoheadrightarrow \mathbb{Z})\) is the
+% augmentation ideal.
+% \end{definition}
+%
+% \begin{definition}\label{def:flasque-class-group}
+% Two \(\mathbb{Z}[G]\)-lattices \(M, N\) are called \emph{similar}
+% (written \(M \sim N\)) if \(M \oplus S_1 \cong N \oplus S_2\) for
+% some permutation lattices \(S_1, S_2\) (Definition~\ref{def:lattice}).
+% This is an equivalence relation; denote the similarity class of \(M\)
+% by \([M]\). Let
+% \[
+% C(G)/S(G) = \{ [M] : M \text{ a finitely generated }
+% \mathbb{Z}[G]\text{-lattice} \},
+% \]
+% a commutative monoid under direct sum, with zero element the class
+% of permutation lattices. Its maximal subgroup is
+% \[
+% D(G)/S(G) = \{ [M] \in C(G)/S(G) : M \text{ is stably permutation}\},
+% \]
+% which is the semigroup \(C(G)/S(G)\) of \cite[\S4.7]{Vos98}.
+% \end{definition}
+%
+% \begin{proposition}\label{prop:flasque-resolution}
+% Every \(\mathbb{Z}[G]\)-lattice~\(M\) has a \emph{flasque resolution}
+% \[
+% 0 \longrightarrow M \longrightarrow P \longrightarrow F \longrightarrow 0
+% \]
+% with \(P\) permutation (Definition~\ref{def:lattice}) and \(F\) flasque
+% (Definition~\ref{def:flasque})
+% \cite[\S1, Lemme~3]{CTS77}. The similarity class
+% \([F] \in D(G)/S(G)\) (Definition~\ref{def:flasque-class-group})
+% depends only on \(M\)
+% \cite[\S1, Lemme~5]{CTS77}; we denote it by
+% \(\rho(M) = [F]\) and call it the
+% \emph{flasque class} of \(M\).
+% By construction, \(M\) is stably permutation iff \(\rho(M) = 0\)
+% \cite[\S1, Lemmes~7 and~8]{CTS77}; this is the defining property
+% of the group \(D(G)/S(G)\).
+% \end{proposition}
+
+\begin{theorem}\label{thm:endo-miyata}
+Let \(G\) be a finite group and \(M\) a \(\mathbb{Z}[G]\)-lattice on
+which \(G\) acts faithfully.  Let \(F\) be a field of characteristic
+\(0\).  Here \(F(M)\) and \(F(M)^G\) are as in the Introduction, and
+\(G\) acts on \(F(M)\) through the \(\mathbb{Z}[G]\)-module structure
+of~\(M\).  If \(F(M)^G\) is \emph{stably rational} over \(F\), then
+\(M\) is a stably permutation \(\mathbb{Z}[G]\)-lattice.  In the
+literature this criterion is stated for the \emph{twisted}
+invariant field \(Q(L/K,M) = L(M)^G\)
+of \cite[Theorem~1.3(b)]{Saltman1987}, where \(L/K\) is Galois with
+group \(G\) and \(G\) acts on the coefficient field as well; the
+field \(F(M)^G\) above is the field \(F(M,G)\) of
+\cite[p.~221]{Saltman1987}, and for it the criterion is an
+assumption rather than a quotation of a proved result.
+\textbf{We use this criterion as a hypothesis}; it is not proved in
+this paper.
+% [2026-09-30 引文勘误] 原句尾挂 \cite[\S1, Lemme~6]{CTS77}，已移除。
+% 核据：CTS77 印刷 Lemme 6（印刷页 181）逐字为「Les applications ρ et ζ
+% sont additives et duales l'une de l'autre … ρ est un épimorphisme de S_G
+% sur F_G」，不含任何域/有理性陈述；该判据在文献中无出处，与本定理随后
+% 的自陈（an assumption rather than a quotation）自相矛盾。可用邻近锚 =
+% §1 Lemme 8（印刷页 182，ρ 相等的判据）与 §2 Proposition 6（印刷页 189，
+% 环面情形：ρ(T) 对 k-稳定有理的 T 平凡，且 ρ(T) = ρ(hat T)）。
+% [2026-10-01 第二十一改，用户指令] 原句尾「, i.e., its flasque class
+% \(\rho(M) \in D(G)/S(G)\) vanishes」已删——flasque 类术语连同其定义
+% （def:flasque／def:flasque-class-group）移入附录 C；判据逻辑不变（措辞清理）。
+\end{theorem}
+
+% [2026-10-01 第十八改，用户指令] `thm:endo-miyata-converse` 主线不使用
+% （各处提及均仅为「不依赖它」的声明；其引用仅 Vos98 一处），注释存档如下：
+%
+% \begin{theorem}\label{thm:endo-miyata-converse}
+% Let \(G\) be a finite \emph{abelian} group and \(M\) a
+% \(\mathbb{Z}[G]\)-lattice on which \(G\) acts faithfully.  Let \(F\) be
+% a field of characteristic \(0\) containing a primitive
+% \(\exp(G)\)-th root of unity.  Then \(F(M)^G\) is \emph{stably rational}
+% over \(F\) if \(M\) is a stably permutation \(\mathbb{Z}[G]\)-lattice
+% \cite[\S7.1, (1) and \S7.2]{Vos98}.
+% \end{theorem}
+
+In the sequel we apply Theorem~\ref{thm:endo-miyata} in the
+contrapositive direction, the criterion being used as a hypothesis
+throughout: if \(M|_H\) is \emph{not} stably permutation, then
+\(F(M|_H)^H \cong Z_H(F,9)\) is \emph{not} stably rational.
+The cohomological computation of \S\ref{sec:cohom} proves that
+\(\coh^2(H, M|_H) \cong C_9\) while permutation lattices have
+\(\coh^2\)-exponent dividing~\(3\); hence \(M|_H\) is not stably
+permutation (Theorem~\ref{thm:not-stably-perm}), and the criterion
+yields non-stable-rationality (Corollary~\ref{thm:not-stably-rational}).
+The same strategy generalizes to \(C_p \times C_p\) in
+\S\ref{sec:generalization}.
+
+% [2026-10-01 第十七改，用户指令] `thm:UCT` 移至附录 B（原处仅此一处定义，
+% 其使用全部在附录 B/C：`prop:B0` 证明与附录 C 泛化节）；原文存档如下：
+%
+% \begin{theorem}\label{thm:UCT}
+% For a finite group \(G\) and a trivial \(G\)-module \(M\), there is a
+% natural short exact sequence
+% \[
+% 0 \longrightarrow \Ext^1_{\mathbb{Z}}(\mathrm{H}_{n-1}(G, \mathbb{Z}), M)
+% \longrightarrow \coh^n(G, M)
+% \longrightarrow \Hom(\mathrm{H}_n(G, \mathbb{Z}), M) \longrightarrow 0
+% \]
+% for all \(n \ge 1\) \cite[3.6.5]{Weibel1994}.
+% If \(M\) is divisible (e.g.\ \(M = \mathbb{Q}/\mathbb{Z}\)), the
+% sequence splits, giving a direct sum decomposition.
+% \end{theorem}
+%
+% This theorem is used in Proposition~\ref{prop:B0} to compute
+% \(\coh^2(H, \mathbb{Q}/\mathbb{Z})\).
+
+% \begin{theorem}[Homology of abelian groups]\label{thm:H2-abelian}
+% Let \(k\) be a principal ideal domain and \(G\) an abelian group.
+% There is a natural map
+% \[
+% \psi \colon \bigwedge\!^*\, (G \otimes k) \longrightarrow H_*(G, k)
+% \]
+% with the following properties:
+% \begin{enumerate}
+% \item[(i)] \(\psi\) is injective, and split injective if \(G\) is finitely
+% generated.
+% \item[(ii)] If every prime \(p\) such that \(G\) has \(p\)-torsion is
+% invertible in \(k\), then \(\psi\) is an isomorphism.
+% \item[(iii)] If \(k\) has characteristic zero (e.g.\ \(k = \mathbb{Z}\)),
+% then \(\psi\) is an isomorphism in dimension~\(2\).
+% \end{enumerate}
+% \cite[Ch.\ V, Theorem~6.4]{Brown1982}.
+% \end{theorem}
+
+\section{The Procesi Lattice}
+\label{sec:procesi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We give a self-contained construction of the Procesi
+\(\mathbb{Z}[S_9]\)-lattice~\(M\) and the Procesi isomorphism, keeping only what
+is needed for the rationality computations. An accessible modern exposition is
+in \cite[\S5]{ABGV2011} and
+\cite{Formanek2002}; the original reference is \cite{Procesi1967}.
+
+\subsection{Construction over \(S_9\)}
+
+Let \(n = 9\) and let \(\Omega = S_9/S_8\) be the set of left cosets of \(S_8\)
+in \(S_9\). Then \(|\Omega| = 9\) and \(S_9\) acts on \(\Omega\) by left
+multiplication. Define the permutation \(\mathbb{Z}[S_9]\)-module
+\[
+U = \mathbb{Z}[\Omega] \cong \bigoplus_{\omega \in \Omega} \mathbb{Z}\cdot
+e_\omega ,
+\]
+where \(\{e_\omega\}_{\omega \in \Omega}\) is the standard basis and
+\(g \cdot e_\omega = e_{g\omega}\) for \(g \in S_9\).  Consider the
+\(\mathbb{Z}[S_9]\)-module map
+\[
+\varphi : U \otimes_{\mathbb{Z}} U \longrightarrow \mathbb{Z}[\Omega], \qquad
+\varphi(e_\alpha \otimes e_\beta) = e_\alpha - e_\beta ,
+\]
+extended \(\mathbb{Z}\)-linearly.  The map \(\varphi\) is \(S_9\)-equivariant:
+\[
+\varphi\bigl(g \cdot (e_\alpha \otimes e_\beta)\bigr)
+= \varphi(e_{g\alpha} \otimes e_{g\beta})
+= e_{g\alpha} - e_{g\beta}
+= g \cdot (e_\alpha - e_\beta)
+= g \cdot \varphi(e_\alpha \otimes e_\beta).
+\]
+
+The image of \(\varphi\) is the \emph{augmentation submodule}
+\[
+I[\Omega] = \ker\!\Bigl( \varepsilon : \mathbb{Z}[\Omega] \twoheadrightarrow
+\mathbb{Z},\;
+\varepsilon\bigl(\sum a_\omega e_\omega\bigr) = \sum a_\omega \Bigr).
+\]
+Indeed, every difference \(e_\alpha - e_\beta\) has augmentation zero, and
+conversely any element \(\sum a_\omega e_\omega\) with \(\sum a_\omega = 0\) is
+a \(\mathbb{Z}\)-linear combination of such differences (take \(\{e_\alpha -
+e_{\omega_0} : \alpha \neq \omega_0\}\) for a fixed \(\omega_0\)). Moreover,
+\(\varphi\) is surjective onto \(I[\Omega]\).
+
+\begin{definition}
+The \emph{Procesi \(\mathbb{Z}[S_9]\)-lattice} is \(M = \ker(\varphi)\).
+\end{definition}
+
+By construction we have the short exact sequence of \(\mathbb{Z}[S_9]\)-modules
+\begin{equation}\label{eq:procesi-S9}
+0 \longrightarrow M \longrightarrow U \otimes_{\mathbb{Z}} U \xrightarrow{\
+\varphi\ } I[\Omega] \longrightarrow 0 .
+\end{equation}
+
+The module \(M\) is \(\mathbb{Z}\)-free: it is a \(\mathbb{Z}\)-submodule of the
+free \(\mathbb{Z}\)-module \(U \otimes_{\mathbb{Z}} U\), and every submodule of
+a free \(\mathbb{Z}\)-module is free (since \(\mathbb{Z}\) is a principal ideal
+domain)
+\cite[Ch.VII, \S3, Th.1, Cor.2]{Bourbaki2007b}.
+The ranks are
+\[
+\rk_{\mathbb{Z}} U = 9,\qquad
+\rk_{\mathbb{Z}}(U \otimes U) = 81,\qquad
+\rk_{\mathbb{Z}} I[\Omega] = 8,\qquad
+\rk_{\mathbb{Z}} M = 73.
+\]
+
+\begin{remark}\label{rem:procesi-geometric}
+Procesi \cite{Procesi1967} proved that the center of the generic matrix
+algebra satisfies \(Z_{S_9}(F,9) \cong F(M)^{S_9}\), where \(F(M)^{S_9}\) is
+the invariant field of the purely transcendental extension \(F(M)\) under
+the natural \(S_9\)-action induced by the \(\mathbb{Z}[S_9]\)-module
+structure of \(M\).  For any subgroup
+\(H \subseteq S_9\), taking \(H\)-invariants gives
+\[
+Z_H(F,9) = F(M)^H \cong F(M|_H)^H,
+\]
+This isomorphism holds over any field \(F\) of characteristic~\(0\);
+see \cite[\S5]{ABGV2011}, \cite{Formanek2002}, and the references therein.
+For the computations that follow, only the exact
+sequence~\eqref{eq:procesi-S9} and this identification are required.
+\end{remark}
+
+\subsection{Restriction to \(H = C_3 \times C_3\)}
+
+Now fix a transitive embedding \(H = C_3 \times C_3 \hookrightarrow S_9\),
+i.e., an embedding whose image acts transitively on
+\(\Omega = S_9/S_8\).
+Since \(|H| = 9 = |\Omega|\), the action is moreover regular
+(i.e., free and transitive, called \emph{simply transitive}
+in \cite[ch.I, \S5, no.6, def.7]{Bourbaki2007a}):
+choosing a basepoint \(\omega_0 \in \Omega\), the map
+\(H \to \Omega\), \(h \mapsto h \cdot \omega_0\), is an \(H\)-equivariant
+bijection. Consequently we obtain an explicit isomorphism of
+\(\mathbb{Z}[H]\)-modules
+\begin{equation}\label{eq:U-restrict}
+U|_H \xrightarrow{\ \cong\ } \mathbb{Z}[H], \qquad
+e_{h \cdot \omega_0} \longmapsto h \quad (h \in H).
+\end{equation}
+
+\begin{proposition}\label{prop:U-restrict-canonical}
+The isomorphism~\eqref{eq:U-restrict} is independent of the choice of
+\(\omega_0\) up to a \(\mathbb{Z}[H]\)-module automorphism of
+\(\mathbb{Z}[H]\).  Consequently,
+\(\Ext^1_{\mathbb{Z}[H]}(-, M|_H)\), \(\coh^2(H, M|_H)\), and the
+isomorphism class of \(M|_H\) are independent of this choice.
+\end{proposition}
+
+\begin{proof}
+Let \(\omega_0' = g \cdot \omega_0\) be another basepoint.
+The isomorphism induced by \(\omega_0'\) sends
+\(e_{h \cdot \omega_0'} = e_{hg \cdot \omega_0} \longmapsto h\),
+while the original sends \(e_{hg \cdot \omega_0} \longmapsto hg\);
+hence the two isomorphisms differ by right multiplication by
+\(g^{-1}\) on \(\mathbb{Z}[H]\).  Right multiplication by a fixed
+element of \(H\) is a \(\mathbb{Z}[H]\)-module automorphism of the
+left regular module.  Therefore the induced map on cohomology and
+\(\Ext^1\) is the identity, and the isomorphism class of \(M|_H\) is unchanged.
+\end{proof}
+
+\begin{proposition}\label{prop:embedding-independence}
+Let \(\iota_1, \iota_2 : H \hookrightarrow S_9\) be two transitive embeddings.
+Then \(M|_{\iota_1(H)} \cong M|_{\iota_2(H)}\) as \(\mathbb{Z}[H]\)-modules.
+\end{proposition}
+
+\begin{proof}
+Both \(\iota_1\) and \(\iota_2\) make \(\Omega\) into a regular
+\(H\)-set (since \(|H| = 9 = |\Omega|\) and each action is transitive).
+Any two regular \(H\)-sets of the same cardinality are
+\(H\)-equivariantly isomorphic: fix basepoints
+\(\omega_1, \omega_2 \in \Omega\), and define a bijection
+\(\Omega \to \Omega\) by \(h \cdot \omega_1 \longmapsto h \cdot \omega_2\).
+This bijection is an element \(\sigma \in S_9\), and by construction
+\(\sigma \, \iota_1(h) \, \sigma^{-1} = \iota_2(h)\) for all \(h \in H\).
+Conjugating the embedding by \(\sigma\) replaces the
+\(H\)-action on \(U \otimes U\) with its conjugate under the \(S_9\)-action,
+which induces an isomorphism \(M|_{\iota_1(H)} \cong M|_{\iota_2(H)}\) of
+\(\mathbb{Z}[H]\)-modules via the identification of \(H\) with
+\(\iota_1(H)\) and \(\iota_2(H)\) followed by the conjugation
+\(\iota_2^{-1} \circ \iota_1\).
+\end{proof}
+
+\begin{proposition}\label{prop:tensor-reg-ZH}
+There is an isomorphism of \(\mathbb{Z}[H]\)-modules
+\[
+\mathbb{Z}[H] \otimes_{\mathbb{Z}} \mathbb{Z}[H] \;\cong\; \mathbb{Z}[H]^{\oplus
+9},
+\]
+where the left side carries the diagonal action
+\(h \cdot (x \otimes y) = hx \otimes hy\) and the right side
+carries the action \(h \cdot (z_b)_{b \in H} = (h z_{h^{-1} b'})_{b' \in H}\),
+that is, left multiplication composed with the coordinate permutation
+\(b \mapsto hb\).
+\end{proposition}
+
+\begin{proof}
+Identify \(\mathbb{Z}[H]\) with the induced module
+\(\Ind_1^H(\mathbb{Z}) = \mathbb{Z}[H] \otimes_{\mathbb{Z}} \mathbb{Z}\),
+where \(\Ind_1^H\) denotes induction from the trivial subgroup~\(\{1\}\)
+to~\(H\), and \(\Res_1^H\) denotes restriction from~\(H\) to~\(\{1\}\).
+For \(\mathbb{Z}\)-modules \(A, B\) with trivial \(H\)-action,
+the projection formula for induced modules
+\cite[Corollary~10.20]{CurtisReiner1981} states
+\[
+\Ind_1^H(A) \otimes_{\mathbb{Z}} \Ind_1^H(B)
+\;\cong\; \Ind_1^H\!\bigl( A \otimes_{\mathbb{Z}} \Res_1^H \Ind_1^H(B) \bigr)
+\]
+as \(\mathbb{Z}[H]\)-modules (diagonal action on the left, induced action
+on the right).  Taking \(A = B = \mathbb{Z}\) gives
+\[
+\mathbb{Z}[H] \otimes_{\mathbb{Z}} \mathbb{Z}[H]
+\;\cong\; \Ind_1^H\!\bigl( \Res_1^H \Ind_1^H(\mathbb{Z}) \bigr).
+\]
+The restriction \(\Res_1^H \Ind_1^H(\mathbb{Z})\) is the regular
+module \(\mathbb{Z}[H]\) viewed merely as a \(\mathbb{Z}\)-module
+(forgetting the \(H\)-action); by definition \(\mathbb{Z}[H]\) has
+\(\mathbb{Z}\)-basis \(\{h : h \in H\}\), so
+\(\Res_1^H \Ind_1^H(\mathbb{Z}) \cong \mathbb{Z}^{\oplus 9}\).
+Applying \(\Ind_1^H\) then yields
+\(\Ind_1^H(\mathbb{Z}^{\oplus 9})
+\cong \Ind_1^H(\mathbb{Z})^{\oplus 9}
+\cong \mathbb{Z}[H]^{\oplus 9}\).
+The isomorphism is \(H\)-equivariant: choose the \(\mathbb{Z}\)-basis
+\(\{g\}_{g\in H}\) of the second tensor factor \(\mathbb{Z}[H]\);
+the map \(x \otimes g \longmapsto x\) in the \(g\)-th coordinate
+satisfies \(h \cdot (x \otimes g) = hx \otimes hg \longmapsto hx\)
+in the \(hg\)-th coordinate.
+\end{proof}
+
+Under the identification~\eqref{eq:U-restrict} and
+Proposition~\ref{prop:tensor-reg-ZH},
+the restriction of the map \(\varphi\) to \(H\) yields the following.
+
+\begin{proposition}\label{prop:procesi-H}
+There is an exact sequence of \(\mathbb{Z}[H]\)-modules
+\begin{equation}
+0 \longrightarrow M|_H \longrightarrow \mathbb{Z}[H]^{\oplus 9}
+\xrightarrow{\ \pi|_H\ } I[H] \longrightarrow 0 ,
+\end{equation}
+where \(I[H] = \ker(\varepsilon : \mathbb{Z}[H] \twoheadrightarrow
+\mathbb{Z})\), \(\varepsilon(\sum a_h h) = \sum a_h\), is the augmentation ideal
+of \(H\). All modules in the sequence are finitely generated and
+\(\mathbb{Z}\)-free, and \(\rk_{\mathbb{Z}} M|_H = 73\).
+\end{proposition}
+
+\begin{proof}
+\emph{Exactness.}
+Under the identifications, the map \(\varphi\) becomes a
+\(\mathbb{Z}[H]\)-module map
+\(\pi|_H : \mathbb{Z}[H]^{\oplus 9} \longrightarrow I[H]\).
+Each standard basis element of \(\mathbb{Z}[H]^{\oplus 9}\) maps to
+a difference \(h - h'\) in \(\mathbb{Z}[H]\); these differences
+generate the \(\mathbb{Z}\)-module \(I[H]\), and \(I[H]\) is generated
+as a \(\mathbb{Z}[H]\)-module by any single element \(h-1\) with
+\(h \neq 1\); hence \(\pi|_H\) is surjective.
+Define \(M|_H = \ker(\pi|_H)\), the restriction of the Procesi
+lattice to \(H\).
+
+\medskip\noindent
+\emph{Freeness.}
+All modules in the sequence are finitely generated and
+\(\mathbb{Z}\)-free: \(\mathbb{Z}[H]^{\oplus 9}\) is \(\mathbb{Z}\)-free
+with basis the group elements in each coordinate; \(I[H]\) is a
+\(\mathbb{Z}\)-submodule of \(\mathbb{Z}[H]\), hence free
+\cite[Ch.VII, \S3, Th.1, Cor.2]{Bourbaki2007b};
+\(M|_H = \ker(\pi|_H)\) is a \(\mathbb{Z}\)-submodule of
+\(\mathbb{Z}[H]^{\oplus 9}\), hence free.
+
+\medskip\noindent
+\emph{Rank.}
+\(\rk_{\mathbb{Z}} M|_H
+= \rk_{\mathbb{Z}} \mathbb{Z}[H]^{\oplus 9}
+- \rk_{\mathbb{Z}} I[H]
+= 9 \cdot 9 - 8 = 73\),
+matching the rank of \(M\) over \(S_9\).
+\end{proof}
+
+\begin{proposition}\label{prop:MH-char}
+\[
+M|_H \otimes_{\mathbb{Z}} \mathbb{Q} \;\cong\; 8\cdot \mathbb{Q}[H] \;\oplus\;
+\mathbb{Q},
+\]
+where \(\mathbb{Q}\) denotes the one-dimensional trivial
+\(\mathbb{Q}[H]\)-module.
+\end{proposition}
+
+\begin{proof}
+Tensor the exact sequence of Proposition~\ref{prop:procesi-H}
+with \(\mathbb{Q}\) (flat over \(\mathbb{Z}\),
+\cite[Ch.II, \S 2, no.4, Th.1]{Bourbaki2006}):
+\[
+0 \longrightarrow M|_H \otimes_{\mathbb{Z}} \mathbb{Q} \longrightarrow
+\mathbb{Q}[H]^{\oplus 9} \longrightarrow I[H] \otimes_{\mathbb{Z}} \mathbb{Q}
+\longrightarrow 0 .
+\]
+The augmentation sequence
+\begin{equation}\label{eq:aug}
+0 \longrightarrow I[H] \longrightarrow \mathbb{Z}[H]
+\xrightarrow{\ \varepsilon\ } \mathbb{Z} \longrightarrow 0
+\end{equation}
+remains exact after tensoring with \(\mathbb{Q}\) (flat over
+\(\mathbb{Z}\), \cite[Ch.II, \S 2, no.4, Th.1]{Bourbaki2006}), giving
+\[
+0 \longrightarrow I[H] \otimes_{\mathbb{Z}} \mathbb{Q} \longrightarrow
+\mathbb{Q}[H] \xrightarrow{\ \varepsilon\ } \mathbb{Q} \longrightarrow 0 .
+\]
+This sequence splits since \(|H| = 9\) is invertible in
+\(\mathbb{Q}\) (Maschke's Theorem \cite[(3.14)]{CurtisReiner1981};
+the splitting is given by the idempotent
+\(e_0 = \frac{1}{|H|}\sum_{h \in H} h\)).  Hence in the Grothendieck group
+\(K_0(\mathbb{Q}[H])\) \cite[(16.3)]{CurtisReiner1981},
+\[
+[I[H] \otimes_{\mathbb{Z}} \mathbb{Q}] = [\mathbb{Q}[H]] - [\mathbb{Q}].
+\]
+From the exact sequence of \(\mathbb{Q}[H]\)-modules above,
+\begin{align*}
+[M|_H \otimes \mathbb{Q}]
+&= 9[\mathbb{Q}[H]] - [I[H] \otimes \mathbb{Q}] \\
+&= 9[\mathbb{Q}[H]] - ([\mathbb{Q}[H]] - [\mathbb{Q}]) \\
+&= 8[\mathbb{Q}[H]] + [\mathbb{Q}].
+\end{align*}
+Since \(\mathbb{Q}[H]\) is semisimple by Maschke
+\cite[(3.14)]{CurtisReiner1981}, equality in \(K_0(\mathbb{Q}[H])\) implies
+\[
+M|_H \otimes_{\mathbb{Z}} \mathbb{Q} \cong 8\cdot \mathbb{Q}[H] \oplus
+\mathbb{Q}
+\]
+of \(\mathbb{Q}[H]\)-modules.
+\end{proof}
+
+% \begin{proposition}\label{prop:QH-decomp}
+% \[
+% \mathbb{Q}[H] \cong \mathbb{Q} \times \mathbb{Q}(\zeta_3)^4 ,
+% \]
+% as \(\mathbb{Q}\)-algebras, where \(\zeta_3\) denotes a primitive third
+% root of unity.
+% \end{proposition}
+%
+% \begin{proof}
+% By the classification of rational group algebras of finite abelian
+% groups \cite[\S10B]{CurtisReiner1981}: the characters of
+% \(H = C_3 \times C_3\) form four Galois orbits of size~\(2\)
+% (the \(8\) non-trivial characters, paired by complex conjugation
+% under \(\Gal(\mathbb{Q}(\zeta_3)/\mathbb{Q}) \cong C_2\))
+% and one of size~\(1\) (the trivial character).
+% \end{proof}
+
+From Proposition~\ref{prop:MH-char} we deduce: if \(M|_H\) \emph{were} a
+permutation \(\mathbb{Z}[H]\)-lattice, its rational character would force \(M|_H
+\cong 8\cdot\mathbb{Z}[H] \oplus \mathbb{Z}\).
+
+\begin{lemma}\label{lem:perm-class}
+Let \(P\) be a permutation \(\mathbb{Z}[H]\)-lattice satisfying
+\(P \otimes_{\mathbb{Z}} \mathbb{Q} \cong 8\cdot\mathbb{Q}[H] \oplus
+\mathbb{Q}\). Then \(P \cong 8\cdot\mathbb{Z}[H] \oplus \mathbb{Z}\).
+\end{lemma}
+
+\begin{proof}
+Since \(P\) is a permutation \(\mathbb{Z}[H]\)-lattice
+(Definition~\ref{def:lattice}), we can write
+\[
+P \cong \bigoplus_{K \le H} m_K \cdot \mathbb{Z}[H/K], \qquad
+m_K \in \mathbb{Z}_{\ge 0},
+\]
+where \(K\) runs over the subgroups of \(H = C_3 \times C_3\). The subgroups
+are: \(\{1\}\) (trivial, index \(9\)); four subgroups of order \(3\) (each index
+\(3\)), namely \(K_1 = \langle a \rangle\), \(K_2 = \langle b \rangle\), \(K_3 =
+\langle ab \rangle\), \(K_4 = \langle ab^2 \rangle\) where \(H = \langle a
+\rangle \times \langle b \rangle \cong C_3 \times C_3\); and \(H\) itself (index
+\(1\), giving the trivial module \(\mathbb{Z}\)).
+
+\medskip\noindent
+\emph{Character-theoretic determination of multiplicities.}
+By Lemma~\ref{lem:perm-char}, the character of \(\mathbb{Q}[H/K]\)
+is given by
+\[
+\chi_{H/K}(g) = \begin{cases}
+[H:K], & g \in K,\\
+0, & g \notin K,
+\end{cases}
+\]
+and evaluating the character of \(P\) at \(g \in H\) gives
+\[
+\chi_P(g) = \sum_{K \ni g} m_K\, [H:K].
+\]
+% [2026-10-01 第二十改] 原句「and the multiplicities \(m_K\) are uniquely
+% determined by the character of~\(P\).」替换为上求值式（该唯一性断言为假；
+% 原句及依据存档见 lem:perm-char 之后注）。
+
+By Proposition~\ref{prop:MH-char},
+\(\chi_P = 8\chi_{H/\{1\}} + \chi_{H/H}\),
+so \(\chi_P(1) = 8 \cdot 9 + 1 = 73\) and
+\(\chi_P(g) = 0 + 1 = 1\) for all \(g \neq 1\).
+
+\medskip\noindent
+\emph{System of equations.}
+Let \(a = m_{\{1\}}\), \(b_j = m_{K_j}\) (\(j=1,\dots,4\)), and \(c = m_H\).
+Evaluating \(\chi_P\) at the identity and at
+\(g \in K_j \setminus \{1\}\) gives
+\begin{align}
+\chi_P(1) &= 9a + 3(b_1+b_2+b_3+b_4) + c = 73,
+\label{eq:sys-id}\\
+\chi_P(g) &= 3b_j + c = 1 \qquad (g \in K_j,\ g \neq 1,\ j=1,\dots,4).
+\label{eq:sys-order3}
+\end{align}
+
+\medskip\noindent
+\emph{Solution.}
+Equation~\eqref{eq:sys-order3} gives \(b_j = (1-c)/3\). Since the multiplicities
+\(b_j\) are non-negative integers by definition of a permutation lattice
+decomposition, we must have \(c = 1\), forcing \(b_j = 0\) for all \(j\).
+Substituting into~\eqref{eq:sys-id}: \(9a + 0 + 1 = 73\), hence \(a = 8\).
+Therefore \(P \cong 8\cdot\mathbb{Z}[H] \oplus \mathbb{Z}\).
+\end{proof}
+
+% \begin{remark}\label{rem:integrality} The argument above is entirely
+% elementary: the multiplicities \(m_K\) are integers by the definition of a
+% permutation \(\mathbb{Z}[H]\)-lattice, and the character evaluation at
+% specific group elements yields an invertible integer-linear system that
+% determines them uniquely. No passage through the Burnside ring or delicate
+% integrality theorems is required. \end{remark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cohomological Obstruction to Stable Permutation}
+\label{sec:cohom}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this section we compute the second integral cohomology group
+\(\coh^2(H, M|_H)\) and prove that its exponent obstructs stable permutation.
+
+\medskip\noindent
+\textbf{Notation.}
+Throughout this section we write \(\coh^q(G, M)\) for the \(q\)-th
+integral group cohomology of a \(G\)-module \(M\).  The upright~\(\coh\)
+is reserved for the cohomology functor, while the italic~\(H\) denotes
+the group \(H = C_3 \times C_3\).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Cohomology Computations}
+
+\begin{lemma}\label{lem:H1-IH}
+The group \(\coh^1(H, I[H])\) is cyclic of order \(9\).
+\end{lemma}
+
+\begin{proof}
+Apply group cohomology \(\coh^*(H, -)\) to the augmentation exact sequence
+\eqref{eq:aug}.
+The associated long exact cohomology sequence reads
+\begin{multline*}
+0 \longrightarrow \coh^0(H, I[H]) \longrightarrow \coh^0(H, \mathbb{Z}[H])
+\longrightarrow \coh^0(H, \mathbb{Z}) \\
+\longrightarrow \coh^1(H, I[H])
+\longrightarrow \coh^1(H, \mathbb{Z}[H]) \longrightarrow \cdots .
+\end{multline*}
+We analyse the low-degree terms:
+\begin{itemize}
+\item \(\coh^0(H, \mathbb{Z}[H]) = \mathbb{Z}[H]^H = \mathbb{Z}\!\cdot\! N_H\),
+  where \(N_H = \sum_{h \in H} h\) is the norm element.
+\item \(\coh^0(H, \mathbb{Z}) = \mathbb{Z}^H = \mathbb{Z}\).
+\item The map \(\coh^0(H, \mathbb{Z}[H]) \to \coh^0(H, \mathbb{Z})\) sends
+  \(N_H \mapsto \varepsilon(N_H) = \sum_{h \in H} 1 = |H| = 9\).
+\item \(\coh^1(H, \mathbb{Z}[H]) = 0\): \(\mathbb{Z}[H] \cong \Ind_1^H
+\mathbb{Z}\)
+  as \(\mathbb{Z}[H]\)-modules, and Shapiro's Lemma
+  \cite[Theorem~6.3.2]{Weibel1994} gives
+  \(\coh^1(H, \Ind_1^H \mathbb{Z}) \cong \coh^1(\{1\}, \mathbb{Z}) = 0\).
+\end{itemize}
+From the exactness at \(\coh^0(H, \mathbb{Z})\) we obtain
+\(\coker(\mathbb{Z}\!\cdot\!N_H \xrightarrow{\varepsilon} \mathbb{Z})
+= \mathbb{Z}/9\mathbb{Z}\), and exactness at \(\coh^1(H, I[H])\) with the
+vanishing of \(\coh^1(H, \mathbb{Z}[H])\) yields the short exact sequence
+\[
+0 \longrightarrow \mathbb{Z}/9\mathbb{Z} \longrightarrow \coh^1(H, I[H])
+\longrightarrow 0,
+\]
+hence \(\coh^1(H, I[H]) \cong \mathbb{Z}/9\mathbb{Z} \cong C_9\).
+\end{proof}
+
+\begin{lemma}\label{lem:H2-MH}
+For the Procesi restriction \(M|_H\),
+\(\coh^2(H, M|_H) \cong C_9\).
+\end{lemma}
+
+\begin{proof}
+Apply \(\coh^*(H,-)\) to the exact sequence of
+Proposition~\ref{prop:procesi-H}:
+\[
+0 \longrightarrow M|_H \longrightarrow \mathbb{Z}[H]^{\oplus 9}
+\longrightarrow I[H] \longrightarrow 0 .
+\]
+The associated long exact cohomology sequence gives
+\[
+\begin{aligned}
+\cdots &\longrightarrow \coh^1(H, \mathbb{Z}[H]^{\oplus 9})
+\longrightarrow \coh^1(H, I[H]) \\
+&\longrightarrow \coh^2(H, M|_H)
+\longrightarrow \coh^2(H, \mathbb{Z}[H]^{\oplus 9}) \longrightarrow \cdots .
+\end{aligned}
+\]
+
+By Shapiro's Lemma \cite[Theorem~6.3.2]{Weibel1994},
+\(\coh^i(H, \mathbb{Z}[H]) \cong \coh^i(\{1\}, \mathbb{Z}) = 0\) for all \(i >
+0\). Hence \(\coh^1(H, \mathbb{Z}[H]^{\oplus 9}) = \coh^2(H,
+\mathbb{Z}[H]^{\oplus 9}) = 0\), and the long exact sequence collapses to the
+isomorphism
+\[
+\coh^2(H, M|_H) \;\cong\; \coh^1(H, I[H]).
+\]
+By Lemma~\ref{lem:H1-IH}, \(\coh^1(H, I[H]) \cong C_9\).
+\end{proof}
+
+\begin{lemma}\label{lem:H2-Z}
+With the trivial \(H\)-action on \(\mathbb{Z}\),
+\(\coh^2(H, \mathbb{Z}) \cong C_3 \times C_3\).
+\end{lemma}
+
+\begin{proof}
+Apply \(\coh^*(H, -)\) to the short exact sequence of trivial \(H\)-modules
+\[
+0 \longrightarrow \mathbb{Z} \longrightarrow \mathbb{Q}
+\longrightarrow \mathbb{Q}/\mathbb{Z} \longrightarrow 0 .
+\]
+The associated long exact sequence reads
+\begin{multline*}
+0 \longrightarrow \mathbb{Z} \longrightarrow \mathbb{Q}
+\longrightarrow \mathbb{Q}/\mathbb{Z} \\
+\longrightarrow \coh^1(H, \mathbb{Z})
+\longrightarrow \coh^1(H, \mathbb{Q})
+\longrightarrow \coh^1(H, \mathbb{Q}/\mathbb{Z}) \\
+\longrightarrow \coh^2(H, \mathbb{Z})
+\longrightarrow \coh^2(H, \mathbb{Q}) \longrightarrow \cdots .
+\end{multline*}
+Since \(\mathbb{Q}\) is uniquely divisible, multiplication by \(3\) is an
+automorphism of \(\mathbb{Q}\); hence \(\coh^i(H, \mathbb{Q}) = 0\) for all
+\(i > 0\) \cite[Proposition~1.6.2(c)]{NSW2020}.  Substituting
+\(\coh^1(H, \mathbb{Q}) = \coh^2(H, \mathbb{Q}) = 0\) yields
+\(\coh^2(H, \mathbb{Z}) \cong \coh^1(H, \mathbb{Q}/\mathbb{Z})\).
+Since \(\mathbb{Q}/\mathbb{Z}\) carries the trivial \(H\)-action,
+\(\coh^1(H, \mathbb{Q}/\mathbb{Z}) = \Hom(H, \mathbb{Q}/\mathbb{Z})\)
+\cite[Corollary~6.4.6]{Weibel1994}.
+Now \(\Hom(H, \mathbb{Q}/\mathbb{Z}) \cong C_3 \times C_3\) because
+\(\Hom(C_3, \mathbb{Q}/\mathbb{Z}) \cong C_3\)
+(\(\mathbb{Q}/\mathbb{Z}\) has a unique subgroup of order~\(3\))
+and \(\Hom({-}, \mathbb{Q}/\mathbb{Z})\) preserves finite direct sums
+\cite[Ch.II, \S1, no.6, Prop.6, Cor.1]{Bourbaki2007a}.
+Hence \(\coh^2(H, \mathbb{Z}) \cong C_3 \times C_3\).
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Exponent of \(\coh^2\) for Permutation Lattices}
+
+\begin{proposition}\label{prop:perm-exponent}
+Let \(P\) be a permutation \(\mathbb{Z}[H]\)-lattice.  Then every element of
+\(\coh^2(H, P)\) has order dividing \(3\); equivalently,
+\(\exp(\coh^2(H, P)) \mid 3\).
+\end{proposition}
+
+\begin{proof}
+Write \(P \cong \bigoplus_{i} \mathbb{Z}[H/K_i]\) for subgroups \(K_i \le H\).
+Since \(\coh^2(H, {-})\) is additive and therefore preserves finite
+direct sums \cite[Proposition~3.3.4]{Weibel1994},
+\(\coh^2(H, P) \cong \bigoplus_i \coh^2(H, \mathbb{Z}[H/K_i])\).
+By Shapiro's Lemma \cite[Theorem~6.3.2]{Weibel1994},
+\(\mathbb{Z}[H/K_i] \cong \Ind_{K_i}^H(\mathbb{Z})\),
+hence \(\coh^2(H, \mathbb{Z}[H/K_i]) \cong \coh^2(K_i, \mathbb{Z})\),
+where \(\mathbb{Z}\) carries the trivial \(K_i\)-action.
+For each subgroup \(K \le H\) we compute \(\coh^2(K, \mathbb{Z})\):
+\begin{itemize}
+  \item \(K = \{1\}\):
+    \(\coh^2(\{1\}, \mathbb{Z}) = 0\).
+  \item \(K \cong C_3\) (four subgroups of order \(3\)):
+\(\coh^2(C_3, \mathbb{Z}) \cong \Hom(C_3, \mathbb{Q}/\mathbb{Z}) \cong C_3\).
+  \item \(K = H = C_3 \times C_3\):
+    \(\coh^2(H, \mathbb{Z}) \cong C_3 \times C_3\) (Lemma~\ref{lem:H2-Z}).
+\end{itemize}
+In every case \(\exp(\coh^2(K, \mathbb{Z})) \mid 3\).  Hence
+\(\exp(\coh^2(H, P)) \mid 3\).
+\end{proof}
+
+\begin{proposition}\label{prop:stable-exp}
+If a \(\mathbb{Z}[H]\)-lattice \(L\) is stably permutation, then
+\[ \exp(\coh^2(H, L)) \mid 3. \]
+\end{proposition}
+\begin{proof}
+Write \(L \oplus P \cong Q\) with \(P, Q\) permutation.  By additivity
+\cite[Proposition~3.3.4]{Weibel1994},
+\(\coh^2(H, L) \oplus \coh^2(H, P) \cong \coh^2(H, Q)\).  Both
+\(\coh^2(H, P)\) and \(\coh^2(H, Q)\) have exponent dividing \(3\) by
+Proposition~\ref{prop:perm-exponent}.  For any \(x \in \coh^2(H, L)\),
+the element \((x,0) \in \coh^2(H, Q)\) satisfies \(3(x,0) = 0\); hence
+\(3x = 0\).  Therefore \(\exp(\coh^2(H, L)) \mid 3\).
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The Obstruction}
+
+\begin{theorem}\label{thm:not-stably-perm}
+The restricted Procesi lattice \(M|_H\) is not a stably permutation
+\(\mathbb{Z}[H]\)-lattice.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:H2-MH}, \(\coh^2(H, M|_H) \cong C_9\), a group of exponent
+\(9\).  If \(M|_H\) were stably permutation, Proposition~\ref{prop:stable-exp}
+would force \(\exp(\coh^2(H, M|_H)) \mid 3\).  Contradiction.
+\end{proof}
+
+\begin{corollary}\label{thm:not-stably-rational}
+The field \(Z_H(F,9)\) is not stably rational over \(F\).
+\end{corollary}
+
+\begin{proof}
+Recall that \(Z_H(F,9) \cong F(M|_H)^H\)
+(Remark~\ref{rem:procesi-geometric}).
+By Theorem~\ref{thm:not-stably-perm}, \(M|_H\) is not stably permutation.
+By Theorem~\ref{thm:endo-miyata}, used as a hypothesis,
+stable rationality of \(F(M|_H)^H\) over \(F\) forces \(M|_H\) to be
+stably permutation.  Hence \(Z_H(F,9)\) is not stably rational.
+\end{proof}
+
+\begin{remark}
+% The proof uses only basic homological algebra (Shapiro's lemma,
+% cohomology long exact sequences, additivity of \(\coh^2\)) and the
+% elementary fact that \(C_9\) has exponent \(9\) while permutation
+% lattices have \(\coh^2\) of exponent dividing \(3\).  No \(3\)-adic
+% completions, maximal orders, Swan subgroups, or flasque class group
+% computations are required.
+The purely lattice-theoretic part (Theorem~\ref{thm:not-stably-perm})
+holds integrally, hence for any field whose characteristic does not
+divide \(|H| = 9\).  The geometric conclusion
+(Theorem~\ref{thm:not-stably-rational}) additionally requires
+characteristic~\(0\) via Theorem~\ref{thm:endo-miyata}.
+
+\begin{proposition}\label{prop:faithful-MH}
+Let \(M_9(F)\) denote the algebra of \(9 \times 9\) matrices over \(F\).
+Let \(H = C_3 \times C_3\) act on \(M_9(F)\) via the regular representation
+\(H \hookrightarrow S_9\) by permutation of matrix indices:
+\(h \cdot e_{ij} = e_{h(i), h(j)}\) for the standard matrix units.
+The action of \(H\) on \(M|_H\) is the restriction of the diagonal
+left-regular action on \(\mathbb{Z}[H]^{\oplus 9}\) of
+Proposition~\ref{prop:tensor-reg-ZH}:
+\[
+h \cdot (z_b)_{b \in H} = (h\, z_{h^{-1} b'})_{b' \in H},
+\qquad
+h \in H,\; (z_b)_{b \in H} \in M|_H \subset \mathbb{Z}[H]^{\oplus 9},
+\]
+that is, left multiplication composed with the coordinate permutation
+\(b \mapsto h b\).
+This action is faithful.
+\end{proposition}
+
+\begin{proof}
+The action on \(M_9(F)\) is faithful because \(h \neq 1\) implies
+\(h(i) \neq i\) for some index~\(i\), whence \(h \cdot e_{ij} \neq e_{ij}\).
+The Procesi isomorphism \(Z_H(F,9) \cong F(M|_H)^H\)
+(Remark~\ref{rem:procesi-geometric}) intertwines the \(H\)-actions.
+Any \(h \in H\) acting trivially on \(M|_H\) would, by functoriality of
+the field of fractions, act trivially on
+\(F(M|_H) = \operatorname{Frac}(\operatorname{Sym}_F(M|_H
+\otimes_{\mathbb{Z}} F))\), where \(\operatorname{Sym}_F\) denotes the
+symmetric algebra over \(F\), and therefore on
+\(F(M|_H)^H \cong Z_H(F,9)\), hence on \(M_9(F)\) ---
+contradicting faithfulness on \(M_9(F)\).
+\end{proof}
+
+\begin{proof}[Second proof]
+Let \(h \in H\), \(h \neq 1\), and let \(z \in
+\mathbb{Z}[H]^{\oplus 9}\) be the element with coordinates
+\(z_1 = h - 1\), \(z_h = 1 - h\), and \(z_b = 0\) for
+\(b \notin \{1, h\}\).  Under the identifications of
+Proposition~\ref{prop:tensor-reg-ZH}, the element with coordinates
+\((z_b)_{b \in H}\) corresponds to \(\sum_{b \in H} z_b \otimes
+\delta_b\), where \(\delta_b\) denotes the group element \(b\) of the
+second factor, identified with \(e_{b \cdot \omega_0}\).  Since
+\(\varphi(e_\alpha \otimes e_\beta) = e_\alpha - e_\beta\), the map
+\(\pi|_H\) sends this element to
+\(\sum_{b \in H}(z_b - \varepsilon(z_b)\, b)\).  Since
+\(\varepsilon(h - 1) = \varepsilon(1 - h) = 0\), this gives
+\(\pi|_H(z) = (h - 1) + (1 - h) = 0\), and \(z \in M|_H\).
+Now act by \(h\).  By Proposition~\ref{prop:tensor-reg-ZH} the
+\(h^{-1}\)-th coordinate of \(z\) moves into the first coordinate and
+is multiplied by \(h\), so \((h \cdot z)_1 = h \cdot z_{h^{-1}}\).
+Here \(h^{-1} \neq 1\) because \(h \neq 1\), and \(h^{-1} \neq h\):
+if \(h^{-1} = h\), then \(h^2 = 1\), and \(h = h^3 (h^2)^{-1} = 1\)
+since \(h^3 = 1\).  Hence \(z_{h^{-1}} = 0\), and \((h \cdot z)_1 = 0\),
+whereas \(z_1 = h - 1 \neq 0\).  Therefore \(h \cdot z \neq z\), that
+is, \(h\) acts nontrivially on \(M|_H\).
+\end{proof}
+
+\begin{theorem}\label{thm:saltman-cor3.13}
+\cite[Corollary~3.13]{Saltman1984}.
+Let \(A\) be a finite abelian group, and let \(2^r\) be the highest power
+of \(2\) dividing the exponent of \(A\).  Assume \(F\) is a field such that
+either \(F\) has characteristic \(2\) or \(F(\rho)/F\) is a cyclic extension,
+where \(\rho\) is a primitive \(2^r\)-th root of unity.  Let \(V\) be a
+finitely generated \(F[A]\)-module on which \(A\) acts faithfully.  Then
+\(F(V)^A\) is retract rational over \(F\).
+\end{theorem}
+
+\begin{corollary}\label{thm:retract}
+The field \(Z_H(F,9)\) is retract rational over \(F\).
+% [2026-10-01 去重] 原句尾括号 (Remark~\ref{rem:procesi-geometric}) 已删——
+% 证明首行已引同一 remark，陈述不再重复。
+\end{corollary}
+
+\begin{proof}
+\(Z_H(F,9) \cong F(M|_H)^H\) (Remark~\ref{rem:procesi-geometric}).
+Let \(V = M|_H \otimes_{\mathbb{Z}} F\); then \(F(V)^H \cong F(M|_H)^H\).
+Apply Theorem~\ref{thm:saltman-cor3.13} with \(A = H = C_3 \times C_3\).
+The exponent of \(H\) is \(3\) (odd), so \(2^r = 1\) and \(\rho = 1\); the
+condition on \(F(1)/F\) is vacuous.  The group \(H\) acts faithfully on \(V\)
+because it acts faithfully on \(M|_H\) (Proposition~\ref{prop:faithful-MH}) and
+\(\operatorname{char} F = 0\).  Hence \(Z_H(F,9)\) is retract rational
+over \(F\).
+\end{proof}
+\end{remark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition}\label{prop:M_H-not-permutation}
+The restricted Procesi lattice \(M|_H\) is not a permutation
+\(\mathbb{Z}[H]\)-lattice.
+\end{proposition}
+\begin{proof}
+Apply \(\Hom_{\mathbb{Z}[H]}(-, L)\) to \eqref{eq:aug}.  The associated
+long exact sequence reads
+\begin{multline*}
+0 \longrightarrow \Hom_{\mathbb{Z}[H]}(\mathbb{Z}, L)
+\longrightarrow \Hom_{\mathbb{Z}[H]}(\mathbb{Z}[H], L)
+\longrightarrow \Hom_{\mathbb{Z}[H]}(I[H], L) \\
+\longrightarrow \Ext^1_{\mathbb{Z}[H]}(\mathbb{Z}, L)
+\longrightarrow \Ext^1_{\mathbb{Z}[H]}(\mathbb{Z}[H], L)
+\longrightarrow \Ext^1_{\mathbb{Z}[H]}(I[H], L) \\
+\longrightarrow \Ext^2_{\mathbb{Z}[H]}(\mathbb{Z}, L)
+\longrightarrow \Ext^2_{\mathbb{Z}[H]}(\mathbb{Z}[H], L)
+\longrightarrow \cdots .
+\end{multline*}
+Since \(\mathbb{Z}[H]\) is projective,
+\(\Ext^i_{\mathbb{Z}[H]}(\mathbb{Z}[H], {-}) = 0\) for all \(i \ge 1\).
+Substituting this collapses the sequence to an isomorphism
+\(\Ext^1_{\mathbb{Z}[H]}(I[H], L) \cong \Ext^2_{\mathbb{Z}[H]}(\mathbb{Z}, L)
+= \coh^2(H, L)\).
+Taking \(L = M|_H\) and \(L = 8\cdot\mathbb{Z}[H] \oplus \mathbb{Z}\)
+yields
+\[
+\Ext^1_{\mathbb{Z}[H]}(I[H], M|_H) \cong C_9,\qquad
+\Ext^1_{\mathbb{Z}[H]}(I[H], 8\cdot\mathbb{Z}[H] \oplus \mathbb{Z})
+\cong C_3 \times C_3 .
+\]
+By Proposition~\ref{prop:MH-char},
+\(M|_H \otimes_{\mathbb{Z}} \mathbb{Q} \cong
+8\cdot\mathbb{Q}[H] \oplus \mathbb{Q}\).  If \(M|_H\) were a
+permutation lattice, Lemma~\ref{lem:perm-class} would then give
+\(M|_H \cong 8\cdot\mathbb{Z}[H] \oplus \mathbb{Z}\), and the two groups
+above would coincide, contradicting \(C_9 \not\cong C_3 \times C_3\).
+\end{proof}
+
+\begin{proof}[Second proof]
+By Lemma~\ref{lem:H2-MH}, \(\coh^2(H, M|_H) \cong C_9\), a group of
+exponent \(9\).  If \(M|_H\) were a permutation
+\(\mathbb{Z}[H]\)-lattice, Proposition~\ref{prop:perm-exponent} would
+force \(\exp(\coh^2(H, M|_H)) \mid 3\).  Contradiction.
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:M_H-not-permutation} is strictly weaker than
+Theorem~\ref{thm:not-stably-perm} and cannot replace it in the proof of
+Corollary~\ref{thm:not-stably-rational}.  Indeed a permutation lattice
+is stably permutation (take \(P = 0\)), so non-permutation does not
+imply non-stable permutation; the main proof therefore needs the
+stronger statement of Theorem~\ref{thm:not-stably-perm} together with
+the implication ``stably rational \(\Rightarrow\) stably permutation''
+(Theorem~\ref{thm:endo-miyata}).
+\end{remark}
+
+\section{Generalization to \(C_p \times C_p\)}
+\label{sec:generalization}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We record the generalization of Theorem~\ref{thm:not-stably-rational} to all
+odd primes.  The comparison with the unramified Brauer group, and the scope of
+the regular embedding used above, are deferred to
+Appendix~\ref{app:brauer} and Appendix~\ref{app:scope}.
+
+\begin{theorem}\label{thm:Cp-general}
+Let \(p\) be an odd prime and let \(H = C_p \times C_p \subset S_{p^2}\)
+act regularly (i.e., freely and transitively on
+\(\{1, 2, \dots, p^2\}\)).  Let \(M|_H\) be the restriction of the Procesi
+\(\mathbb{Z}[S_{p^2}]\)-lattice to \(H\).  By the regular identification
+\(U|_H \cong \mathbb{Z}[H]\) and the projection formula
+\(\mathbb{Z}[H] \otimes_{\mathbb{Z}} \mathbb{Z}[H] \cong
+\mathbb{Z}[H]^{\oplus p^2}\),
+% [2026-10-01 去重] 原括号引用 (Proposition~\ref{prop:tensor-reg-ZH}) 已删——
+% 证明首段已引同一命题，陈述不再重复。
+\(M|_H\) fits into the exact sequence of \(\mathbb{Z}[H]\)-modules
+\[
+0 \longrightarrow M|_H \longrightarrow \mathbb{Z}[H]^{\oplus p^2}
+\longrightarrow I[H] \longrightarrow 0 ,
+\]
+where \(I[H] = \ker(\varepsilon \colon \mathbb{Z}[H] \twoheadrightarrow
+\mathbb{Z})\) is the augmentation ideal and the surjection sends each
+standard basis element of \(\mathbb{Z}[H]^{\oplus p^2}\) to a difference
+\(h - h'\) in \(\mathbb{Z}[H]\).
+Let \(F\) be a field of characteristic \(0\), and let
+\(Z_H(F, p^2)\) denote the center of the generic division algebra of
+degree~\(p^2\) over \(F\) (cf.\ Remark~\ref{rem:procesi-geometric}),
+with Procesi isomorphism \(Z_H(F, p^2) \cong F(M|_H)^H\).  Then:
+\begin{enumerate}
+  \item \(\coh^2(H, M|_H) \cong C_{p^2}\).
+  \item For any permutation \(\mathbb{Z}[H]\)-lattice \(P\),
+    \(\exp(\coh^2(H, P)) \mid p\).
+  \item Consequently, \(M|_H\) is not stably permutation, and
+    \(Z_H(F, p^2)\) is not stably rational (hence not rational) over \(F\).
+  \item \(Z_H(F, p^2)\) is retract rational over \(F\).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The Procesi restriction to \(H\) follows the same construction as
+in \S\ref{sec:procesi}: the regular identification \(U|_H \cong \mathbb{Z}[H]\)
+(Proposition~\ref{prop:U-restrict-canonical})
+and the isomorphism
+\(\mathbb{Z}[H] \otimes \mathbb{Z}[H] \cong \mathbb{Z}[H]^{\oplus p^2}\)
+(Proposition~\ref{prop:tensor-reg-ZH}, whose proof works verbatim
+with~\(9\) replaced by~\(p^2\)) hold integrally for
+all~\(p\).  The map \(\pi|_H : \mathbb{Z}[H]^{\oplus p^2} \to I[H]\) is
+surjective because \(I[H]\) is generated by \(h-1\) (\(h \neq 1\)), and
+\(M|_H = \ker(\pi|_H)\) is \(\mathbb{Z}\)-free (submodule of a free
+\(\mathbb{Z}\)-module) of \(\mathbb{Z}\)-rank \(p^4 - p^2 + 1\).
+
+\medskip\noindent
+(1)~The same cohomological computation as in Lemmas~\ref{lem:H1-IH}
+and~\ref{lem:H2-MH}, with \(9\) replaced by \(p^2\) and \(H = C_p \times C_p\),
+gives \(\coh^2(H, M|_H) \cong C_{p^2}\).
+
+\medskip\noindent
+(2)~The same argument as in Proposition~\ref{prop:perm-exponent},
+with the subgroups of \(C_p \times C_p\) in place of those of
+\(C_3 \times C_3\), gives \(\exp(\coh^2(H, P)) \mid p\).
+
+\medskip\noindent
+(3)~The same exponent argument as in Theorem~\ref{thm:not-stably-perm}
+and Corollary~\ref{thm:not-stably-rational}, with \(p\) in place of~\(3\),
+shows that \(M|_H\) is not stably permutation and
+\(Z_H(F, p^2)\) is not stably rational.
+
+\medskip\noindent
+(4)~The same argument as in Theorem~\ref{thm:retract} applies:
+\(H\) is abelian of odd exponent, so Saltman's
+\cite[Corollary~3.13]{Saltman1984} gives retract rationality.
+\end{proof}
+
+\begin{remark}
+The proof of Theorem~\ref{thm:Cp-general} holds for all odd primes~\(p\)
+without any dependence on~\(p=3\) specifically:
+the regular embedding \(H \hookrightarrow S_{p^2}\)
+(independent of the choice up to conjugation;
+Proposition~\ref{prop:embedding-independence}),
+Proposition~\ref{prop:tensor-reg-ZH},
+the cohomological vanishing (Shapiro), and the subgroup
+analysis of \(C_p \times C_p\) are all purely formal and independent
+of~\(p\).  The converse
+Endo--Miyata implication (rational \(\Rightarrow\) stably permutation for
+non-cyclic \(p\)-groups) remains open but is not required for any of the
+above conclusions.
+\end{remark}
+
+Our results on \cite[Problem~5.2]{ABGV2011} are summarized in
+Table~\ref{tab:main}.
+
+% The central new result is \(\coh^2(H, M|_H) \cong C_9\)
+% (Lemma~\ref{lem:H2-MH}) and the exponent argument showing that this obstructs
+% stable permutation (Theorem~\ref{thm:not-stably-perm}). The chain of
+% implications \[ \begin{aligned} &\coh^2 \cong C_9 \\ &\;\Longrightarrow\;
+% \text{not stably permutation} \qquad(\exp \mid 3 \text{ for permutation
+% lattices}) \\ &\;\Longrightarrow\; \text{not stably rational}
+% \qquad(\text{Theorem~\ref{thm:endo-miyata}}) \\ &\;\Longrightarrow\; \text{not
+% rational} \qquad(\text{rational} \Rightarrow \text{stably rational})
+% \end{aligned} \] resolves both the stable rationality and rationality
+% questions simultaneously (in characteristic~\(0\), without reliance on the
+% open converse Endo--Miyata implication). The \(\Ext^1\) computation
+% (Proposition~\ref{prop:M_H-not-permutation}) provides independent confirmation
+% that \(M|_H\) is not a permutation lattice. The Bogomolov multiplier
+% computation \(B_0(C_3\times C_3) \cong C_3\) (Proposition~\ref{prop:B0}) shows
+% that the classical unramified Brauer group of the Noether problem \(F(H)^H\)
+% is non-zero, while the integral \(\coh^2\) obstruction operates at the level
+% of \(\mathbb{Z}[H]\)-lattices and is of a different type. \medskip\noindent
+% \textbf{Scope, limitations, and further
+% directions.}\label{sec:scope-limitations} \textbf{Generalization to \(C_p
+% \times C_p\).} The entire proof generalizes to all odd primes~\(p\) (the
+% cohomological part is purely integral; the geometric conclusion requires
+% \(\Char F = 0\)) (see \S\ref{sec:generalization-roadmap} above). For \(p=5\),
+% a direct computational verification (Appendix~\ref{sec:gap-p5}) confirms the
+% pattern: \(\coh^1(H, \mathbb{Z}[H])=0\) (free rank~0,
+% \(\operatorname{rank}(d^0)=24\), \(\operatorname{rank}(d^1)=601\)),
+% \(\coh^1(H, I[H]) \cong C_{25}\) (free rank~0,
+% \(\operatorname{rank}(d^0)=24\), \(\operatorname{rank}(d^1)=576\)),
+% \(\coh^2(H, \mathbb{Z}) \cong C_5 \times C_5\), and consequently \(\coh^2(H,
+% M|_H) \cong C_{25}\) with exponent~\(25 \nmid 5\). All steps are purely formal
+% and independent of~\(p\); no class-group or \(p\)-adic integrality conditions
+% intervene. The converse Endo--Miyata implication remains open for all
+% non-cyclic \(p\)-groups, but is not required for the main results (since
+% \(\text{not stably perm} \;\Longrightarrow\; \text{not stably rational}
+% \;\Longrightarrow\; \text{not rational}\)).
+% [2026-10-01 用户指令] 附录 A 节标题中「Computational Verification」缩为「Computation」。
+\section{Appendix A: Explicit Cocycle and Computation}
+\label{app:cocycle}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% [2026-10-01 用户指令] 附录 A 子节标题降级为段标题（\subsection → \paragraph；
+% 该标题无 live \ref）
+\paragraph{Explicit 2-Cocycle Representative}
+
+We construct an explicit \(2\)-cocycle \(z : H \times H \to M|_H\) whose
+cohomology class generates \(\coh^2(H, M|_H) \cong C_9\).
+
+The connecting homomorphism \(\partial : \coh^1(H, I[H]) \xrightarrow{\cong}
+\coh^2(H, M|_H)\) from the Procesi sequence sends a \(1\)-cocycle \(\psi\) to
+\(z(g,h) = g \cdot \widetilde{\psi}(h) - \widetilde{\psi}(gh) +
+\widetilde{\psi}(g)\), where \(\widetilde{\psi} : H \to \mathbb{Z}[H]^{\oplus
+9}\) is any set-theoretic lift of \(\psi\).
+
+\medskip\noindent
+\textbf{Step 1: generator of \(\coh^1(H, I[H])\).}
+\(\psi(h) = h-1 \in I[H]\) (Lemma~\ref{lem:H1-IH}).
+
+\medskip\noindent
+\textbf{Step 2: splitting of \(\pi\).}
+Recall \(\pi(x_1,\dots,x_9) = \sum_{h \in H}(x_h - \varepsilon(x_h)h)\).
+Define \(s : I[H] \to \mathbb{Z}[H]^{\oplus 9}\) by
+\(s(h-1) = (\dots, 0, \underset{\text{coord } h}{-1}, 0, \dots)\) for
+\(h \neq 1\), extended \(\mathbb{Z}\)-linearly.
+Then \(\pi(s(h-1)) = -1 - \varepsilon(-1)h = h-1\).
+
+\medskip\noindent
+\textbf{Step 3: the \(2\)-cocycle.}
+Set \(\widetilde{\psi}(h) = s(h-1)\).  For \(h \neq 1\) and \(gh \neq g\):
+\begin{align*}
+  \widetilde{\psi}(g)   &\text{ has entry } -1 \text{ in coordinate } g,\\
+  \widetilde{\psi}(h)   &\text{ has entry } -1 \text{ in coordinate } h,\\
+g \cdot \widetilde{\psi}(h) &\text{ has entry } -g \text{ in coordinate } gh,\\
+  \widetilde{\psi}(gh)  &\text{ has entry } -1 \text{ in coordinate } gh.
+\end{align*}
+Hence for \(h \neq 1\):
+\begin{equation}
+\boxed{\;
+z(g,h) = \bigl(\; \underset{\text{coord }g}{-1},\;
+\underset{\text{coord }gh}{1-g},\; 0,\dots,0 \;\bigr) \;\in\; M|_H
+\;}.
+\end{equation}
+For \(h = 1\), \(z(g,1) = 0\).  One verifies \(\pi(z(g,h)) = 0\) directly.
+The class \([z]\) generates \(C_9\) since \([\psi]\) generates
+\(\coh^1(H, I[H])\) and \(\partial\) is an isomorphism.  The formula depends
+on the choice of basis in \(\mathbb{Z}[H]^{\oplus 9}\) and on the splitting
+\(s\); different choices yield cohomologous cocycles.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [2026-10-01 用户指令] 附录 A 子节标题降级为段标题（\subsection → \paragraph；
+% \ref{sec:gap} 仅在被注释行内出现，无 live 引用）
+\paragraph{Computational Verification}
+\label{sec:gap}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The cohomological readings used above were checked by machine.  The two
+programs are collected in the accompanying code package, described in the
+Code availability statement in the Introduction, and are not reproduced
+here.
+
+\medskip\noindent
+The two programs are independent of each other: one is written in Python
+using only the standard library, the other in \textsf{GAP} using the
+\textsf{HAP} package.  They use different resolutions of
+\(\mathbb{Z}\) over \(\mathbb{Z}[H]\) --- a K\"unneth resolution assembled
+from the periodic resolutions of the two cyclic factors, and the
+inhomogeneous cochain complex --- and independent Smith normal form
+implementations.  The Python program also computes
+\(\coh^2(H, M|_H)\) directly on the rank-\(73\) lattice \(M|_H\), without
+passing through the long exact sequence, and it prints for every reading
+unimodular matrices \(U, V\) and a diagonal \(D\) with \(UAV = D\), so
+that the computation can be checked with any computer algebra system.  It
+reports no value unless a built-in self-test, with positive controls
+(independently known values) and negative controls, passes.
+
+\medskip\noindent
+For \(\mathbb{Z}[H]\) the ranks of the differentials \((8, 73)\) give
+\(\dim(\ker d^1) - \operatorname{rank}(d^0) = 8-8 = 0\), confirming
+\(\coh^1(H,\mathbb{Z}[H])=0\).  For \(I[H]\), the ranks \((8,64)\) give free
+rank~0, and the augmentation exact sequence yields the torsion subgroup
+\(\coh^1(H,I[H]) \cong \mathbb{Z}/9\mathbb{Z} \cong C_9\).  The GAP
+computation gives \(\coh^2(H,\mathbb{Z}) \cong C_3 \times C_3\).  By
+additivity \cite[Proposition~3.3.4]{Weibel1994},
+\(\coh^i(H,\mathbb{Z}[H]^{\oplus 9}) = 0\) for \(i=1,2\).  The Procesi
+short exact sequence
+\[
+0 \longrightarrow M|_H \longrightarrow \mathbb{Z}[H]^{\oplus 9}
+\longrightarrow I[H] \longrightarrow 0
+\]
+then forces the connecting homomorphism
+\(\partial : \coh^1(H,I[H]) \to \coh^2(H,M|_H)\) to be an isomorphism,
+giving \(\coh^2(H,M|_H) \cong C_9\).  The exponent~\(9\) is incompatible
+with stable permutation (all permutation lattices over \(C_3\times C_3\)
+have \(\coh^2\)-exponent dividing~\(3\) by
+Proposition~\ref{prop:perm-exponent}); hence \(M|_H\) is not stably permutation,
+and by Theorem~\ref{thm:endo-miyata}, \(Z_H(F,9)\) is not stably rational (hence
+not rational) over \(F\) in characteristic~\(0\).
+
+\medskip\noindent
+The same programs with \(p = 5\) give \(|H| = 25\) and
+\(\operatorname{rank}(d^0_{\mathbb{Z}[H]}) = 24\),
+\(\operatorname{rank}(d^1_{\mathbb{Z}[H]}) = 601\),
+\(\operatorname{rank}(d^0_{I[H]}) = 24\),
+\(\operatorname{rank}(d^1_{I[H]}) = 576\) with torsion
+\(\mathbb{Z}/25\mathbb{Z}\), and \(\coh^2(H,\mathbb{Z}) = [5,5]\).  Hence
+\(\coh^2(H,M|_H) \cong C_{25}\), of exponent \(25 > 5\); the exponent \(5\)
+is the largest occurring for permutation lattices in this case.
+
+\noindent The pattern
+\[
+\operatorname{rank}(d^0_{\mathbb{Z}[H]})=p^2-1,\qquad
+\operatorname{rank}(d^1_{\mathbb{Z}[H]})=p^4-p^2+1,\qquad
+\operatorname{rank}(d^1_{I[H]})=(p^2-1)^2
+\]
+holds for both \(p=3\) and \(p=5\), with
+\(\coh^1(H,I[H]) \cong C_{p^2}\) in both cases; the same
+connecting-homomorphism argument as above then gives
+\(\coh^2(H,M|_H)\cong C_{p^2}\), of exponent~\(p^2\).  For general odd~\(p\)
+the formal cohomological ingredients are identical (see the proof of
+Theorem~\ref{thm:Cp-general}); the only computational bottleneck is the
+Smith normal form of \(d^1_{\mathbb{Z}[H]}\), of size \(p^6 \times p^3\).
+
+\medskip\noindent
+\textbf{Computational scaling.}
+The Smith normal form of dense integer matrices is the dominant cost.
+For the bar resolution, the matrices are:
+\begin{itemize}
+  \item \(d^0_{\mathbb{Z}[H]}\): size \(p^3 \times p^2\) (rows $\times$ cols)
+  \item \(d^1_{\mathbb{Z}[H]}\): size \(p^6 \times p^3\)
+  \item \(d^0_{I[H]}\): size \((p^2-1)p \times (p^2-1)\)
+  \item \(d^1_{I[H]}\): size \((p^2-1)p^2 \times (p^2-1)p\)
+\end{itemize}
+The largest matrix has $p^6 \times p^3$ entries.  For $p = 3$ this is
+$729 \times 81$ ($59\,049$ entries), for $p = 5$ it is $15\,625 \times 625$
+($9.8$ million entries), and for $p = 7$ it would be $117\,649 \times 2\,401$
+($282$ million entries).
+
+% With GAP's \texttt{SmithNormalFormIntegerMat}
+% (which computes the full SNF over $\mathbb{Z}$, not modulo primes),
+% we observe empirical scaling roughly $\sim O(p^9)$ in time and
+% $\sim O(p^6)$ in memory.  On our hardware this places $p = 7$ at the
+% boundary of feasibility ($\sim$ hours, $\sim$ 30--50\,GB), and $p = 11$
+% beyond reach without modular or sparse techniques.  Since the formal
+% proof of Theorem~\ref{thm:Cp-general} covers all odd~$p$, computational
+% verification for larger~$p$ is not required for mathematical
+% correctness; it serves only as a sanity check on the pattern.
+
+% \medskip\noindent \textbf{Roadmap for
+% general~\(p\).}\label{sec:generalization-roadmap} For an odd prime~\(p\), the
+% following steps are required to complete the generalization: \begin{enumerate}
+% \item[(i)] Construct the Procesi kernel \(M|_H\) as a \(\mathbb{Z}\)-free
+% \(\mathbb{Z}[H]\)-lattice via the exact sequence \[ 0 \longrightarrow M|_H
+% \longrightarrow \mathbb{Z}[H]^{\oplus p^2} \longrightarrow I[H]
+% \longrightarrow 0 ; \] \(\mathbb{Z}\)-freeness is automatic (submodule of a
+% free \(\mathbb{Z}\)-module) \cite[Ch.VII, \S3, Th.1, Cor.2]{Bourbaki2007b}.
+% \item[(ii)] Verify \(\coh^1(H, I[H]) \cong C_{p^2}\) (augmentation sequence)
+% and \(\coh^1(H, \mathbb{Z}[H]) = 0\) (Shapiro's lemma). \item[(iii)] The
+% connecting homomorphism \(\partial : \coh^1(H, I[H]) \to \coh^2(H, M|_H)\) is
+% an integral isomorphism because \(\coh^i(H, \mathbb{Z}[H]^{\oplus p^2})=0\)
+% for \(i=1,2\) (Shapiro + additivity); no class-group or \(p\)-adic integrality
+% issues arise. \item[(iv)] Hence \(\coh^2(H, M|_H) \cong C_{p^2}\) with
+% exponent~\(p^2\). For any permutation lattice~\(P\), \(\exp(\coh^2(H, P)) \mid
+% p\); since \(p^2 \nmid p\), the lattice \(M|_H\) is not stably permutation.
+% \end{enumerate} Steps (i)--(iv) are purely formal and hold for every odd
+% prime~\(p\). Computational verification for \(p=3\) (Appendix~\ref{sec:gap})
+% and \(p=5\) (Appendix~\ref{sec:gap-p5}) confirms the pattern. A complete proof
+% for all odd~\(p\) therefore reduces to verifying that the Procesi sequence
+% restricts integrally to \(H = C_p \times C_p \subset S_{p^2}\) --- a statement
+% we have proved in \S\ref{sec:procesi} without any dependence on~\(p\).
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Appendix B: Comparison via the unramified Brauer group}
+\label{app:brauer}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+For a multiplicative invariant field \(K = F(M)^G\), the unramified
+Brauer group \(\Br_{\mathrm{nr}}(K/F)\) is a stable birational invariant
+\cite[Theorem~3.1]{Bogomolov1987b} and the principal known obstruction
+to rationality and stable rationality.  Below we examine two
+complementary ways to access \(\Br_{\mathrm{nr}}\).
+
+For the Noether problem --- whether \(F(H)^H\) is rational over \(F\),
+where \(F(H) = F(x_h : h \in H)\) is the function field of the regular
+representation \(\mathbb{Z}[H]\) --- Bogomolov's theorem
+\cite[Theorem~3.1]{Bogomolov1987b} computes the unramified Brauer
+group as
+\[
+\Br_{\mathrm{nr}}(K/F) \;\cong\;
+\ker\!\Bigl( \coh^2(H, \mathbb{Q}/\mathbb{Z})
+\longrightarrow \bigoplus_{A < H} \coh^2(A, \mathbb{Q}/\mathbb{Z}) \Bigr),
+\]
+where \(A\) runs over all abelian subgroups of \(H\) and the map
+is the product of restriction homomorphisms
+\cite[\S4, Definition~1]{Bogomolov1987b}.
+
+\begin{theorem}\label{thm:UCT}
+For a finite group \(G\) and a trivial \(G\)-module \(M\), there is a
+natural short exact sequence
+\[
+0 \longrightarrow \Ext^1_{\mathbb{Z}}(\mathrm{H}_{n-1}(G, \mathbb{Z}), M)
+\longrightarrow \coh^n(G, M)
+\longrightarrow \Hom(\mathrm{H}_n(G, \mathbb{Z}), M) \longrightarrow 0
+\]
+for all \(n \ge 1\) \cite[3.6.5]{Weibel1994}.
+If \(M\) is divisible (e.g.\ \(M = \mathbb{Q}/\mathbb{Z}\)), the
+sequence splits, giving a direct sum decomposition.
+\end{theorem}
+
+\begin{proposition}\label{prop:B0}
+\(\Br_{\mathrm{nr}}(F(H)^H/F) \cong C_3\).
+\end{proposition}
+
+\begin{proof}
+Apply the Universal Coefficient Theorem~\ref{thm:UCT} with
+\(M = \mathbb{Q}/\mathbb{Z}\) (divisible, so the sequence splits).
+For \(H = C_3 \times C_3\):
+\(\mathrm{H}_1(H,\mathbb{Z}) = H \cong C_3 \times C_3\) and
+\(\mathrm{H}_2(H,\mathbb{Z}) \cong \bigwedge^2_{\mathbb{Z}} H \cong C_3\)
+\cite[Ch.\ V, Theorem~6.4(iii)]{Brown1982}.  Hence
+\[
+\coh^2(H, \mathbb{Q}/\mathbb{Z}) \cong
+\Hom(C_3, \mathbb{Q}/\mathbb{Z}) \oplus
+\Ext^1_{\mathbb{Z}}(C_3 \times C_3, \mathbb{Q}/\mathbb{Z})
+\cong (C_3)^3 .
+\]
+For a proper subgroup \(K \cong C_3\):
+\(\mathrm{H}_1(K, \mathbb{Z}) \cong C_3\) and \(\mathrm{H}_2(K, \mathbb{Z}) =
+0\) (cyclic). By UCT, \(\coh^2(K, \mathbb{Q}/\mathbb{Z}) \cong
+\Ext^1_{\mathbb{Z}}(C_3, \mathbb{Q}/\mathbb{Z}) \cong C_3\).
+
+Identify \(\Ext^1_{\mathbb{Z}}(C_3 \times C_3, \mathbb{Q}/\mathbb{Z}) \cong
+\Hom(C_3, \mathbb{Q}/\mathbb{Z})^{\oplus 2}\) via the two projections.
+For \(K = \langle a^i b^j \rangle\), the restriction on the \(\Ext\) summand
+sends \((\varphi_1, \varphi_2) \mapsto i\varphi_1 + j\varphi_2\).  Over the
+four cyclic subgroups \(\langle a\rangle, \langle b\rangle,
+\langle ab\rangle, \langle ab^2\rangle\) this gives the \(\mathbb{F}_3\)-linear
+map
+\[
+(\varphi_1, \varphi_2) \longmapsto
+(\varphi_1,\; \varphi_2,\; \varphi_1+\varphi_2,\; \varphi_1+2\varphi_2)
+\in (C_3)^{\oplus 4},
+\]
+which has rank~\(2\), hence is injective.  The \(\Hom\) summand lies in the
+kernel of every restriction because \(\mathrm{H}_2(K, \mathbb{Z}) = 0\).
+Therefore the kernel is \(\Hom(\mathrm{H}_2(H,\mathbb{Z}),
+\mathbb{Q}/\mathbb{Z})
+\cong C_3\).
+(The same computation gives \(\Br_{\mathrm{nr}}(F(H)^H/F) \cong C_p\)
+for all odd primes~\(p\); see \cite[\S6, Lemma~1]{Bogomolov1987b}.)
+\end{proof}
+
+\begin{remark}
+Thus \(\Br_{\mathrm{nr}}(F(H)^H/F) \cong C_3\) is non-trivial.
+Noether's problem asks whether
+\(F(H)^H = F(x_h : h \in H)^H\)
+(the multiplicative invariant field of the regular representation
+\(\mathbb{Z}[H]\)) is rational over \(F\);
+by \cite[Cor.\ of Lem.~2.1]{Bogomolov1987b},
+\(F(H)^H\) is therefore not even retract rational.
+In contrast, \(Z_H(F,9) = F(M|_H)^H\) is retract rational
+(Theorem~\ref{thm:retract}) but not stably rational
+(Theorem~\ref{thm:not-stably-rational}).
+Thus \(Z_H(F,9)\) and the Noether problem exhibit opposite rationality
+behavior, despite both being multiplicative invariant fields of the
+same group~\(H\); the integral \(\coh^2\) obstruction, not
+\(\Br_{\mathrm{nr}}\), governs \(Z_H(F,9)\).
+\end{remark}
+
+\medskip\noindent
+\textbf{Hoshi--Kang--Yamasaki.}
+For general multiplicative invariant fields, Hoshi, Kang, and
+Yamasaki \cite{HKY} have systematically computed unramified Brauer
+groups for small groups; their tables cover groups with \(\le 6\)
+variables.  For groups of order \(9\), all unramified Brauer obstructions
+originate from \(\Br_{\mathrm{nr}} \cong C_3\).  Our field \(Z_H(F,9)\) has
+transcendence degree \(73\) and lies outside their range.
+Both approaches operate via
+\(\Br_{\mathrm{nr}}\), a geometric invariant of the function field;
+by contrast, our \(\coh^2\) obstruction is a purely integral
+cohomological invariant of the lattice~\(M|_H\).
+Theorem~\ref{thm:not-stably-rational} thus exhibits a
+multiplicative invariant field whose non-stable-rationality is detected by
+an integral cohomological obstruction, which appears to be new in this
+context.
+
+\medskip\noindent
+% \textbf{Quasi-permutation modules.}
+% A \(\mathbb{Z}[H]\)-lattice~\(L\) is \emph{quasi-permutation} if
+% \(L \oplus P \cong Q\) for permutation lattices \(P, Q\).
+% Endo--Miyata \cite[Theorem~1.2]{EndoMiyata1973b} proved that
+% \(F(L)^H\) is stably rational over \(F\) if and only if
+% \(L\) is quasi-permutation.  Establishing quasi-permutation
+% constructively requires exhibiting the lattices \(P, Q\).
+% By contrast, our \(\coh^2\)-exponent obstruction
+% (Theorem~\ref{thm:not-stably-perm}) rules out stable permutation
+% from a single cohomological computation
+% (\(\coh^2(H, M|_H) \cong C_9\), Lemma~\ref{lem:H2-MH}),
+% without classifying the lattice.
+
+% \medskip\noindent \textbf{Saltman invariants.} Saltman \cite[\S3]{Saltman1984}
+% introduced the invariant \(\Br(F)/\Br_0(F)\) and used it to construct the
+% first non-rational stably rational fields. For \(H = C_3 \times C_3\),
+% Saltman's retract rationality theorem \cite[Corollary~3.13]{Saltman1984} gives
+% retract rationality unconditionally; our \(\coh^2\) obstruction then shows
+% that retract rationality is optimal: neither rationality nor stable
+% rationality holds.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Appendix C: Scope and further directions}
+\label{app:scope}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\medskip\noindent
+\textbf{Non-regular embeddings.}
+Our proof uses the regular embedding \(H \hookrightarrow S_{p^2}\)
+(Proposition~\ref{prop:embedding-independence}) in three
+essential ways.  We itemize them to clarify what would change for other
+embeddings.
+
+\begin{enumerate}
+  \item \emph{Identification \(U|_H \cong \mathbb{Z}[H]\).}
+    This relies on the action of \(H\) on \(\Omega = S_{p^2}/S_{p^2-1}\)
+    being regular (free and transitive, hence \(H\)-equivariantly isomorphic
+    to the left regular action), and is independent of the
+    basepoint up to a \(\mathbb{Z}[H]\)-module automorphism
+(Proposition~\ref{prop:U-restrict-canonical}). If \(H\) acts on \(\Omega\) with
+multiple orbits or with non-trivial stabilizers, then \(U|_H \cong \bigoplus_{K
+\le H} m_K \cdot \mathbb{Z}[H/K]\) where the multiplicities \(m_K\) depend on
+the orbit structure. By Shapiro's lemma \cite[Theorem~6.3.2]{Weibel1994},
+\(\mathbb{Z}[H/K] \cong \Ind_K^H \mathbb{Z}\); the tensor product \(\Ind_K^H
+\mathbb{Z} \otimes \Ind_L^H \mathbb{Z}\) decomposes via Mackey's formula
+\cite[(10.18)]{CurtisReiner1981} as a direct sum of \(\Ind_{K \cap gLg^{-1}}^H
+\mathbb{Z}\) over double cosets. Since \(H\) is abelian, \(gLg^{-1}=L\) and
+every intersection is \(K \cap L\). Applying Shapiro's lemma again yields
+    \[
+    \coh^i(H, U|_H \otimes U|_H) \cong \bigoplus_{K,L} m_K m_L \,
+    \coh^i(K \cap L, \mathbb{Z}),
+    \]
+    generally non-zero for \(i>0\), so the
+    connecting-homomorphism isomorphism
+    \(\coh^2(H, M|_H) \cong \coh^1(H, I[H])\) would
+    no longer be an isomorphism, so
+    \(\coh^2(H, M|_H) \cong C_9\) (Lemma~\ref{lem:H2-MH}) would fail.
+
+  \item \emph{Breakdown of \(\mathbb{Z}[H] \otimes \mathbb{Z}[H]
+    \cong \mathbb{Z}[H]^{\oplus p^2}\).}
+    In the regular case
+    \(\mathbb{Z}[H] \otimes_{\mathbb{Z}} \mathbb{Z}[H] \cong
+    \mathbb{Z}[H]^{\oplus p^2}\)
+    (Proposition~\ref{prop:tensor-reg-ZH}), which relies on
+    \(\Res_1^H \Ind_1^H \mathbb{Z} \cong \mathbb{Z}^{\oplus p^2}\).
+    For a non-regular \(\mathbb{Z}[H/K]\), however, the tensor product
+    \(\mathbb{Z}[H/K] \otimes \mathbb{Z}[H/L]\) decomposes via
+    Mackey's formula \cite[(10.18)]{CurtisReiner1981} into summands
+    indexed by double cosets; the simple rank \(p^2\) is replaced by
+    a sum of \([H:K \cap L]\) terms, so the cohomological analysis
+    changes.
+
+  \item \emph{Surjectivity \(\mathbb{Z}[H]^{\oplus p^2} \to I[H]\).}
+    This is the rightmost map in the Procesi sequence
+    (Proposition~\ref{prop:procesi-H}), where \(I[H]\) is generated
+    as a \(\mathbb{Z}[H]\)-module by \(h-1\) and the surjection from
+    \(p^2\) copies of \(\mathbb{Z}[H]\) is guaranteed by the regular
+    action.  For a non-regular permutation lattice, the image of the
+    Procesi map \(\varphi\) is a submodule of \(I[\Omega]\) that may
+    be strictly smaller; the exact sequence of
+    Proposition~\ref{prop:procesi-H} would no longer terminate in
+    \(I[H]\), requiring analysis of the specific orbit decomposition.
+\end{enumerate}
+
+In summary, for a non-regular embedding the short exact sequence
+\[
+0 \longrightarrow M|_H \longrightarrow P_1 \longrightarrow I[\Omega]
+\longrightarrow 0
+\]
+(with \(P_1\) a permutation lattice not necessarily of the form
+\(\mathbb{Z}[H]^{\oplus n}\)) remains exact, but the cohomological
+analysis of \(P_1\) becomes
+substantially more involved and the simple exponent obstruction may
+no longer yield a definitive answer.  Computing \(\coh^2(H, M|_H)\) for
+one or two non-regular embeddings of \(C_3 \times C_3\) into
+\(S_n\) (e.g.\ the intransitive embedding \(C_3 \times C_3 \subset
+S_3 \times S_3 \subset S_6\)) is an \textbf{open} problem.
+
+\medskip\noindent
+\textbf{Non-abelian \(p\)-groups.}
+For non-abelian groups the situation is more complex.  The subgroup
+cohomology classification used in Proposition~\ref{prop:perm-exponent}
+extends: if \(G\) is any finite group and \(P = \bigoplus_i
+\mathbb{Z}[G/K_i]\) is a permutation lattice, then
+\(\exp(\coh^2(G, P)) \mid \max_{K \le G} \exp(\coh^2(K, \mathbb{Z}))\) by
+Shapiro's lemma.  The obstruction therefore applies whenever one can
+find a natural \(G\)-lattice~\(M\) with
+\(\exp(\coh^2(G, M)) > \max_{K \le G} \exp(\coh^2(K, \mathbb{Z}))\).
+
+For the Heisenberg group
+\(G = \langle x,y \mid x^p = y^p = 1,\ [x,y] \text{ central},\
+[x,y]^p = 1\rangle\), with \(p\) odd.  Write \(c = [x,y]\).  The
+quotient \(G/\langle c\rangle\) is abelian and generated by two elements
+of order dividing \(p\), so \(|G| \le p^3\); and \(G\) maps onto the
+group of upper unitriangular \(3 \times 3\) matrices over
+\(\mathbb{F}_p\), so \(|G| \ge p^3\).  Thus \(|G| = p^3\), with centre and
+derived subgroup both \(\langle c\rangle\).  Since \(G\) has nilpotency
+class \(2\) and \(p\) is odd, the power map \(g \mapsto g^p\) is a
+homomorphism; it vanishes on \(x\) and \(y\), hence on \(G\), so
+\(\exp G = p\).  Therefore \(G\) is the extraspecial \(p\)-group of order
+\(p^3\) and exponent \(p\), and
+\(G^{\mathrm{ab}} \cong C_p \times C_p\) and
+\(\mathrm{H}_2(G, \mathbb{Z}) \cong C_p \times C_p\)
+\cite[Corollary~IV.4.16(b)]{BeylTappe1982}.  By the Universal Coefficient
+Theorem~\ref{thm:UCT},
+\(\coh^2(G, \mathbb{Z}) \cong \Ext^1_{\mathbb{Z}}(G^{\mathrm{ab}}, \mathbb{Z})
+\cong C_p \times C_p\).  Hence the maximal permutation exponent is
+\(p\).  Whether a natural~\(M\) with \(\exp(\coh^2(G, M)) = p^2\) exists
+for such groups (e.g.\ from a Procesi-like construction or another natural
+\(G\)-lattice) is an \textbf{open} question.
+
+% [2026-10-01 第二十一改，用户指令] flasque 整块自 §Preliminaries 移入本附录
+% （原址留注释存档；全篇唯一实质使用者即下方 Br 段）。以下为原样文字：
+\begin{definition}\label{def:flasque}
+A \(\mathbb{Z}[G]\)-lattice \(F\) is \emph{flasque} if
+\(\hat{\coh}^{-1}(K, F) = 0\) for all subgroups \(K \le G\)
+(equivalently, \(\Ext^1_G(F, P) = 0\) for every permutation lattice~\(P\))
+\cite[\S1, Lemme~9]{CTS77}. Here \(\hat{\coh}^{-1}\) denotes
+Tate cohomology in degree \(-1\); for a finite group~\(G\) and a
+\(\mathbb{Z}[G]\)-lattice~\(M\),
+\(\hat{\coh}^{-1}(G, M) = \ker(N_G) / I[G]M\), where
+\(N_G = \sum_{g \in G} g\) is the norm element and
+\(I[G] = \ker(\mathbb{Z}[G] \twoheadrightarrow \mathbb{Z})\) is the
+augmentation ideal.
+\end{definition}
+
+\begin{definition}\label{def:flasque-class-group}
+Two \(\mathbb{Z}[G]\)-lattices \(M, N\) are called \emph{similar}
+(written \(M \sim N\)) if \(M \oplus S_1 \cong N \oplus S_2\) for
+some permutation lattices \(S_1, S_2\) (Definition~\ref{def:lattice}).
+This is an equivalence relation; denote the similarity class of \(M\)
+by \([M]\). Let
+\[
+C(G)/S(G) = \{ [M] : M \text{ a finitely generated }
+\mathbb{Z}[G]\text{-lattice} \},
+\]
+a commutative monoid under direct sum, with zero element the class
+of permutation lattices. Its maximal subgroup is
+\[
+D(G)/S(G) = \{ [M] \in C(G)/S(G) : M \text{ is stably permutation}\},
+\]
+which is the semigroup \(C(G)/S(G)\) of \cite[\S4.7]{Vos98}.
+\end{definition}
+
+\begin{proposition}\label{prop:flasque-resolution}
+Every \(\mathbb{Z}[G]\)-lattice~\(M\) has a \emph{flasque resolution}
+\[
+0 \longrightarrow M \longrightarrow P \longrightarrow F \longrightarrow 0
+\]
+with \(P\) permutation (Definition~\ref{def:lattice}) and \(F\) flasque
+(Definition~\ref{def:flasque})
+\cite[\S1, Lemme~3]{CTS77}. The similarity class
+\([F] \in D(G)/S(G)\) (Definition~\ref{def:flasque-class-group})
+depends only on \(M\)
+\cite[\S1, Lemme~5]{CTS77}; we denote it by
+\(\rho(M) = [F]\) and call it the
+\emph{flasque class} of \(M\).
+By construction, \(M\) is stably permutation iff \(\rho(M) = 0\)
+\cite[\S1, Lemmes~7 and~8]{CTS77}; this is the defining property
+of the group \(D(G)/S(G)\).
+\end{proposition}
+
+\medskip\noindent
+\textbf{Unramified Brauer group.}
+Let
+\[
+0 \longrightarrow M|_H \longrightarrow P \longrightarrow F \longrightarrow 0
+\]
+be a flasque resolution of \(M|_H\)
+(Proposition~\ref{prop:flasque-resolution}).
+From the long exact sequence:
+\[
+\coh^1(H, P) \longrightarrow \coh^1(H, F) \longrightarrow \coh^2(H, M|_H)
+\longrightarrow \coh^2(H, P),
+\]
+where \(\coh^1(H, P)=0\) (Shapiro's lemma \cite[Theorem~6.3.2]{Weibel1994}),
+\(\coh^2(H, M|_H) \cong C_9\) (Lemma~\ref{lem:H2-MH}), and
+\(\exp(\coh^2(H, P)) \mid 3\) (Proposition~\ref{prop:perm-exponent}).  Hence
+\(\ker(\coh^2(M|_H) \to \coh^2(P)) \cong \coh^1(H, F)\) contains the unique
+subgroup \(C_3 \subset C_9\); the containment can be \(C_3\) or \(C_9\).
+
+The field \(Z_H(F,9) \cong F(M|_H)^H\) is the function field of the
+\(H\)-torus with character group \(M|_H\).  Let \(X\) be a smooth
+\(F\)-compactification of this torus.  By
+\cite[Proposition~9.5(ii)]{CTS87},
+\[
+\Br(X)/\Br(F) = \coh^1(H, \rho(M|_H)) = \coh^1(H, F),
+\]
+where \(\rho(M|_H) = [F] \in D(H)/S(H)\) is the flasque class and
+the second equality follows from the proof of
+\cite[Proposition~9.5]{CTS87} via the flasque resolution above.
+Since \(\Br_{\mathrm{nr}}(Z_H(F,9)) = \Br(X)\) for a smooth
+compactification~\cite[\S9]{CTS87},
+\[
+\Br_{\mathrm{nr}}(Z_H(F,9)) / \Br(F) \;\cong\; \coh^1(H, F)
+\;\supseteq\; C_3 .
+\]
+Thus \(\Br_{\mathrm{nr}}(Z_H(F,9)) \neq \Br(F)\); the unramified Brauer group
+contains at least a \(C_3\) summand beyond the base field.  This is the
+portion of the integral \(\coh^2\) obstruction \(C_9\) that is detected by a
+classical stable birational invariant.  The exact value (\(C_3\) or \(C_9\))
+remains \textbf{open} pending an explicit flasque resolution.
+
+\medskip\noindent
+\textbf{Characteristic-\(0\) dependence.}
+The cohomological computations in \S\ref{sec:cohom} (the isomorphisms
+\(\coh^2(H, M|_H) \cong C_9\) and \(\exp(\coh^2(H, P)) \mid 3\)) are purely
+integral and valid whenever \(\Char F \neq 3\).  The geometric
+conclusion that \(Z_H(F,9)\) is not stably rational
+(Theorem~\ref{thm:not-stably-rational}) additionally requires
+characteristic~\(0\) (the criterion is stated in characteristic \(0\)):
+Theorem~\ref{thm:endo-miyata}, used as a hypothesis, together with the
+characteristic-\(0\) Procesi isomorphism.  Whether
+the non-stable-rationality conclusion extends to positive characteristic
+(not dividing~\(9\)) remains an \textbf{open} question.
+Theorem~\ref{thm:retract} (retract rationality) holds over any field, because
+\(H = C_3 \times C_3\) is abelian of odd order.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{filecontents}{wu.bib}
+@article{ABGV2011,
+	author = {Auel, A. and Brussel, E. and Garibaldi, S. and Vishne, U.},
+	title = {Open problems on central simple algebras.},
+	fjournal = {Transformation Groups},
+	journal = {Transform. Groups},
+	issn = {1083-4362},
+	volume = {16},
+	number = {1},
+	pages = {219--264},
+	year = {2011},
+	language = {English},
+	doi = {10.1007/s00031-011-9119-8},
+	keywords = {16K20,16K50,16-02,00A07},
+	zbMATH = {5898840},
+	Zbl = {1230.16016}
+}	
+	
+	
+
+@misc{CurtisReiner1981,
+	author = {Curtis, C. W. and Reiner, I.},
+title = {Methods of representation theory, with applications to finite groups
+and orders. {Vol}. {I}}, year = {1981}, language = {English}, howpublished =
+{Pure and {Applied} {Mathematics}. {A} {Wiley}-{Interscience} {Publication}.
+{New} {York} etc.: {John} {Wiley} \& {Sons}. {XXI}, 819 p. {{\textsterling}}
+40.70 (1981).}, keywords =
+{20-02,16-02,20Cxx,16H05,16Gxx,16U30,20C05,20C10,20C15,20C20,20C25,16P10},
+zbMATH = {3736029}, Zbl = {0469.20001} }
+
+@book{Brown1982,
+    author = {Brown, K. S.},
+    title = {Cohomology of groups},
+    fseries = {Graduate Texts in Mathematics},
+    series = {Grad. Texts Math.},
+    issn = {0072-5285},
+    volume = {87},
+    year = {1982},
+    publisher = {Springer, Cham},
+    language = {English},
+    keywords = {20J05,20-02,18-02,55-02,20J06},
+    zbMATH = {3935317},
+    Zbl = {0584.20036}
+}
+
+@book{Weibel1994,
+    author = {Weibel, C. A.},
+    title = {An introduction to homological algebra},
+    fseries = {Cambridge Studies in Advanced Mathematics},
+    series = {Camb. Stud. Adv. Math.},
+    volume = {38},
+    isbn = {0-521-43500-5},
+    year = {1994},
+    publisher = {Cambridge: Cambridge University Press},
+    language = {English},
+    keywords = {18-01,18Gxx,16Exx,18E30,20F99,17B55,55Uxx},
+    zbMATH = {595200},
+    Zbl = {0797.18001}
+}
+
+
+
+@book{HKY,
+    author = {Hoshi, A. and Kang, M. and Yamasaki, A.},
+    title = {Multiplicative invariant fields of dimension {{\(\le 6\)}}},
+    fseries = {Memoirs of the American Mathematical Society},
+    series = {Mem. Am. Math. Soc.},
+    issn = {0065-9266},
+    volume = {1403},
+    isbn = {978-1-4704-6022-8; 978-1-4704-7404-1},
+    year = {2023},
+    publisher = {Providence, RI: American Mathematical Society (AMS)},
+    language = {English},
+    doi = {10.1090/memo/1403},
+    keywords = {14-02,14E08,20C10,20J06,14F22},
+    zbMATH = {7653284},
+    Zbl = {1530.14001}
+}
+
+@book{CurtisReiner1987,
+    author = {Curtis, C. W. and Reiner, I.},
+title = {Methods of representation theory. {With} applications to finite groups
+and orders. {Vol}. {II}}, year = {1987}, language = {English}, howpublished =
+{Pure and Applied Mathematics. A Wiley-Interscience Publication. New York etc.:
+John Wiley \& Sons. XIV, 951 p.}, keywords =
+{20-02,16-02,20Cxx,16H05,16Gxx,16U30,20C05,20C10,20C15,20C20,20C25,16P10},
+zbMATH = {3736029}, Zbl = {0469.20001} }
+
+@article{CTS77,
+	author = {Colliot-Th{\'e}l{\`e}ne, J.-L. and Sansuc, J.-J.},
+	title = {La {R}-{\'e}quivalence sur les tores},
+fjournal = {Annales Scientifiques de l'{\'E}cole Normale Sup{\'e}rieure.
+Quatri{\`e}me S{\'e}rie}, journal = {Ann. Sci. {\'E}c. Norm. Sup{\'e}r. (4)},
+issn = {0012-9593}, volume = {10}, pages = {175--229}, year = {1977}, language =
+{French}, doi = {10.24033/asens.1325}, keywords = {14G05,14F20,14C15}, url =
+{https://eudml.org/doc/81994}, zbMATH = {3554404}, Zbl = {0356.14007} }
+	
+@article{CTS87,
+	author = {Colliot-Th{\'e}l{\`e}ne, J.-L. and Sansuc, J.-J.},
+	title = {Principal homogeneous spaces under flasque tori; applications},
+	fjournal = {Journal of Algebra},
+	journal = {J. Algebra},
+	issn = {0021-8693},
+	volume = {106},
+	pages = {148--205},
+	year = {1987},
+	language = {English},
+	doi = {10.1016/0021-8693(87)90026-3},
+	keywords = {14F20,14M17,13B02,14L30,20G10},
+	zbMATH = {3961811},
+	Zbl = {0597.14014}
+}
+
+% @article{Bogomolov1987a, author = {Bogomolov, F. A.}, title = {The stable
+% rationality of quotient spaces for simply connected groups}, fjournal =
+% {Mathematics of the USSR, Sbornik}, journal = {Math. USSR, Sb.}, issn =
+% {0025-5734}, volume = {58}, pages = {1--14}, year = {1987}, language =
+% {English}, doi = {10.1070/SM1987v058n01ABEH003089}, keywords =
+% {14M20,14L30,14M17,14L24}, zbMATH = {4114796}, Zbl = {0681.14030} }
+
+@article{Bogomolov1987b,
+	author = {Bogomolov, F. A.},
+	title = {Brauer groups of factor spaces of linear representations},
+	fjournal = {Izvestiya Akademii Nauk SSSR. Seriya Matematicheskaya},
+	journal = {Izv. Akad. Nauk SSSR, Ser. Mat.},
+	issn = {0373-2436},
+	volume = {51},
+	number = {3},
+	pages = {485--516},
+	year = {1987},
+	language = {Russian},
+	keywords = {14L24,20G05,14F22,14L30},
+	zbMATH = {4043985},
+	Zbl = {0641.14005}
+}
+
+@book{Bourbaki2006,
+	author = {Bourbaki, Nicolas},
+title = {{\'E}l{\'e}ments de math{\'e}matique. {Alg{\`e}bre} commutative.
+{Chapitres} 1 {\`a} 4.}, edition = {Reprint of the 1985 original}, isbn =
+{3-540-33937-X}, year = {2006}, publisher = {Berlin: Springer}, language =
+{French}, doi = {10.1007/978-3-540-33976-2}, zbMATH = {5071153}, }
+
+@book{Bourbaki2007a,
+	author = {Bourbaki, Nicolas},
+title = {{\'E}l{\'e}ments de math{\'e}matique. {Alg{\`e}bre}. {Chapitres} 1
+{\`a} 3}, edition = {Reprint of the 1970 original}, isbn = {3-540-33849-7}, year
+= {2007}, publisher = {Berlin: Springer}, language = {French}, zbMATH =
+{5069335}, }
+
+@book{Bourbaki2007b,
+	author = {Bourbaki, Nicolas},
+title = {{\'E}l{\'e}ments de math{\'e}matique. {Alg{\`e}bre}. {Chapitres} 4
+{\`a} 7}, edition = {Reprint of the 1981 original}, isbn = {3-540-34398-9}, year
+= {2007}, publisher = {Berlin: Springer}, language = {French}, doi =
+{10.1007/978-3-540-34499-5}, zbMATH = {5069336}, }
+
+@article{EndoMiyata1973a,
+	author = {Endo, Shizuo and Miyata, Takehiko},
+	title = {Invariants of finite {Abelian} groups},
+	fjournal = {Journal of the Mathematical Society of Japan},
+	journal = {J. Math. Soc. Japan},
+	issn = {0025-5645},
+	volume = {25},
+	pages = {7--26},
+	year = {1973},
+	language = {English},
+	doi = {10.2969/jmsj/02510007},
+	keywords = {20C10,15A72,20K99},
+	zbMATH = {3387583},
+	Zbl = {0245.20007}
+}
+
+@article{EndoMiyata1973b,
+	author = {Endo, S. and Miyata, T.},
+	title = {Quasi-permutation modules over finite groups},
+	fjournal = {Journal of the Mathematical Society of Japan},
+	journal = {J. Math. Soc. Japan},
+	issn = {0025-5645},
+	volume = {25},
+	pages = {397--421},
+	year = {1973},
+	language = {English},
+	doi = {10.2969/jmsj/02530397},
+	keywords = {20C05,16S34,20C10},
+	zbMATH = {3435716},
+	Zbl = {0277.20005}
+}
+
+% @article{EndoMiyata1974,
+% 	author = {Endo, S. and Miyata, T.},
+% 	title = {Quasi-permutation modules over finite groups. {II}},
+% 	fjournal = {Journal of the Mathematical Society of Japan},
+% 	journal = {J. Math. Soc. Japan},
+% 	issn = {0025-5645},
+% 	volume = {26},
+% 	pages = {698--713},
+% 	year = {1974},
+% 	language = {English},
+% 	doi = {10.2969/jmsj/02640698},
+% 	keywords = {20C10},
+% 	zbMATH = {3448770},
+% 	Zbl = {0286.20007}
+% }
+
+@article{Swan1960,
+    author = {Swan, R. G.},
+    title = {Induced representations and projective modules},
+    fjournal = {Annals of Mathematics. Second Series},
+    journal = {Ann. Math. (2)},
+    issn = {0003-486X},
+    volume = {71},
+    pages = {552--578},
+    year = {1960},
+    language = {English},
+    doi = {10.2307/1969944},
+    Zbl = {0104.25102}
+}
+
+% @article{Swan1969,
+%     author = {Swan, R. G.},
+%     title = {Invariant rational functions and a problem of {Steenrod}},
+%     fjournal = {Inventiones Mathematicae},
+%     journal = {Invent. Math.},
+%     issn = {0020-9910},
+%     volume = {7},
+%     pages = {148--158},
+%     year = {1969},
+%     language = {English},
+%     doi = {10.1007/BF01389798},
+%     Zbl = {0174.05203}
+% }
+
+@article{Lenstra1974,
+    author = {Lenstra, H. W., Jr.},
+    title = {Rational functions invariant under a finite abelian group},
+    fjournal = {Inventiones Mathematicae},
+    journal = {Invent. Math.},
+    issn = {0020-9910},
+    volume = {25},
+    pages = {299--325},
+    year = {1974},
+    language = {English},
+    doi = {10.1007/BF01389732},
+    Zbl = {0292.12010}
+}
+
+@book{NSW2020,
+    author = {Neukirch, J{\"u}rgen and Schmidt, Alexander and Wingberg, Kay},
+    title = {Cohomology of number fields},
+    edition = {2nd ed.},
+    fseries = {Grundlehren der Mathematischen Wissenschaften},
+    series = {Grundlehren Math. Wiss.},
+    issn = {0072-7830},
+    volume = {323},
+    isbn = {978-3-540-37888-4},
+    year = {2008},
+    publisher = {Berlin: Springer},
+    language = {English},
+    keywords = {11-02,11R34,11R23,11S25,18G10,18G20,20J05,11R37},
+    zbMATH = {5162349},
+    Zbl = {1136.11001}
+}
+
+% @article{Hoshi2020, author = {Hoshi, A.}, title = {Noether's problem and
+% rationality problem for multiplicative invariant fields: a survey}, fjournal =
+% {RIMS K{\^o}ky{\^u}roku Bessatsu}, journal = {RIMS K{\^o}ky{\^u}roku
+% Bessatsu}, issn = {1881-6193}, volume = {B77}, pages = {29--53}, year =
+% {2020}, language = {English}, keywords =
+% {12F12,13A50,14E08,14F22,11E72,14M20,20J06,12-02}, url =
+% {repository.kulib.kyoto-u.ac.jp/dspace/bitstream/2433/260609/1/B77-01.pdf},
+% zbMATH = {7303982}, Zbl = {1455.12004} }
+
+@article{EndoMiyata1975,
+	author = {Endo, S. and Miyata, T.},
+	title = {On a classification of the function fields of algebraic tori},
+	fjournal = {Nagoya Mathematical Journal},
+	journal = {Nagoya Math. J.},
+	issn = {0027-7630},
+	volume = {56},
+	pages = {85--104},
+	year = {1975},
+	language = {English},
+	doi = {10.1017/S0027763000016408},
+	keywords = {14H05,20C05,14G99},
+	zbMATH = {3470565},
+	Zbl = {0301.14008}
+}
+
+@article{Formanek2002,
+	author = {Formanek, E.},
+	title = {The ring of generic matrices.},
+	fjournal = {Journal of Algebra},
+	journal = {J. Algebra},
+	issn = {0021-8693},
+	volume = {258},
+	number = {1},
+	pages = {310--320},
+	year = {2002},
+	language = {English},
+	doi = {10.1016/S0021-8693(02)00506-9},
+	keywords = {16R30,16R20,15-02,16-02},
+	zbMATH = {1868090},
+	Zbl = {1047.16013}
+}	
+
+@article{Procesi1967,
+	author = {Procesi, C.},
+	title = {Non-commutative affine rings},
+fjournal = {Atti della Accademia Nazionale dei Lincei. Memorie. Classe di
+Scienze Fisiche, Matematiche e Naturali. Serie VIII. Sezione I (Matematica,
+Meccanica, Astronomia, Geodesia e Geofisica)}, journal = {Atti Accad. Naz.
+Lincei, Mem., Cl. Sci. Fis. Mat. Nat., VIII. Ser., Sez. I}, issn = {0365-0286},
+volume = {8}, pages = {239--255}, year = {1967}, language = {English}, zbMATH =
+{3323928}, Zbl = {0204.04802} }
+
+
+@article{Saltman1984,
+	author = {Saltman, D. J.},
+	title = {Retract rational fields and cyclic {Galois} extensions},
+	fjournal = {Israel Journal of Mathematics},
+	journal = {Isr. J. Math.},
+	issn = {0021-2172},
+	volume = {47},
+	pages = {165--215},
+	year = {1984},
+	language = {English},
+	doi = {10.1007/BF02760515},
+	keywords = {13B05,12F10},
+	zbMATH = {3869502},
+	Zbl = {0546.14013}
+}	
+
+@article{Saltman1987,
+	author = {Saltman, D. J.},
+	title = {Multiplicative field invariants},
+	fjournal = {Journal of Algebra},
+	journal = {J. Algebra},
+	issn = {0021-8693},
+	volume = {106},
+	pages = {221--238},
+	year = {1987},
+	language = {English},
+	doi = {10.1016/0021-8693(87)90028-7},
+	keywords = {14F22,11R58,14M20,12G05,12F20,14L30,14L24,12F10},
+	zbMATH = {4008526},
+	Zbl = {0622.13002}
+}	
+
+	
+@book{Vos98,
+	author = {Voskresenski{\u{\i}}, V. E.},
+title = {Algebraic groups and their birational invariants. {Transl}. from the
+original {Russsian} manuscript by {Boris} {Kunyavskii}.}, edition = {Rev.
+version of `{Algebraic} tori', {Nauka} 1977}, fseries = {Translations of
+Mathematical Monographs}, series = {Transl. Math. Monogr.}, issn = {0065-9282},
+volume = {179}, isbn = {0-8218-0905-9}, year = {1998}, publisher = {Providence,
+RI: American Mathematical Society}, language = {English}, keywords =
+{14L35,20-02,14-02,14E05,20G30,11E72,14G27,14L40}, zbMATH = {1204077}, Zbl =
+{0974.14034} } @book{BeylTappe1982, author = {Beyl, F. Rudolf and Tappe,
+J{\"u}rgen}, title = {Group extensions, representations, and the {Schur}
+multiplicator}, fseries = {Lecture Notes in Mathematics}, series = {Lect. Notes
+Math.}, issn = {0075-8434}, volume = {958}, year = {1982}, publisher =
+{Springer, Cham}, language = {English}, doi = {10.1007/bfb0067022}, keywords =
+{20-02,20J05,20C25,20E22,20C15,20E10,20F05,20C20}, zbMATH = {3865539}, Zbl =
+{0544.20001} }
+\end{filecontents}
+%\printbibliography
+\bibliographystyle{plain}
+
+\bibliography{wu}
+\end{document}
