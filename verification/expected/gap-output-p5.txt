@@ -1,0 +1,28 @@
+|H| = 25
+
+Z[H]  (Z-rank 25):
+  d^0: 625 x 25  rank = 24
+  d^1: 15625 x 625  rank = 601
+  dim(C^1) = 625,  dim(ker d^1) = 24
+  H^1 free rank = dim(ker d^1) - rank(d^0) = 0
+
+I[H]  (Z-rank 24):
+  d^0: 600 x 24  rank = 24
+  d^1: 15000 x 600  rank = 576
+  dim(C^1) = 600,  dim(ker d^1) = 24
+  H^1 free rank = dim(ker d^1) - rank(d^0) = 0
+  augmentation coker = Z / 25Z
+
+H^2(H, Z_triv) = [ 5, 5 ]
+
+Summary of computed results:
+  H^1(H, Z[H])      free rank = 0
+  H^2(H, Z[H])      = 0  (Shapiro: Ind_1^H Z)
+  H^1(H, I[H])      free rank = 0,  torsion ~= Z/25Z
+  H^2(H, Z_triv)    = [ 5, 5 ]
+  H^1(H, Z[H]^9)    = 0  (additivity)
+  H^2(H, Z[H]^9)    = 0  (additivity)
+
+Procesi LES:  0 -> H^1(I[H]) -> H^2(M|_H) -> 0
+  =>  H^2(H, M|_H) ~= H^1(H, I[H]) ~= Z/25Z
+  =>  exp H^2(M|_H) = 25

@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the accompanying paper."
+title: "Verification code for: Rationality of the center of a generic division algebra with a group action over a field of characteristic 0"
+authors:
+  - family-names: Wu
+    given-names: Zhengyao
+version: 1.0.1
+license: MIT
+type: software
+abstract: >-
+  Reproduces, by explicit integer linear algebra, the cohomological readings on
+  which the main theorem of the accompanying paper rests: h^1(H, I[H]) = C_9,
+  h^2(H, M|_H) = C_9, h^2(H, Z) = C_3 x C_3, the h^2 of permutation lattices,
+  and the rank of the restricted Procesi lattice (73).  Two independent
+  implementations (Python, standard library only; GAP with HAP).
+keywords:
+  - integral group cohomology
+  - Smith normal form
+  - Procesi lattice
+  - stable permutation
+  - rationality
