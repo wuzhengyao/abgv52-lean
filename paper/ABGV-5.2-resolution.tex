@@ -256,20 +256,9 @@ For a finite group \(G\), a \(G\)-lattice is a finitely generated
 \medskip\noindent
 \textbf{Ethical and legal declarations}: 
 
-\medskip\noindent
-\textbf{Code availability.}
-The two verification programs of Appendix~\ref{app:cocycle}, their
-recorded output for \(p=3\) and \(p=5\), a \texttt{SHA-256} manifest,
-and the machine-checked Lean development are collected in the
-accompanying code package, available at
-\url{https://github.com/wuzhengyao/abgv52-lean}.
-
-% [2026-10-01 第二十三改，用户指令] 原「Lean 形式化说明」三段（自
-% 「The Lean development verifies ...」起，含沿革注释块）已移至
-% 「Use of Large Language Models, AI and Machine Learning Tools」段；
-% 本段（Code availability）自此仅保留存档清单句（上方链接句）。
-% [2026-10-01 第二十六改] Zenodo 弃用（用户指令）：清单句改写为指向
-% GitHub 代码包；TODO 行删除。
+% [2026-10-01 第二十七改，用户指令] Code availability 与 Data availability
+% 重复：本节删除（清单句整段并入 Data availability 原位置；链接全篇仅留
+% 该处 1 次）。原沿革注释（第二十三／二十六改）见 pre27 逐字节原件。
 
 \medskip\noindent
 \textbf{Acknowledgments}. 
@@ -291,16 +280,17 @@ The author used DeepSeek v4 to assist with literature searching, language
 polishing, and debugging GAP scripts, under the author's direction and
 review.  The two verification programs of Appendix~\ref{app:cocycle} and
 the machine-checked Lean development were also produced with AI
-assistance, under the same direction and review, and are collected, with
-their recorded output, at
-\url{https://github.com/wuzhengyao/abgv52-lean}.  The Lean development is
-conditional on explicit named hypotheses, documented there together with
-what is proved and what is assumed.
+assistance, under the same direction and review.  The Lean development is
+conditional on explicit named hypotheses; the accompanying code package,
+described in the Data availability statement, documents what the
+development proves and what it assumes.
 
 % [2026-10-01 第二十三改 → 第二十六改] 本块（原自「Code availability」段移入）
 % 已按用户追加指令合并为单段：AI 使用披露＋两个验证程序与 Lean 的 GitHub
 % 落点＋Lean 条件性指针。原披露句与 Lean 段（第二十六改压缩版）见
 % raw/ABGV-5.2-resolution.pre26.tex 与上方第二十六改存档。
+% [2026-10-01 第二十七改] 段内 URL 移除（链接全篇仅留 Data availability
+% 1 次）：改为指向 Data availability 语句。
 
 % [2026-10-01 第七改，用户指令] 新增一段：几何等同归约层（round (1)）的假设表。
 % 义务出处：wiki/proj-ABGV52-EM-criterion.md §3an 末节「假设表更新义务（承重）」——
@@ -413,7 +403,11 @@ The author is supported by Xiangtan University project
 
 \medskip\noindent
 \textbf{Data availability}. 
-Data available within the article or its supplementary materials. 
+The two verification programs of Appendix~\ref{app:cocycle}, their
+recorded output for \(p=3\) and \(p=5\), a \texttt{SHA-256} manifest,
+and the machine-checked Lean development are collected in the
+accompanying code package, available at
+\url{https://github.com/wuzhengyao/abgv52-lean}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Preliminaries}
@@ -1539,8 +1533,7 @@ on the choice of basis in \(\mathbb{Z}[H]^{\oplus 9}\) and on the splitting
 
 The cohomological readings used above were checked by machine.  The two
 programs are collected in the accompanying code package, described in the
-Code availability statement in the Introduction, and are not reproduced
-here.
+Data availability statement, and are not reproduced here.
 
 \medskip\noindent
 The two programs are independent of each other: one is written in Python
