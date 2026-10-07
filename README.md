@@ -10,10 +10,10 @@ H = C_3 x C_3 and its generalizations H = C_p x C_p.
 
 The paper is included in this repository:
 
-* `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-01);
+* `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-07);
 * `paper/ABGV-5.2-resolution.pdf` — a compiled PDF.
 
-The PDF was compiled from the current TeX source (2026-10-01).
+The PDF was compiled from the current TeX source (2026-10-07).
 
 ## Verification code
 
@@ -27,15 +27,24 @@ with HAP) and their recorded output are in `verification/`; see
 * Every declaration depends only on the three standard axioms
   `propext`, `Classical.choice` and `Quot.sound`.
 * The Endo--Miyata--Voskresenskii criterion is used as an explicit named
-  hypothesis, exactly as in the paper; it is not reproved.
+  hypothesis, exactly as in the paper; it is not reproved.  It is
+  formalized as the type-locked interfaces `EMHyp` (H-level) and
+  `EMHypP` (p-general), each with a definitional-shape lock, a wiring
+  theorem, and a non-vacuity probe (`EM_ABGV52.lean`).
 * Saltman's Corollary 3.13 (retract rationality) is quoted as an explicit
-  named hypothesis, not reproved.
+  named hypothesis, not reproved.  It is formalized as the type-locked
+  interface `SaltmanHyp` with a wiring theorem that fills the
+  faithfulness input from the elementary proof of faithfulness, and with
+  a non-vacuity probe (`Saltman_ABGV52.lean`).
 * The geometric identification Z_H(F, p^2) ≅ F(M|_H)^H (Procesi, 1967)
   is used as a named hypothesis: the development formalizes the reduction
   to the regular restriction and the transport of invariants along that
   identification, but neither constructs the field Z_H(F, p^2) nor proves
-  Procesi's theorem. The formalization of the stable-rationality chain is
-  therefore conditional on these named inputs.
+  Procesi's theorem.  The interface `ProcesiHyp` carries a
+  definitional-shape lock, and `Procesi_ABGV52.lean` supplies the
+  named-hypothesis consumption theorem and a non-vacuity probe.  The
+  formalization of the stable-rationality chain is therefore conditional
+  on these named inputs.
 
 ## Highlights
 
@@ -64,6 +73,7 @@ with HAP) and their recorded output are in `verification/`; see
 | `G1b`--`G4`, `GThm`, `GChallenge` | the geometric-identification reduction layer (named-hypothesis transport) |
 | `MH`, `MQ`, `MI`, `BR` | the rational model of the Procesi kernel and the base-change bridge |
 | `F1`, `R1`, `PC2` | faithfulness of the action, retract-rationality wiring, permutation-class lemma |
+| `EM_*`, `Saltman_*`, `Procesi_*` | the three named hypotheses (`EMHyp`/`EMHypP`, `SaltmanHyp`, `ProcesiHyp`) with definitional-shape locks, wiring theorems, and non-vacuity probes |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
 | `paper/` | the paper: TeX source and compiled PDF |

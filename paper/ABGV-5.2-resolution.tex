@@ -276,11 +276,12 @@ entire content of this manuscript and approved its submission.
 
 \medskip\noindent
 \textbf{Use of Large Language Models, AI and Machine Learning Tools}. 
-DeepSeek v4.1 flash was used, under the author's direction and review, to assist
-with literature searching, language polishing, and debugging GAP scripts,
-and to produce the two verification programs of Appendix~\ref{app:cocycle}
-and the machine-checked Lean development, which is conditional on explicit
-named hypotheses (see the Data availability statement).
+Claude Code, with DeepSeek V4.1 Flash as the underlying LLM, was used, under
+the author's direction and review, to assist with literature searching,
+language polishing, and debugging GAP scripts, and to produce the two
+verification programs of Appendix~\ref{app:cocycle} and the machine-checked
+Lean development, which is conditional on explicit named hypotheses (see the
+Data availability statement).
 
 % [2026-10-01 第二十三改 → 第二十六改] 本块（原自「Code availability」段移入）
 % 已按用户追加指令合并为单段：AI 使用披露＋两个验证程序与 Lean 的 GitHub
@@ -289,6 +290,9 @@ named hypotheses (see the Data availability statement).
 % [2026-10-01 第二十七改] 段内 URL 移除（链接全篇仅留 Data availability
 % 1 次）：改为指向 Data availability 语句。
 % [2026-10-01 第二十八改] 按用户指令再精简（两句）。
+% [2026-10-07 第二十九改，用户指令] 披露句开头改为「Claude Code, with
+% DeepSeek V4.1 Flash as the underlying LLM, was used,」——其余文字不变
+% （仅重排行宽 ≤80 列）。前稿 raw/ABGV-5.2-resolution.pre29.tex。
 
 % [2026-10-01 第七改，用户指令] 新增一段：几何等同归约层（round (1)）的假设表。
 % 义务出处：wiki/proj-ABGV52-EM-criterion.md §3an 末节「假设表更新义务（承重）」——
@@ -521,8 +525,13 @@ which \(G\) acts faithfully.  Let \(F\) be a field of characteristic
 \(0\).  Here \(F(M)\) and \(F(M)^G\) are as in the Introduction, and
 \(G\) acts on \(F(M)\) through the \(\mathbb{Z}[G]\)-module structure
 of~\(M\).  If \(F(M)^G\) is \emph{stably rational} over \(F\), then
-\(M\) is a stably permutation \(\mathbb{Z}[G]\)-lattice.  In the
-literature this criterion is stated for the \emph{twisted}
+\(M\) is a stably permutation \(\mathbb{Z}[G]\)-lattice.
+% [2026-10-07 第三十改，用户指令] 原环境内之文献评述句（「In the
+% literature … this paper.」）移至环境外（theorem 环境仅保留数学）；
+% 引文随句保留为正文行内 \cite，未采用环境尾 `\cite[...]{}` 挂引。
+\end{theorem}
+
+In the literature this criterion is stated for the \emph{twisted}
 invariant field \(Q(L/K,M) = L(M)^G\)
 of \cite[Theorem~1.3(b)]{Saltman1987}, where \(L/K\) is Galois with
 group \(G\) and \(G\) acts on the coefficient field as well; the
@@ -531,6 +540,7 @@ field \(F(M)^G\) above is the field \(F(M,G)\) of
 assumption rather than a quotation of a proved result.
 \textbf{We use this criterion as a hypothesis}; it is not proved in
 this paper.
+
 % [2026-09-30 引文勘误] 原句尾挂 \cite[\S1, Lemme~6]{CTS77}，已移除。
 % 核据：CTS77 印刷 Lemme 6（印刷页 181）逐字为「Les applications ρ et ζ
 % sont additives et duales l'une de l'autre … ρ est un épimorphisme de S_G
@@ -541,7 +551,6 @@ this paper.
 % [2026-10-01 第二十一改，用户指令] 原句尾「, i.e., its flasque class
 % \(\rho(M) \in D(G)/S(G)\) vanishes」已删——flasque 类术语连同其定义
 % （def:flasque／def:flasque-class-group）移入附录 C；判据逻辑不变（措辞清理）。
-\end{theorem}
 
 % [2026-10-01 第十八改，用户指令] `thm:endo-miyata-converse` 主线不使用
 % （各处提及均仅为「不依赖它」的声明；其引用仅 Vos98 一处），注释存档如下：
