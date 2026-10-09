@@ -274,14 +274,44 @@ The author thanks Xiangtan University for providing the working environment.
 \textbf{Author contributions}. The author has accepted responsibility for the
 entire content of this manuscript and approved its submission.
 
+% [2026-10-08 第三十四改，用户指令] 形式化范围陈述更新：2026-10-07/08 本体形式化战役
+% 交付三具名假设的证明层（EM 判据 converse 在阿贝尔＋ζ 域：Lenstra (1.4) 代数独立性
+% 全链＋Route S 正则子情形；Saltman/Swan 层 lem3.3；Procesi 修正外形 C′/C″）——
+% 原句尾「which is conditional on explicit named hypotheses」不再完整，改写为
+% 「证明层已形式化＋主链仍条件化」双句。前稿 raw/ABGV-5.2-resolution.pre34.tex。
+% [2026-10-08 第三十五改，用户指令] T1 收口（桥 b 消解）：EM converse 方向在
+% 阿贝尔＋ζ 域的形式化由「proof layers」升级——正则子情形的装配不再含未证桥假设，
+% 唯一的显式输入为格同构数据（S3 载运落点的二步局部化识别已证非假设）。
+% 前稿 raw/ABGV-5.2-resolution.pre35.tex（= 第三十四改态，tex 998c8b87…）。
+% [2026-10-08 第三十六改，用户指令] T2 收口（IsStablyPermutation 完整消费·正则子情形）：
+% 装配的显式输入由「格同构数据」进一步升级为标准形式的格论假设——稳定置换条件（正则
+% 子情形：格与其上置换格之直和 ≅ 正则表示的置换格）＋ 忠实性 ＋ 唯一积条件；格同构
+% 数据与 S3 数据均已构造（非假设）。射程声明 = 正则子块（一般置换 Q 的 M6 不在射程）。
+% 前稿 raw/ABGV-5.2-resolution.pre36.tex（= 第三十五改态，tex e96fd237…）。
+% [2026-10-09 第三十七改，用户指令] T3/M6 收口（一般置换 Q）：LLM 段的射程限制由
+% 「regular subcase of the stably permutation condition」升级为一般「stably
+% permutation condition」（∃ P Q 置换格, M ⊕ P ≅ Q）；并补「任意置换格不变量域
+% 有理性（ζ 在场）」为已证、非假设件。侧条件不变（faithfulness ＋ unique-product）。
+% 前稿 raw/ABGV-5.2-resolution.pre37.tex（= 第三十六改态，tex 81631106…）。
 \medskip\noindent
-\textbf{Use of Large Language Models, AI and Machine Learning Tools}. 
+\textbf{Use of Large Language Models, AI and Machine Learning Tools}.
 Claude Code, with DeepSeek V4.1 Flash as the underlying LLM, was used, under
 the author's direction and review, to assist with literature searching,
 language polishing, and debugging GAP scripts, and to produce the two
 verification programs of Appendix~\ref{app:cocycle} and the machine-checked
-Lean development, which is conditional on explicit named hypotheses (see the
-Data availability statement).
+Lean development, which additionally formalizes proof layers behind the
+three named hypotheses; for the converse direction of
+Theorem~\ref{thm:endo-miyata} in the abelian case with roots of unity this
+includes the assembly of the proof for the stably permutation condition
+(there are permutation lattices \(P\), \(Q\) with \(M \oplus P \cong Q\)):
+from this condition, together with faithfulness and a unique-product
+condition on the lattice, the stable rationality of the invariant field is
+derived, with the rationality of the invariant field of a general
+permutation lattice in the presence of enough roots of unity, the
+identification of the two-step localization with the function field of the
+product lattice, and the comparison of the two lattice bases all proved,
+not assumed; the main chain of this paper remains conditional on those
+named hypotheses (see the Data availability statement).
 
 % [2026-10-01 第二十三改 → 第二十六改] 本块（原自「Code availability」段移入）
 % 已按用户追加指令合并为单段：AI 使用披露＋两个验证程序与 Lean 的 GitHub
@@ -567,7 +597,7 @@ this paper.
 In the sequel we apply Theorem~\ref{thm:endo-miyata} in the
 contrapositive direction, the criterion being used as a hypothesis
 throughout: if \(M|_H\) is \emph{not} stably permutation, then
-\(F(M|_H)^H \cong Z_H(F,9)\) is \emph{not} stably rational.
+\(F(M|_H)^H\), and therefore \(Z_H(F,9)\), is \emph{not} stably rational.
 The cohomological computation of \S\ref{sec:cohom} proves that
 \(\coh^2(H, M|_H) \cong C_9\) while permutation lattices have
 \(\coh^2\)-exponent dividing~\(3\); hence \(M|_H\) is not stably
@@ -685,16 +715,22 @@ The ranks are
 
 \begin{remark}\label{rem:procesi-geometric}
 Procesi \cite{Procesi1967} proved that the center of the generic matrix
-algebra satisfies \(Z_{S_9}(F,9) \cong F(M)^{S_9}\), where \(F(M)^{S_9}\) is
-the invariant field of the purely transcendental extension \(F(M)\) under
-the natural \(S_9\)-action induced by the \(\mathbb{Z}[S_9]\)-module
-structure of \(M\).  For any subgroup
-\(H \subseteq S_9\), taking \(H\)-invariants gives
+algebra satisfies \(Z_{S_9}(F,9) \cong F(M \oplus U)^{S_9}\), where
+\(F(M \oplus U)^{S_9}\) is the invariant field of the purely
+transcendental extension \(F(M \oplus U)\) under the natural
+\(S_9\)-action induced by the \(\mathbb{Z}[S_9]\)-module structure of
+\(M \oplus U\).  For any subgroup \(H \subseteq S_9\), taking
+\(H\)-invariants gives
 \[
-Z_H(F,9) = F(M)^H \cong F(M|_H)^H,
+Z_H(F,9) = F((M \oplus U)|_H)^H.
 \]
-This isomorphism holds over any field \(F\) of characteristic~\(0\);
+This identification holds over any field \(F\) of characteristic~\(0\);
 see \cite[\S5]{ABGV2011}, \cite{Formanek2002}, and the references therein.
+The field \(Z_H(F,9)\) has transcendence degree \(82 = n^2+1\) over
+\(F\), and it is \emph{rational} over \(F(M|_H)^H\): apply
+\cite[Proposition~1.4]{Lenstra1974} to the permutation
+\(\mathbb{Z}[H]\)-module \(U|_H\) over the base field \(F(M|_H)\),
+on which \(H\) acts faithfully (Proposition~\ref{prop:faithful-MH}).
 For the computations that follow, only the exact
 sequence~\eqref{eq:procesi-S9} and this identification are required.
 \end{remark}
@@ -1188,12 +1224,13 @@ The field \(Z_H(F,9)\) is not stably rational over \(F\).
 \end{corollary}
 
 \begin{proof}
-Recall that \(Z_H(F,9) \cong F(M|_H)^H\)
+Recall that \(Z_H(F,9)\) is rational over \(F(M|_H)^H\)
 (Remark~\ref{rem:procesi-geometric}).
 By Theorem~\ref{thm:not-stably-perm}, \(M|_H\) is not stably permutation.
 By Theorem~\ref{thm:endo-miyata}, used as a hypothesis,
 stable rationality of \(F(M|_H)^H\) over \(F\) forces \(M|_H\) to be
-stably permutation.  Hence \(Z_H(F,9)\) is not stably rational.
+stably permutation.  Hence \(F(M|_H)^H\), and therefore \(Z_H(F,9)\),
+is not stably rational.
 \end{proof}
 
 \begin{remark}
@@ -1208,6 +1245,10 @@ holds integrally, hence for any field whose characteristic does not
 divide \(|H| = 9\).  The geometric conclusion
 (Theorem~\ref{thm:not-stably-rational}) additionally requires
 characteristic~\(0\) via Theorem~\ref{thm:endo-miyata}.
+% [2026-10-08 第三十一改，用户指令「(b)修复」] remark 原 `\end{remark}` 误置于
+% `thm:retract` 证明之后（tex 旧行 1294），致 prop:faithful-MH／thm:saltman-cor3.13／
+% thm:retract（含 proof）三个环境嵌套于本 remark 内；今于 remark 正文末闭合。
+\end{remark}
 
 \begin{proposition}\label{prop:faithful-MH}
 Let \(M_9(F)\) denote the algebra of \(9 \times 9\) matrices over \(F\).
@@ -1227,18 +1268,59 @@ that is, left multiplication composed with the coordinate permutation
 This action is faithful.
 \end{proposition}
 
+% [2026-10-08 第三十三改] prop:faithful-MH 第一证明**实质重写**：原证明经
+% 「\(F(M|_H)^H \cong Z_H(F,9)\)」传递平凡性——该识别已按 C′/C″ 更正
+% （见 rem:procesi-geometric），而平凡性传递在 \(U\)-分量处断裂。新证 =
+% 沿 prop:tensor-reg-ZH（⊗-坐标）与 prop:procesi-H（正合列）的**障碍论证**：
+% 平凡性使差分映射 \(\delta_h\) 下降到 \(I[H]\)，而同一类 \(g-1\) 的两种
+% 提升在 \(\delta_{hg}\)-分量上给出 \(0 \neq 1\) 的矛盾。与「Second proof」
+% 的显式元素计算互相独立。第三十二改的 ⚠ 待修注记已按本改清除。
 \begin{proof}
-The action on \(M_9(F)\) is faithful because \(h \neq 1\) implies
-\(h(i) \neq i\) for some index~\(i\), whence \(h \cdot e_{ij} \neq e_{ij}\).
-The Procesi isomorphism \(Z_H(F,9) \cong F(M|_H)^H\)
-(Remark~\ref{rem:procesi-geometric}) intertwines the \(H\)-actions.
-Any \(h \in H\) acting trivially on \(M|_H\) would, by functoriality of
-the field of fractions, act trivially on
-\(F(M|_H) = \operatorname{Frac}(\operatorname{Sym}_F(M|_H
-\otimes_{\mathbb{Z}} F))\), where \(\operatorname{Sym}_F\) denotes the
-symmetric algebra over \(F\), and therefore on
-\(F(M|_H)^H \cong Z_H(F,9)\), hence on \(M_9(F)\) ---
-contradicting faithfulness on \(M_9(F)\).
+We show that the action on \(M|_H\) is faithful.  Suppose that
+\(h \in H\) acts trivially on \(M|_H\).  Since
+\(M|_H = \ker(\pi|_H)\) by Proposition~\ref{prop:procesi-H}, the
+difference map
+\[
+\delta_h(z) \;=\; h \cdot x - x,
+\qquad x \in \mathbb{Z}[H]^{\oplus 9}
+  \text{ any lift of } z \in I[H],
+\]
+is well defined on \(I[H] = \operatorname{im}(\pi|_H)\): if
+\(x - x' \in \ker(\pi|_H) = M|_H\), then
+\(h \cdot (x - x') = x - x'\).  Identify
+\(\mathbb{Z}[H]^{\oplus 9} \cong \mathbb{Z}[H]
+\otimes_{\mathbb{Z}} \mathbb{Z}[H]\) with basis
+\(\{\delta_b\}_{b \in H}\) in the second factor, as in
+Proposition~\ref{prop:tensor-reg-ZH}; the diagonal action reads
+\(h \cdot (a \otimes \delta_b) = ha \otimes \delta_{hb}\),
+and, as in the Second proof below,
+\[
+\pi|_H\Bigl( \sum_{b \in H} z_b \otimes \delta_b \Bigr)
+  = \sum_{b \in H} \bigl( z_b - \varepsilon(z_b)\, b \bigr).
+\]
+Choose \(g \in H \setminus \{1, h, h^{-1}\}\), which exists
+because \(|H| = 9 > 3\).  We compute \(\delta_h(g - 1)\) in two
+ways.  First, \(g \otimes \delta_1\) maps to \(g - 1\) under
+\(\pi|_H\), so
+\[
+\delta_h(g - 1)
+  = h \cdot (g \otimes \delta_1) - g \otimes \delta_1
+  = hg \otimes \delta_h - g \otimes \delta_1 .
+\]
+Second, \(-(1 \otimes \delta_g)\) also maps to
+\(-\bigl( 1 - \varepsilon(1)\, g \bigr) = g - 1\), so
+\[
+\delta_h(g - 1)
+  = - h \cdot (1 \otimes \delta_g) + 1 \otimes \delta_g
+  = 1 \otimes \delta_g - h \otimes \delta_{hg} .
+\]
+The \(\delta_{hg}\)-component of the right-hand side of the first
+display is \(0\), because \(\delta_{hg} \neq \delta_h\) and
+\(\delta_{hg} \neq \delta_1\) (as \(g \neq 1\) and
+\(g \neq h^{-1}\)), whereas in the second display it is \(-h
+\neq 0\).
+This contradiction shows that no \(h \neq 1\) acts trivially on
+\(M|_H\); the action is faithful.
 \end{proof}
 
 \begin{proof}[Second proof]
@@ -1282,16 +1364,16 @@ The field \(Z_H(F,9)\) is retract rational over \(F\).
 \end{corollary}
 
 \begin{proof}
-\(Z_H(F,9) \cong F(M|_H)^H\) (Remark~\ref{rem:procesi-geometric}).
+\(Z_H(F,9)\) is rational over \(F(M|_H)^H\)
+(Remark~\ref{rem:procesi-geometric}).
 Let \(V = M|_H \otimes_{\mathbb{Z}} F\); then \(F(V)^H \cong F(M|_H)^H\).
 Apply Theorem~\ref{thm:saltman-cor3.13} with \(A = H = C_3 \times C_3\).
 The exponent of \(H\) is \(3\) (odd), so \(2^r = 1\) and \(\rho = 1\); the
 condition on \(F(1)/F\) is vacuous.  The group \(H\) acts faithfully on \(V\)
 because it acts faithfully on \(M|_H\) (Proposition~\ref{prop:faithful-MH}) and
-\(\operatorname{char} F = 0\).  Hence \(Z_H(F,9)\) is retract rational
-over \(F\).
+\(\operatorname{char} F = 0\).  Hence \(F(V)^H\), and therefore its rational extension \(Z_H(F,9)\),
+is retract rational over \(F\).
 \end{proof}
-\end{remark}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{proposition}\label{prop:M_H-not-permutation}
@@ -1746,8 +1828,8 @@ Noether's problem asks whether
 \(\mathbb{Z}[H]\)) is rational over \(F\);
 by \cite[Cor.\ of Lem.~2.1]{Bogomolov1987b},
 \(F(H)^H\) is therefore not even retract rational.
-In contrast, \(Z_H(F,9) = F(M|_H)^H\) is retract rational
-(Theorem~\ref{thm:retract}) but not stably rational
+In contrast, \(Z_H(F,9)\), which is rational over \(F(M|_H)^H\), is
+retract rational (Theorem~\ref{thm:retract}) but not stably rational
 (Theorem~\ref{thm:not-stably-rational}).
 Thus \(Z_H(F,9)\) and the Noether problem exhibit opposite rationality
 behavior, despite both being multiplicative invariant fields of the
@@ -1762,7 +1844,7 @@ Yamasaki \cite{HKY} have systematically computed unramified Brauer
 groups for small groups; their tables cover groups with \(\le 6\)
 variables.  For groups of order \(9\), all unramified Brauer obstructions
 originate from \(\Br_{\mathrm{nr}} \cong C_3\).  Our field \(Z_H(F,9)\) has
-transcendence degree \(73\) and lies outside their range.
+transcendence degree \(82\) and lies outside their range.
 Both approaches operate via
 \(\Br_{\mathrm{nr}}\), a geometric invariant of the function field;
 by contrast, our \(\coh^2\) obstruction is a purely integral
@@ -1976,8 +2058,11 @@ where \(\coh^1(H, P)=0\) (Shapiro's lemma \cite[Theorem~6.3.2]{Weibel1994}),
 \(\ker(\coh^2(M|_H) \to \coh^2(P)) \cong \coh^1(H, F)\) contains the unique
 subgroup \(C_3 \subset C_9\); the containment can be \(C_3\) or \(C_9\).
 
-The field \(Z_H(F,9) \cong F(M|_H)^H\) is the function field of the
-\(H\)-torus with character group \(M|_H\).  Let \(X\) be a smooth
+The field \(Z_H(F,9) = F((M \oplus U)|_H)^H\) is the function field
+of the \(H\)-torus with character group \((M \oplus U)|_H\); since
+\(U|_H \cong \mathbb{Z}[H]\) is a permutation lattice, the flasque
+class \(\rho((M \oplus U)|_H) = \rho(M|_H)\) equals that of
+\(M|_H\).  Let \(X\) be a smooth
 \(F\)-compactification of this torus.  By
 \cite[Proposition~9.5(ii)]{CTS87},
 \[

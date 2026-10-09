@@ -153,7 +153,7 @@ noncomputable instance : MulSemiringAction G (latticeFunctionField F M) :=
       (latticeFunctionField F M)).comp (latticeAlgebraActionHom F G M))
 
 /-- **不变量域 `F(M)^G`**（论文 `thm:endo-miyata` 的左端）。 -/
-noncomputable def latticeInvariants : Subfield (latticeFunctionField F M) :=
+noncomputable abbrev latticeInvariants : Subfield (latticeFunctionField F M) :=
   FixedPoints.subfield G (latticeFunctionField F M)
 
 theorem mem_latticeInvariants_iff (x : latticeFunctionField F M) :

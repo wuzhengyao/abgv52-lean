@@ -10,10 +10,10 @@ H = C_3 x C_3 and its generalizations H = C_p x C_p.
 
 The paper is included in this repository:
 
-* `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-07);
+* `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-09);
 * `paper/ABGV-5.2-resolution.pdf` — a compiled PDF.
 
-The PDF was compiled from the current TeX source (2026-10-07).
+The PDF was compiled from the current TeX source (2026-10-09).
 
 ## Verification code
 
@@ -45,6 +45,15 @@ with HAP) and their recorded output are in `verification/`; see
   named-hypothesis consumption theorem and a non-vacuity probe.  The
   formalization of the stable-rationality chain is therefore conditional
   on these named inputs.
+* The development also formalizes proof layers behind the three named
+  hypotheses, as described in the paper: for the converse direction of
+  the criterion in the abelian case with roots of unity, the stable
+  rationality of the invariant field is derived from the stably
+  permutation condition together with faithfulness and a unique-product
+  condition, with the rationality of the invariant field of an arbitrary
+  permutation lattice, the identification of the two-step localization
+  with the function field of the product lattice, and the comparison of
+  the lattice bases all proved, not assumed.
 
 ## Highlights
 
@@ -72,8 +81,12 @@ with HAP) and their recorded output are in `verification/`; see
 | `P1`--`P6`, `PThm`, `PChallenge` | p-general lattice and theorem statements, with an independent restatement |
 | `G1b`--`G4`, `GThm`, `GChallenge` | the geometric-identification reduction layer (named-hypothesis transport) |
 | `MH`, `MQ`, `MI`, `BR` | the rational model of the Procesi kernel and the base-change bridge |
-| `F1`, `R1`, `PC2` | faithfulness of the action, retract-rationality wiring, permutation-class lemma |
-| `EM_*`, `Saltman_*`, `Procesi_*` | the three named hypotheses (`EMHyp`/`EMHypP`, `SaltmanHyp`, `ProcesiHyp`) with definitional-shape locks, wiring theorems, and non-vacuity probes |
+| `F1`, `R1`, `PC2`, `FaithfulMH` | faithfulness of the action, retract-rationality wiring, permutation-class lemma, faithfulness obstruction |
+| `EM_ABGV52`, `Saltman_ABGV52`, `Procesi_ABGV52` | the three named hypotheses (`EMHyp`/`EMHypP`, `SaltmanHyp`, `ProcesiHyp`) with definitional-shape locks, wiring theorems, and non-vacuity probes |
+| `EMArtin`, `EMTrans`, `EMSpeiser`, `EMSemilinear`, `EMRational`, `EMFixed`, `EMDegree`, `EMIndep`, `EMRouteS`, `EMBridge`, `EMConsume` | the proof layers behind the criterion: Artin's fixed-field theorem, invariant transport, Speiser's theorem, the semilinear machinery, Lenstra's (1.4), the degree chain, algebraic independence, and the assembly of the converse |
+| `EM1betaGen_*` | the permutation-lattice rationality engine (character-basis layer, monomial lattice, rationality closure, consumption) with a non-vacuity probe |
+| `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor` | the Saltman-track layers: the 1984 definitions, the rational-to-retract bridge, Swan's lemma, and the corollary/reduction pair |
+| `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, and its wiring |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
 | `paper/` | the paper: TeX source and compiled PDF |
