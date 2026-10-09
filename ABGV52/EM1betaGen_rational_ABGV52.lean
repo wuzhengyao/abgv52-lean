@@ -12,7 +12,7 @@
   设计：wiki/proj-ABGV52-M6-1beta-general-design.md §4.1；对照 D13（自由交换情形）。
   ⚠ 与 D13 的机制差异：D13 的 `phiDiag_injective` 用「复合 `Ψ ∘ Φ₀ = algebraMap`」把无关性
   化为已知同态的单射；一般格 Q 无此复合，故 (c) 的单射性改用**移位技巧**——
-  把核上的 F-线性关系整体乘 `yPow (yCast N)`（`N := Σ_{a∈s}` 逐点非负截断），
+  把核上的 F-线性关系整体乘 `yPow (yCast N)`（`N := Σ_{b∈s} yNat (-b)` 逐点非负截断），
   移位后的重指数族 `d a = yNat (yCast N + a)` 互异，经 `yAeval`（代数无关 ⟹ 单射）化成
   多项式系数提取。
 
