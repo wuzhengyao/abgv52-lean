@@ -19,7 +19,7 @@
   `MonoidAlgebra` 无零因子）、`ζ`-假定 `[HasEnoughRootsOfUnity F (Monoid.exponent Gˣ)]`
   （§2 用：字符群有限 ＋ 基数非零（引理 P））。
 
-  范围注（A13）：本件给**基**与**计数**；`IsRational` 结论（M6-B）经
+  范围注（A13）：本件给**基**与**计数**；`IsRational` 结论（M6-C）经
   `latticeInvariantsAlg` 的生成性在其上另建。
 
   **无 sorry、无自造公理**。

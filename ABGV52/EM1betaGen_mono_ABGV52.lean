@@ -8,7 +8,11 @@
     * §2 生成引理：被置换基的单项式族生成 `F(Q)`（`adjoin_range_mono_eq_top`）；
          Y-族（M6-A 的特征基）经基变换展开亦生成 `F(Q)`（`adjoin_range_Y_eq_top`）；
     * §3 trdeg 三明治：`#ι ≤ trdeg ≤ #ι`（`card_le_trdeg`／`trdeg_le_card`）
-         ⟹ Y-族代数无关（`algebraicIndependent_Y`）与超越基性（`isTranscendenceBasis_Y`）。
+         ⟹ Y-族代数无关（`algebraicIndependent_Y`）与超越基性（`isTranscendenceBasis_Y`）；
+    * §4 φ-层：字数特征 `yCharOf` 与 kernel 格 `yKernel`（有限指数 ≤ |G|：
+         `yKernel_index_le_card`）；
+    * §5 不变量域等式：`latticeInvariants F G Q = adjoin F (yPow '' yKernel)`
+         （`latticeInvariants_eq_adjoin_yPow`）。
 
   关键机制（免逆 DFT）：W 的任何 F-基都生成整域（基变换 ⟹ `F(y's) ⊇ F(x^{e_x}) = F(Q)`），
   配合 `trdeg = #ι` 直接得代数无关；上界 `trdeg ≤ #ι` 经直接构造

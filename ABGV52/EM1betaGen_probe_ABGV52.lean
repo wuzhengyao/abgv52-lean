@@ -20,12 +20,14 @@
   机制独立性（L-D 对照）：本件的非空性由两条独立机制给出——① 显式见证
   构造（§1：B 的显式定义 + hκ 的逐分支计算）；② 实例合成（§2/§3）。
   M6-A 内部的计数机制（轨道-稳定子）与无关性机制（Gram 对角化）在本件
-  不出现。§4 消费例仅示"主推论可作用于此见证"，不参与非空性认证。
+  不出现。§4 消费例仅示"M6-A 关键引理与 M6-C 主定理可作用于此见证"，
+  不参与非空性认证。
 
   F 侧：§3 示 `HasEnoughRootsOfUnity ℂ (Monoid.exponent Gˣ)` 可由实例合成
   取得（`IsSepClosed ℂ` ← `IsAlgClosed ℂ`；`NeZero` 链经有限群指数）。
 -/
 import ABGV52.EM1betaGen_basis_ABGV52
+import ABGV52.EM1betaGen_rational_ABGV52
 import ABGV52.EMRouteS_ABGV52
 import Mathlib.LinearAlgebra.Basis.Prod
 import Mathlib.Algebra.Group.Action.Sum
@@ -117,9 +119,9 @@ example : Fintype (G ⊕ G) := inferInstance
 
 noncomputable example : HasEnoughRootsOfUnity ℂ (Monoid.exponent Gˣ) := inferInstance
 
-/-! ## 4. 消费例（仅消费 M6-A，不参与非空性认证） -/
+/-! ## 4. 消费例（不参与非空性认证） -/
 
-/-- M6-A 主推论 `YSub_linearIndependent` 在 §1 见证上的端到端应用
+/-- M6-A 关键引理 `YSub_linearIndependent` 在 §1 见证上的端到端应用
 （`F := ℂ`、`Q := (G → ℤ) × (G → ℤ)`、`ι := G ⊕ G`）。 -/
 noncomputable example :
     LinearIndependent ℂ
@@ -128,6 +130,16 @@ noncomputable example :
         (MulAction.toPermHom G (G ⊕ G))) :=
   YSub_linearIndependent (F := ℂ) (G := G) (Q := (G → ℤ) × (G → ℤ)) (ι := G ⊕ G)
     ((Pi.basisFun ℤ G).prod (Pi.basisFun ℤ G)) (MulAction.toPermHom G (G ⊕ G))
+
+/-- **案例可实现（L10①）**：M6-C 主定理在 §1 见证上端到端应用——整条假设类
+（实例底座 ＋ ζ ＋ `(B, κ, hκ)`）**同时**可被实例化（比逐项见证强一档；
+审查 A 预验证，2026-10-09）。与上例并列：不参与非空性认证。 -/
+example (G : Type) [CommGroup G] [Fintype G] :
+    IsRational ℂ
+      ↥(latticeInvariantsAlg ℂ G ((G → ℤ) × (G → ℤ))) := by
+  obtain ⟨B, κ, hκ⟩ := exists_permBasis_prodProd (G := G)
+  exact isRational_latticeInvariantsAlg_of_permBasis (F := ℂ) (G := G)
+    (Q := (G → ℤ) × (G → ℤ)) (ι := G ⊕ G) (B := B) (κ := κ) hκ
 
 /-! ## 5. 公理闸门 -/
 
