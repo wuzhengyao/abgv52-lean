@@ -133,7 +133,8 @@ noncomputable example :
 
 /-- **案例可实现（L10①）**：M6-C 主定理在 §1 见证上端到端应用——整条假设类
 （实例底座 ＋ ζ ＋ `(B, κ, hκ)`）**同时**可被实例化（比逐项见证强一档；
-审查 A 预验证，2026-10-09）。与上例并列：不参与非空性认证。 -/
+`G : Type` 系主定理宇宙钉（`Rep.{0}`，已登记）所必需——非疏漏）。
+与上例并列：不参与非空性认证。 -/
 example (G : Type) [CommGroup G] [Fintype G] :
     IsRational ℂ
       ↥(latticeInvariantsAlg ℂ G ((G → ℤ) × (G → ℤ))) := by

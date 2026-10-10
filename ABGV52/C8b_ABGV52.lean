@@ -27,12 +27,16 @@ theorem coh2IsoC9_M_H_rep : Coh2IsoC9 M_H_rep :=
 theorem discriminant_pair_M_H_rep : Coh2IsoC9 M_H_rep ∧ ¬ Coh2ExpDvd3 M_H_rep :=
   discriminant_pair M_H_rep coh2IsoC9_M_H_rep
 
-/-- **论文 `thm:not-stably-rational`（接线版）**：`coh²` 输入已由 C 档提供，
-余下**两条假设**为 EM/Voskresenskii 判据与论文 `prop:stable-exp`。 -/
+/-- **论文 `thm:not-stably-rational`（接线版；第四十二改修正判据）**：`coh²` 输入已由
+C 档提供，余下**两条输入**为修正判据（序列形；⊕-形旧读法一般情形已证为假）与
+`M|_H` 非 quasi-permutation（论文 `lem:not-quasi-perm`）。本件在 `EMQuasi` 层之下
+（不能 import 它），故 `hnq` 此处仍为参数；其已证实例与全闭合消费见
+`EMQuasi_ABGV52.lean`（`not_isQuasiPermutation_M_H_rep`）／`EM_ABGV52.lean`
+（`not_stably_rational_EM`）。 -/
 theorem not_stably_rational_wired (K : Type) (SRat : Type → Prop)
-    (criterion : SRat K ↔ IsStablyPermutation M_H_rep)
-    (stable_exp : ∀ L : Rep ℤ H, IsStablyPermutation L → Coh2ExpDvd3 L) : ¬ SRat K :=
-  not_stably_rational M_H_rep K SRat criterion stable_exp coh2IsoC9_M_H_rep
+    (hEM : SRat K → IsQuasiPermutation M_H_rep)
+    (hnq : ¬ IsQuasiPermutation M_H_rep) : ¬ SRat K :=
+  not_stably_rational M_H_rep K SRat hEM hnq
 
 /-! ## 公理闸门 -/
 

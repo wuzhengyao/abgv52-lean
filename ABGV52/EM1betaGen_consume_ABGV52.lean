@@ -10,7 +10,7 @@
 `wiki/proj-ABGV52-M6-1beta-general-design.md` §4.3／§6 的 M6-D 行。
 
 **五件（对照派发书 §2）**：
-- (a) `s34Interface_of_fischer_permutation`（＋ `_of_lattice` 便利形）：S4 字段由 M6-C
+- (a) `s34Interface_of_fischer_permutation`：S4 字段由 M6-C
   主定理供给（取 `Q`、`(B, κ, hκ)`、ζ），经 `RouteS.s34Interface_of_bridge`（`:419`）进入
   `S34Interface`（`:363`）——即 `s34Interface_of_fischer_regular`（`EMRouteS:553`）的 Q-版。
 - (b) `phiAddEquivQ`／`latticeAddEquivQ`：桥数据 `↥M × ↥P ≃+ ↥Q`（`EMConsume.eReg`

@@ -10,10 +10,10 @@ H = C_3 x C_3 and its generalizations H = C_p x C_p.
 
 The paper is included in this repository:
 
-* `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-09);
+* `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-10);
 * `paper/ABGV-5.2-resolution.pdf` — a compiled PDF.
 
-The PDF was compiled from the current TeX source (2026-10-09).
+The PDF was compiled from the current TeX source (2026-10-10).
 
 ## Verification code
 
@@ -36,6 +36,16 @@ with HAP) and their recorded output are in `verification/`; see
   interface `SaltmanHyp` with a wiring theorem that fills the
   faithfulness input from the elementary proof of faithfulness, and with
   a non-vacuity probe (`Saltman_ABGV52.lean`).
+* As of the 2026-10-10 revision of the paper, the retract rationality
+  of Z_H(F, 9) is left open in the paper (Remark 4.12), and the earlier
+  comparison through the linear invariant field is recorded there as
+  invalid.  The formalized retract-rationality wiring (`R1_ABGV52.lean`,
+  `SaltT2_ABGV52.lean`, `Saltman_ABGV52.lean`, `ProcConsume_ABGV52.lean`)
+  is retained as a record of the conditional assembly of that thread.
+* In the same revision the quasi-permutation form of the criterion,
+  together with a machine-checked counterexample to its original
+  stably-permutation form, is formalized in `EMQuasi_ABGV52.lean` and
+  `EMCounter_ABGV52.lean`.
 * The geometric identification Z_H(F, p^2) ≅ F(M|_H)^H (Procesi, 1967)
   is used as a named hypothesis: the development formalizes the reduction
   to the regular restriction and the transport of invariants along that
@@ -85,8 +95,9 @@ with HAP) and their recorded output are in `verification/`; see
 | `EM_ABGV52`, `Saltman_ABGV52`, `Procesi_ABGV52` | the three named hypotheses (`EMHyp`/`EMHypP`, `SaltmanHyp`, `ProcesiHyp`) with definitional-shape locks, wiring theorems, and non-vacuity probes |
 | `EMArtin`, `EMTrans`, `EMSpeiser`, `EMSemilinear`, `EMRational`, `EMFixed`, `EMDegree`, `EMIndep`, `EMRouteS`, `EMBridge`, `EMConsume` | the proof layers behind the criterion: Artin's fixed-field theorem, invariant transport, Speiser's theorem, the semilinear machinery, Lenstra's (1.4), the degree chain, algebraic independence, and the assembly of the converse |
 | `EM1betaGen_*` | the permutation-lattice rationality engine (character-basis layer, monomial lattice, rationality closure, consumption) with a non-vacuity probe |
-| `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor` | the Saltman-track layers: the 1984 definitions, the rational-to-retract bridge, Swan's lemma, and the corollary/reduction pair |
-| `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, and its wiring |
+| `EMQuasi`, `EMCounter`, `ExtBridge`, `ExtLES`, `ExtMH`, `ExtMHUncond`, `ProbeLES1`, `ProbeLES2`, `S2b` | the criterion-clearing track: the corrected quasi-permutation form of the criterion with its cohomological refutation witness, the machine-checked counterexample to the original form, and the Ext^1 machinery with its unconditional closure |
+| `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`, `SaltRatOver` | the Saltman-track layers: the 1984 definitions, the rational-to-retract bridge, Swan's lemma, the corollary/reduction pair, the 2-power/cyclotomic condition layer, the named generic-object residual, and retract rationality along rational extensions |
+| `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
 | `paper/` | the paper: TeX source and compiled PDF |

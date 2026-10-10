@@ -3,6 +3,7 @@
 
   闸门读数（2026-09-30，已过闸）：lean rc=0／error=0／无 sorry；
   `#print axioms` 三条均为 `[propext, Classical.choice, Quot.sound]`。
+  补记（2026-10-09）：§9 打包后 `#print axioms` 共 **9 条**，全三标准（切片 48:51 复跑绿）。
 
   论文锚（`raw/ABGV-5.2-resolution.tex`）：
     `:624` prop:U-restrict-canonical —— \(U|_H \cong \mathbb Z[H]\)，\(e_{h\cdot\omega_0}\mapsto h\)；
@@ -16,6 +17,8 @@
     ② \(M|_\theta\) 作 `Rep ℤ (Hp p)`（G1b 的核 \(\ker\varphi\) 承搬运后的作用）；
     ③ 显式同构 \(\Phi:\mathbb Z[\Omega]\otimes\mathbb Z[\Omega]\cong Vp\)，证 \(G\)-等变且 \(\pi\circ\Phi=-\varphi\)；
     ④ 于是 \(\Phi\) 限制为 `Rep ℤ (Hp p)` 同构 \(M|_\theta \cong M_{\mathrm{rep}}\)（P1 的 \(\ker\pi\)）。
+    ⑤ **`prop:tensor-reg-ZH` 单一声明打包（§9，2026-10-09 补）**：`tensorDiagRepr`／`tensorDiagRep`
+       ＋等变 `PhiT_comm` ⟹ `PhiRepIso : tensorDiagRep ≅ VRep`（论文 `:666` 的 `Rep` 级单声明）。
 -/
 import ABGV52.P1_ABGV52
 import ABGV52.G1b_ABGV52
@@ -469,12 +472,73 @@ noncomputable def Miso : Mres p ≅ ABGV52.P.M_rep p :=
   Rep.mkIso (Representation.Equiv.mk
     (ρ := (Mres p).ρ) (σ := (ABGV52.P.M_rep p).ρ) (kerEquiv p) (kerEquiv_comm p))
 
-/-! ## 9. 公理闸门 -/
+/-! ## 9. `prop:tensor-reg-ZH` 的单一声明打包（论文 `:666` 的 `Rep` 级同构；2026-10-09 补）
+
+论文 `:666`（`prop:tensor-reg-ZH`）：\(\mathbb Z[H]\otimes_{\mathbb Z}\mathbb Z[H]\cong\mathbb Z[H]^{\oplus 9}\)
+（左式对角作用）。本节把 §6–§7 的内容（`PhiT` ＋ `PhiLM_equivariant`）打包为**单一** `Rep` 同构
+声明 `PhiRepIso`——\(\Omega\)-侧显式模型（`ZOm ⊗ ZOm ≅ Vp`）；\(H\)-侧字面形式经 §3–§4 的
+`e_L` 等变搬运即得。 -/
+
+/-- 对角作用 \(h\cdot(x\otimes y)=hx\otimes hy\) 的表示（两因子同用 `UH` 的 `ρ`）。 -/
+noncomputable def tensorDiagRepr :
+    Representation ℤ (ABGV52.P.Hp p) ((ZOm p) ⊗[ℤ] (ZOm p)) where
+  toFun h := TensorProduct.map ((UH p).ρ h) ((UH p).ρ h)
+  map_one' := by
+    refine LinearMap.ext fun x => ?_
+    change (TensorProduct.map ((UH p).ρ (1 : ABGV52.P.Hp p))
+      ((UH p).ρ (1 : ABGV52.P.Hp p))) x = x
+    induction x using TensorProduct.induction_on with
+    | zero => rw [map_zero]
+    | tmul f g =>
+        rw [TensorProduct.map_tmul, map_one]
+        rfl
+    | add x y hx hy => rw [map_add, hx, hy]
+  map_mul' a b := by
+    refine LinearMap.ext fun x => ?_
+    change (TensorProduct.map ((UH p).ρ (a * b)) ((UH p).ρ (a * b))) x
+      = (TensorProduct.map ((UH p).ρ a) ((UH p).ρ a))
+          ((TensorProduct.map ((UH p).ρ b) ((UH p).ρ b)) x)
+    have h : ∀ y : ZOm p, ((UH p).ρ (a * b)) y = ((UH p).ρ a) (((UH p).ρ b) y) := by
+      intro y
+      rw [map_mul]
+      rfl
+    induction x using TensorProduct.induction_on with
+    | zero => rw [map_zero, map_zero, map_zero]
+    | tmul f g =>
+        rw [TensorProduct.map_tmul, TensorProduct.map_tmul, TensorProduct.map_tmul,
+          h f, h g]
+    | add x y hx hy => rw [map_add, map_add, map_add, hx, hy]
+
+/-- 对角作用下的 \(\mathbb Z[\Omega]^{\otimes 2}\) 作为 `Rep ℤ (Hp p)`。 -/
+noncomputable abbrev tensorDiagRep : Rep ℤ (ABGV52.P.Hp p) :=
+  Rep.of (tensorDiagRepr p)
+
+/-- \(\Phi\) 与作用交换（由 `PhiLM_equivariant` 逐点读出）。 -/
+lemma PhiT_comm (h : ABGV52.P.Hp p) :
+    (PhiT p).toLinearMap ∘ₗ (tensorDiagRepr p h)
+      = ((ABGV52.P.VRep p).ρ h) ∘ₗ (PhiT p).toLinearMap := by
+  refine LinearMap.ext fun x => ?_
+  show PhiLM p (TensorProduct.map ((UH p).ρ h) ((UH p).ρ h) x)
+      = ABGV52.P.act p h (PhiLM p x)
+  exact PhiLM_equivariant p h x
+
+/-- **`prop:tensor-reg-ZH` 打包（论文 `:666`）**：对角作用下的
+\(\mathbb Z[\Omega]^{\otimes 2} \cong Vp = \mathbb Z[H]^{\oplus p^2}\)
+作为 `Rep ℤ (Hp p)` 同构的单一声明。 -/
+noncomputable def PhiRepIso : tensorDiagRep p ≅ ABGV52.P.VRep p :=
+  Rep.mkIso (Representation.Equiv.mk
+    (ρ := tensorDiagRepr p) (σ := (ABGV52.P.VRep p).ρ) (PhiT p) (PhiT_comm p))
+
+/-! ## 10. 公理闸门 -/
 
 #print axioms pi_PhiLM
 #print axioms PhiLM_equivariant
 #print axioms kerEquiv
 #print axioms kerEquiv_comm
 #print axioms Miso
+#print axioms tensorDiagRepr
+#print axioms tensorDiagRep
+#print axioms PhiT_comm
+#print axioms PhiRepIso
 
 end ABGV52.G

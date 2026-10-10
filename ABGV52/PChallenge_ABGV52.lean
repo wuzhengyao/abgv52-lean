@@ -9,6 +9,9 @@
       **无条件深内容**（置换格上的指数界）本件**只登记陈述**（`sorry`）——「公开陈述库登记陈述，
       工作只供证明」（其证明在 `PThm`／`P5b`）。
     * 检查器 `abgv52-lean-crosscheck.py` 逐条比对 `PThm` ↔ 本件 的**陈述类型**。
+    * ⚠ ∝-stale（O1 修正，2026-10-10）：`pThm_not_stably_rational`／`pThm_not_rational`
+      的判据参数为 **⊕-形旧读法**（一般情形已证为假）；P 档修正序列形（q-p）与其反证
+      待下一波——届时与 `PThm` **同轮**改形，保持逐条比对。
 -/
 import Mathlib.RepresentationTheory.Rep.Basic
 import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality

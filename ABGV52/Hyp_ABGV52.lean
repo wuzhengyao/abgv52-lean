@@ -44,6 +44,15 @@ def IsStablyPermutation (L : Rep ℤ H) : Prop :=
   ∃ (P Q : Rep ℤ H), IsPermutationLattice P ∧ IsPermutationLattice Q ∧
     Nonempty (L ⊞ P ≅ Q)
 
+/-- **quasi-permutation 格**（论文 `def:lattice` 第三项；第四十二改修正序列形）：
+存在短正合列 `0 → M → P → Q → 0`（`P`、`Q` 置换格）。⊕-形一般陈述为假
+（`EMCounter_ABGV52.lean`）；本定义与 `EMQuasi_ABGV52.lean` 的
+`EM.IsQuasiPermutation H` 定义级同体（桥 `EM.isQuasiPermutation_iff`，`Iff.rfl`）。 -/
+def IsQuasiPermutation (M : Rep ℤ H) : Prop :=
+  ∃ (P Q : Rep ℤ H) (f : M ⟶ P) (g : P ⟶ Q),
+    Function.Injective f ∧ Function.Exact f g ∧ Function.Surjective g ∧
+    IsPermutationLattice P ∧ IsPermutationLattice Q
+
 /-! ## 2. 上同调读数（形态即论文结论的形态） -/
 
 /-- `coh^q(H, M)` 作为 `Z`-模。 -/
@@ -62,6 +71,7 @@ noncomputable def Coh2ExpDvd3 (M : Rep ℤ H) : Prop :=
 
 #print axioms IsPermutationLattice
 #print axioms IsStablyPermutation
+#print axioms IsQuasiPermutation
 #print axioms Coh2IsoC9
 
 end ABGV52
