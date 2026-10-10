@@ -71,7 +71,12 @@ theorem cp_general_3a : ¬ IsStablyPermutation (M_rep p) := by
     simpa using this
   exact p_smul_one_zmod_ne_zero p hkill
 
-/-! ## 4. 论文 (3b)(3c)：`Z_H(F,p²)` 非稳定有理（从而非有理）——**以 EM 判据为假设** -/
+/-! ## 4. 论文 (3b)(3c)：`Z_H(F,p²)` 非稳定有理（从而非有理）——**以 EM 判据为假设**
+
+  ⚠ ∝-stale（O1 修正，2026-10-10）：本节的 `criterion : SRat K ↔ IsStablyPermutation ...`
+  为 **⊕-形旧判据**（一般情形已证为假，见 `EMCounter_ABGV52.lean`）；P 档修正序列形
+  （q-p）与其 `¬q-p(M_rep p)` 反证**待下一波**（H 档同路线已完成：`EMQuasi_ABGV52.lean`；
+  B 档陈述对已改锁）。消费端 `EM_ABGV52.cp_general_3b_EM` 同标 ∝-stale。 -/
 
 /-- **`thm:Cp-general` (3) 的有理性侧**：设 `SRat` 表示「`K` 稳定有理」且 EM 判据成立
 （`SRat K ↔ IsStablyPermutation M_rep`），则 `K` 非稳定有理。 -/

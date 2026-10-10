@@ -5,6 +5,12 @@
   「上同调输入 ＋ 转移界」显式假设下的条件命题（这才是可被独立重写对照的**公开陈述形态**；
   论文的 (3)(4) 本身即以此为条件）。证明直接调用 P 档已交付件（`perm_exp`／`stable_exp`）。
 
+  ⚠ ∝-stale（O1 修正，2026-10-10）：`pThm_not_stably_rational`／`pThm_not_rational` 的
+  `criterion` 参数为 **⊕-形旧判据**（一般情形已证为假，见 `EMCounter_ABGV52.lean`）；
+  P 档修正序列形（q-p）与其 `¬q-p(M_rep p)` 反证**待下一波**（H 档同路线已完成：
+  `EMQuasi_ABGV52.lean`；B 档陈述对已改锁，见 `Thm_ABGV52.lean` §2）。陈述暂不改锁——
+  `PChallenge` 逐条比对须同轮改形；消费端 `EM_ABGV52.cp_general_3b_EM` 同标 ∝-stale。
+
   对应的独立重写件 = `PChallenge_ABGV52.lean`（**零 import 主链**，自足定义同形陈述）；
   检查器逐条比对两份文件的陈述类型（防「全文件一致的替换」）。
 -/

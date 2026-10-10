@@ -37,6 +37,12 @@ def PermLattice (P : Rep ℤ Grp9) : Prop :=
 def StablyPerm (L : Rep ℤ Grp9) : Prop :=
   ∃ (P Q : Rep ℤ Grp9), PermLattice P ∧ PermLattice Q ∧ Nonempty (L ⊞ P ≅ Q)
 
+/-- quasi-permutation（修正序列形）：存在 `0 → M → P → Q → 0`，`P`、`Q` 置换。 -/
+def QuasiPerm (M : Rep ℤ Grp9) : Prop :=
+  ∃ (P Q : Rep ℤ Grp9) (f : M ⟶ P) (g : P ⟶ Q),
+    Function.Injective f ∧ Function.Exact f g ∧ Function.Surjective g ∧
+    PermLattice P ∧ PermLattice Q
+
 /-- `coh^2(H, M) ≅ C_9`。 -/
 noncomputable def Coh2IsNine (M : Rep ℤ Grp9) : Prop :=
   Nonempty ((groupCohomology M 2 : Type) ≃ₗ[ℤ] ZMod 9)
@@ -68,12 +74,12 @@ theorem not_stably_perm (M : Rep ℤ Grp9)
     (h9 : Coh2IsNine M) : ¬ StablyPerm M :=
   fun hSP => nine_excludes_exp_three M h9 (exp_bound M hSP)
 
-/-- 有理性侧：判据作显式参数。 -/
+/-- 有理性侧（修正判据，序列形）：判据（`SRat K → QuasiPerm M`）＋ 非 quasi-permutation
+⟹ 非稳定有理。 -/
 theorem not_stably_rational (M : Rep ℤ Grp9) (K : Type) (SRat : Type → Prop)
-    (crit : SRat K ↔ StablyPerm M)
-    (exp_bound : ∀ L : Rep ℤ Grp9, StablyPerm L → Coh2ExpThree L)
-    (h9 : Coh2IsNine M) : ¬ SRat K :=
-  fun hK => not_stably_perm M exp_bound h9 (crit.mp hK)
+    (hEM : SRat K → QuasiPerm M)
+    (hnq : ¬ QuasiPerm M) : ¬ SRat K :=
+  fun hK => hnq (hEM hK)
 
 /-- 非空性见证：平凡表示是置换格。 -/
 theorem perm_nonempty : PermLattice (Rep.ofMulAction ℤ Grp9 PUnit) :=

@@ -22,10 +22,13 @@ theorem not_stably_permutation_wired (M : Rep ℤ H) (h9 : Coh2IsoC9 M) :
     ¬ IsStablyPermutation M :=
   not_stably_permutation M stable_exp h9
 
-/-- 论文 `thm:not-stably-rational`（**只剩 EM/Voskresenskii 判据一条假设**）。 -/
+/-- 论文 `thm:not-stably-rational`（第四十二改修正判据）：剩**修正判据（序列形）**与
+`¬ IsQuasiPermutation M_H_rep` 两条输入。后者已由 `EMQuasi_ABGV52.lean` 证明
+（本件不 import 它）；全闭合消费版见 `EM_ABGV52.lean` 的 `not_stably_rational_EM`。 -/
 theorem not_stably_rational_wired' (K : Type) (SRat : Type → Prop)
-    (criterion : SRat K ↔ IsStablyPermutation M_H_rep) : ¬ SRat K :=
-  not_stably_rational M_H_rep K SRat criterion stable_exp coh2IsoC9_M_H_rep
+    (hEM : SRat K → IsQuasiPermutation M_H_rep)
+    (hnq : ¬ IsQuasiPermutation M_H_rep) : ¬ SRat K :=
+  not_stably_rational M_H_rep K SRat hEM hnq
 
 /-- 判别对（`C_9` **且** 指数不整除 3）在 `M|_H` 上，且判据版结论去假设。 -/
 theorem discriminant_wired : Coh2IsoC9 M_H_rep ∧ ¬ Coh2ExpDvd3 M_H_rep :=

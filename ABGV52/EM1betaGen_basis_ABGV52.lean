@@ -191,15 +191,6 @@ theorem natCast_card_ne_zero {F : Type*} [Field F] {G : Type*} [CommGroup G]
   rw [← hcard]
   exact natCast_card_units_ne_zero (F := F) (G := G)
 
-/-- **(P″)** 除数形式：`n ∣ |G|` ⟹ `(n : F) ≠ 0`。 -/
-theorem natCast_ne_zero_of_dvd {F : Type*} [Field F] {G : Type*} [CommGroup G]
-    [Fintype G] [HasEnoughRootsOfUnity F (Monoid.exponent Gˣ)]
-    {n : ℕ} (hn : n ∣ Fintype.card G) : (n : F) ≠ 0 := by
-  intro hn0
-  have h0 : ((Fintype.card G : ℕ) : F) ≠ 0 := natCast_card_ne_zero (F := F) (G := G)
-  obtain ⟨k, hk⟩ := hn
-  exact h0 (by rw [hk, Nat.cast_mul, hn0, zero_mul])
-
 /-! ## 1. 基部：单项式、`Wb` 层、`F(Q)` 搬运 -/
 
 section Basis
@@ -320,7 +311,7 @@ theorem finrank_Wb : Module.finrank F ↥(Wb F Q ι B) = Fintype.card ι :=
 theorem finiteDimensional_Wb : FiniteDimensional F ↥(Wb F Q ι B) :=
   FiniteDimensional.span_of_finite F (Set.finite_range (mono F Q ι B))
 
-/-! ## 1.5 `Wb` 的单项式子类型基与 `hκ`-自由的 `twist` -/
+/-! ## 1.5 `Wb` 的单项式子类型基 -/
 
 section BasisSub
 
@@ -349,18 +340,6 @@ noncomputable def monoBasis : Module.Basis ι F ↥(Wb F Q ι B) := by
   exact congrFun (coe_basisOfLinearIndependentOfCardEqFinrank' (K := F) (monoSub F Q ι B)
     (monoSub_linearIndependent F Q ι B) (finrank_Wb F Q ι B).symm) i
 
-/-- `hκ`-自由的「指标平移」算子（在 `monoBasis` 上按 `κ` 置换单项式）。 -/
-noncomputable def twist (σ : G) : ↥(Wb F Q ι B) →ₗ[F] ↥(Wb F Q ι B) :=
-  (monoBasis F Q ι B).constr F (fun i => monoSub F Q ι B (κ σ i))
-
-/-- `twist` 在单项式子上的取值。 -/
-theorem twist_monoSub (σ : G) (i : ι) :
-    twist F G Q ι B κ σ (monoSub F Q ι B i) = monoSub F Q ι B (κ σ i) := by
-  have h := Module.Basis.constr_basis (monoBasis F Q ι B) F
-    (fun j => monoSub F Q ι B (κ σ j)) i
-  rw [monoBasis_apply F Q ι B i] at h
-  exact h
-
 end BasisSub
 
 /-! ## 2. 特征基 `Y_{i,χ}`（逐轨道） -/
@@ -369,7 +348,8 @@ section Chars
 
 variable [HasEnoughRootsOfUnity F (Monoid.exponent Gˣ)]
 
-/-- 指标集：轨道代表（商 `ι/orbitRelκ`） × 代表处的稳定子字符 `S_{out c}`。 -/
+/-- 指标集：轨道代表（商 `ι/orbitRelκ`） × 代表处的稳定子字符 `S_{out c}`。
+**注**：代表取自 `Quotient.out`（选择公理）——`YSub` 族随代表选取而定；本链只以其存在性／无关性／计数承重（内容不依赖代表）。 -/
 abbrev Idx : Type _ := Σ c : Quotient (orbitRelκ κ), ↥(Sset (F := F) κ (Quotient.out c))
 
 /-- `Y_{i,χ}` 在 `Wb` 层（单项式基下的 `F`-组合）。 -/
@@ -742,7 +722,6 @@ end Chars
 #print axioms orbitκ_units_eq
 #print axioms natCast_card_units_ne_zero
 #print axioms natCast_card_ne_zero
-#print axioms natCast_ne_zero_of_dvd
 #print axioms algToField
 #print axioms monoAlg
 #print axioms mono
@@ -757,6 +736,12 @@ end Chars
 #print axioms mono_linearIndependent
 #print axioms finrank_Wb
 #print axioms finiteDimensional_Wb
+
+-- §1.5 单项式子类型基
+#print axioms monoSub
+#print axioms monoSub_linearIndependent
+#print axioms monoBasis
+#print axioms monoBasis_apply
 
 -- §2.1 特征正交与轨道计数（Chunk 1）
 #print axioms instFintypeMulCharBasis
@@ -778,6 +763,15 @@ end Chars
 #print axioms YSub_linearIndependent
 #print axioms YBasis
 #print axioms YBasis_apply
+
+-- §2.3b 指标族与抽取泛函（def 层）
+#print axioms Idx
+#print axioms YSub
+#print axioms Y
+#print axioms Y_coe
+#print axioms dualY
+#print axioms dualY_coord
+#print axioms char_eq_of_witness
 
 end Basis
 

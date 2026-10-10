@@ -14,6 +14,10 @@
 
   `#print axioms` 断言（文件末）：三条主定理只依赖 propext / Classical.choice /
   Quot.sound —— 无 sorryAx、无自造公理。
+
+  2026-10-10（O1 传播）：§2 有理性侧判据已改**修正序列形**（`IsQuasiPermutation`，
+  定义层 `Hyp_ABGV52`）；旧 ⊕-形匿名槽已废（一般情形为假，`EMCounter_ABGV52.lean`；
+  替换仅涉槽形状，§1 的 ⊕-形定理 `not_stably_permutation` 依然真且保留）。
 -/
 import ABGV52.Hyp_ABGV52
 
@@ -49,16 +53,21 @@ theorem not_stably_permutation (M : Rep ℤ H)
     (h9 : Coh2IsoC9 M) : ¬ IsStablyPermutation M :=
   fun hSP => not_exp3_of_iso_C9 M h9 (stable_exp M hSP)
 
-/-! ## 2. 有理性侧（论文 `thm:not-stably-rational`；判据作显式参数） -/
+/-! ## 2. 有理性侧（论文 `thm:not-stably-rational`；**修正判据（序列形）**作显式参数）
 
-/-- 论文 `thm:not-stably-rational`：设 `K` 是 `Z_H(F,9)`，`SRat` 表示「`K` 稳定有理」，
-且 Endo--Miyata/Voskresenskii 判据成立（`SRat K ↔ IsStablyPermutation M`），
+  第四十二改（O1）后论文路线：设 `K` 稳定有理，判据（假设）给 `M` 是 quasi-permutation；
+  论文新引理 `lem:not-quasi-perm` 又给非 quasi-permutation，矛盾。本件为 T2 陈述锁，
+  证明只做 modus tollens 骨架；`¬ IsQuasiPermutation M` 在 `M = M_H_rep` 的已证实例
+  见 `EMQuasi_ABGV52.lean`（全闭合消费见 `EM_ABGV52.lean`）。 -/
+
+/-- 论文 `thm:not-stably-rational`（第四十二改后形态）：设 `SRat` 表示「`K` 稳定有理」，
+修正判据成立（`SRat K → IsQuasiPermutation M`；⊕-形旧读法一般情形已证为假，
+见 `EMCounter_ABGV52.lean`），且 `M` 非 quasi-permutation（论文 `lem:not-quasi-perm`），
 则 `K` 非稳定有理。 -/
 theorem not_stably_rational (M : Rep ℤ H) (K : Type) (SRat : Type → Prop)
-    (criterion : SRat K ↔ IsStablyPermutation M)
-    (stable_exp : ∀ L : Rep ℤ H, IsStablyPermutation L → Coh2ExpDvd3 L)
-    (h9 : Coh2IsoC9 M) : ¬ SRat K :=
-  fun hK => not_stably_permutation M stable_exp h9 (criterion.mp hK)
+    (hEM : SRat K → IsQuasiPermutation M)
+    (hnq : ¬ IsQuasiPermutation M) : ¬ SRat K :=
+  fun hK => hnq (hEM hK)
 
 /-! ## 3. 非空性见证（接口→定义的代价：`IsPermutationLattice` 确有实例） -/
 
