@@ -149,13 +149,25 @@ sync.  The items added since then are:
   downstream steps must be wired to `_strongest`.
 - `GaloisAlgebra_ABGV52.lean`: besides the Galois-algebra criterion, the file registers the source's
   `proposition-0-2(a)` as a named external input (`GaloisProjectiveHyp`: a `G`-Galois `S/R` has `S`
-  finitely generated and projective over `R`), with a type lock, a data-level non-vacuity probe and a
-  gap registration, following the precedent of the Fischer interface.
+  finitely generated and projective over `R`), the use-site form of the source's `[CHR68] p. 13`
+  projectivity statement (`GaloisProjectiveSectionHyp`: a `G`-equivariant `R`-linear surjection onto
+  a `G`-Galois `S'` has a `G`-equivariant section), and the missing half of the fixed-subring clause
+  (`GaloisFixedSubringHyp`: `S^G ⊆ R`), each with a type lock, a data-level non-vacuity probe and a
+  gap registration, following the precedent of the Fischer interface.  The use sites
+  `exists_galoisProjectiveSection` and `exists_algebraMap_of_invariant` extract the section and the
+  fixed-subring clause from those inputs.
 - `SaltLem12_ABGV52.lean`: the `F₊[V]` layer for the blueprint's `lem1.2` — the action of `g` on `V`
   as an `F`-linear equivalence, the induced `F`-algebra automorphism of the symmetric algebra with
   its generator compatibility `ι v ↦ ι (g • v)`, the assembled `MulSemiringAction` on `F₊[V]`, the
-  invariant subalgebra `F₊[V]^G` (built by hand because mathlib has no `FixedPoints`), and the
-  lifting core: an `F`-linear section of a map `S → S'` lifts every algebra map `F₊[V] → S'`.
+  invariant subalgebra `F₊[V]^G` (built by hand because mathlib has no `FixedPoints`), the lifting
+  core (an `F`-linear section of a map `S → S'` lifts every algebra map `F₊[V] → S'`), and the
+  equivariance of that lift: when the section and the algebra map are `G`-equivariant and the action
+  on `S` commutes with the `F`-scalars, the lifted map is `G`-equivariant as well, proved on
+  generators from generator compatibility and closed by `SymmetricAlgebra.algHom_ext`.  The
+  object-level statement `IsProjectiveObjectSymmetric` (single-universe, with a type lock) is then
+  *proved*, not merely stated, by `isProjectiveObjectSymmetric_of_galoisHyps` from the two named
+  inputs above: the lifting theorem plus equivariance, and the fixed-subring clause — the blueprint's
+  step 9 `lem1.2`, modulo those two registered inputs.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
   `SaltRatOver` carry the 1984 definitions, the rational-to-retract bridge, Swan's lemma, the
   corollary/reduction pair, the 2-power condition layer, the named generic-object residual and
