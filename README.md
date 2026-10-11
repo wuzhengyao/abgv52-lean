@@ -120,3 +120,51 @@ The repository — the paper (`paper/`), the Lean development, and the
 verification code — is released under the MIT license (see `LICENSE`).
 The file `verification/LICENSE` carries the same license for the code
 package.
+
+## Coverage update (2026-10-12, appended)
+
+The table above reflects the state of 2026-10-10.  The development has since grown to **118 Lean
+files**, with the mirror, `SHA256SUMS` (118 lines) and the crosscheck gate (118-item table) all in
+sync.  The items added since then are:
+
+- `BaseChangeProj_ABGV52.lean`: the base-change statement `hBC` (the source's `proposition-0-2(d)`)
+  in the orientation the use site needs, `S' = T ⊗_R S`.  It proves the crossed-product base change
+  `SkewMonoidAlgebra S G ⊗[R] T ≃ₗ SkewMonoidAlgebra (T ⊗_R S) G` with its generator formula, the
+  endomorphism base change `(S →ₗ[R] S) ⊗[R] T ≃ₗ (T ⊗_R S →ₗ[T] T ⊗_R S)` (using finite
+  projectivity through `rTensorHomEquivHomRTensor`, `LinearMap.ringLmapEquivSelf` and
+  `AlgebraTensorModule.lift.equiv`), the target-orientation action layer, the fixed-subring clause in
+  that orientation, the linearity of the crossed-product map, the commutativity of that map with the
+  two base-change isomorphisms, and the resulting bijectivity: the third clause of the base-change
+  statement.  Two registrations are recorded in the file: the source's `GaloisBaseChangeHyp` is false
+  as stated for degenerate coefficient rings (a counterexample with `Z[i]/Z` and `G = C2`), and the
+  hypothesis slot that quantifies over *every* action satisfying `hR'G` is not inhabitable (the
+  trivial action satisfies `hR'G` but fails faithfulness), so the usable form pins the action by the
+  canonicality equation `g • (1 ⊗ x) = 1 ⊗ (g • x)`.
+- `GenericExtension_ABGV52.lean`: definition 1.1, the `E(G)`-slice language (realization property,
+  representing and generic objects, the lifting property), the Lifting property for generic objects
+  (Saltman's Proposition 1.1(a), whose source proof is omitted) and its `_strong`, `_stronger` and
+  `_strongest` variants.  `_strongest` proves the statement with *no* base-change hypothesis at all:
+  the step that consumed it now constructs the Galois structure on `T ⊗_R S` directly.  The earlier
+  variants keep their original statements but have an uninhabited base-change hypothesis, so
+  downstream steps must be wired to `_strongest`.
+- `GaloisAlgebra_ABGV52.lean`: besides the Galois-algebra criterion, the file registers the source's
+  `proposition-0-2(a)` as a named external input (`GaloisProjectiveHyp`: a `G`-Galois `S/R` has `S`
+  finitely generated and projective over `R`), with a type lock, a data-level non-vacuity probe and a
+  gap registration, following the precedent of the Fischer interface.
+- `SaltLem12_ABGV52.lean`: the `F₊[V]` layer for the blueprint's `lem1.2` — the action of `g` on `V`
+  as an `F`-linear equivalence, the induced `F`-algebra automorphism of the symmetric algebra with
+  its generator compatibility `ι v ↦ ι (g • v)`, the assembled `MulSemiringAction` on `F₊[V]`, the
+  invariant subalgebra `F₊[V]^G` (built by hand because mathlib has no `FixedPoints`), and the
+  lifting core: an `F`-linear section of a map `S → S'` lifts every algebra map `F₊[V] → S'`.
+- The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
+  `SaltRatOver` carry the 1984 definitions, the rational-to-retract bridge, Swan's lemma, the
+  corollary/reduction pair, the 2-power condition layer, the named generic-object residual and
+  retract rationality along rational extensions.
+
+The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
+is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
+
+*Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
+from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
+(2026-10-11, 29 rows) is not recoverable from the working tree and is registered as lost in
+`wiki/log.md`.*
