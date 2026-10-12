@@ -2336,6 +2336,55 @@ theorem algEquiv_ne_zero_iff (e : A ≃ₐ[F] B) {a : A} : e a ≠ 0 ↔ a ≠ 0
 end AwayMapEquiv
 
 
+/-! ## 4.33 **(a) 款具体形**（`IsGenericExtension`(a) 的成品形式）✓✅（第 167 轮）
+
+**⚠ 起点** ✓：§129.4 第 1 项 —— (a) 款具体形 ✓（**两处阻塞** ✗ 见 §129.2 ✓）。
+
+**⚠ 本轮结果** ✓：**①** **阻塞 (ii) 已解** ✓✅ —— **`\mathrm{AlgEquiv.restrictScalars}`** ✓
+（把 `\simeq_{\uparrow A_0}` 视作 `\simeq_F` ✓，**`\mathrm{IsScalarTower}`** ✓ 供给 ✓）；
+**②** **阻塞 (i) 未解** ✗（**登记** ✓）⟹ **本件以 `[\mathrm{IsFractionRing}\ \uparrow A_0\ K]` 为显式假设** ✓ 落 (a) 款的**成品形** ✓。
+
+**⚠ 件的形状** ✓：`\mathrm{AlgebraicIndependent}\ F\ a` ✓ ＋ **`[\mathrm{IsFractionRing}\ \uparrow A_0\ K]`** ✓ ＋ `s \neq 0`（`s \in A_0` ✓）⟹
+`\exists w \neq 0,\ \uparrow(A_0[s^{-1}]) \simeq_F \mathrm{Localization.Away}\ w` ✓
+（**恰是 `\mathrm{IsGenericExtension}` 的 (a) 款** ✓，**取 `w := e^{-1} s`** ✓）。
+**⚠ 组装式** ✓：`\mathrm{Localization.Away}\ w \xrightarrow{\ \psi\ } \mathrm{Localization.Away}\ (e w) = \mathrm{Localization.Away}\ s
+\xrightarrow{\ \chi\ } \uparrow(A_0[s^{-1}])` ✓，其中 `\psi` 由 **§4.32** ✓（基环同构搬运 ✓）、
+`\chi` 由 **§4.31** ✓（局部化同构 ✓）＋ **`\mathrm{restrictScalars}`** ✓。
+
+**✗ 登记（阻塞 (i)）** ✗：**`\mathrm{IsFractionRing}\ \uparrow(\mathrm{Algebra.adjoin}\ F\ \{\mathrm{range}\ a\})\ K`** ✗
+—— **本轮实测** ✓：由 §4.20 的**逐元素形**直造该结构时，**`\mathrm{isDefEq}` 心跳耗尽** ✗
+（**`\mathrm{IntermediateField.adjoin}` 由交结构定义** ✓，**其项在统一时指数膨胀** ✗；**已试** ✓：
+`\mathrm{change}` 定型 ✓／**提高心跳至 10^6** ✓／**改用乘法形（§4.18 的 `\mathrm{exists\_mul\_eq}`）** ✓ —— **均仍超时** ✗）
+⟹ **次轮路线** ✓：**（a）** **先 `\mathrm{set}` 把 `A_0` 与其分式环结构**在**独立一节**中定型**再引用** ✓
+（**`\mathrm{opaque}`／独立 `def` 阻断展开** ✓）；**（b）** 或**绕开 `\mathrm{IntermediateField.adjoin}`** ✓
+—— **改从 `\mathrm{IsFractionRing}` 的**等价判据**出发** ✓（**次轮先查此类判据** ✓，**(51)** ✓）。 -/
+
+
+
+section ClauseA
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K]
+variable {n : ℕ} {a : Fin n → K}
+
+/-- **(a) 款具体形**（`IsFractionRing` 作**显式假设**）：代数无关族 `a` ＋ `s ≠ 0` ⟹
+    `A₀[s⁻¹]` 同构于某局部化多项式环。 -/
+theorem exists_algEquiv_localizationAway_of_adjoin_inv
+    (hind : AlgebraicIndependent F a)
+    [IsFractionRing ↥(Algebra.adjoin F (Set.range a)) K]
+    (s : ↥(Algebra.adjoin F (Set.range a))) (hs : s ≠ 0) :
+    ∃ (w : MvPolynomial (Fin n) F), w ≠ 0 ∧
+      Nonempty (↥(Algebra.adjoin ↥(Algebra.adjoin F (Set.range a))
+        {(algebraMap ↥(Algebra.adjoin F (Set.range a)) K s)⁻¹}) ≃ₐ[F] Localization.Away w) := by
+  obtain ⟨e⟩ := nonempty_algEquiv_mvPolynomial_adjoin (K := K) hind
+  obtain ⟨ψ⟩ := nonempty_algEquiv_localizationAway_map (F := F) e (e.symm s)
+  rw [e.apply_symm_apply s] at ψ
+  obtain ⟨χ⟩ := nonempty_algEquiv_localizationAway_adjoin_inv (K := K) s hs
+  exact ⟨e.symm s, fun h0 => hs (by simpa using congrArg e h0),
+    ⟨(ψ.trans (AlgEquiv.restrictScalars F χ)).symm⟩⟩
+
+end ClauseA
+
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2436,5 +2485,6 @@ end AwayMapEquiv
 #print axioms nonempty_algEquiv_localizationAway_adjoin_inv
 #print axioms nonempty_algEquiv_localizationAway_map
 #print axioms algEquiv_ne_zero_iff
+#print axioms exists_algEquiv_localizationAway_of_adjoin_inv
 
 end ABGV52
