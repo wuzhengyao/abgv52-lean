@@ -232,10 +232,12 @@ sync.  The items added since then are:
   proof reads off `T/M = K`.  The setup half of the converse is also there: localizing a domain at a
   non-zero element stays a domain, the residue map `R(1/r) → T/𝔪` of the proof is built from the
   quotient isomorphism and the fraction-ring structure, and applying the lifting property at
-  `T = F[x]_P` produces the map `ψ : S → T` the proof needs.  What is still missing from the
-  converse is the refinement "`ψ(S) ⊆ F[x](1/w)` for some `w ∉ P`" and the final assembly; the
-  finding above was also refined: affineness of `R` does *not* give affineness of `R(1/r)`, so the
-  target must carry that hypothesis separately.  The converse and `thm3.8` are registered as gaps.
+  `T = F[x]_P` produces the map `ψ : S → T` the proof needs.  The algebraic kernel of the refinement
+  "`ψ(S) ⊆ F[x](1/w)` for some `w ∉ P`" is in place too: finitely many elements of a localization
+  share a common denominator, and consequently a finitely generated subalgebra of a localization lies
+  in a one-element localization, in the prime form `w ∉ P`.  What is still missing from the converse
+  is the final assembly; the finding above was also refined: affineness of `R` does *not* give
+  affineness of `R(1/r)`, so the target must carry that hypothesis separately.  The converse and `thm3.8` are registered as gaps.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.

@@ -290,7 +290,107 @@ theorem exists_lift_to_atPrime_of_hasLocalLifting {F S R : Type u} [Field F]
     inferInstance (residueMapOfSurjective (F := F) η₀ hη₀)
   exact ⟨ψ, hψ⟩
 
-/-! ## 8. 登记 -/
+/-! ## 8. 源反方向的**步 ⑤ 工具**（局部化中的公共分母 ✓） -/
+
+/-- **源步 ⑤ 的工具** ✓✓✓（印版 p.185：「**Since `S` is affine**, `ψ(S) ⊂ F[x₁,…,xₙ](1/w)`
+for some `w ∉ P`」✓）：局部化 `B = A_M` 中**有限个**元素有**公共分母** ✓ ——
+存在 `m ∈ M`，使每个 `x ∈ X` 都满足 `x · (m/1)^k = a/1`（`a ∈ A`，`k` 可随 `x` 变 ✓），
+即 `x ∈ A[1/m]` ✓。
+**证法** ✓（对 `X` 归纳 ✓，**指数记账**是全部内容 ✓）：单元用 `IsLocalization.surj` ✓ 取分母 ✓；
+合并时取 `m := m₁·m₂` ✓，**旧元素的指数升 1** ✓（因 `(m₁m₂)^{k+1}` 含因子 `m₁^{k+1}` ✓
+故可用旧式 `x·m₁^k = a` 清分母 ✓）✓。
+**⚠ 与 `SaltSwan.exists_localization_ge_adjoin` 的区别** ✓：后者是**分式域**档 ✗
+（`S : Subalgebra F K`、`IsFractionRing S K` ✓），**不**覆盖「**局部化**的有限型子代数」✗ —— 故本条须另立 ✓。 -/
+theorem exists_mem_localization_ge_finset {A B : Type u} [CommRing A] [CommRing B]
+    [Algebra A B] {M : Submonoid A} [IsLocalization M B] (X : Finset B) :
+    ∃ m : M, ∀ x ∈ X, ∃ (a : A) (k : ℕ),
+      x * (algebraMap A B (m : A)) ^ k = algebraMap A B a := by
+  classical
+  refine Finset.induction_on (s := X) ?_ ?_
+  · exact ⟨1, by simp⟩
+  · intro z Z hz ih
+    obtain ⟨m₁, h₁⟩ := ih
+    obtain ⟨⟨a₀, m₂⟩, hm₂⟩ := IsLocalization.surj M z
+    refine ⟨m₁ * m₂, ?_⟩
+    intro x hx
+    rw [Finset.mem_insert] at hx
+    rcases hx with hxz | hx
+    · rw [hxz]
+      refine ⟨a₀ * (m₁ : A), 1, ?_⟩
+      rw [pow_one, Submonoid.coe_mul, map_mul, map_mul]
+      calc z * (algebraMap A B (m₁ : A) * algebraMap A B ((m₂ : M) : A))
+          = (z * algebraMap A B ((m₂ : M) : A)) * algebraMap A B (m₁ : A) := by ring
+        _ = algebraMap A B a₀ * algebraMap A B (m₁ : A) := by rw [hm₂]
+    · obtain ⟨a, k, hk⟩ := h₁ x hx
+      refine ⟨a * (m₁ : A) * ((m₂ : M) : A) ^ (k + 1), k + 1, ?_⟩
+      have hpow : (algebraMap A B ((m₁ : A) * ((m₂ : M) : A))) ^ (k + 1)
+          = (algebraMap A B (m₁ : A)) ^ (k + 1)
+            * (algebraMap A B ((m₂ : M) : A)) ^ (k + 1) := by
+        rw [map_mul, mul_pow]
+      rw [Submonoid.coe_mul, hpow]
+      calc x * ((algebraMap A B (m₁ : A)) ^ (k + 1)
+            * (algebraMap A B ((m₂ : M) : A)) ^ (k + 1))
+          = (x * (algebraMap A B (m₁ : A)) ^ k * algebraMap A B (m₁ : A))
+              * (algebraMap A B ((m₂ : M) : A)) ^ (k + 1) := by
+              rw [pow_succ]; ring
+        _ = (algebraMap A B a * algebraMap A B (m₁ : A))
+              * (algebraMap A B ((m₂ : M) : A)) ^ (k + 1) := by rw [hk]
+        _ = algebraMap A B (a * (m₁ : A) * ((m₂ : M) : A) ^ (k + 1)) := by
+              rw [map_mul, map_mul, map_pow]
+
+/-- **源步 ⑤（有限型子代数档）** ✓✓✓：局部化 `B = A_M` 中由**有限集 `X`** 生成的子代数
+`Algebra.adjoin A X` **整体**落在 `A[1/m]` 里 ✓（**同一个 `m`** ✓）。
+**证法** ✓：由 §8 的 `exists_mem_localization_ge_finset` ✓ 取公共分母 `m` ✓，
+把目标性质**组装成子代数 `D`** ✓（`add`／`mul` 取指数 `k + l` ✓；`algebraMap c`／`0`／`1` 取指数 `0` ✓），
+再用 **`Algebra.adjoin_le`** ✓ 收口 ✓。
+**⚠ 用途** ✓：这正是源步 ⑤「**Since `S` is affine**, `ψ(S) ⊂ F[x](1/w)`」✓ 的**代数内核** ✓
+（取 `X := ψ(生成元集)` ✓）。 -/
+theorem exists_mem_localization_ge_adjoin {A B : Type u} [CommRing A] [CommRing B]
+    [Algebra A B] {M : Submonoid A} [IsLocalization M B] (X : Finset B) :
+    ∃ m : M, ∀ x ∈ Algebra.adjoin A (X : Set B), ∃ (a : A) (k : ℕ),
+      x * (algebraMap A B (m : A)) ^ k = algebraMap A B a := by
+  classical
+  obtain ⟨m, hm⟩ := exists_mem_localization_ge_finset (M := M) X
+  refine ⟨m, ?_⟩
+  let D : Subalgebra A B :=
+    { carrier := {x | ∃ (a : A) (k : ℕ), x * (algebraMap A B (m : A)) ^ k = algebraMap A B a}
+      mul_mem' := by
+        rintro x y ⟨a, k, ha⟩ ⟨b, l, hb⟩
+        refine ⟨a * b, k + l, ?_⟩
+        rw [pow_add]
+        calc x * y * ((algebraMap A B (m : A)) ^ k * (algebraMap A B (m : A)) ^ l)
+            = (x * (algebraMap A B (m : A)) ^ k)
+                * (y * (algebraMap A B (m : A)) ^ l) := by ring
+          _ = algebraMap A B a * algebraMap A B b := by rw [ha, hb]
+          _ = algebraMap A B (a * b) := by rw [map_mul]
+      one_mem' := ⟨1, 0, by simp⟩
+      add_mem' := by
+        rintro x y ⟨a, k, ha⟩ ⟨b, l, hb⟩
+        refine ⟨a * (m : A) ^ l + b * (m : A) ^ k, k + l, ?_⟩
+        rw [pow_add, map_add, map_mul, map_mul, map_pow, map_pow]
+        calc (x + y) * ((algebraMap A B (m : A)) ^ k * (algebraMap A B (m : A)) ^ l)
+            = x * (algebraMap A B (m : A)) ^ k * (algebraMap A B (m : A)) ^ l
+              + y * (algebraMap A B (m : A)) ^ l
+                * (algebraMap A B (m : A)) ^ k := by ring
+          _ = algebraMap A B a * (algebraMap A B (m : A)) ^ l
+              + algebraMap A B b * (algebraMap A B (m : A)) ^ k := by rw [ha, hb]
+      zero_mem' := ⟨0, 0, by simp⟩
+      algebraMap_mem' := fun c => ⟨c, 0, by simp⟩ }
+  have hXD : (X : Set B) ⊆ D := fun x hx => hm x hx
+  have hsub : Algebra.adjoin A (X : Set B) ≤ D := Algebra.adjoin_le hXD
+  intro x hx
+  exact hsub hx
+
+/-- **源步 ⑤ 的用点形** ✓✓（**素理想档** ✓）：取 `M := P.primeCompl` ✓ 即源里的「`w ∉ P`」✓ ——
+存在 `w ∉ P` 使 `X` 的每个元素都属于 `F[x](1/w)` ✓。 -/
+theorem exists_mem_primeCompl_of_finset {A B : Type u} [CommRing A] [CommRing B] [Algebra A B]
+    (P : Ideal A) [P.IsPrime] [IsLocalization P.primeCompl B] (X : Finset B) :
+    ∃ w : A, w ∉ P ∧ ∀ x ∈ X, ∃ (a : A) (k : ℕ),
+      x * (algebraMap A B w) ^ k = algebraMap A B a := by
+  obtain ⟨m, hm⟩ := exists_mem_localization_ge_finset (M := P.primeCompl) X
+  exact ⟨(m : A), m.2, hm⟩
+
+/-! ## 9. 登记 -/
 
 /-- **登记** ✗（**源陈述缺假设** ✓✓，**印版级已核** ✓；L39 家族 ✓）：源 `thm3.9` 的**陈述**
 （**印版 p.184** ✓，逐字）只说「Let `φ : S → R` be an `F` algebra map between `F` algebra
@@ -315,9 +415,10 @@ theorem thm39_affineness_finding_registered : True := trivial
 
 ① **`thm3.9` 的反方向**（(ii)⟹(i) ✓，印版 p.185 ✓）：**✅ 设置已完成** ✓✓（本件 §7 ✓：
 `η₀` ✓／`P = ker η₀` ✓／`T = F[x]_P` ✓／残差映射 ✓／**`ψ : S → T` 取自 `HasLocalLifting`** ✓）；
-**✗ 仍缺两段** ✓：（a）「`ψ(S) ⊆ F[x](1/w)` 对某 `w ∉ P`」✓
-（**有限型子代数落在单元局部化中** ✗ —— `SaltSwan_ABGV52.exists_localization_ge_adjoin` ✓ 是**分式域**档 ✗，
-**不**直接覆盖「局部化的有限型子代数」✗ ⟹ 须另证 ✗）；
+**✅ 仍缺一段** ✓（第 106 轮更新 ✓）：（a）「`ψ(S) ⊆ F[x](1/w)` 对某 `w ∉ P`」✓ ——
+**✅ 工具已落** ✓✓（本件 §8 ✓：`exists_mem_localization_ge_finset` ✓／
+`exists_mem_localization_ge_adjoin` ✓（**有限型子代数档** ✓）／`exists_mem_primeCompl_of_finset` ✓
+（**素理想档 `w ∉ P`** ✓））；
 （b）**最后的组装** ✗：`F[x](1/w) → R(1/(r·v))`（`v = η₀ w` ✓）＋ 组装 `FactorsRationally` ✓
 （须用「局部化的局部化」识别 ✗）。
 
@@ -345,6 +446,9 @@ theorem thm39_gap_registered : True := trivial
 #print axioms isDomain_localization_away
 #print axioms residueMapOfSurjective
 #print axioms exists_lift_to_atPrime_of_hasLocalLifting
+#print axioms exists_mem_localization_ge_finset
+#print axioms exists_mem_localization_ge_adjoin
+#print axioms exists_mem_primeCompl_of_finset
 #print axioms thm39_affineness_finding_registered
 #print axioms thm39_gap_registered
 
