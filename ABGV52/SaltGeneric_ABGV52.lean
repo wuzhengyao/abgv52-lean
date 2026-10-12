@@ -369,6 +369,88 @@ theorem theorem51Statement_noetherField [Fintype G] (h : Theorem51Statement F G)
 
 end NoetherBridge
 
+/-! ## 4.5 M6 路线②的**证明第一步**（源 `lemma-5-2` 的开头 ✓）＋ 该引理的**具名残余**（第 138 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex :648--662` ✓，印 **275** ✓）：`lemma-5-2` ＝「Let `L/K` be as above, and `t`
+any polynomial in `F[x_\sigma \mid \sigma \in G]`. Then there is a `z \in L` such that `\{\sigma(z) \mid \sigma \in G\}`
+is a **normal basis** for `L` over `K` and such that `t` evaluated at the `\sigma(z)`'s is a **unit**」✓；
+其证明**首句** ✓：「Letting `G` act on `F[x_\sigma \mid \sigma \in G]`, we form `t' = \prod_{\sigma \in G} \sigma(t)`.
+`t'` has the property that `t'(z,\sigma(z),\dots)` is **always in `K`**, and if `t'(z,\sigma(z),\dots) \neq 0` then
+`t(z,\sigma(z),\dots)` is a **unit**」✓；**源并明写该引理足以收官** ✓：「Thus, in fact, **it suffices to prove the
+following lemma**」✓ ⟹ `theorem-5-1` ✓ **归约到** `lemma-5-2` ✓（**登记** ✓，**归约本身未形式化** ✗）。 -/
+
+section Lemma52FirstStep
+
+variable (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+
+/-- **源 `lemma-5-2` 证明的**第一步** ✓：`t' = \prod_{\sigma} \sigma(t)` **是 `G`-不变的** ✓ ——
+即源「`t'` has the property that `t'(z,\sigma(z),\dots)` is **always in `K`**」✓ 的**代数核** ✓
+（**不变 ⟹ 取值落固定域** ✓，见下条 ✓）。
+
+**证明** ✓：`g • \prod_\sigma \sigma \bullet t = \prod_\sigma g \bullet (\sigma \bullet t) = \prod_\sigma (g\sigma) \bullet t` ✓
+（`map_prod` ✓ ＋ `mul_smul` ✓），再经 `\sigma \mapsto g\sigma` **重指标** ✓（`Fintype.prod_equiv` ✓ ＋ `Equiv.mulLeft` ✓）。
+**⚠ 用点** ✓：本式**消耗 §4.4 的桥** ✓（Noether 作用 ✓）—— **无该作用则无从陈述** ✗。 -/
+theorem noether_prod_smul_invariant (t : MvPolynomial G F) (g : G) :
+    g • (∏ σ : G, σ • t) = ∏ σ : G, σ • t := by
+  have h1 : g • (∏ σ : G, σ • t) = ∏ σ : G, g • (σ • t) :=
+    map_prod (MulSemiringAction.toRingEquiv G (MvPolynomial G F) g) _ _
+  have h2 : (∏ σ : G, g • (σ • t)) = ∏ σ : G, (g * σ) • t :=
+    Finset.prod_congr rfl (fun σ _ => (mul_smul g σ t).symm)
+  have h3 : (∏ σ : G, (g * σ) • t) = ∏ σ : G, σ • t :=
+    Fintype.prod_equiv (Equiv.mulLeft g) _ _ (fun _ => rfl)
+  rw [h1, h2, h3]
+
+/-- **源 `lemma-5-2` 证明的**第二步** ✓：「`t'(z,\sigma(z),\dots)` is **always in `K`**」✓ ——
+形式化 ＝ **`t'` 在求值映射下的像被 `G` 固定** ✓。
+
+`\mathrm{ev}` 是「把 `x_\sigma` 送到 `\sigma(z)`」的 `F`-代数映射 ✓（`ev (X \sigma) = \sigma \bullet z` ✓）；
+`\mathrm{hev}` 是其 **`G`-等变性** ✓（`ev (g \bullet p) = g \bullet ev p` ✓ —— **本件未证其可得性** ✗，
+须由 `MvPolynomial.aeval` ✓ 构造时给出 ✓，**登记** ✓）。
+**⚠ 结论取「被每个 `g` 固定」** ✓（＝不动点的**定义形** ✓）—— **不**取 `FixedPoints.subalgebra` 的**隶属形** ✗
+（其隶属引理名**未定位** ✗，**登记** ✓）。 -/
+theorem noether_prod_eval_isFixed {L : Type u} [Field L] [Algebra F L]
+    [MulSemiringAction G L]
+    (ev : MvPolynomial G F →ₐ[F] L)
+    (hev : ∀ (g : G) (p : MvPolynomial G F), ev (g • p) = g • ev p)
+    (t : MvPolynomial G F) (g : G) :
+    g • ev (∏ σ : G, σ • t) = ev (∏ σ : G, σ • t) := by
+  rw [← hev g, noether_prod_smul_invariant F G t g]
+
+end Lemma52FirstStep
+
+section Lemma52StatementSec
+
+variable (F : Type u) [Field F] (G : Type u) [Group G]
+
+/-- **源 `lemma-5-2`（印 275 ✓ 逐字）的具名陈述** ✓ —— **⚠ 具名残余：本件不作证明** ✗**。
+
+**⚠ 四处登记** ✗：
+① **抽象载体** ✓：`K`／`L` 抽象 ✓（与 `Theorem51Statement` ✓ 同款 ✓）；「`K \supseteq F`」由 `[Algebra F K]` ✓
+承担 ✓；
+② **「`t` 在 `\sigma(z)` 处的取值是**单位**」** ✓ 落为 **`\mathrm{aeval}(\dots) t \neq 0`** ✓ ——
+`L` 是**域** ✓ ⟹ **非零即单位** ✓（源用「unit」✓ 在此等价 ✓）；
+③ **正规基** ✓ 落为 **`Module.Basis G K L` ＋ `b \sigma = \sigma \bullet z`** ✓（＝「**共轭族恰成 `K`-基**」✓，
+**含张成** ✓ —— 第 138 轮**未**用「只求线性无关」✗ 的弱形 ✓）；
+④ **⚠ 本陈述**不设**「`G` 有限」** ✓（**登记** ✓）：`[Fintype G]` **不进**签名 ✗（Lean 弃用不出现在类型中的
+auto-bound 变量 ✓）⟹ 即**强于**源 ✓（与 `Theorem51Statement` ✓ 去掉「`F` 无限」✓ 同款处置 ✓，
+故**另开 section** ✓）。 -/
+def Lemma52Statement (K L : Type u) [Field K] [Field L] [Algebra F K] [Algebra K L]
+    [Algebra F L] [IsScalarTower F K L] [MulSemiringAction G L] : Prop :=
+  ∀ t : MvPolynomial G F,
+    ∃ (z : L) (b : Module.Basis G K L), (∀ σ : G, b σ = σ • z) ∧
+      MvPolynomial.aeval (fun σ : G => σ • z) t ≠ 0
+
+/-- **外形锁定** ✓：`Lemma52Statement` 的**三段**（**基** ✓／**共轭 ＝ 基元素** ✓／**非零** ✓）逐字可取 ✓ ——
+**⚠ 前提（`t`）作独立假设传入** ✓（㉝ ✓）。 -/
+theorem Lemma52Statement.shape (K L : Type u) [Field K] [Field L] [Algebra F K] [Algebra K L]
+    [Algebra F L] [IsScalarTower F K L] [MulSemiringAction G L]
+    (h : Lemma52Statement F G K L) (t : MvPolynomial G F) :
+    ∃ (z : L) (b : Module.Basis G K L), (∀ σ : G, b σ = σ • z) ∧
+      MvPolynomial.aeval (fun σ : G => σ • z) t ≠ 0 :=
+  h t
+
+end Lemma52StatementSec
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -398,5 +480,9 @@ end NoetherBridge
 #print axioms smul_algebraMap_noether
 #print axioms instFaithfulSMulNoetherField
 #print axioms theorem51Statement_noetherField
+#print axioms noether_prod_smul_invariant
+#print axioms noether_prod_eval_isFixed
+#print axioms Lemma52Statement
+#print axioms Lemma52Statement.shape
 
 end ABGV52
