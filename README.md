@@ -314,7 +314,9 @@ sync.  The items added since then are:
   agrees.  Representing objects, the specializations they induce, and generic objects -- those whose
   ring is a localized polynomial ring -- are there as well, with the existential over the map of
   rings packaged as data, since an existential cannot bind instances, and with the source's affine
-  hypothesis read as finite generation.  Not yet formalized are
+  hypothesis read as finite generation.  A densely representing object is one that is representing,
+  whose ring is a domain, and such that every localization of the ring still carries a representing
+  object.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.

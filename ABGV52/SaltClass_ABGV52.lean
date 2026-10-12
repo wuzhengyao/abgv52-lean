@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–125 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–126 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -64,6 +64,7 @@
   | **`DescentData`** ✓ ＋ **`IsFClass`** ✓ ＋ 三锁 ＋ 一探针 ✓ | 源的 **`F`-类** ✓（印版 170 ✓）—— 三条：**同构封闭** ✓／**基变换封闭** ✓／**下降＋有限生成** ✓（`DescentData` 打包 ✓：`R' ⊆ R''` ✓／`Algebra.FiniteType` ✓／`M'' ⊗_{R''} R ≅ M` ✓）；**⚠ 模的宇宙与底环同为 `u`** ✓（保基变换宇宙不变 ✓） | 第 3 件 ✓ |
   | **`LiftingData`** ✓ ＋ **`HasLiftingProperty`** ✓ ＋ 一锁一探针 ✓ | 源的**提升性质** ✓（印版 170 ✓）：局部 `F` 代数 `T` ✓／结构 over **剩余域** `T/M` ✓／存在 `\mathcal{M}'/T ∈ C` ✓／**基回同构且 `T/M`-线性** ✓（四支逐一落 ✓） | 第 4 件 ✓ |
   | **`Realization`** ✓ ＋ **`RepresentingObject`** ✓ ＋ `IsSpecialization` ✓ ＋ **`GenericObject`** ✓ ＋ 三锁两探针 ✓ | 源的**表示／一般对象／特化** ✓（印版 170 ✓）：仿射 ✓（＝有限生成 `F`-代数 ✓）／对每域 `K` 上 `\mathcal{N}/K ∈ C` 存在 `F`-映射 `\phi` ✓（`Realization` ✓）／`R ≅ F[x_1,…,x_n](1/r)` ✓ | 第 5 件（**部分** ✓） |
+  | **`DenselyRepresenting`** ✓ ＋ 三锁一探针 ✓ | 源的**稠密表示对象** ✓（印版 171 ✓ **本轮逐句核** ✓）：**是表示对象** ✓ ∧ **`R` 是整环** ✓ ∧ **对任意 `0 ≠ s`，`\\mathcal{M} ⊗_R R(1/s)` 仍是表示对象** ✓ | 第 5 件 ✓ |
   | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
@@ -77,9 +78,9 @@
   **⚠ 但两条登记在案** ✗：**(a)** §8.1 的 iso **生成元语义核未过** ✗ ⟹ `baseChange` 一族按 `∅-unchecked` ✓；
   **(b)** `IsFClass` **只证了定义外形可满足** ✓（空类 ✓），**未证**任何**非空** `F`-类满足它 ✓
   （源以 `\cite{18}`／`\cite{7}`／`\cite{22}` 作据 ✓，本件未涉 ✗）；
-  ② **第 4 件已落** ✓（`LiftingData` ✓ ＋ `HasLiftingProperty` ✓）；**第 5 件部分落** ✓
-  （`Realization` ✓／`RepresentingObject` ✓／`IsSpecialization` ✓／`GenericObject` ✓；
-  **`DenselyRepresenting` 未落** ✗ —— 其定义在印版 172 ✓，**该页尚未逐句核** ✗ ⟹ 待审后落 ✓）；
+  ② **第 4 件已落** ✓（`LiftingData` ✓ ＋ `HasLiftingProperty` ✓）；**第 5 件已落** ✓✅
+  （`Realization` ✓／`RepresentingObject` ✓／`IsSpecialization` ✓／`GenericObject` ✓／
+  **`DenselyRepresenting`** ✓ —— 其定义在**印版 171** ✓（**非 172** ✗，上轮登记已更正 ✓），**本轮已逐句核** ✓）；
   ③ 第 **6–9** 件（`ProjectiveObjectForClass`／`LocalProjective` → `cor3.10(b)` ⟹ `cor3.10(a)`
   → `prop1.1(a)` 具名残余）**均未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
 
@@ -996,6 +997,55 @@ theorem representingObject_probe {F : Type u} [Field F] :
         LinearStructure F F 0 Fin.elim0 Fin.elim0)⟩ :=
   ⟨inferInstance, fun _ _ _ _ _ _ _ hY => False.elim hY⟩
 
+
+/-! ### 8.7 源 §1 的**稠密表示对象**（印版 171 ✓） -/
+
+/-- **源 §1 的稠密表示对象** ✓（印版 171 ✓ 逐字：「A representing object `\mathcal{M}/R\in \mathcal{C}` is
+called **densely representing** if `R` is a **domain** and if for any `0\neq s\in R`, then
+`\mathcal{M}\otimes_{R}R(1 / s)` is a representing object」✓ —— **该页本轮已逐句核** ✓，与 tex `:114` ✓
+**逐字符合** ✓）。
+
+**三条** ✓（**逐一落** ✓，L39 ✓）：① **是表示对象** ✓（`RepresentingObject` ✓）；② **`R` 是整环** ✓
+（`IsDomain X.R` ✓）；③ **对任意 `0\neq s\in R`** ✓，`\mathcal{M}\otimes_{R}R(1 / s)` ✓
+（＝沿 `R\to R(1/s)` 的**基变换** ✓，即 `X.baseChange (Localization.Away s)` ✓）**仍是表示对象** ✓。
+**⚠ 前提** ✓：源在 `0\neq s` ✓ 下断言 ⟹ 落为 `a\neq 0\to` ✓（**不得吞前提** ✓，§87.3 ✓）。
+**⚠ `∅-unchecked` 传染** ✓：①③ 两支经 `RepresentingObject` ✓（其 ② 支经 `baseChange` ✓）⟹ 沿登记 ✓。 -/
+def DenselyRepresenting {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) (X : FStruct.{u, u} F r s t) : Prop :=
+  RepresentingObject C X ∧ IsDomain X.R ∧
+    ∀ (a : X.R), a ≠ 0 → RepresentingObject C (X.baseChange (Localization.Away a))
+
+/-- **外形锁定 ①（表示支）** ✓。 -/
+theorem DenselyRepresenting.isRepresenting {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {X : FStruct.{u, u} F r s t}
+    (h : DenselyRepresenting C X) : RepresentingObject C X :=
+  h.1
+
+/-- **外形锁定 ②（整环支）** ✓。 -/
+theorem DenselyRepresenting.isDomain {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {X : FStruct.{u, u} F r s t}
+    (h : DenselyRepresenting C X) : IsDomain X.R :=
+  h.2.1
+
+/-- **外形锁定 ③（局部化支）** ✓：源「for any `0\neq s\in R`, then `\mathcal{M}\otimes_{R}R(1 / s)` is a
+representing object」✓ 逐字可取 ✓（**含前提 `a\neq 0`** ✓）。 -/
+theorem DenselyRepresenting.away {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {X : FStruct.{u, u} F r s t}
+    (h : DenselyRepresenting C X) (a : X.R) (ha : a ≠ 0) :
+    RepresentingObject C (X.baseChange (Localization.Away a)) :=
+  h.2.2 a ha
+
+/-- **L1 探针** ✓（**形状可满足** ✓）：给定**基**表示对象 ✓、**整环** ✓、及**各局部化的有限生成性** ✓，
+则 `X` 是**空类**的稠密表示对象 ✓（③ 支的 `RepresentingObject` 由 `representingObject_false_of_affine` ✓
+与有限生成假设给出 ✓）；**⚠ 这一条同时说明** ✓：③ 支**不是**自动的 ✓（它要**每个** `R(1/s)` 仍仿射 ✓）。 -/
+theorem denselyRepresenting_false_of {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (X : FStruct.{u, u} F r s t) (h : RepresentingObject (F := F) (fun _ => False) X)
+    (hd : IsDomain X.R)
+    (h2 : ∀ (a : X.R), a ≠ 0 → Algebra.FiniteType F (Localization.Away a)) :
+    DenselyRepresenting (F := F) (fun _ => False) X :=
+  ⟨h, hd, fun a ha =>
+    representingObject_false_of_affine (X.baseChange (Localization.Away a)) (h2 a ha)⟩
+
 end BaseChange
 
 /-! ## 9. 公理闸门 -/
@@ -1031,6 +1081,11 @@ end BaseChange
 #print axioms GenericObject.isRepresenting
 #print axioms representingObject_false_of_affine
 #print axioms representingObject_probe
+#print axioms DenselyRepresenting
+#print axioms DenselyRepresenting.isRepresenting
+#print axioms DenselyRepresenting.isDomain
+#print axioms DenselyRepresenting.away
+#print axioms denselyRepresenting_false_of
 #print axioms tensorPowerBaseChange_tmul
 #print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe
