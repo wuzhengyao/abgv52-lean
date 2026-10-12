@@ -240,7 +240,9 @@ sync.  The items added since then are:
   algebra map whose image lies in the range of an injective one-element localization factors through
   it.  Alongside it sits the canonical map `A[1/w] -> A_P` (as the inclusion `F[x](1/w) inside
   F[x]_P` the proof uses) together with injectivity of the structure map into the localization at a
-  prime over a domain.  The finding above was likewise refined: affineness of `R` does *not* give
+  prime over a domain, and now also injectivity of that canonical map itself (for a domain `A`, a
+  prime `P` and `w ∉ P`), which is what the refinement interface needs in order to be applied at
+  `F[x]_P`.  The finding above was likewise refined: affineness of `R` does *not* give
   affineness of `R(1/r)`, so the target must carry that hypothesis separately.  The converse and `thm3.8` are registered as gaps.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)

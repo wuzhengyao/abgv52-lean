@@ -447,6 +447,50 @@ theorem injective_algebraMap_atPrime {A : Type u} [CommRing A] [IsDomain A] (P :
   exact ⟨fun y hy => (eq_zero_or_eq_zero_of_mul_eq_zero hy).resolve_left hx0,
     fun y hy => (eq_zero_or_eq_zero_of_mul_eq_zero hy).resolve_right hx0⟩
 
+/-- **`A[1/w] →ₐ[A] A_P` 单** ✓✓（**第 109 轮落地** ✓；`awayToAtPrime` 的**单性** ✓，
+＝ §71.2 登记 ✗ 的卡点 ✓）：`A` 整环 ✓、`P` 素 ✓、`w ∉ P` ✓（⟹ `w ≠ 0` ✓）
+⟹ 典范映射**单** ✓。
+**证法** ✓（§71.2 的纲要 ✓，两条口径**均已实测更新** ✓）：
+① 核内取 `z` ✓，用 `IsLocalization.Away.surj` ✓ 写 `z · (w/1)^n = a/1` ✓；
+② 由 `hlift` ✓ 与 §10 下半的 `injective_algebraMap_atPrime` ✓ 得 `a = 0` ✓
+⟹ `z · (w/1)^n = 0` ✓；
+③ 末步用 `IsUnit.mul_left_eq_zero` ✓（`(w/1)^n` 为单位 ✓）—— **不**经过
+`Units.ne_zero` ✓（该引理要 `Nontrivial` 实例 ✗，本引理**无**此要求 ✓）；
+④ 一般形由核平凡化 `z - y` ✓ 还原 ✓。
+**⚠ 口径更新** ✓：§71.2 的障碍 ② ✗（`Algebra.algHom` 别名目标须 `change` ✗）
+**实测无需 `change`** ✓ —— `simp [awayToAtPrime]` ✓（经 `Algebra.ofId_apply` ✓
+一族引理 ✓）已把目标摆正 ✓。
+**非空洞** ✓（L1 ✓）：探针见下条 ✓。 -/
+theorem injective_awayToAtPrime {A : Type u} [CommRing A] [IsDomain A] (P : Ideal A)
+    [P.IsPrime] (w : A) (hw : w ∉ P) :
+    Function.Injective (awayToAtPrime P w hw) := by
+  have hlift : ∀ b : A,
+      awayToAtPrime P w hw (algebraMap A (Localization.Away w) b)
+        = algebraMap A (Localization.AtPrime P) b := by
+    intro b
+    simp [awayToAtPrime]
+  have hker : ∀ z : Localization.Away w, awayToAtPrime P w hw z = 0 → z = 0 := by
+    intro z hz
+    obtain ⟨n, a, ha⟩ := IsLocalization.Away.surj (S := Localization.Away w) w z
+    have h2 : awayToAtPrime P w hw (algebraMap A (Localization.Away w) a) = 0 := by
+      rw [← ha, map_mul, map_pow, hz, zero_mul]
+    have ha0 : algebraMap A (Localization.AtPrime P) a = 0 := by
+      rw [← hlift a]
+      exact h2
+    have ha' : a = 0 :=
+      injective_algebraMap_atPrime (A := A) P (by rw [ha0, map_zero])
+    rw [ha', map_zero] at ha
+    exact (IsUnit.mul_left_eq_zero
+      (IsLocalization.Away.algebraMap_pow_isUnit (S := Localization.Away w) w n)).mp ha
+  intro z y hy
+  exact sub_eq_zero.mp (hker (z - y) (by rw [map_sub, hy, sub_self]))
+
+/-- **非空洞探针（L1）** ✓：`A = ℚ` ✓、`P = ⊥` ✓、`w = 1` ✓ 档 ✓ ——
+上条的假设类（整环 ＋ 素理想 ＋ `w ∉ P`）**非空** ✓。 -/
+theorem injective_awayToAtPrime_probe :
+    Function.Injective (awayToAtPrime (⊥ : Ideal ℚ) (1 : ℚ) (by simp)) :=
+  injective_awayToAtPrime _ _ _
+
 /-! ## 11. 登记 -/
 
 /-- **登记** ✗（**源陈述缺假设** ✓✓，**印版级已核** ✓；L39 家族 ✓）：源 `thm3.9` 的**陈述**
@@ -477,11 +521,11 @@ theorem thm39_affineness_finding_registered : True := trivial
 `exists_mem_localization_ge_adjoin` ✓（**有限型子代数档** ✓）／`exists_mem_primeCompl_of_finset` ✓
 （**素理想档 `w ∉ P`** ✓））＋ **✅ 接口已落** ✓✓（本件 §9 ✓：
 `exists_factor_through_of_injective` ✓ 把「包含」兑现为「穿过 `A[1/w]`」✓）；
-**⚠ 仍缺** ✗：把 §9 用到 `T = F[x]_P` 上所需的 **`A[1/w] →ₐ[F] A_P` 的单性** ✗ ——
-**✅ 已备** ✓：典范映射本身（§10 的 `awayToAtPrime` ✓）与 `algebraMap A A_P` 的单性（§10 ✓）；
-**✗ 未落** ✓：其**单性**（第 108 轮实测的**卡点** ✓：末步「`z · u = 0`、`u` 为单位 ⟹ `z = 0`」须避开
-`Units.ne_zero` 的 `Nontrivial (Localization.Away w)` **实例搜索** ✗（该实例在库内**非自动** ✗）
-⟹ 改用「乘 `u⁻¹`」路线 ✓；另有 `Algebra.algHom` 别名与 `algebraMap` 的**目标外形**问题 ✗（须 `change` ✓）✓）；
+**⚠ 仍缺** ✗：把 §9 用到 `T = F[x]_P` 上所需的 **`A[1/w] →ₐ[F] A_P` 的单性** ——
+**✅✅ 已落** ✓✓（**第 109 轮** ✓，§10 末 ✓：`injective_awayToAtPrime` ✓；
+§71.2 的两条口径**逐条实测** ✓：（a）末步 ✅ 用 `IsUnit.mul_left_eq_zero` ✓
+（**无** `Nontrivial` 要求 ✓，即「乘 `u⁻¹`」路线 ✓）；（b）`Algebra.algHom` 别名目标
+✅ `simp [awayToAtPrime]` ✓ 已摆正 ✓，**无需 `change`** ✓）；
 （b）**最后的组装** ✗：`F[x](1/w) → R(1/(r·v))`（`v = η₀ w` ✓）＋ 组装 `FactorsRationally` ✓
 （须用「局部化的局部化」识别 ✗）。
 
@@ -516,6 +560,8 @@ theorem thm39_gap_registered : True := trivial
 #print axioms exists_factor_through_of_injective_probe
 #print axioms awayToAtPrime
 #print axioms injective_algebraMap_atPrime
+#print axioms injective_awayToAtPrime
+#print axioms injective_awayToAtPrime_probe
 #print axioms thm39_affineness_finding_registered
 #print axioms thm39_gap_registered
 
