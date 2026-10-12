@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–123 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–124 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -61,6 +61,7 @@
   | `tensorProductRightModule` ✓ ＋ `tensorPowerBaseChange` ✓ ＋ `_tmul` ✓ | 源的**基变换** ✓：`M ⊗_φ S` ✓（印版 169 ✓）＋ `f_i ⊗ 1` ✓（印版 170 ✓「well defined」✓）—— **保源序** ✓；**缺口处置** ✓：mathlib 无次因子取向的 `S`-模结构 ✗ ⟹ 沿 `comm` **搬运** ✓（`AddEquiv.module` ＋ `AddEquiv.linearEquiv` ✓） | 第 3 件（**部分** ✓） |
   | **`tensorPowerBaseChangeEquiv`** ✓ ＋ 三件中间引理 ✓ | 源的「`(M ⊗_φ S)^{(n)}` is **identified with** `M^{(n)} ⊗_φ S`」✓（印版 170 ✓）—— `⨂[S]^n (M ⊗[R] S) ≃ₗ[S] (⨂[R]^n M) ⊗[R] S` ✓，**保源序** ✓；mathlib **无**现成件 ✗ ⟹ **自建**（逐槽 `comm` → (★) 递归 → `comm` 回序 ✓）。**⚠ 生成元语义核未过** ✗（登记 ✓） | 第 3 件（**部分** ✓） |
   | **`LinearStructure.baseChange`** ✓ ＋ **`FStruct.baseChange`** ✓ ＋ 两锁两探针 ✓ | 源的**基变换** ✓（印 169--170 ✓）：`M ⊗_φ S` 的线性结构 ✓（`f_i` 支 ＝ 源序下的 `f_i ⊗ 1` ✓，用「identified with」iso ✓ **两面夹住** ✓）＋ **`F` 结构基变换** ✓（`[IsScalarTower F R S]` ✓ 即「`φ` 是 `F`-映射」✓） | 第 3 件（**部分** ✓） |
+  | **`DescentData`** ✓ ＋ **`IsFClass`** ✓ ＋ 三锁 ＋ 一探针 ✓ | 源的 **`F`-类** ✓（印版 170 ✓）—— 三条：**同构封闭** ✓／**基变换封闭** ✓／**下降＋有限生成** ✓（`DescentData` 打包 ✓：`R' ⊆ R''` ✓／`Algebra.FiniteType` ✓／`M'' ⊗_{R''} R ≅ M` ✓）；**⚠ 模的宇宙与底环同为 `u`** ✓（保基变换宇宙不变 ✓） | 第 3 件 ✓ |
   | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
@@ -70,7 +71,10 @@
   **⚠ 上述 iso 与基变换已落** ✓（§8.1／§8.2／§8.3 ✓）—— **`LinearStructure.baseChange`** ✓ ＋
   **`FStruct.baseChange`** ✓ 均已编译 ✓（§8.2／§8.3 ✓）；
   **⚠ 该 iso 的生成元语义核未过** ✗（卡点逐字见 §8.1 ✓）⟹ **`baseChange` 一族一并按 `∅-unchecked`** ✓ 对待；
-  **⚠ 第 3 件的其余** ✗：**`FClass`**（源四条 ✓）**未落** ✗；
+  **✅ 第 3 件已完整落** ✓（`FStruct` ✓＋基变换三件套 ✓＋`baseChange` ✓＋`FClass` ✓）；
+  **⚠ 但两条登记在案** ✗：**(a)** §8.1 的 iso **生成元语义核未过** ✗ ⟹ `baseChange` 一族按 `∅-unchecked` ✓；
+  **(b)** `IsFClass` **只证了定义外形可满足** ✓（空类 ✓），**未证**任何**非空** `F`-类满足它 ✓
+  （源以 `\cite{18}`／`\cite{7}`／`\cite{22}` 作据 ✓，本件未涉 ✗）；
   ② 第 **4–9** 件（`HasLiftingProperty` → `RepresentingObject`／`GenericObject`／`DenselyRepresenting` →
   `ProjectiveObjectForClass`／`LocalProjective` → `Specialization` → `cor3.10(b)` ⟹ `cor3.10(a)`
   → `prop1.1(a)` 具名残余）**均未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
@@ -78,6 +82,8 @@
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import Mathlib.LinearAlgebra.TensorPower.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Tower
+import Mathlib.RingTheory.FiniteType
+import Mathlib.Algebra.Algebra.Subalgebra.Basic
 
 open TensorProduct
 open scoped TensorProduct
@@ -737,6 +743,98 @@ theorem FStruct.baseChange_nonempty {F : Type u} [Field F] {r : ℕ} {s t : Fin 
     [IsScalarTower F X.R S] : Nonempty (FStruct.{u, max u v} F r s t) :=
   ⟨X.baseChange S⟩
 
+
+/-! ### 8.4 源 §1 的 **`F`-类**（印版 170 ✓） -/
+
+/-- **源 §1 ③ 的「下降数据」** ✓（印版 170 ✓：「there is a `\mathcal{M}^{\prime\prime}/R^{\prime\prime}
+\in \mathcal{C}` such that `R^{\prime}\subseteq R^{\prime\prime}\subseteq R`; `R^{\prime\prime}` is
+**finitely generated as a ring over** `R^{\prime}` and
+`\mathcal{M}^{\prime\prime}\otimes_{R^{\prime\prime}}R\cong \mathcal{M}`」✓）。
+**⚠ 为何打包** ✓：`\exists` 的绑定列表**不接受实例绑定** `[..]` ✗（实测 ✓），而 `M''` 的
+`AddCommGroup`／`Module` 实例是**数据** ✓（`∃` 里必须给出 ✓）⟹ 打包为结构 ✓（其实例字段 ✓）。
+**用件** ✓：`Subalgebra` ✓／`Algebra.FiniteType` ✓／`Subalgebra.inclusion` ✓（`Algebra ↥R' ↥R''` 实例
+由它显式供给 ✓ —— `∃`/结构内部无法 `letI` ✓，故 `finite` 字段用 `@Algebra.FiniteType … (…)` 显式传参 ✓）。 -/
+structure DescentData {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (X : FStruct.{u, u} F r s t) (R' : Subalgebra F X.R) where
+  /-- 源：`R^{\prime\prime}` ✓。 -/
+  R'' : Subalgebra F X.R
+  /-- 源：`R^{\prime}\subseteq R^{\prime\prime}` ✓（`R^{\prime\prime}\subseteq R` 由「是 `X.R` 的子代数」自动 ✓）。 -/
+  le : R' ≤ R''
+  /-- 源：`\mathcal{M}^{\prime\prime}` ✓。 -/
+  M'' : Type u
+  [addCommGroup : AddCommGroup M'']
+  [module : Module ↥R'' M'']
+  /-- 源：`\mathcal{M}^{\prime\prime}/R^{\prime\prime}` 是**线性结构** ✓。 -/
+  str : LinearStructure ↥R'' M'' r s t
+  /-- 源：`R^{\prime\prime}` 在 `R^{\prime}` 上**有限生成** ✓。 -/
+  finite : @Algebra.FiniteType ↥R' ↥R'' _ _ ((Subalgebra.inclusion le).toRingHom.toAlgebra)
+  /-- 源：`\mathcal{M}^{\prime\prime}\otimes_{R^{\prime\prime}}R\cong \mathcal{M}` ✓（`IsIso` ✓，同底环 `X.R` ✓）。 -/
+  iso : IsIso (str.baseChange (S := X.R)) X.str
+
+/-- **源 §1 的 `F`-类** ✓（印版 170 ✓ 逐字：「An `F`-class `\mathcal{C}` is a class of `F` structures
+closed under (`F` linear) isomorphisms such that it has **two additional properties**. **First**, if
+`\mathcal{M}/R\in \mathcal{C}` and `\phi :R\to S` is an `F` map with `S` commutative, then
+`\mathcal{M}\otimes_{\phi}S\in \mathcal{C}`. **Secondly**, if `\mathcal{M}/R\in \mathcal{C}` and
+`R^{\prime}\subseteq R` is a subring, then there is a `\mathcal{M}^{\prime\prime}/R^{\prime\prime}
+\in \mathcal{C}` such that …」✓）。
+
+**三条** ✓（源把 ① 计入定义 ✓、② ③ 即 the two additional properties ✓）：
+**① 同构封闭** ✓（`IsIso` ✓）；**② 基变换封闭** ✓（`FStruct.baseChange` ✓）；
+**③ 下降 ＋ 有限生成** ✓（前提 `C X` ✓ ⟹ `Nonempty (DescentData X R')` ✓，`DescentData` 内含
+`R' ⊆ R''` ✓／有限生成 ✓／`M'' ⊗_{R''} R ≅ M` ✓ **三条合取** ✓ —— **不得截支** ✓，L39 ✓）。
+
+**⚠ 形式化约定** ✓（**登记** ✓）：源在**无宇宙分层**的语境里说话 ✓；Lean 里基变换把 `M ⊗[R] S` 送进
+`Type (max v u)` ✗ ⟹ **本件要求模的宇宙与底环相同** ✓（`FStruct.{u, u}` ✓），使**基变换保持宇宙不变** ✓、
+`C` 得为**单一谓词** ✓（否则 ② 的 `C (X.baseChange S)` 与 ① 的 `C ⟨R, M, X⟩` 不同宇宙 ✗）。
+**⚠ `∅-unchecked` 传染** ✓：② 支建立在 §8.1 的 iso 上 ✓ ⟹ 沿 §86.2 的登记 ✓。 -/
+def IsFClass {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) : Prop :=
+  (∀ (R : Type u) [CommRing R] [Algebra F R] (M N : Type u) [AddCommGroup M] [Module R M]
+      [AddCommGroup N] [Module R N] (X : LinearStructure R M r s t)
+      (Y : LinearStructure R N r s t), IsIso X Y → C ⟨R, M, X⟩ → C ⟨R, N, Y⟩) ∧
+  (∀ (X : FStruct.{u, u} F r s t) (S : Type u) [CommRing S] [Algebra F S] [Algebra X.R S]
+      [IsScalarTower F X.R S], C X → C (X.baseChange S)) ∧
+  (∀ (X : FStruct.{u, u} F r s t) (R' : Subalgebra F X.R), C X → Nonempty (DescentData X R'))
+
+/-- **外形锁定 ①（同构封闭支）** ✓：`IsFClass` 的**第一合取**逐字可取 ✓ —— 合取次序或支内容一旦漂移即失败 ✓。 -/
+theorem IsFClass.iso_closed {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : IsFClass C) :
+    ∀ (R : Type u) [CommRing R] [Algebra F R] (M N : Type u) [AddCommGroup M] [Module R M]
+      [AddCommGroup N] [Module R N] (X : LinearStructure R M r s t)
+      (Y : LinearStructure R N r s t), IsIso X Y → C ⟨R, M, X⟩ → C ⟨R, N, Y⟩ :=
+  h.1
+
+/-- **外形锁定 ②（基变换封闭支）** ✓。 -/
+theorem IsFClass.baseChange_closed {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : IsFClass C) :
+    ∀ (X : FStruct.{u, u} F r s t) (S : Type u) [CommRing S] [Algebra F S] [Algebra X.R S]
+      [IsScalarTower F X.R S], C X → C (X.baseChange S) :=
+  h.2.1
+
+/-- **外形锁定 ③（下降／有限生成支）** ✓：前提 `C X` ✓ 下给出**下降数据** ✓（`R' ⊆ R''` ✓／有限生成 ✓／
+`M'' ⊗_{R''} R ≅ M` ✓ 三条**一并**锁定 ✓）。 -/
+theorem IsFClass.descent {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : IsFClass C)
+    (X : FStruct.{u, u} F r s t) (R' : Subalgebra F X.R) (hX : C X) :
+    Nonempty (DescentData X R') :=
+  h.2.2 X R' hX
+
+/-- **L1 探针** ✓（**定义外形可满足** ✓）：**空类**是一个 `F`-类 ✓ —— 三条**逐条**可验 ✓
+（①②由前提 `C _ = False` ✓ 直接消去 ✓；③由前提 `C X = False` ✓ 消去 ✓）。
+**⚠ 定位** ✓：本探针只证「`IsFClass` 的**三条合取不自相矛盾**」✓；
+**⚠ 不证** ✗：**非空**的 `F`-类（如源的 `\mathcal{A}(F,n)` ✓／`\mathcal{E}(G)` ✓）满足三条 ✓ ——
+源以 `\cite{18}` p. 35 ／ `\cite{7}` p. 85 ／ `\cite{22}` p. 528 作据 ✓，**本件未涉** ✗
+（按 `∅-unchecked` ✓ 对待）。 -/
+theorem isFClass_false {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ} :
+    IsFClass (F := F) (r := r) (s := s) (t := t) (fun _ => False) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro R _ _ M N _ _ _ _ X Y _ hX
+    exact False.elim hX
+  · intro X S _ _ _ _ hX
+    exact False.elim hX
+  · intro X R' hX
+    exact False.elim hX
+
 end BaseChange
 
 /-! ## 9. 公理闸门 -/
@@ -753,6 +851,12 @@ end BaseChange
 #print axioms FStruct.baseChange
 #print axioms FStruct.baseChange_typeLock
 #print axioms FStruct.baseChange_nonempty
+#print axioms DescentData
+#print axioms IsFClass
+#print axioms IsFClass.iso_closed
+#print axioms IsFClass.baseChange_closed
+#print axioms IsFClass.descent
+#print axioms isFClass_false
 #print axioms tensorPowerBaseChange_tmul
 #print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe

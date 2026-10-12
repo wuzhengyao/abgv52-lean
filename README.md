@@ -302,7 +302,14 @@ sync.  The items added since then are:
   an `F`-map).  What is not yet computed is the value of the isomorphism on generators: that needs a
   generator lemma for `TensorPower.mulEquiv.symm` which mathlib does not provide, so the isomorphism
   and the base changes built on it are to be treated as unchecked downstream until such a probe is
-  written.  Not yet formalized are
+  written.  On top of that language sits the source's notion of an F class, a predicate on F
+  structures closed under isomorphisms, under base change, and satisfying the descent condition that
+  a subring can be enlarged to a finitely generated one over which the structure descends.  The
+  descent data is packaged in a structure of its own, since an existential cannot bind instances;
+  modules are taken in the same universe as the ground ring so that base change is universe-stable
+  and the class can be a single predicate.  That the shape is satisfiable is recorded; that a
+  non-empty class satisfies it, as the source asserts for Azumaya algebras and Galois extensions, is
+  not.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.
