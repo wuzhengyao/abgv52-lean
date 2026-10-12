@@ -1495,6 +1495,100 @@ theorem exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver (h : IsRatio
 
 end TranscendenceExtraction
 
+/-! ## 4.20 **域生成 ⟹ 分式形（源「Write `a_i = f_i/g_i`」的接口）** ✓✅（第 152 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex:650` ✓）：「Write \(a_i = f_i/g_i\), where the \(f\)'s and \(g\)'s are
+**polynomials** in the \(x_\sigma\)'s.」✓ —— 即**源的下一步**要把 `L^G` 的元素写成**生成子代数的分式** ✓，
+**再清分母**（「Then if \(t\) is the **product of all the \(g\)'s and \(k\)'s**, we have that
+\(S \subset F[x_\sigma](1/t)\).」✓）⟹ 本件落**该两步所需的两个形** ✓。
+
+**⚠ 定理内容** ✓：**若 `a` 把 `K` 作为 `F`-域生成** ✓（`\mathrm{IntermediateField.adjoin}\ F\ \{\mathrm{range}\ a\} = \top` ✓，
+**正是 §4.19 抽取的生成半** ✓），**则 `K` 的每个元素都是生成子代数** `A_0 = \mathrm{Algebra.adjoin}\ F\ \{\mathrm{range}\ a\}` ✓
+**两元素之商** ✓（**域论标准** ✓：`A_0` 是 `K` 的子环 ✓，而「由 `A_0` 生成的域」＝ `\mathrm{Frac}(A_0)` ✓）。
+
+**⚠ 证明工艺** ✓（**新读数 (60)** ✓）：**用 `IntermediateField.adjoin_induction`** ✓（**域 adjoin 的结构归纳原理** ✓）
+把命题**降到五个情形** ✓ —— 生成元 ✓／基域 ✓／加法 ✓／**逆** ✓／乘法 ✓；**每个情形都是分数运算** ✓
+（`div_add_div` ✓／`div_mul_div_comm` ✓／`inv_div` ✓，**分母非零由「子代数元素 ≠ 0 ⟹ 其在 `K` 中像 ≠ 0」** ✓ 供给 ✓）。
+**⚠ 两处编译期自纠** ✓（**留痕** ✓）：**①** **系数与子代数元素之间须走 `\mathrm{algebraMap}`** ✓ ——
+`\mathrm{field\_simp}` **不会**从 `q \neq 0` ✗ 自行推出 `\mathrm{algebraMap}\ q \neq 0` ✓ ⟹ **须显式放入上下文** ✓；
+**②** **`rw` 的次序** ✓ —— **先** `\leftarrow h`（把 `z` 换成分式 ✓）**再** `\mathrm{simp\ only}\ [\mathrm{map\_add}, \mathrm{map\_mul}]` ✓，
+**反序则 `\mathrm{map\_*}` 先把分式结构打散** ✗ 使 `\leftarrow h` **匹配不上** ✗。
+
+**⚠ 登记（桥接未落）** ✗：**mathlib `IsTranscendenceBasis`** ✓ 的**第二合取含 `\mathrm{Algebra.IsAlgebraic}`** ✓
+（**子代数 adjoin 形** ✓），本轮**试图**由本件的分式形**推之** ✓（**思路** ✓：`y z = x` ⟹ `z` 是 `y T - x` 的根 ✓）
+**未过** ✗ —— **实测阻塞** ✓：`\mathrm{isTranscendenceBasis\_iff\_algebraicIndependent\_isAlgebraic}` ✓ 的
+**实例推断卡住** ✗（报 `\mathrm{Nontrivial}\ ?m` ✓，**四种子写法均复现** ✓：具名隐参 ✓／全 `@` 显参 ✓／
+`\mathrm{have}` 类型标注 ✓）⟹ **桥接延后** ✗，**改由直取定义（极大性形）** ✓ 的路线**待审** ✓。
+**⚠ 用途** ✓：本两件是 **§4.19 的抽取** ✓ 与 **§4.18 的 `prop-0-2(c)`** ✓ 之间的**接口** ✓
+（源的「`R''` 有限生成于 `R_1` ⟹ `\exists s` 使 `R'' \subseteq R_1(1/s)`」✓ 一步的**输入** ✓）。 -/
+
+section FractionForm
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K] {ι : Type*}
+
+/-- **域生成 ⟹ 分式形** ✓✅：**每个元素都是生成子代数两元素之商** ✓（**分母非零** ✓）。
+
+**证明** ✓：对 `\mathrm{IntermediateField.adjoin}` 作**结构归纳** ✓（五情形 ✓），
+每情形由**分数律** ✓ 收口（`div_add_div` ✓／`div_mul_div_comm` ✓／`inv_div` ✓；
+**零元的逆支** ✓：`x = 0 \Rightarrow x^{-1} = 0 = 0/1` ✓）。 -/
+theorem exists_div_eq_of_adjoin_eq_top {a : ι → K}
+    (h : IntermediateField.adjoin F (Set.range a) = ⊤) (z : K) :
+    ∃ x y : Algebra.adjoin F (Set.range a), y ≠ 0 ∧
+      algebraMap (Algebra.adjoin F (Set.range a)) K x
+        / algebraMap (Algebra.adjoin F (Set.range a)) K y = z := by
+  have key : ∀ z ∈ IntermediateField.adjoin F (Set.range a),
+      ∃ x y : Algebra.adjoin F (Set.range a), y ≠ 0 ∧
+        algebraMap (Algebra.adjoin F (Set.range a)) K x
+          / algebraMap (Algebra.adjoin F (Set.range a)) K y = z := by
+    intro z hz
+    refine IntermediateField.adjoin_induction F (s := Set.range a)
+      (p := fun z _ => ∃ x y : Algebra.adjoin F (Set.range a), y ≠ 0 ∧
+        algebraMap (Algebra.adjoin F (Set.range a)) K x
+          / algebraMap (Algebra.adjoin F (Set.range a)) K y = z) ?_ ?_ ?_ ?_ ?_ hz
+    · rintro z ⟨i, rfl⟩
+      exact ⟨⟨a i, Algebra.subset_adjoin (Set.mem_range_self i)⟩, 1, one_ne_zero, by simp⟩
+    · intro c
+      exact ⟨⟨algebraMap F (Algebra.adjoin F (Set.range a)) c,
+        Subalgebra.algebraMap_mem _ c⟩, 1, one_ne_zero, by simp⟩
+    · rintro x y hx hy ⟨px, qx, hqx, hx'⟩ ⟨py, qy, hqy, hy'⟩
+      refine ⟨px * qy + py * qx, qx * qy, mul_ne_zero hqx hqy, ?_⟩
+      rw [← hx', ← hy']
+      simp only [map_add, map_mul]
+      have hqx' : algebraMap (Algebra.adjoin F (Set.range a)) K qx ≠ 0 :=
+        fun h => hqx (Subtype.ext h)
+      have hqy' : algebraMap (Algebra.adjoin F (Set.range a)) K qy ≠ 0 :=
+        fun h => hqy (Subtype.ext h)
+      field_simp
+    · rintro x hx ⟨px, qx, hqx, hx'⟩
+      by_cases hpx : px = 0
+      · refine ⟨0, 1, one_ne_zero, ?_⟩
+        have hx0 : x = 0 := by rw [← hx', hpx, map_zero, zero_div]
+        rw [hx0, inv_zero, map_zero, zero_div]
+      · refine ⟨qx, px, hpx, ?_⟩
+        rw [← hx', inv_div]
+    · rintro x y hx hy ⟨px, qx, hqx, hx'⟩ ⟨py, qy, hqy, hy'⟩
+      refine ⟨px * py, qx * qy, mul_ne_zero hqx hqy, ?_⟩
+      rw [← hx', ← hy']
+      simp only [map_mul]
+      rw [div_mul_div_comm]
+  exact key z (by rw [h]; trivial)
+
+/-- **乘法形（清分母步所需）** ✓✅：`y z = x`，`y \neq 0` ✓ —— 与上一条**等价** ✓，
+但形**便于「清分母」** ✓（源「product of all the `g`'s and `k`'s」✓ 的直接用点 ✓）。 -/
+theorem exists_mul_eq_of_adjoin_eq_top {a : ι → K}
+    (h : IntermediateField.adjoin F (Set.range a) = ⊤) (z : K) :
+    ∃ x y : Algebra.adjoin F (Set.range a), y ≠ 0 ∧
+      algebraMap (Algebra.adjoin F (Set.range a)) K y * z
+        = algebraMap (Algebra.adjoin F (Set.range a)) K x := by
+  obtain ⟨x, y, hy, hxy⟩ := exists_div_eq_of_adjoin_eq_top h z
+  refine ⟨x, y, hy, ?_⟩
+  rw [← hxy]
+  have hy' : algebraMap (Algebra.adjoin F (Set.range a)) K y ≠ 0 :=
+    fun hh => hy (Subtype.ext hh)
+  field_simp
+
+end FractionForm
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -1568,5 +1662,7 @@ end TranscendenceExtraction
 #print axioms adjoin_algebraMap_X_fractionRing
 #print axioms exists_algebraicIndependent_of_isRationalOver
 #print axioms exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver
+#print axioms exists_div_eq_of_adjoin_eq_top
+#print axioms exists_mul_eq_of_adjoin_eq_top
 
 end ABGV52
