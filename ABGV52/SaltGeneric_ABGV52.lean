@@ -404,8 +404,8 @@ theorem noether_prod_smul_invariant (t : MvPolynomial G F) (g : G) :
 形式化 ＝ **`t'` 在求值映射下的像被 `G` 固定** ✓。
 
 `\mathrm{ev}` 是「把 `x_\sigma` 送到 `\sigma(z)`」的 `F`-代数映射 ✓（`ev (X \sigma) = \sigma \bullet z` ✓）；
-`\mathrm{hev}` 是其 **`G`-等变性** ✓（`ev (g \bullet p) = g \bullet ev p` ✓ —— **本件未证其可得性** ✗，
-须由 `MvPolynomial.aeval` ✓ 构造时给出 ✓，**登记** ✓）。
+`\mathrm{hev}` 是其 **`G`-等变性** ✓（`ev (g \bullet p) = g \bullet ev p` ✓）—— **⚠ 第 139 轮已证其可得性** ✓✅
+（`noetherEval_equivariant` ✓，见 **§4.6** ✓；**第 138 轮原记「未证」** ✗ —— **留痕** ✓）。
 **⚠ 结论取「被每个 `g` 固定」** ✓（＝不动点的**定义形** ✓）—— **不**取 `FixedPoints.subalgebra` 的**隶属形** ✗
 （其隶属引理名**未定位** ✗，**登记** ✓）。 -/
 theorem noether_prod_eval_isFixed {L : Type u} [Field L] [Algebra F L]
@@ -451,6 +451,60 @@ theorem Lemma52Statement.shape (K L : Type u) [Field K] [Field L] [Algebra F K] 
 
 end Lemma52StatementSec
 
+/-! ## 4.6 源 `lemma-5-2` 的**可用形**：求值等变性（**解 §4.5 的 `hev` 登记** ✓）＋ 「`t'` 总在 `K` 中」的直接形（第 139 轮） -/
+
+section EvalEquivariance
+
+variable (F : Type u) [Field F] (G : Type u) [Group G]
+
+/-- **Noether 求值的 `G`-等变性** ✓（**§4.5 登记的「`\mathrm{hev}` 未证」** ✗ **本轮结** ✓✅）：
+把 `x_\sigma` 送到 `\sigma \bullet z` 的 `F`-代数映射 `\mathrm{aeval}(\sigma \mapsto \sigma \bullet z)` ✓
+**与 `G` 在两侧的作用交换** ✓（左：`MvPolynomial` 上的 Noether 作用 ✓；右：`L` 上的给定作用 ✓）。
+
+**证明** ✓：对 `p` 作 `MvPolynomial.induction_on` ✓（**显式给 motive** ✓ —— 否则高阶合一失败 ✗，**一处编译期自纠** ✓）：
+`C a` 支用 `smul_C_noether` ✓ ＋ `smul_algebraMap` ✓（**此处需要 `SMulCommClass G F L`** ✓）；
+`+` 支用 `smul_add` ✓／`map_add` ✓；`p * X n` 支用 `smul_mul'` ✓ ＋ `smul_X_noether` ✓ ＋ `mul_smul` ✓
+（`(g n) \bullet z = g \bullet (n \bullet z)` ✓）。
+**⚠ `[Fintype G]` 不需要** ✓ ⟹ **另开 section** ✓（承 §4.5 的教训 ✓，第 138 轮 ✓）。 -/
+theorem noetherEval_equivariant {L : Type u} [Field L] [Algebra F L] [MulSemiringAction G L]
+    [SMulCommClass G F L] (z : L) (g : G) (p : MvPolynomial G F) :
+    MvPolynomial.aeval (fun σ : G => σ • z) (g • p)
+      = g • MvPolynomial.aeval (fun σ : G => σ • z) p := by
+  refine MvPolynomial.induction_on (motive := fun q =>
+    MvPolynomial.aeval (fun σ : G => σ • z) (g • q)
+      = g • MvPolynomial.aeval (fun σ : G => σ • z) q) p ?_ ?_ ?_
+  · intro a
+    simp [smul_C_noether, smul_algebraMap]
+  · intro p q hp hq
+    simp only [smul_add, map_add, hp, hq]
+  · intro p n hp
+    simp only [smul_mul', smul_X_noether, map_mul, MvPolynomial.aeval_X, hp]
+    rw [mul_smul]
+
+end EvalEquivariance
+
+section Lemma52UsableForm
+
+variable (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+
+/-- **源 `lemma-5-2` 证明中「`t'(z,\sigma(z),\dots)` is **always in `K`**」✓ 的**直接可用形** ✓**：
+以**源自己的求值** ✓（`x_\sigma \mapsto \sigma \bullet z` ✓）代入 `t' = \prod_{\sigma} \sigma \bullet t` ✓，
+其像**被每个 `g` 固定** ✓（＝落于不动域 ✓）。
+
+**证明** ✓：`§4.5` 的 `noether_prod_eval_isFixed` ✓ 的 `\mathrm{hev}` 前提**由 §4.6 的
+`noetherEval_equivariant` ✓ 填充** ✓ ⟹ **条件式 → 无条件式** ✓（**这是 §4.5 那条登记的意义** ✓）。
+**⚠ 用点** ✓：本式是 `lemma-5-2` **证明**的**第一步的收口** ✓ —— 源的下一句（`t' \neq 0 \Rightarrow t` 是单位 ✓）
+**未落** ✗（**登记** ✓）。 -/
+theorem noether_prod_aeval_isFixed {L : Type u} [Field L] [Algebra F L]
+    [MulSemiringAction G L] [SMulCommClass G F L]
+    (z : L) (t : MvPolynomial G F) (g : G) :
+    g • MvPolynomial.aeval (fun σ : G => σ • z) (∏ σ : G, σ • t)
+      = MvPolynomial.aeval (fun σ : G => σ • z) (∏ σ : G, σ • t) :=
+  noether_prod_eval_isFixed F G (MvPolynomial.aeval (fun σ : G => σ • z))
+    (fun g p => noetherEval_equivariant F G z g p) t g
+
+end Lemma52UsableForm
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -482,6 +536,8 @@ end Lemma52StatementSec
 #print axioms theorem51Statement_noetherField
 #print axioms noether_prod_smul_invariant
 #print axioms noether_prod_eval_isFixed
+#print axioms noetherEval_equivariant
+#print axioms noether_prod_aeval_isFixed
 #print axioms Lemma52Statement
 #print axioms Lemma52Statement.shape
 
