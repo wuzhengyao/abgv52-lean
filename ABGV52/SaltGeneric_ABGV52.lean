@@ -1911,6 +1911,63 @@ theorem exists_isTranscendenceBasis_of_isRationalOver (h : IsRationalOver F K) :
 
 end AdjoinAlgebraic
 
+/-! ## 4.25 **源「新 `R = R_1(1/s)`」的载体步**（`A[s^{-1}]` 的性质 ＋ `R''` 的像因子化）✓✅（第 157 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex:650--651` ✓）：「… there is an \(s \in R_1\) and an algebra
+\(S \supseteq R = R_1(1/s)\) such that \(S/R\) is Galois with group \(G\) and \(S \otimes_R L^G \cong L\).」✓
+—— 源的**新 `R`** 是 `R_1(1/s)` ✓；本件把该载体**在 `K` 内实现** ✓（§4.23 的读数 (63) ✓）并证其**三条接口性质** ✓，
+使 `R''` 的像**因子化过它** ✓（**源「`S''` 沿 `R'' \to R` 作基变换」的前置** ✓）。
+
+**⚠ 三件** ✓：
+**①** `algebraMap_mem_adjoin_inv` ✓✅ —— **`A[s^{-1}]` 含 `A` 的像** ✓（**基域项** ✓）；
+**②** `finiteType_adjoin_inv` ✓✅ —— **`A[s^{-1}]` 在 `A` 上有限型** ✓（**单个**生成元 ✓；
+入口 ＝ `\mathrm{Subalgebra.fg\_adjoin\_finset}` ✓ ＋ **`\mathrm{Subalgebra.fg\_top}`** ✓）；
+**③** `exists_factors_through_adjoin_inv_of_finiteType` ✓✅ —— **`\varphi` 因子化过 `A[s^{-1}]`** ✓：
+`\exists s \neq 0,\ \exists \psi : B \to_A A[s^{-1}],\ \forall x,\ (\psi x : K) = \varphi x` ✓
+（**沿 `\mathrm{AlgHom.codRestrict}`** ✓，**像的包含由 §4.23** ✓）。
+
+**⚠ 两处编译期自纠** ✓（**留痕** ✓）：**①** **`\mathrm{Subalgebra.fg\_adjoin\_finset}` 与
+`\mathrm{Subalgebra.fg\_top}` 须显式给基环** ✗（否则报 `\mathrm{Algebra.adjoin}\ ?m` 的元变量未定 ✗）；
+**②** **`\mathrm{Finset}` 的单点强制转换 `\uparrow\{x\}` 与 `\mathrm{Set}` 的单点 `\{x\}` 不是 defeq** ✗
+（`\mathrm{Finset.coe\_singleton}` 是**定理** ✓）⟹ **须 `\mathrm{simpa}` 过** ✓（**新读数 (65)** ✓）。
+**⚠ 另一处（工艺）** ✓：**未用到的实例须移出 section** ✗（否则 **unused section variables** ✗）。 -/
+
+section LocalizedCarrier
+
+variable {A : Type u} [CommRing A]
+variable {K : Type u} [Field K] [Algebra A K]
+
+/-- **`A[s^{-1}]` 含 `A` 的像** ✓✅（**`K` 内的子代数** ✓，**读数 (63)** ✓）。 -/
+theorem algebraMap_mem_adjoin_inv (s a : A) :
+    algebraMap A K a ∈ Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K) :=
+  Subalgebra.algebraMap_mem _ a
+
+/-- **`A[s^{-1}]` 在 `A` 上有限型** ✓✅（**单个**生成元 `(\mathrm{algebraMap}\ s)^{-1}` ✓）。 -/
+theorem finiteType_adjoin_inv (s : A) :
+    Algebra.FiniteType A ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) :=
+  ⟨(Subalgebra.fg_top (Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K))).mpr (by
+    simpa using Subalgebra.fg_adjoin_finset (R := A) ({(algebraMap A K s)⁻¹} : Finset K))⟩
+
+end LocalizedCarrier
+
+section FactorsThrough
+
+variable {A : Type u} [CommRing A] [Nontrivial A] [NoZeroDivisors A]
+variable {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K]
+variable {B : Type u} [CommRing B] [Algebra A B] [Algebra.FiniteType A B]
+
+/-- **有限型代数的像因子化过 `A[s^{-1}]`** ✓✅（**源「新 `R`」的载体步** ✓）：
+存在 `s \neq 0` 与代数同态 `\psi : B \to_A A[s^{-1}]` ✓，使 `\psi` 与 `\varphi` 在 `K` 中**同值** ✓
+（**故 `R''` 的像落进新 `R`** ✓，**源「`S''` 沿 `R'' \to R` 作基变换」的前置** ✓）。 -/
+theorem exists_factors_through_adjoin_inv_of_finiteType (φ : B →ₐ[A] K)
+    (hfrac : ∀ z : K, ∃ x y : A, y ≠ 0 ∧ algebraMap A K y * z = algebraMap A K x) :
+    ∃ (s : A) (ψ : B →ₐ[A] ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K))),
+      s ≠ 0 ∧ ∀ x : B, ((ψ x : K)) = φ x := by
+  obtain ⟨s, hs, h⟩ := image_le_adjoin_inv_of_finiteType φ hfrac
+  exact ⟨s, φ.codRestrict _ (fun x => h x), hs, fun x => AlgHom.coe_codRestrict _ _ _ x⟩
+
+end FactorsThrough
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -1996,5 +2053,8 @@ end AdjoinAlgebraic
 #print axioms isAlgebraic_adjoin_of_adjoin_eq_top
 #print axioms isTranscendenceBasis_of_algebraicIndependent_adjoin_eq_top
 #print axioms exists_isTranscendenceBasis_of_isRationalOver
+#print axioms algebraMap_mem_adjoin_inv
+#print axioms finiteType_adjoin_inv
+#print axioms exists_factors_through_adjoin_inv_of_finiteType
 
 end ABGV52
