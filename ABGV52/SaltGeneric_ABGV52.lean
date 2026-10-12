@@ -2385,6 +2385,84 @@ theorem exists_algEquiv_localizationAway_of_adjoin_inv
 end ClauseA
 
 
+/-! ## 4.34 **分式环实例**（`IsFractionRing ↥A_0 K`）＋ **(a) 款无假设形** ✓✅（第 168 轮）
+
+**⚠ 起点** ✓：§130.5 第 1 项 —— 升 `\mathrm{IsFractionRing}\ \uparrow A_0\ K` 实例 ✗（**r167 的阻塞 (i)** ✗）。
+**⚠ 结果** ✓✅：**阻塞 (i) 已解** ✓ —— **`\mathrm{IsGenericExtension}`(a) 款至此**无假设齐备** ✓✅。
+
+**⚠ 解法（**新读数 (75)** ✓）** ✓：**把结论抽成**不含量词的通用形**✗→✓** ——
+**通用件** ✓ `isFractionRing_of_forall_exists_div` ✓：**对任意 `F`-代数 `A`（`[\mathrm{NoZeroDivisors}]` ✓、`[\mathrm{FaithfulSMul}\ A\ K]` ✓），
+若 `K` 的每个元素都是 `A` 中两元素之商 ✓，则 `K = \mathrm{Frac}(A)`** ✓（**四款直造** ✓：`\mathrm{map\_units}` ✓／`\mathrm{surj}` ✓／`\mathrm{exists\_of\_eq}` ✓）；
+**然后**在 `A := \uparrow A_0` 档**一次应用** ✓（**重项 `h` 只出现一次** ✓）⟹ **不再心跳耗尽** ✓✅
+—— **⚠ 机理** ✓：**r167 之败因是「重项在**结构内部**被反复统一」** ✗；**抽成通用件后，重项只在**调用点**参与一次** ✓（**(74) 的正面解法** ✓）。
+
+**⚠ 本轮三件** ✓：
+**①** `isFractionRing_of_forall_exists_div` ✓✅（**通用分式环构造** ✓ —— **可复用** ✓）；
+**②** `isFractionRing_adjoin_of_adjoin_eq_top` ✓✅（**域生成 ⟹ `\uparrow A_0` 上的分式环** ✓ —— **r167 阻塞 (i) 之解** ✓）；
+**③** **`exists_algEquiv_localizationAway_of_adjoin_inv'`** ✓✅（**(a) 款无假设形** ✓：
+`\mathrm{AlgebraicIndependent}\ F\ a` ＋ **域生成** ＋ `s \neq 0` ⟹ `\exists w \neq 0,\ \uparrow(A_0[s^{-1}]) \simeq_F \mathrm{Localization.Away}\ w` ✓
+—— **恰是 `\mathrm{IsGenericExtension}` 的 (a) 款** ✓）。
+**⚠ 工艺** ✓：`\mathrm{have}\ hfr : \mathrm{IsFractionRing}\ \ldots := \ldots` ✓ **可作局部实例** ✓（**Prop 值** ✓，**(55)** ✓）—— **无须 `\mathrm{haveI}`** ✓。 -/
+
+
+
+section FractionRingOfDivForm
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K]
+variable {A : Type u} [CommRing A] [Nontrivial A] [NoZeroDivisors A]
+variable [Algebra F A] [Algebra A K] [IsScalarTower F A K] [FaithfulSMul A K]
+
+/-- **通用分式环构造**：若 `K` 的每个元素都是 `A` 中两元素之商，则 `K = \mathrm{Frac}(A)`。 -/
+theorem isFractionRing_of_forall_exists_div
+    (h : ∀ z : K, ∃ x y : A, y ≠ 0 ∧ algebraMap A K x / algebraMap A K y = z) :
+    IsFractionRing A K := by
+  refine ⟨⟨?_, ?_, ?_⟩⟩
+  · intro y
+    rw [isUnit_iff_ne_zero]
+    exact fun h0 =>
+      (mem_nonZeroDivisors_iff_ne_zero.mp y.2)
+        (FaithfulSMul.algebraMap_injective A K (by rw [h0, map_zero]))
+  · intro z
+    obtain ⟨x, y, hy, hxy⟩ := h z
+    have hyK : algebraMap A K y ≠ 0 :=
+      fun h0 => hy (FaithfulSMul.algebraMap_injective A K (by rw [h0, map_zero]))
+    exact ⟨(x, ⟨y, mem_nonZeroDivisors_iff_ne_zero.mpr hy⟩), by
+      rw [← hxy, div_mul_cancel₀ _ hyK]⟩
+  · intro x y hxy
+    exact ⟨1, by
+      rw [OneMemClass.coe_one, one_mul, one_mul]
+      exact FaithfulSMul.algebraMap_injective A K hxy⟩
+
+end FractionRingOfDivForm
+
+section AdjoinInstance
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K]
+variable {ι : Type*}
+
+set_option maxHeartbeats 400000 in
+/-- **域生成 ⟹ `A₀` 上的分式环**（r167 的阻塞点，**改用通用引理一次应用**）。 -/
+theorem isFractionRing_adjoin_of_adjoin_eq_top {a : ι → K}
+    (h : IntermediateField.adjoin F (Set.range a) = ⊤) :
+    IsFractionRing ↥(Algebra.adjoin F (Set.range a)) K :=
+  isFractionRing_of_forall_exists_div (A := ↥(Algebra.adjoin F (Set.range a)))
+    (fun z => exists_div_eq_of_adjoin_eq_top (K := K) h z)
+
+/-- **(a) 款无假设形**：`IsGenericExtension`(a) 款的**完整成品**（不再带分式环假设）。 -/
+theorem exists_algEquiv_localizationAway_of_adjoin_inv' {n : ℕ} {a : Fin n → K}
+    (hind : AlgebraicIndependent F a)
+    (h : IntermediateField.adjoin F (Set.range a) = ⊤)
+    (s : ↥(Algebra.adjoin F (Set.range a))) (hs : s ≠ 0) :
+    ∃ (w : MvPolynomial (Fin n) F), w ≠ 0 ∧
+      Nonempty (↥(Algebra.adjoin ↥(Algebra.adjoin F (Set.range a))
+        {(algebraMap ↥(Algebra.adjoin F (Set.range a)) K s)⁻¹}) ≃ₐ[F] Localization.Away w) := by
+  have hfr : IsFractionRing ↥(Algebra.adjoin F (Set.range a)) K :=
+    isFractionRing_adjoin_of_adjoin_eq_top (K := K) h
+  exact exists_algEquiv_localizationAway_of_adjoin_inv (K := K) hind s hs
+
+end AdjoinInstance
+
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2485,6 +2563,8 @@ end ClauseA
 #print axioms nonempty_algEquiv_localizationAway_adjoin_inv
 #print axioms nonempty_algEquiv_localizationAway_map
 #print axioms algEquiv_ne_zero_iff
+#print axioms isFractionRing_of_forall_exists_div
+#print axioms isFractionRing_adjoin_of_adjoin_eq_top
 #print axioms exists_algEquiv_localizationAway_of_adjoin_inv
 
 end ABGV52
