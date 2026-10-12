@@ -1822,6 +1822,95 @@ theorem image_le_adjoin_inv_of_finiteType (φ : B →ₐ[A] K)
 
 end FiniteTypeImage
 
+/-! ## 4.24 **`IsTranscendenceBasis` 桥接已闭**（§4.19 的登记项 ✗ ⟹ ✓✅）＋ 代数性引理（第 156 轮）
+
+**起点** ✓：§4.19 ✓（r151）登记「**与 mathlib `IsTranscendenceBasis` 的桥接未落** ✗」✓ ——
+**mathlib 的第二合取写在 `\mathrm{Algebra.adjoin}`（子代数 adjoin ✓）上** ✓，而本件给的是**域 adjoin 形** ✓。
+**r152 曾试而受阻** ✗（`\mathrm{isTranscendenceBasis\_iff\_algebraicIndependent\_isAlgebraic}` 的**实例推断卡住** ✗，
+报 `\mathrm{Nontrivial}\ ?m` ✓，**四种子写法均复现** ✗）。**本轮以另一路径闭之** ✓✅。
+
+**⚠ 新读数 (64)** ✓（**如何解开卡住的实例推断** ✓）：**先把第二合取作为「带显式类型的 `\mathrm{have}` 项」造出来** ✓，
+**再**用该词项喂 `\mathrm{iff}.\mathrm{mpr}\ \langle hind, hAlg \rangle` ✓ —— **让 `\mathrm{iff}` 的隐参由词项类型定** ✓，
+**而非**由目标驱动推断 ✗（后者会掉进 `\mathrm{Nontrivial}\ ?m` 的僵局 ✗）。
+
+**⚠ 第二合取的证法** ✓（**两条新引理** ✓）：
+**①** `isAlgebraic_of_div_eq` ✓✅ —— **`z = x/y`（`y \neq 0`）⟹ `\mathrm{IsAlgebraic}\ A\ z`** ✓
+（**取多项式 `C y \cdot X - C x`** ✓：**非零** ✓ 由 `\mathrm{eval}\ 0` 的取值 ✓（`x \neq 0` ✓）；**求值零** ✓ 由 `\mathrm{aeval}` 展开 ✓ ＋ `field_simp` ✓）；
+**②** `isAlgebraic_adjoin_of_adjoin_eq_top` ✓✅ —— **域生成 ⟹ `\mathrm{Algebra.IsAlgebraic}\ \uparrow A_0\ K`** ✓
+（**逐元素**用 §4.20 的**分式形** ✓ ＋ ① ✓）。
+
+**⚠ 两处编译期自纠** ✓（**留痕** ✓）：**①** **`\mathrm{isAlgebraic\_zero}` 需要 `[\mathrm{Nontrivial}\ A]`** ✗
+（**`0` 的代数性**要 `0 \neq 1` ✓ 才能给出**非零**多项式 ✓）⟹ **须显式补该实例** ✓；
+**②** **`\mathrm{field\_simp}` 未收尽** ✗ —— 末期留下 `\mathrm{algebraMap}\ x \cdot (1 - 1) = 0` ✓ ⟹ **补 `ring`** ✓。 -/
+
+section IsAlgebraicOfDivEq
+
+variable {A : Type u} [CommRing A] [Nontrivial A]
+variable {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K]
+
+/-- **商是代数的** ✓✅：`z = x/y`（`y \neq 0`）⟹ `\mathrm{IsAlgebraic}\ A\ z` ✓。
+
+**⚠ 用途** ✓：**§4.24 桥接的第二合取** ✓ —— 与 §4.20 的**分式形** ✓ 合成即得
+「**域生成 ⟹ 生成子代数上的代数性**」✓。 -/
+theorem isAlgebraic_of_div_eq {x y : A} (hy : y ≠ 0) {z : K}
+    (hz : algebraMap A K x / algebraMap A K y = z) : IsAlgebraic A z := by
+  have hyK : algebraMap A K y ≠ 0 :=
+    fun h0 => hy (FaithfulSMul.algebraMap_injective A K (by rw [h0, map_zero]))
+  by_cases hx : x = 0
+  · subst hx
+    rw [map_zero, zero_div] at hz
+    subst hz
+    exact isAlgebraic_zero
+  · refine ⟨Polynomial.C y * Polynomial.X - Polynomial.C x, ?_, ?_⟩
+    · intro h0
+      have h1 := congrArg (Polynomial.eval (0 : A)) h0
+      simp at h1
+      exact hx h1
+    · have hval : Polynomial.aeval z (Polynomial.C y * Polynomial.X - Polynomial.C x)
+          = algebraMap A K y * z - algebraMap A K x := by
+        simp [map_sub, map_mul]
+      rw [hval, ← hz]
+      field_simp
+      ring
+
+end IsAlgebraicOfDivEq
+
+section AdjoinAlgebraic
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K] {ι : Type*}
+
+/-- **域生成 ⟹ 生成子代数上的代数性** ✓✅ —— **mathlib `IsTranscendenceBasis` 判据的第二合取** ✓
+（**第一合取** ＝ §4.19 的**代数无关** ✓）。 -/
+theorem isAlgebraic_adjoin_of_adjoin_eq_top {a : ι → K}
+    (h : IntermediateField.adjoin F (Set.range a) = ⊤) :
+    Algebra.IsAlgebraic ↥(Algebra.adjoin F (Set.range a)) K := by
+  have : FaithfulSMul ↥(Algebra.adjoin F (Set.range a)) K := inferInstance
+  refine ⟨fun z => ?_⟩
+  obtain ⟨x, y, hy, hxy⟩ := exists_div_eq_of_adjoin_eq_top h z
+  exact isAlgebraic_of_div_eq hy hxy
+
+/-- **桥接** ✓✅（**§4.19 的登记项 ✗ ⟹ ✓✅**）：**域生成 ＋ 代数无关 ⟹ mathlib `\mathrm{IsTranscendenceBasis}`** ✓
+（**域生成形 ⟺ 子代数形** ✓，**见 §4.19 的口径登记** ✓）。 -/
+theorem isTranscendenceBasis_of_algebraicIndependent_adjoin_eq_top {a : ι → K}
+    (hind : AlgebraicIndependent F a)
+    (hgen : IntermediateField.adjoin F (Set.range a) = ⊤) :
+    IsTranscendenceBasis F a := by
+  have hAlg : Algebra.IsAlgebraic ↥(Algebra.adjoin F (Set.range a)) K :=
+    isAlgebraic_adjoin_of_adjoin_eq_top hgen
+  have hiff : IsTranscendenceBasis F a ↔ AlgebraicIndependent F a ∧
+      Algebra.IsAlgebraic ↥(Algebra.adjoin F (Set.range a)) K :=
+    isTranscendenceBasis_iff_algebraicIndependent_isAlgebraic (R := F) (A := K) (x := a)
+  exact hiff.mpr ⟨hind, hAlg⟩
+
+/-- **完整抽取（mathlib 超越基形）** ✓✅：`\mathrm{IsRationalOver}\ F\ K` ⟹ **存在 `\mathrm{IsTranscendenceBasis}`** ✓
+—— **§4.19 的域生成形** ✓ 经桥接 ✓ 升为 **mathlib 标准形** ✓（**源 `theorem-5-1` 首句的最终形式** ✓）。 -/
+theorem exists_isTranscendenceBasis_of_isRationalOver (h : IsRationalOver F K) :
+    ∃ (n : ℕ) (a : Fin n → K), IsTranscendenceBasis F a := by
+  obtain ⟨n, a, hind, hgen⟩ := exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver h
+  exact ⟨n, a, isTranscendenceBasis_of_algebraicIndependent_adjoin_eq_top hind hgen⟩
+
+end AdjoinAlgebraic
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -1903,5 +1992,9 @@ end FiniteTypeImage
 #print axioms exists_pow_mul_eq_of_finiteType_adjoin_eq_top
 #print axioms mem_adjoin_inv_of_pow_mul_eq
 #print axioms image_le_adjoin_inv_of_finiteType
+#print axioms isAlgebraic_of_div_eq
+#print axioms isAlgebraic_adjoin_of_adjoin_eq_top
+#print axioms isTranscendenceBasis_of_algebraicIndependent_adjoin_eq_top
+#print axioms exists_isTranscendenceBasis_of_isRationalOver
 
 end ABGV52
