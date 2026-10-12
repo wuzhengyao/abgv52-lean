@@ -273,12 +273,17 @@ sync.  The items added since then are:
   homomorphism of mathlib's `RingHomCompTriple` supplied explicitly, since only the identity cases of
   that class are registered); the homomorphism structure `Hom` of a pair `(phi, psi)` with `phi` a
   ring homomorphism, `psi` semilinear over it, and the preservation condition
-  `g_i . psi^(s_i) = psi^(t_i) . f_i` of the printed page, together with its identity and its
-  composition, so that the structures of a fixed type do form a category; and the isomorphism
-  structure `IsIso`, in which the base ring is common, `phi` is the identity and `psi` is a linear
-  equivalence, with the forgetful map to `Hom` and the identity isomorphism.  Not yet formalized are
-  the converse of that forgetful map (that the inverse of an isomorphism again satisfies the
-  preservation condition), the classes and their closure properties, the lifting property,
+  `g_i . psi^(s_i) = psi^(t_i) . f_i` of the printed page, together with its identity, its
+  composition and the three composition laws, so that the structures of a fixed type do form a
+  category; and the isomorphism structure `IsIso`, in which the base ring is common, `phi` is the
+  identity and `psi` is a linear equivalence, with the forgetful map to `Hom`, the identity
+  isomorphism, and the inverse isomorphism: an isomorphism is invertible in the category, because
+  the inverse of a linear equivalence again satisfies the preservation condition.  That last step is
+  proved pointwise, from the identity and functoriality cases of the induced map: if `P` and `Q` are
+  the induced maps at `s_i` and at `t_i`, and `P'` and `Q'` their inverses, then
+  `Q' (B y) = Q' (B (P (P' y))) = Q' (Q (A (P' y))) = A (P' y)`, where `A` and `B` are the two
+  structure maps and `B . P = Q . A` is the preservation condition.  Not yet formalized are
+  the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.
 
