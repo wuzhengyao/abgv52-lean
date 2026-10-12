@@ -159,7 +159,15 @@ sync.  The items added since then are:
   (`GaloisFixedSubringHyp`: `S^G ⊆ R`), each with a type lock, a data-level non-vacuity probe and a
   gap registration, following the precedent of the Fischer interface.  The use sites
   `exists_galoisProjectiveSection` and `exists_algebraMap_of_invariant` extract the section and the
-  fixed-subring clause from those inputs.
+  fixed-subring clause from those inputs.  The same file now also registers the source's
+  `proposition-0-2(c)` (`GaloisDescentHyp`): for a `G`-Galois `S/R` and an `F`-subalgebra `R' ⊆ R`
+  there are `F`-algebras `R''` finitely generated over `R'`, with `R' → R'' → R` a tower, and a
+  `G`-Galois `R''`-algebra `S''` with `S` isomorphic to `S'' ⊗_{R''} R`; the encoding is single-universe
+  throughout, the source is quoted rather than proved (it is one of the four results the source cites
+  from the literature), the type lock, data-level non-vacuity probe and gap registration follow the
+  same pattern, and `exists_galoisDescent` is the use-site form wanted by the proof of theorem 5.1.
+  Three of the four parts of `proposition-0-2` are now in the library; part (b), on the vanishing of
+  `H^1(G, S^*)`, is not.
 - `SaltLem12_ABGV52.lean`: the `F₊[V]` layer for the blueprint's `lem1.2` — the action of `g` on `V`
   as an `F`-linear equivalence, the induced `F`-algebra automorphism of the symmetric algebra with
   its generator compatibility `ι v ↦ ι (g • v)`, the assembled `MulSemiringAction` on `F₊[V]`, the
