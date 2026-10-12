@@ -189,8 +189,14 @@ sync.  The items added since then are:
   `G`-invariant `s`, `Localization.Away s` carries a `MulSemiringAction` (`locMulSemiringAction`,
   with the use point `symLocMulSemiringAction` for `S = F₊[V](1/s)`).  The action is defined through
   the universal property (`locActBase`, `locActAlgHom`) and its laws are proved by `algHom_ext`
-  rather than by comparing localization equivalences.  What remains for step 10 is the identification
-  `S^G = F₊[V]^G(1/s)` and the assembly of the pieces into (c) itself; both are registered as gaps.
+  rather than by comparing localization equivalences.  Finally the file assembles step 10(c)
+  (`exists_localized_lift_of_isLocalProjectiveSymmetricLocalized`): given the de-localized form of
+  local projectivity, a local surjection and a `G`-equivariant map out of `F₊[V](1/s)` can be lifted
+  along it, with the base invariants `F₊[V]^G` mapped into `R`; the compatibility of the localization
+  map with the action (`symLocMulSemiringAction_algebraMap`) is what links the two sides.  One
+  difference from the source is registered: the invariant clause is asserted only for the image of
+  `F₊[V]^G`, not for every `G`-invariant of `F₊[V](1/s)`, which would need the identification
+  `S^G = F₊[V]^G(1/s)`; that identification is the single remaining item for step 10.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
   `SaltRatOver`, `SaltLocalProj` carry the 1984 definitions, the rational-to-retract bridge, Swan's
   lemma, the corollary/reduction pair, the 2-power condition layer, the named generic-object residual,
