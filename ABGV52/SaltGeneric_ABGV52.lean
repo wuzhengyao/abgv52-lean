@@ -456,7 +456,7 @@ theorem Lemma52Statement.shape (K L : Type u) [Field K] [Field L] [Algebra F K] 
 ⟹ **`Lemma52Statement` 是假命题** ✗（**与 `F`／`G`／`K`／`L` 无关** ✓）。
 
 **⟹ 处置** ✓：源的 `t` **本是非零多项式** ✓（源 `lemma-5.2` 的语境 ✓）⟹ 该陈述**须加 `t \neq 0`** ✓；
-**本库已有的可用形恰是非零形** ✓（`conjEvalPoly_ne_zero` ✓，§4.16 ✓；端到端 `\dots of\_ne\_zero` ✓，§4.17 ✓）。
+**⚠ 第 149 轮已兑现** ✓✅：**修正形** `Lemma52StatementNonzero` ✓ **已证为定理** ✓（`lemma52Statement_nonzero_true` ✓，**§4.18** ✓）。
 **⚠ 影响面** ✓（**实测** ✓）：`Lemma52Statement` 的**唯一**消费者是本节的 `.shape` ✓ ⟹ **该条空真** ✗（**登记** ✓）；
 **全库其余无消费者** ✓。 -/
 theorem Lemma52Statement.false_at_zero (K L : Type u) [Field K] [Field L] [Algebra F K]
@@ -802,7 +802,7 @@ polynomial」✓。
 theorem normalBasisPoly_ne_zero {L : Type u} [Field L] [Algebra K L]
     [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
     (h : Function.Bijective (smulAlgEquivHom K G L)) : normalBasisPoly K G b ≠ 0 := by
-  haveI : FiniteDimensional K L := finiteDimensional_of_basis K G b
+  have : FiniteDimensional K L := finiteDimensional_of_basis K G b
   obtain ⟨x, hx⟩ := exists_linearIndependent_smul K G L h
   have hdet : (galoisMatrix K G b x).det ≠ 0 :=
     (galoisMatrix_det_ne_zero_iff_vectors K G b x).mpr hx
@@ -1266,6 +1266,112 @@ theorem exists_linearIndependent_smul_aeval_ne_zero_of_ne_zero {L : Type u} [Fie
 
 end EndToEndUncond
 
+/-! ## 4.18 **源 `lemma-5.2` 的口径收口：真形（补 `t \neq 0`）已证** ✓✅（第 149 轮）
+
+**⚠ 出发点** ✓：§4.5 的 `Lemma52Statement` ✓ **未设 `t \neq 0`** ✗ ⟹ 其**假设类为空** ✗（**第 148 轮机检反驳** ✓：
+`Lemma52Statement.false_at_zero` ✓）。**源的 `t` 本是非零多项式** ✓ ⟹ 正解 ＝ **补 `t \neq 0`** ✓
+（**该前提不可省** ✗ —— 反驳即在库 ✓）。本轮把**修正形**（`Lemma52StatementNonzero` ✓）**证出** ✓✅ ⟹
+**源 `lemma-5.2` 作为定理成立** ✓（**前提** ✓：`G` 有限 ✓／`K` 无限 ✓／识别桥 ✓／`SMulCommClass G K L` ✓；
+**且张成侧不需额外前提** ✓）。
+
+**⚠ 结构** ✓（**三件** ✓）：
+**(1)** **基变换桥** ✓ `aeval_map_algebraMap` ✓ —— 「先换系数环、再代入」＝「直接代入」✓（源 `t` 的系数在 `F` ✓，
+而 §4.16／§4.17 的机器在 `K` 上 ✓ ⟹ **须此桥** ✓）；
+**(2)** **张成侧** ✓ `exists_basis_eq_smul_of_linearIndependent` ✓ —— `\mathrm{LI}` ＋ `\mathrm{card} = \mathrm{finrank}` ⟹
+**共轭族恰成基** ✓（＝源「**generates a normal basis**」✓ 的**张成那一半** ✓；**§4.9 只给 `\mathrm{LI}`** ✓，
+**在册** ✓ ⟹ **本轮收口** ✓）；
+**(3)** **组装** ✓：§4.17 的无条件形 ✓ 给 `z` ✓ ⟹ (2) 把 `\{\sigma \bullet z\}` 升为**基** ✓ ⟹ (1) 把结论搬回 `F`-系数形 ✓。 -/
+
+section BaseChangeAeval
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] {L : Type u} [Field L]
+variable [Algebra F K] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+variable {σ : Type*}
+
+/-- **基变换桥** ✓✅：`\mathrm{aeval}` 在 `\mathrm{map}(\mathrm{algebraMap}\ F\ K)` 下**取值不变** ✓ ——
+即「**先换系数环、后代入**」＝「**直接代入**」✓。
+
+**证明** ✓：`MvPolynomial.aeval_def` ✓（`\mathrm{aeval} = \mathrm{eval}_2 (\mathrm{algebraMap}\ \cdot)` ✓）
+＋ `MvPolynomial.eval₂_map` ✓（复合系数同态 ✓）＋ `IsScalarTower.algebraMap_eq` ✓
+（`\mathrm{algebraMap}\ F\ L = (\mathrm{algebraMap}\ K\ L) \circ (\mathrm{algebraMap}\ F\ K)` ✓）。 -/
+theorem aeval_map_algebraMap (g : σ → L) (t : MvPolynomial σ F) :
+    MvPolynomial.aeval g (MvPolynomial.map (algebraMap F K) t) = MvPolynomial.aeval g t := by
+  rw [MvPolynomial.aeval_def, MvPolynomial.eval₂_map, MvPolynomial.aeval_def,
+    IsScalarTower.algebraMap_eq F K L]
+
+end BaseChangeAeval
+
+section SpanningSide
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G]
+
+/-- **张成侧** ✓✅：`\mathrm{LI}` ＋ `\mathrm{card}\ G = \mathrm{finrank}_K L` ⟹ **共轭族恰成 `K`-基** ✓ ——
+即源「**generates a normal basis**」✓ 的**张成**那一半 ✓（**§4.9 的判据只给 `\mathrm{LI}`** ✓，**在册** ✓）。
+
+**证明** ✓：mathlib **`basisOfLinearIndependentOfCardEqFinrank`** ✓ ＋ **`Module.finrank_eq_card_basis`** ✓ ——
+**`\mathrm{card}` 等式由已有的基 `b` 供给** ✓ ⟹ **张成侧不需额外前提** ✓（**⚠ 这正是「判据给 `\mathrm{LI}`」在册项的处置** ✓）。 -/
+theorem exists_basis_eq_smul_of_linearIndependent {L : Type u} [Field L] [Algebra K L]
+    [MulSemiringAction G L] (b : Module.Basis G K L) {z : L}
+    (hz : LinearIndependent K (fun σ : G => σ • z)) :
+    ∃ b' : Module.Basis G K L, ∀ σ : G, b' σ = σ • z := by
+  have : FiniteDimensional K L := finiteDimensional_of_basis K G b
+  have : Nonempty G := ⟨1⟩
+  refine ⟨basisOfLinearIndependentOfCardEqFinrank hz (Module.finrank_eq_card_basis b).symm, ?_⟩
+  intro σ
+  rw [coe_basisOfLinearIndependentOfCardEqFinrank]
+
+end SpanningSide
+
+section Lemma52TrueFormSec
+
+variable (F : Type u) [Field F] (G : Type u) [Group G]
+
+/-- **源 `lemma-5-2` 的真形** ✓✅（**修正形** ✓）：与 §4.5 的 `Lemma52Statement` ✓ **逐字同形** ✓，
+**只多一个前提 `t \neq 0`** ✓ —— 该前提**不可省** ✗（**第 148 轮的机检反驳** ✓ 即证此事 ✓）。
+
+**⚠ 为什么必须补** ✓：源 `lemma-5.2` 的 `t` **是非零多项式** ✓（源语境 ✓），而 §4.5 的登记形**漏了它** ✗
+⟹ 在 `t = 0` 处结论不成立 ✗（**L1／L10①：具名残余亦须过非空性闸** ✓，**新读数 (52)** ✓）。 -/
+def Lemma52StatementNonzero (K L : Type u) [Field K] [Field L] [Algebra F K] [Algebra K L]
+    [Algebra F L] [IsScalarTower F K L] [MulSemiringAction G L] : Prop :=
+  ∀ t : MvPolynomial G F, t ≠ 0 →
+    ∃ (z : L) (b : Module.Basis G K L), (∀ σ : G, b σ = σ • z) ∧
+      MvPolynomial.aeval (fun σ : G => σ • z) t ≠ 0
+
+end Lemma52TrueFormSec
+
+section Lemma52TrueFormProof
+
+variable (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **源 `lemma-5.2` 的真形已证** ✓✅ —— **本引理至此是定理** ✓（**不再是具名残余** ✓）。
+
+**证明** ✓（**三件拼接** ✓）：**(1)** **基变换** ✓：`\mathrm{map}(\mathrm{algebraMap}\ F\ K)` **单射** ✓
+（`\mathrm{algebraMap}` 单射 ✓ ＋ `map_injective` ✓）⟹ `t \neq 0` 传到 `K`-系数形 ✓；
+**(2)** **§4.17 的无条件形** ✓ 给 `z` ✓（`\{\sigma \bullet z\}` **`\mathrm{LI}`** ✓ 且 `\mathrm{aeval}\ (\sigma \mapsto \sigma \bullet z)\ t_K \neq 0` ✓）；
+**(3)** **§4.18 的两件** ✓：张成侧 ✓ 把 `\mathrm{LI}` **升为基** `b'` ✓（`b' \sigma = \sigma \bullet z` ✓）；
+基变换桥 ✓ 把非零**搬回 `F`-系数形** ✓。
+
+**⚠ 前提账** ✓（**皆在签名的假设里** ✓，**非隐藏** ✓）：`[Fintype G]` ✓（**源语境 ✓**）、`[DecidableEq G]` ✓（**矩阵逆所需 ✓**，
+**工艺性 ✓**）、`[Infinite K]` ✓（源「**`K` is infinite**」✓）、**识别桥** ✓（**在册 ✓**）、
+`[SMulCommClass G K L]` ✓（**作用与 `K`-标量交换 ✓** —— 源语境下 `G \le \mathrm{Aut}_K(L)` ✓ 自动成立 ✓，
+**登记** ✓）。 -/
+theorem lemma52Statement_nonzero_true (K L : Type u) [Field K] [Field L] [Algebra F K]
+    [Algebra K L] [Algebra F L] [IsScalarTower F K L] [Infinite K]
+    [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
+    (h : Function.Bijective (smulAlgEquivHom K G L)) :
+    Lemma52StatementNonzero F G K L := by
+  intro t ht
+  have htK : MvPolynomial.map (algebraMap F K) t ≠ 0 := fun h0 =>
+    ht (MvPolynomial.map_injective (algebraMap F K) (algebraMap F K).injective
+      (by rw [h0, map_zero]))
+  obtain ⟨z, hz, hzne⟩ :=
+    exists_linearIndependent_smul_aeval_ne_zero_of_ne_zero K G b h
+      (MvPolynomial.map (algebraMap F K) t) htK
+  obtain ⟨b', hb'⟩ := exists_basis_eq_smul_of_linearIndependent K G b hz
+  exact ⟨z, b', hb', by simpa only [aeval_map_algebraMap] using hzne⟩
+
+end Lemma52TrueFormProof
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -1332,5 +1438,9 @@ end EndToEndUncond
 #print axioms smul_basis_linearCombination_eq_zero
 #print axioms conjEvalPoly_ne_zero
 #print axioms exists_linearIndependent_smul_aeval_ne_zero_of_ne_zero
+#print axioms aeval_map_algebraMap
+#print axioms exists_basis_eq_smul_of_linearIndependent
+#print axioms Lemma52StatementNonzero
+#print axioms lemma52Statement_nonzero_true
 
 end ABGV52

@@ -375,7 +375,12 @@ is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-
   neighbouring named statement: `Lemma52Statement` quantifies over every polynomial, so at the zero
   polynomial its conclusion is unsatisfiable and the statement is refutable; the machine-checked
   refutation `Lemma52Statement.false_at_zero` is included, its only consumer is the shape lock, and
-  the source's `t` is a nonzero polynomial, so the statement needs that hypothesis.
+  the source's `t` is a nonzero polynomial, so the statement needs that hypothesis.  The corrected
+  statement is then proved: with that hypothesis the source's lemma 5.2 holds as a theorem, the
+  spanning half of "generates a normal basis" coming from the library's construction of a basis out
+  of a linearly independent family of the right cardinality, and the base change of the evaluation
+  along the two structure maps carrying the conclusion back to the polynomial ring over the ground
+  field.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
