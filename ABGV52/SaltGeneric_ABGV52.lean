@@ -820,16 +820,72 @@ noncomputable def conjEvalPoly {L : Type u} [Field L] [Algebra K L] [MulSemiring
   MvPolynomial.aeval (fun τ : G => ∑ i : G, MvPolynomial.C (τ • b i) * MvPolynomial.X i) t
 
 /-- **⚠ 登记（`(d)-②②` 余项，**未落** ✗）** ✓：
-**(i) 取值恒等式** ✗：`f'(y) = \mathrm{aeval}(\tau \mapsto \tau \bullet (\sum_i y_i \bullet e_i))\ t` ✓ ——
-**应可证** ✓（`\mathrm{aeval}` 与 `\mathrm{eval}` 的**复合律** ✓，或对 `t` 作 `induction_on` ✓
-**显式给 motive** ✓）；**实测障碍** ✓ ＝ `\mathrm{conjEvalPoly}` 是**半可约** `def` ✗ ⟹ 归纳各支**须先
-`show`** ✓ 给出**展开形** ✓（**㊹ 复发** ✓，见 §4.10／r143 ✓）；
+**(i) 取值恒等式** ✓✅ —— **第 146 轮已落** ✓（`eval_conjEvalPoly` ✓，见 **§4.13** ✓；**原记「未落」留痕** ✓）；
+**⚠ 原记的「须先 `show`」亦被证否** ✗⟹✓：**把 `\mathrm{aeval}` 形显式写出** ✓（不写成 `\mathrm{conjEvalPoly}` ✓）
+⟹ 归纳各支**自然可化简** ✓、**无需 `show`** ✓（**㊹ 的正面应用** ✓）；
 **(ii) 非零** ✗：源用「**the algebraic independence of the `\sigma`'s**」✓ —— **未建** ✗
 （**⚠ 先审后落** ✓：须先定其**可用形** ✓ —— `\mathrm{Dedekind}` 线性无关 ✓ vs 代数无关 ✗，**强度不同** ✗）；
 **(iii) 组装** ✓：`exists_eval_mul_ne_zero` ✓ **已备** ✓（由 `f \neq 0` ✓ ＋ `f' \neq 0` ✓ 得公共非零点 ✓）。 -/
 theorem conjEvalPoly_gap_registered : True := trivial
 
 end ConjEvalPoly
+
+section EvalAevalComp
+
+variable {R : Type*} [CommSemiring R] {S : Type*} [CommSemiring S] [Algebra R S]
+variable {σ τ : Type*}
+
+/-- **`\mathrm{eval}` 与 `\mathrm{aeval}` 的复合律** ✓（**mathlib 无此条** ✗，本件自证 ✓）：
+`\mathrm{eval}\ y\ (\mathrm{aeval}\ g\ t) = \mathrm{aeval}\ (\tau \mapsto \mathrm{eval}\ y\ (g\ \tau))\ t` ✓ ——
+即**先代入后取值 ＝ 先取值后代入** ✓。
+
+**证明** ✓：对 `t` 作 `MvPolynomial.induction_on` ✓（**各支的 `\mathrm{aeval}` 形是显式写出的** ✓
+⟹ **不触发 ㊹** ✓，**无需 `show`** ✓ —— 这是 §4.10／r143 教训的**正面应用** ✓）。
+**⚠ 载体口径** ✓：左右两侧**基环不同** ✓（内层 `R` ✓／外层 `S` ✓）⟹ 本律**不能**由 `aeval_bind₁` ✓ 直接得 ✗
+（那条要求同一基环 ✗）。 -/
+theorem eval_aeval_poly (g : σ → MvPolynomial τ S) (y : τ → S) (t : MvPolynomial σ R) :
+    MvPolynomial.eval y (MvPolynomial.aeval g t)
+      = MvPolynomial.aeval (fun i => MvPolynomial.eval y (g i)) t := by
+  induction t using MvPolynomial.induction_on with
+  | C a => simp
+  | add p q hp hq => simp only [map_add, hp, hq]
+  | mul_X p n hp => simp only [map_mul, hp, MvPolynomial.aeval_X]
+
+end EvalAevalComp
+
+/-! ## 4.13 源 `(d)-②②(i)` 结：`f'` 的**取值恒等式** ✓（第 146 轮） -/
+
+section ConjEvalPolyIdentity
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G]
+
+/-- **源 `(d)-②②(i)` 结** ✓✅：**`f'(y) = \mathrm{aeval}(\tau \mapsto \tau \bullet (\sum_i y_i \bullet e_i))\ t`** ✓ ——
+即源逐字「Substituting the above expressions for the `\sigma(z)`'s, we have that
+`t(z,\sigma(z),\dots) = f'(y_1,\dots,y_n)`」✓ 的**恒等式侧** ✓（`z = \sum_i y_i \bullet e_i` ✓）。
+
+**证明** ✓：§4.13 的**复合律** ✓ ＋ **线性式取值** ✓（`\mathrm{eval}\ y'\ (\sum_i C(\tau \bullet e_i) \cdot X_i)
+= \tau \bullet (\sum_i y_i \bullet e_i)` ✓ —— 由 `map_sum` ✓／`Finset.smul_sum` ✓／`Algebra.smul_def` ✓）。
+**⚠ 一处编译期自纠** ✓：线性式的逐项化简**须试三轮** ✗（`smul_mul'` ✗ 模式不符 ⟹ `smul_algebraMap` ✗ 因
+**强制转换的语法形**不匹配 ⟹ 终由 `simp [mul_comm, Algebra.smul_def]` ✓ 收口 ✓）—— **新工艺读数 ㊼** ✓（见 109.4 ✓）。 -/
+theorem eval_conjEvalPoly {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L]
+    [SMulCommClass G K L] (b : Module.Basis G K L) (t : MvPolynomial G K) (y : G → K) :
+    MvPolynomial.eval (fun i : G => algebraMap K L (y i)) (conjEvalPoly K G b t)
+      = MvPolynomial.aeval (fun τ : G => τ • (∑ i : G, y i • b i)) t := by
+  have hg : ∀ τ : G, MvPolynomial.eval (fun i : G => algebraMap K L (y i))
+      (∑ i : G, MvPolynomial.C (τ • b i) * MvPolynomial.X i)
+      = τ • (∑ i : G, y i • b i) := by
+    intro τ
+    rw [map_sum, Finset.smul_sum]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    simp only [map_mul, MvPolynomial.eval_C, MvPolynomial.eval_X]
+    simp [mul_comm, Algebra.smul_def]
+  show MvPolynomial.eval (fun i : G => algebraMap K L (y i))
+      (MvPolynomial.aeval (fun τ : G => ∑ i : G, MvPolynomial.C (τ • b i) * MvPolynomial.X i) t)
+    = MvPolynomial.aeval (fun τ : G => τ • (∑ i : G, y i • b i)) t
+  rw [eval_aeval_poly]
+  simp only [hg]
+
+end ConjEvalPolyIdentity
 
 /-! ## 5. 公理闸门 -/
 
@@ -879,6 +935,8 @@ end ConjEvalPoly
 #print axioms normalBasisPoly_ne_zero
 #print axioms finiteDimensional_of_basis
 #print axioms conjEvalPoly
+#print axioms eval_aeval_poly
+#print axioms eval_conjEvalPoly
 #print axioms conjEvalPoly_gap_registered
 #print axioms normalBasisPoly
 #print axioms eval_normalBasisPoly
