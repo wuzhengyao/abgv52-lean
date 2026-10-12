@@ -2292,6 +2292,50 @@ theorem nonempty_algEquiv_localizationAway_adjoin_inv (s : A) (hs : s ≠ 0) :
 end ISLocalizationAdjoin
 
 
+/-! ## 4.32 **局部化沿基环同构搬运**（(a) 款的复合用件）✓✅（第 166 轮）
+
+**⚠ 起点** ✓：§128.6 第 1 项 —— 把 **r158 的多项式环同构** ✓ 与 **r165 的局部化同构** ✓ **沿基环同构复合** ✓
+（**读数 (70) 的应用** ✓：**先查现成机器** ✓）。
+
+**⚠ 本轮两件** ✓：
+**①** **`nonempty_algEquiv_localizationAway_map`** ✓✅ —— **基环同构 `e : A \simeq_F B` ⟹
+`\mathrm{Localization.Away}\ a \simeq_F \mathrm{Localization.Away}\ (e a)`** ✓
+（**入口** ✓：**`\mathrm{IsLocalization.algEquivOfAlgEquiv}`** ✓ —— **局部化沿基环同构的搬运** ✓；
+**前提** ✓ 由 **`\mathrm{Submonoid.map\_powers}`** ✓ 供给 ✓ —— **即 `\mathrm{Submonoid.map}\ e\ (\mathrm{powers}\ a) = \mathrm{powers}\ (e a)`** ✓）；
+**②** `algEquiv_ne_zero_iff` ✓✅ —— **非零沿同构搬运** ✓（`e a \neq 0 \leftrightarrow a \neq 0` ✓ —— **(a) 款的 `w \neq 0` 一侧** ✓）。
+
+**⚠ 登记（本轮未落，**路线已定**）** ✗：**(a) 款的**具体形**** ✓ ——
+`\mathrm{AlgebraicIndependent}\ F\ a` ＋ `s \neq 0`（`s \in A_0` ✓）⟹ `\exists w \neq 0,\ \uparrow(A_0[s^{-1}]) \simeq_F \mathrm{Localization.Away}\ w` ✓
+—— **两处阻塞** ✗（**本轮实测** ✓）：
+**（i）** **`[\mathrm{IsFractionRing}\ \uparrow A_0\ K]`** ✗ —— **r165 的局部化同构需要它** ✓，
+而本工程只有 **§4.20 的**逐元素**分式形** ✓ ⟹ **须先把逐元素形升为 `\mathrm{IsFractionRing}` 实例** ✓（**四款直造** ✓，**次轮** ✓）；
+**（ii）** **`\simeq_{\uparrow A_0}` 到 `\simeq_F` 的转换** ✗ —— 复合须把 `\uparrow A_0`-线性的同构视作 `F`-线性的 ✓
+（**`\mathrm{IsScalarTower}`** ✓ 在库 ✓）⟹ **次轮查 `\mathrm{AlgEquiv}` 的 restrictScalars 类引理** ✓（**(51)** ✓）。
+**⚠ 组合式** ✓：`\mathrm{Localization.Away}\ w \simeq_F \mathrm{Localization.Away}\ (e w) = \mathrm{Localization.Away}\ s \simeq_{\uparrow A_0} \uparrow(A_0[s^{-1}])` ✓（取 `w := e^{-1} s` ✓）。 -/
+
+
+
+section AwayMapEquiv
+
+variable {F : Type u} [Field F]
+variable {A : Type u} [CommRing A] [Algebra F A]
+variable {B : Type u} [CommRing B] [Algebra F B]
+
+/-- **局部化沿基环同构搬运** ✓：`Localization.Away a ≃ₐ[F] Localization.Away (e a)` ✓
+（**入口** ✓：`\mathrm{IsLocalization.algEquivOfAlgEquiv}` ✓ ＋ **`\mathrm{Submonoid.map\_powers}`** ✓）。 -/
+theorem nonempty_algEquiv_localizationAway_map (e : A ≃ₐ[F] B) (a : A) :
+    Nonempty (Localization.Away a ≃ₐ[F] Localization.Away (e a)) :=
+  ⟨IsLocalization.algEquivOfAlgEquiv (Localization.Away a) (Localization.Away (e a))
+    e (Submonoid.map_powers e a)⟩
+
+/-- **非零沿同构搬运** ✓（(a) 款的 `w \neq 0` 一侧）。 -/
+theorem algEquiv_ne_zero_iff (e : A ≃ₐ[F] B) {a : A} : e a ≠ 0 ↔ a ≠ 0 :=
+  ⟨fun h ha => h (by rw [ha, map_zero]),
+    fun ha h => ha (e.injective (by rw [h, map_zero]))⟩
+
+end AwayMapEquiv
+
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2390,5 +2434,7 @@ end ISLocalizationAdjoin
 #print axioms isLocalization_powers_adjoin_inv
 #print axioms isLocalization_away_adjoin_inv
 #print axioms nonempty_algEquiv_localizationAway_adjoin_inv
+#print axioms nonempty_algEquiv_localizationAway_map
+#print axioms algEquiv_ne_zero_iff
 
 end ABGV52
