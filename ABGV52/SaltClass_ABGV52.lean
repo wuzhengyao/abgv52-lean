@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–116 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -26,19 +26,24 @@
   与**同句**给出的类型序列 `(s_{i},t_{i})` **自相矛盾** ✓ —— 该矛盾在 tex 层**不可见** ✗
   （两句都被 OCR 退化到同一形状 ✓）。**本件按印版落** ✓。
 
-  ## 本件内容（§77.2 施工单**第 1 件** ✓）
+  ## 本件内容（§77.2 施工单**第 1–2 件** ✓）
 
   | 件 | 内容 | 读法 |
   |---|---|---|
   | `LinearStructure` ✓ | 源 §1 的线性结构：`R, M` ＋ `r : ℕ` ＋ `s t : Fin r → ℕ` ＋ `f : ∀ i, TensorPower R (s i) M →ₗ[R] TensorPower R (t i) M` | 逐字 ✓ |
   | `LinearStructure.type` ✓ | 源「`type` ＝ 序列 `(s₁,t₁),…,(s_r,t_r)`」 | 逐字 ✓ |
   | `tensorPower_zero_equiv` ✓ | 源「`M^{(0)} = R`」 | **同构** ✓（非定义相等 ✗，**偏离登记** ✓） |
-  | 类型锁定 ✓ ＋ L1 探针 ✓ | 构造子外形锁 ✓／`type` 锁 ✓ ＋ 实例探针 ✓ | 见 §3 |
+  | 类型锁定 ✓ ＋ L1 探针 ✓ | 构造子外形锁 ✓／`type` 锁 ✓ ＋ 实例探针 ✓ | 第 1 件 ✓ |
+  | `tensorPowerMapSL` ✓ ＋ `_tprod`／`_id`／`_comp` ✓ | 源「the **induced map** `M^{(r)} → N^{(r)}`」✓ 的**半线性档** ✓（mathlib **缺件** ✗ ⟹ **自建** ✓）；生成元刻画 ✓／恒等 ✓／**函子性** ✓ | 第 2 件的前置 API ✓ |
+  | `Hom` ✓ ＋ `Hom.id`／`Hom.comp` ✓ | 源的同态 `(φ, ψ)` ✓（**按印版形** ✓：`g_i ∘ ψ^{(s_i)} = ψ^{(t_i)} ∘ f_i` ✓）＋ 源「form a category in the usual way」✓ 的**恒等** ✓ 与**复合** ✓ | 第 2 件 ✓ |
+  | `IsIso` ✓ ＋ `toHom`／`refl` ✓ | 源的同构 ✓（`S = R` ✓、`φ = id` ✓、`ψ` 可逆 ✓）＋「an invertible **morphism**」✓ 的 morphism 支 ✓ 与恒等档 ✓ | 第 2 件 ✓ |
 
-  **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：第 2–9 件
-  （`Hom`／`IsIso` → `FStruct`／`FClass` → `HasLiftingProperty` → `RepresentingObject`／
-  `DenselyRepresenting` → `ProjectiveObjectForClass`／`LocalProjective` → `Specialization`
-  → `cor3.10(b)` ⟹ `cor3.10(a)` → `prop1.1(a)` 具名残余）**均未落** ✗。
+  **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
+  ① 第 **3–9** 件（`FStruct`／`FClass` → `HasLiftingProperty` → `RepresentingObject`／`GenericObject`／
+  `DenselyRepresenting` → `ProjectiveObjectForClass`／`LocalProjective` → `Specialization` →
+  `cor3.10(b)` ⟹ `cor3.10(a)` → `prop1.1(a)` 具名残余）**均未落** ✗；
+  ② **`IsIso.symm` 未落** ✗ —— 源的「invertible morphism」之**逆支** ✓：**数据**上 `psi.symm` 已备 ✓，
+  但「逆**仍是同态**（即逆的保持条件）」这一条**未证** ✗ ⟹ **本件不声称 `IsIso` 已成 groupoid** ✗。
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import Mathlib.LinearAlgebra.TensorPower.Basic
@@ -122,7 +127,252 @@ theorem linearStructureProbe_nonempty (R : Type u) (M : Type v) [CommRing R]
       Nonempty (LinearStructure R M 1 (fun _ => 1) (fun _ => 1))) :=
   ⟨⟨linearStructureProbeZero R M⟩, ⟨linearStructureProbe R M⟩⟩
 
-/-! ## 4. 公理闸门 -/
+/-! ## 4. 源 §1 的「诱导映射」`ψ^{(n)}`（**半线性档** ✓；§78.6 登记的前置 API ✓） -/
+
+section TensorPowerMap
+
+variable {R : Type u} {S : Type u} [CommRing R] [CommRing S]
+variable {M : Type v} {N : Type v} [AddCommGroup M] [Module R M] [AddCommGroup N] [Module S N]
+
+/-- **`σ`-半线性映射诱导的张量幂映射** ✓：源 §1（印版 169 ✓）的「Define `ψ^{(0)}` to be `φ`,
+and `ψ^{(r)}` to be the **induced map** `M^{(r)} → N^{(r)}`」✓ —— 把 `ψ : M →ₛₗ[σ] N` 提升为
+`ψ^{(n)} : M^{(n)} →ₛₗ[σ] N^{(n)}` ✓，在生成元上的值见 `tensorPowerMapSL_tprod` ✓。
+
+**⚠ 库内缺口登记** ✓（§78.6 的侦察结论 ✓）：mathlib **无**半线性档的张量幂映射 ✗ ——
+`PiTensorProduct.map` 只收 **`R`-线性**族 ✓；`MultilinearMap.restrictScalars` 要求**定义域**
+亦为 `A`-模 ✗（本处 `M` 只是 `R`-模 ✓）⟹ **不适用** ✓。故本件**自建** ✓ 并登记 ✗。
+
+**构造** ✓：`(aᵢ)ᵢ ↦ ⨂ᵢ ψ(aᵢ)` 是 `R`-**多重线性**的 ✓ —— 目标 `N^{(n)}` 经
+`Module.compHom _ σ` ✓ 读作 `R`-模 ✓（其中 `c • y` 与该 `S`-模的 `σ c • y` **定义相等** ✓，
+这是本构造的关键 ✓）；加性支由 `ψ` 加性 ✓、`R`-标量支由 `ψ (c • x) = σ c • ψ x` ✓ 与
+`tprod` 的 `S`-多重线性 ✓ 合成 ✓；再经 `PiTensorProduct.lift` ✓ 得 `R`-线性映射 ✓，
+其 `S`-半线性性由定义处的 `map_smul'` 直接给出 ✓。 -/
+noncomputable def tensorPowerMapSL (σ : R →+* S) (ψ : M →ₛₗ[σ] N) (n : ℕ) :
+    TensorPower R n M →ₛₗ[σ] TensorPower S n N :=
+  letI : Module R (TensorPower S n N) := Module.compHom (TensorPower S n N) σ
+  let L : TensorPower R n M →ₗ[R] TensorPower S n N :=
+    PiTensorProduct.lift
+      { toFun := fun m => PiTensorProduct.tprod S (fun i => ψ (m i))
+        map_update_add' := by
+          intro _ m i x y
+          have h : ∀ j z, ψ (Function.update m i z j) =
+              Function.update (fun k => ψ (m k)) i (ψ z) j :=
+            fun j z => Function.apply_update (fun k => ψ) m i z j
+          simp only [h, map_add]
+          exact (PiTensorProduct.tprod S).map_update_add _ i _ _
+        map_update_smul' := by
+          intro _ m i c x
+          have h : ∀ j z, ψ (Function.update m i z j) =
+              Function.update (fun k => ψ (m k)) i (ψ z) j :=
+            fun j z => Function.apply_update (fun k => ψ) m i z j
+          simp only [h, map_smulₛₗ]
+          exact (PiTensorProduct.tprod S).map_update_smul _ i (σ c) _ }
+  { toFun := L
+    map_add' := L.map_add
+    map_smul' := fun c x => L.map_smul c x }
+
+set_option linter.style.haveILetI false in
+/-- **生成元刻画** ✓：`ψ^{(n)} (⨂ᵢ aᵢ) = ⨂ᵢ ψ(aᵢ)` ✓ —— 即源「induced map」的**读法** ✓。
+**⚠ 用途** ✓：`Hom` 的恒等档 ✓ 的唯一计算入口 ✓。 -/
+theorem tensorPowerMapSL_tprod (σ : R →+* S) (ψ : M →ₛₗ[σ] N) (n : ℕ)
+    (m : Fin n → M) :
+    tensorPowerMapSL σ ψ n (PiTensorProduct.tprod R m) =
+      PiTensorProduct.tprod S (fun i => ψ (m i)) := by
+  letI : Module R (TensorPower S n N) := Module.compHom (TensorPower S n N) σ
+  rw [tensorPowerMapSL]
+  exact PiTensorProduct.lift.tprod _
+
+/-- **恒等档** ✓（源「form a category in the usual way」✓ 的恒等支 ✓）：
+`σ = RingHom.id R`、`ψ = id` 时 `ψ^{(n)} = id` ✓。 -/
+theorem tensorPowerMapSL_id (n : ℕ) :
+    tensorPowerMapSL (RingHom.id R) (LinearMap.id : M →ₗ[R] M) n = LinearMap.id := by
+  apply PiTensorProduct.ext
+  ext f
+  rw [LinearMap.compMultilinearMap_apply, LinearMap.compMultilinearMap_apply,
+    tensorPowerMapSL_tprod]
+  rfl
+
+set_option linter.style.haveILetI false in
+/-- **复合档** ✓（源「form a category in the usual way」✓ 的复合支 ✓）：
+`(ψ₂ ∘ ψ₁)^{(n)} = ψ₂^{(n)} ∘ ψ₁^{(n)}` ✓ —— 即 `n ↦ ψ^{(n)}` 对复合**函子性** ✓。
+**⚠ 用途** ✓：`Hom` 的复合 ✓ 与 `IsIso` 的逆 ✓ 的唯一计算入口 ✓。
+
+**⚠ 口径** ✓：`σ₁₃` 显式给出 ✓ 并附 `RingHomCompTriple σ₁₂ σ₂₃ σ₁₃` ✓ —— mathlib 只为
+**恒等档**（`ids`／`right_ids` ✓）注册该类型类 ✓，一般 `σ₁₃` 由**调用方供给** ✓。 -/
+theorem tensorPowerMapSL_comp {T : Type u} [CommRing T] {P : Type v} [AddCommGroup P]
+    [Module T P] (σ₁₂ : R →+* S) (σ₂₃ : S →+* T) (σ₁₃ : R →+* T)
+    [RingHomCompTriple σ₁₂ σ₂₃ σ₁₃] (ψ₁ : M →ₛₗ[σ₁₂] N) (ψ₂ : N →ₛₗ[σ₂₃] P) (n : ℕ) :
+    tensorPowerMapSL σ₁₃ (ψ₂.comp ψ₁) n =
+      (tensorPowerMapSL σ₂₃ ψ₂ n).comp (tensorPowerMapSL σ₁₂ ψ₁ n) := by
+  apply LinearMap.ext
+  intro x
+  induction x using PiTensorProduct.induction_on with
+  | smul_tprod r f =>
+      simp only [map_smulₛₗ, tensorPowerMapSL_tprod, LinearMap.comp_apply]
+  | add x y hx hy => simp only [map_add, hx, hy]
+
+end TensorPowerMap
+
+/-! ## 5. 源 §1：线性结构的**同态**（印版 169 ✓） -/
+
+section HomStructure
+
+variable {R : Type u} {S : Type u} [CommRing R] [CommRing S]
+variable {M : Type v} {N : Type v} [AddCommGroup M] [Module R M] [AddCommGroup N] [Module S N]
+variable {r : ℕ} {s t : Fin r → ℕ}
+
+/-- **源 §1 的同态** ✓（印版 169 ✓；**按印版形** ✓，tex `:98` 的退化形 ✗ 见头注 ✓）：
+`M/R` 与 `N/S` **类型相同** ✓ 时的同态 `Ψ : M → N` ＝ 一对 `(φ, ψ)` ✓，其中
+`φ : R → S` 是**环同态** ✓、`ψ : M → N` 是 **`φ`-半线性** ✓、且
+**保持**两边的 `f_i`／`g_i` ✓：`g_i ∘ ψ^{(s_i)} = ψ^{(t_i)} ∘ f_i` ✓
+（`ψ^{(n)}` ＝ `tensorPowerMapSL φ ψ n` ✓）。
+
+**⚠ 类型参数** ✓：源的「same type」落为**两个结构共享同一组** `r, s, t` ✓
+（`M₁ : LinearStructure R M r s t` 与 `N₁ : LinearStructure S N r s t` ✓）。 -/
+structure Hom (M₁ : LinearStructure R M r s t) (N₁ : LinearStructure S N r s t) where
+  /-- 源逐字：`φ : R → S` is a ring homomorphism ✓。 -/
+  phi : R →+* S
+  /-- 源逐字：`ψ : M → N` is a `φ`-semilinear ✓。 -/
+  psi : M →ₛₗ[phi] N
+  /-- 源逐字：`g_i ∘ ψ^{(s_i)} = ψ^{(t_i)} ∘ f_i` ✓（**印版形** ✓）。 -/
+  comm : ∀ i : Fin r,
+    (N₁.f i).comp (tensorPowerMapSL phi psi (s i)) =
+      (tensorPowerMapSL phi psi (t i)).comp (M₁.f i)
+
+/-- **`Hom` 的定义外形锁定** ✓（构造子档）：`phi`／`psi`／`comm` 的**类型与次序**一旦漂移
+（如把 `ψ` 写成 `R`-线性而非 `φ`-半线性 ✗、或把保持条件的方向写反 ✗），本两条 `rfl`
+立即编译失败 ✓。 -/
+theorem Hom_typeLock (M₁ : LinearStructure R M r s t) (N₁ : LinearStructure S N r s t)
+    (φ : R →+* S) (ψ : M →ₛₗ[φ] N)
+    (h : ∀ i : Fin r, (N₁.f i).comp (tensorPowerMapSL φ ψ (s i)) =
+      (tensorPowerMapSL φ ψ (t i)).comp (M₁.f i)) :
+    (Hom.mk φ ψ h : Hom M₁ N₁).phi = φ :=
+  rfl
+
+theorem Hom_typeLock_psi (M₁ : LinearStructure R M r s t) (N₁ : LinearStructure S N r s t)
+    (φ : R →+* S) (ψ : M →ₛₗ[φ] N)
+    (h : ∀ i : Fin r, (N₁.f i).comp (tensorPowerMapSL φ ψ (s i)) =
+      (tensorPowerMapSL φ ψ (t i)).comp (M₁.f i)) :
+    (Hom.mk φ ψ h : Hom M₁ N₁).psi = ψ :=
+  rfl
+
+/-- **恒等同态** ✓（源「the class of all linear structures of a fixed type form a category
+in the usual way」✓ 的恒等 ✓）：取 `S := R`、`φ := RingHom.id R`、`ψ := id` ✓；
+保持条件由 `tensorPowerMapSL_id` ✓ 化归为 `id` 的两侧消去 ✓。 -/
+def Hom.id (M₁ : LinearStructure R M r s t) : Hom M₁ M₁ where
+  phi := RingHom.id R
+  psi := LinearMap.id
+  comm := by
+    intro i
+    rw [tensorPowerMapSL_id, tensorPowerMapSL_id]
+    simp
+
+/-- **L1 探针** ✓（**非空洞** ✓）：`Hom` 在**任意** `(r, s, t)` 上可实例化 ✓（`Hom.id` ✓）。 -/
+theorem Hom_nonempty (M₁ : LinearStructure R M r s t) : Nonempty (Hom M₁ M₁) :=
+  ⟨Hom.id M₁⟩
+
+/-- **L1 探针（一般 `φ` 档 ✓）**：`r = 0` 时保持条件**空** ✓ ⟹ 对**任意**环同态
+`φ : R →+* S` 与任意 **`φ`-半线性** `ψ` 都有同态 ✓ ⟹ 源的**半线性支**（`R ≠ S` ✓、
+`φ ≠ id` ✓）**非空洞** ✓。 -/
+def Hom_probeGeneral (φ : R →+* S) (ψ : M →ₛₗ[φ] N) :
+    Hom (linearStructureProbeZero R M) (linearStructureProbeZero S N) where
+  phi := φ
+  psi := ψ
+  comm := fun i => Fin.elim0 i
+
+/-- **复合** ✓（源「form a category in the usual way」✓ 的复合支 ✓）：
+`(Φ : N → P) ∘ (Ψ : M → N)` 的 `φ`／`ψ` 逐支复合 ✓，保持条件由 `tensorPowerMapSL_comp` ✓
+（函子性 ✓）与两侧的 `comm` ✓ 沿结合律拼接 ✓。 -/
+def Hom.comp {M₁ : LinearStructure R M r s t} {N₁ : LinearStructure S N r s t}
+    {T : Type u} [CommRing T] {P : Type v} [AddCommGroup P] [Module T P]
+    {P₁ : LinearStructure T P r s t} (Ψ : Hom M₁ N₁) (Φ : Hom N₁ P₁) : Hom M₁ P₁ :=
+  letI : RingHomCompTriple Ψ.phi Φ.phi (Φ.phi.comp Ψ.phi) := ⟨rfl⟩
+  { phi := Φ.phi.comp Ψ.phi
+    psi := Φ.psi.comp Ψ.psi
+    comm := by
+      intro i
+      calc (P₁.f i).comp (tensorPowerMapSL (Φ.phi.comp Ψ.phi) (Φ.psi.comp Ψ.psi) (s i))
+          = (P₁.f i).comp ((tensorPowerMapSL Φ.phi Φ.psi (s i)).comp
+              (tensorPowerMapSL Ψ.phi Ψ.psi (s i))) := by
+            rw [tensorPowerMapSL_comp]
+        _ = ((P₁.f i).comp (tensorPowerMapSL Φ.phi Φ.psi (s i))).comp
+              (tensorPowerMapSL Ψ.phi Ψ.psi (s i)) := by
+            rw [← LinearMap.comp_assoc]
+        _ = ((tensorPowerMapSL Φ.phi Φ.psi (t i)).comp (N₁.f i)).comp
+              (tensorPowerMapSL Ψ.phi Ψ.psi (s i)) := by
+            rw [Φ.comm i]
+        _ = (tensorPowerMapSL Φ.phi Φ.psi (t i)).comp
+              ((N₁.f i).comp (tensorPowerMapSL Ψ.phi Ψ.psi (s i))) := by
+            rw [LinearMap.comp_assoc]
+        _ = (tensorPowerMapSL Φ.phi Φ.psi (t i)).comp
+              ((tensorPowerMapSL Ψ.phi Ψ.psi (t i)).comp (M₁.f i)) := by
+            rw [Ψ.comm i]
+        _ = ((tensorPowerMapSL Φ.phi Φ.psi (t i)).comp
+              (tensorPowerMapSL Ψ.phi Ψ.psi (t i))).comp (M₁.f i) := by
+            rw [← LinearMap.comp_assoc]
+        _ = (tensorPowerMapSL (Φ.phi.comp Ψ.phi) (Φ.psi.comp Ψ.psi) (t i)).comp
+              (M₁.f i) := by
+            rw [tensorPowerMapSL_comp] }
+
+end HomStructure
+
+/-! ## 6. 源 §1：线性结构的**同构**（印版 169 ✓） -/
+
+section IsIsoStructure
+
+variable {R : Type u} [CommRing R]
+variable {M : Type v} {N : Type v} [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+variable {r : ℕ} {s t : Fin r → ℕ}
+
+/-- **源 §1 的同构** ✓（印版 169 ✓ 逐字）：「An **isomorphism** `(φ,ψ) : M/R → N/S` will be an
+invertible morphism which is `R` linear. That is, we insist that **`S = R`** ✓, that **`φ` is the
+identity** ✓, and that **`ψ^{-1} : N → M` exists** ✓」—— 三条落为：两端**同一**底环 `R` ✓、
+`ψ` 是 `R`-**线性等价** ✓（可逆 ✓ ＋ `R`-线性 ✓）、且保持 `f_i`／`g_i` ✓（此时
+`ψ^{(n)}` 由 `tensorPowerMapSL (RingHom.id R)` ✓ 给出 ✓）。 -/
+structure IsIso (M₁ : LinearStructure R M r s t) (N₁ : LinearStructure R N r s t) where
+  /-- 源：`S = R` ✓、`φ = id` ✓、`ψ^{-1}` 存在 ✓ ⟹ `ψ` 是 `R`-线性等价 ✓。 -/
+  psi : M ≃ₗ[R] N
+  /-- 源：保持 `f_i`／`g_i` ✓（`φ = id` ✓）。 -/
+  comm : ∀ i : Fin r,
+    (N₁.f i).comp (tensorPowerMapSL (RingHom.id R) (psi : M →ₗ[R] N) (s i)) =
+      (tensorPowerMapSL (RingHom.id R) (psi : M →ₗ[R] N) (t i)).comp (M₁.f i)
+
+/-- **同构 → 同态** ✓：源「an invertible **morphism**」✓ 的 morphism 支 ✓
+（`φ := RingHom.id R` ✓、`ψ` 取 `psi` 的线性支 ✓）。 -/
+def IsIso.toHom {M₁ : LinearStructure R M r s t} {N₁ : LinearStructure R N r s t}
+    (e : IsIso M₁ N₁) : Hom M₁ N₁ where
+  phi := RingHom.id R
+  psi := (e.psi : M →ₗ[R] N)
+  comm := e.comm
+
+/-- **恒等同构** ✓（源「`ψ^{-1}` exists」✓ 的退化档：`ψ := id` ✓、`ψ^{-1} = id` ✓）。 -/
+def IsIso.refl (M₁ : LinearStructure R M r s t) : IsIso M₁ M₁ where
+  psi := LinearEquiv.refl R M
+  comm := by
+    intro i
+    change (M₁.f i).comp
+        (tensorPowerMapSL (RingHom.id R) (LinearMap.id : M →ₗ[R] M) (s i)) =
+      (tensorPowerMapSL (RingHom.id R) (LinearMap.id : M →ₗ[R] M) (t i)).comp (M₁.f i)
+    rw [tensorPowerMapSL_id, tensorPowerMapSL_id]
+    simp
+
+/-- **`IsIso` 的定义外形锁定** ✓：`psi` 的**类型**（`R`-线性等价 ✓，而非仅线性映射 ✗、
+亦非跨底环 ✗）一旦漂移，本 `rfl` 立即编译失败 ✓。 -/
+theorem IsIso_typeLock (M₁ : LinearStructure R M r s t) (N₁ : LinearStructure R N r s t)
+    (ψ : M ≃ₗ[R] N)
+    (h : ∀ i : Fin r,
+      (N₁.f i).comp (tensorPowerMapSL (RingHom.id R) (ψ : M →ₗ[R] N) (s i)) =
+        (tensorPowerMapSL (RingHom.id R) (ψ : M →ₗ[R] N) (t i)).comp (M₁.f i)) :
+    ((IsIso.mk ψ h : IsIso M₁ N₁).psi : M →ₗ[R] N) = (ψ : M →ₗ[R] N) :=
+  rfl
+
+/-- **L1 探针** ✓（**非空洞** ✓）：`IsIso` 在**任意** `(r, s, t)` 上可实例化 ✓（`refl` ✓）。 -/
+theorem IsIso_nonempty (M₁ : LinearStructure R M r s t) : Nonempty (IsIso M₁ M₁) :=
+  ⟨IsIso.refl M₁⟩
+
+end IsIsoStructure
+
+/-! ## 7. 公理闸门 -/
 
 #print axioms tensorPower_zero_equiv
 #print axioms LinearStructure_typeLock
@@ -130,5 +380,20 @@ theorem linearStructureProbe_nonempty (R : Type u) (M : Type v) [CommRing R]
 #print axioms linearStructureProbe
 #print axioms linearStructureProbeZero
 #print axioms linearStructureProbe_nonempty
+#print axioms tensorPowerMapSL
+#print axioms tensorPowerMapSL_tprod
+#print axioms tensorPowerMapSL_id
+#print axioms tensorPowerMapSL_comp
+#print axioms Hom_typeLock
+#print axioms Hom_typeLock_psi
+#print axioms Hom.id
+#print axioms Hom.comp
+#print axioms Hom_nonempty
+#print axioms Hom_probeGeneral
+#print axioms IsIso.toHom
+#print axioms IsIso.refl
+#print axioms IsIso_typeLock
+#print axioms IsIso_nonempty
 
 end ABGV52
+

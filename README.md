@@ -267,10 +267,20 @@ sync.  The items added since then are:
   sequence printed in the same sentence; the file follows the printed version.  The source's
   `M^(0) = R` is recorded as an
   isomorphism rather than a definitional equality, because mathlib's `TensorPower R 0 M` is the
-  tensor product over the empty index type.  The remaining pieces of the section-1 language — the
-  morphisms and isomorphisms, the classes and their closure properties, the lifting property,
+  tensor product over the empty index type.  The same file now carries the morphisms of the source:
+  the induced map `psi^(n) : M^(n) -> N^(n)` of a semilinear `psi`, with its value on generators, its
+  identity case and its functoriality (the composition case has to be stated with the middle ring
+  homomorphism of mathlib's `RingHomCompTriple` supplied explicitly, since only the identity cases of
+  that class are registered); the homomorphism structure `Hom` of a pair `(phi, psi)` with `phi` a
+  ring homomorphism, `psi` semilinear over it, and the preservation condition
+  `g_i . psi^(s_i) = psi^(t_i) . f_i` of the printed page, together with its identity and its
+  composition, so that the structures of a fixed type do form a category; and the isomorphism
+  structure `IsIso`, in which the base ring is common, `phi` is the identity and `psi` is a linear
+  equivalence, with the forgetful map to `Hom` and the identity isomorphism.  Not yet formalized are
+  the converse of that forgetful map (that the inverse of an isomorphism again satisfies the
+  preservation condition), the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
-  specializations — are not yet formalized.
+  specializations.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
