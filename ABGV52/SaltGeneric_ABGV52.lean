@@ -823,9 +823,11 @@ noncomputable def conjEvalPoly {L : Type u} [Field L] [Algebra K L] [MulSemiring
 **(i) 取值恒等式** ✓✅ —— **第 146 轮已落** ✓（`eval_conjEvalPoly` ✓，见 **§4.13** ✓；**原记「未落」留痕** ✓）；
 **⚠ 原记的「须先 `show`」亦被证否** ✗⟹✓：**把 `\mathrm{aeval}` 形显式写出** ✓（不写成 `\mathrm{conjEvalPoly}` ✓）
 ⟹ 归纳各支**自然可化简** ✓、**无需 `show`** ✓（**㊹ 的正面应用** ✓）；
-**(ii) 非零** ✗：源用「**the algebraic independence of the `\sigma`'s**」✓ —— **未建** ✗
-（**⚠ 先审后落** ✓：须先定其**可用形** ✓ —— `\mathrm{Dedekind}` 线性无关 ✓ vs 代数无关 ✗，**强度不同** ✗）；
-**(iii) 组装** ✓：`exists_eval_mul_ne_zero` ✓ **已备** ✓（由 `f \neq 0` ✓ ＋ `f' \neq 0` ✓ 得公共非零点 ✓）。 -/
+**(ii) 非零 ＋ `K`-系数形** ✗ —— **第 147 轮已隔离为具名残余** ✓✅（`ConjEvalPolyKStatement` ✓，见 **§4.14** ✓；
+**原记「须先定可用形」的答案即此** ✓）；**⚠ 口径发现 ㊽** ✓（第 147 轮 ✓）：**「系数在 `K`」是承重的** ✗⟹✓ ——
+**避零步须在 `K` 上做** ✓（两侧多项式同为 `K`-系数 ✓）⟹ **L-点路线走不通** ✗（会与 §4.9 的 **K-坐标判据**错配 ✗，
+**实测** ✓：`eval₂ (algebraMap K L) y (normalBasisPoly …)` 的值在 `L` ✗ 而判据的 `\det` 在 `K` ✗）；
+**(iii) 组装** ✓✅ —— **第 147 轮已落** ✓（`exists_linearIndependent_smul_aeval_ne_zero` ✓，**条件形** ✓）。 -/
 theorem conjEvalPoly_gap_registered : True := trivial
 
 end ConjEvalPoly
@@ -887,6 +889,76 @@ theorem eval_conjEvalPoly {L : Type u} [Field L] [Algebra K L] [MulSemiringActio
 
 end ConjEvalPolyIdentity
 
+section ConjEvalPolyKStatementSec
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G]
+
+/-- **源 `(d)-②②(ii)` 的**忠实具名残余** ✓**：源逐字「we have that `t(z,\sigma(z),\dots) = f'(y_1,\dots,y_n)` for some
+polynomial `f'` **with coefficients in `K`**. **By the algebraic independence of the `\sigma`'s, `f'` is nonzero**」✓ ——
+本定义**逐项对应该句** ✓：**①** `f'` **系数在 `K`** ✓（`p : MvPolynomial G K` ✓）；**②** `f' \neq 0` ✓；
+**③** 取值恒等式 ✓（`f'(a) = t'(z,\sigma(z),\dots)` ✓，`z = \sum_i a_i \bullet e_i` ✓，
+**⚠ 须经 `\mathrm{algebraMap}`** ✓ —— 因右侧在 `L` ✓ 而 `f'` 的值在 `K` ✓，**这一步正是 (b) 段** ✓）。
+
+**⚠ 为什么是 `t' = \prod_\sigma \sigma \bullet t`** ✓（**本轮口径发现 ㊽** ✓）：源的第二条件是关于**不变**式 `t'` ✓，
+其取值**落在 `K`** ✓（(b) 段 ✓）⟹ **只有对 `t'` 才可能有 `K`-系数多项式** ✓；对**一般 `t`** ✗ 取值在 `L` ✓、
+系数须在 `L` ✗ ⟹ 本件**只对 `t'` 陈述** ✓（**忠实** ✓）。 -/
+def ConjEvalPolyKStatement {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L]
+    (b : Module.Basis G K L) (t : MvPolynomial G K) : Prop :=
+  ∃ p : MvPolynomial G K, p ≠ 0 ∧ ∀ a : G → K,
+    algebraMap K L (MvPolynomial.eval a p)
+      = MvPolynomial.aeval (fun σ : G => σ • (∑ i : G, a i • b i)) (∏ σ : G, σ • t)
+
+/-- **形状锁** ✓（**L 型** ✓）：本残余的**展开形** ✓（承 L19 惯例 ✓）。 -/
+theorem conjEvalPolyKStatement_shape {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L]
+    (b : Module.Basis G K L) (t : MvPolynomial G K) :
+    ConjEvalPolyKStatement K G b t ↔ ∃ p : MvPolynomial G K, p ≠ 0 ∧ ∀ a : G → K,
+      algebraMap K L (MvPolynomial.eval a p)
+        = MvPolynomial.aeval (fun σ : G => σ • (∑ i : G, a i • b i)) (∏ σ : G, σ • t) :=
+  Iff.rfl
+
+end ConjEvalPolyKStatementSec
+
+/-! ## 4.14 源 `(d)-②②(iii)` 结：**端到端结论（条件形）** ✓（第 147 轮）
+
+**⚠ 结构** ✓：源的 `(d)` 论证 ＝ **(i)** 多项式化 ✓（§4.10／§4.12／§4.13 ✓）＋ **(ii)** `f' \neq 0` ✗（**本件隔离为上一条残余** ✓）
+＋ **(iii)** **避零组装** ✓（本节 ✓）。源逐字：「Thus it suffices to find `a_1,\dots,a_n \in K` such that
+`f'(a_1,\dots,a_n) f(a_1,\dots,a_n) \neq 0`. This is always possible because `K` is infinite」✓。 -/
+
+section EndToEndSec
+
+variable (K : Type u) [Field K] [Infinite K] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **源 `(iii)` 结 ＋ `(d)` 的端到端结论（条件形）** ✓✅：**给定 (ii)** ✓（`\mathrm{ConjEvalPolyKStatement}` ✓），
+则**存在** `z \in L` 使 **`\{g \bullet z\}` 线性无关** ✓（＝ **生成正规基** ✓，`\mathrm{card} G = \dim_K L` 时 ✓）
+**且** `t(z,\sigma(z),\dots) \neq 0` ✓ —— 即**源 `lemma-5.2` 证明的结论** ✓。
+
+**证明** ✓（**四件拼接** ✓，**皆本库已有** ✓）：**(1)** `f \neq 0` ✓（§4.11 ✓）；**(2)** 由 (ii) 得 `p \neq 0` ✓；
+**(3)** **避零步** ✓（§4.10 ✓：`\mathrm{exists\_eval\_mul\_ne\_zero}` ✓）给 `a : G \to K` 使
+`f(a) \neq 0` ✓ **且** `p(a) \neq 0` ✓；**(4)** `f(a) \neq 0` ⟹ **判据** ✓（§4.9 ✓）给 `\mathrm{LI}` ✓；
+`p(a) \neq 0` ＋ **(ii) 的取值恒等式** ✓ 给 `\mathrm{ev}(t') \neq 0` ✓（**经 `\mathrm{algebraMap}` 单射** ✓），
+再由 **(c)** ✓（§4.7 ✓：`\mathrm{noether\_aeval\_ne\_zero\_of\_prod\_ne\_zero}` ✓）降为 `\mathrm{ev}(t) \neq 0` ✓。
+
+**⚠ 意义** ✓：**`[6]`「`(d)` 的组装」至此闭合** ✓；**全库仅余 `(ii)` 一块** ✗（**已隔离为具名残余** ✓）
+⟹ **`lemma-5.2` 的证明**只差 (ii) ✓。 -/
+theorem exists_linearIndependent_smul_aeval_ne_zero {L : Type u} [Field L] [Algebra K L]
+    [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
+    (h : Function.Bijective (smulAlgEquivHom K G L)) (t : MvPolynomial G K)
+    (hK : ConjEvalPolyKStatement K G b t) :
+    ∃ z : L, LinearIndependent K (fun σ : G => σ • z)
+      ∧ MvPolynomial.aeval (fun σ : G => σ • z) t ≠ 0 := by
+  obtain ⟨p, hp, hp_eval⟩ := hK
+  obtain ⟨a, ha, ha'⟩ := exists_eval_mul_ne_zero (normalBasisPoly_ne_zero K G b h) hp
+  have hmap : (algebraMap K L) (MvPolynomial.eval a p) ≠ 0 := fun h0 =>
+    ha' ((algebraMap K L).injective (by rw [h0, map_zero]))
+  rw [hp_eval a] at hmap
+  refine ⟨∑ i : G, a i • b i, ?_, ?_⟩
+  · rw [← galoisMatrix_det_ne_zero_iff_vectors K G b]
+    rw [← eval_normalBasisPoly K G b a]
+    exact ha
+  · exact noether_aeval_ne_zero_of_prod_ne_zero K G (∑ i : G, a i • b i) t hmap
+
+end EndToEndSec
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -937,6 +1009,9 @@ end ConjEvalPolyIdentity
 #print axioms conjEvalPoly
 #print axioms eval_aeval_poly
 #print axioms eval_conjEvalPoly
+#print axioms ConjEvalPolyKStatement
+#print axioms conjEvalPolyKStatement_shape
+#print axioms exists_linearIndependent_smul_aeval_ne_zero
 #print axioms conjEvalPoly_gap_registered
 #print axioms normalBasisPoly
 #print axioms eval_normalBasisPoly
