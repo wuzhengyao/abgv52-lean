@@ -316,7 +316,11 @@ sync.  The items added since then are:
   rings packaged as data, since an existential cannot bind instances, and with the source's affine
   hypothesis read as finite generation.  A densely representing object is one that is representing,
   whose ring is a domain, and such that every localization of the ring still carries a representing
-  object.  Not yet formalized are
+  object.  The morphism vocabulary of the section is there too: F-linearity, surjectivity in the
+  source's sense of both components being onto, and locality in the sense that the preimage of a unit
+  is a unit.  On that vocabulary sit projective objects for a class -- where the source is explicit
+  that the object need not lie in the class -- projective objects in a class, and local projectives,
+  which do lie in the class and lift against local surjections.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.

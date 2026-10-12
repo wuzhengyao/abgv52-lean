@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–126 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–127 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -65,6 +65,7 @@
   | **`LiftingData`** ✓ ＋ **`HasLiftingProperty`** ✓ ＋ 一锁一探针 ✓ | 源的**提升性质** ✓（印版 170 ✓）：局部 `F` 代数 `T` ✓／结构 over **剩余域** `T/M` ✓／存在 `\mathcal{M}'/T ∈ C` ✓／**基回同构且 `T/M`-线性** ✓（四支逐一落 ✓） | 第 4 件 ✓ |
   | **`Realization`** ✓ ＋ **`RepresentingObject`** ✓ ＋ `IsSpecialization` ✓ ＋ **`GenericObject`** ✓ ＋ 三锁两探针 ✓ | 源的**表示／一般对象／特化** ✓（印版 170 ✓）：仿射 ✓（＝有限生成 `F`-代数 ✓）／对每域 `K` 上 `\mathcal{N}/K ∈ C` 存在 `F`-映射 `\phi` ✓（`Realization` ✓）／`R ≅ F[x_1,…,x_n](1/r)` ✓ | 第 5 件（**部分** ✓） |
   | **`DenselyRepresenting`** ✓ ＋ 三锁一探针 ✓ | 源的**稠密表示对象** ✓（印版 171 ✓ **本轮逐句核** ✓）：**是表示对象** ✓ ∧ **`R` 是整环** ✓ ∧ **对任意 `0 ≠ s`，`\\mathcal{M} ⊗_R R(1/s)` 仍是表示对象** ✓ | 第 5 件 ✓ |
+  | **`Hom.IsFLinear`／`IsSurjective`／`IsLocal`／`IsLocalSurjection`** ✓ ＋ **`ProjectiveObjectFor`**／**`ProjectiveObjectIn`**／**`LocalProjective`** ✓ ＋ 四锁一探针 ✓ | 源的**态射性质与投射对象** ✓（印版 171--173 ✓，**本轮逐句核** ✓）：满射（`\\phi`／`\\psi` **皆满**）✓／local（单位原像仍是单位 ✓）✓／投射对象（源明写**不**要求 `\\mathcal{P}\\in\\mathcal{C}` ✓）✓／在类中的投射 ✓／局部投射（**含 `C P`** ✓ ＋ **局部**满射 ✓） | 第 6 件 ✓ |
   | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
@@ -81,8 +82,9 @@
   ② **第 4 件已落** ✓（`LiftingData` ✓ ＋ `HasLiftingProperty` ✓）；**第 5 件已落** ✓✅
   （`Realization` ✓／`RepresentingObject` ✓／`IsSpecialization` ✓／`GenericObject` ✓／
   **`DenselyRepresenting`** ✓ —— 其定义在**印版 171** ✓（**非 172** ✗，上轮登记已更正 ✓），**本轮已逐句核** ✓）；
-  ③ 第 **6–9** 件（`ProjectiveObjectForClass`／`LocalProjective` → `cor3.10(b)` ⟹ `cor3.10(a)`
-  → `prop1.1(a)` 具名残余）**均未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
+  ③ **第 6 件已落** ✓（`Surjection` ✓／`ProjectiveObjectFor` ✓／`ProjectiveObjectIn` ✓／
+  `LocalMorphism` ✓／`LocalProjective` ✓）；**第 7–9 件**（`Specialization` 收尾 → `cor3.10(b)` ⟹
+  `cor3.10(a)` → `prop1.1(a)` 具名残余）**未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import Mathlib.LinearAlgebra.TensorPower.Basic
@@ -1046,6 +1048,125 @@ theorem denselyRepresenting_false_of {F : Type u} [Field F] {r : ℕ} {s t : Fin
   ⟨h, hd, fun a ha =>
     representingObject_false_of_affine (X.baseChange (Localization.Away a)) (h2 a ha)⟩
 
+
+/-! ### 8.8 源 §1 的**态射性质／投射对象／局部投射**（印版 171--173 ✓） -/
+
+section Morphisms
+
+variable {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+variable {R S : Type u} [CommRing R] [CommRing S] [Algebra F R] [Algebra F S]
+variable {M : Type u} [AddCommGroup M] [Module R M]
+variable {N : Type u} [AddCommGroup N] [Module S N]
+variable {M₁ : LinearStructure R M r s t} {N₁ : LinearStructure S N r s t}
+
+/-- 源 §1：「The class of all `F` structures of a fixed type form a category where **we insist that all
+homomorphisms be `F` linear**」✓（印 169 ✓）—— 落为 `\phi` 与两个 `F`-结构映射相容 ✓。
+**⚠ 为何必需** ✓：§8.6--8.8 的类 `C` 是 **`F`-结构**的类 ✓，而 §5 的 `Hom` ✓ 是**一般**环同态档 ✓
+（源 §1 开篇的定义 ✓）⟹ `F`-线性须**另加** ✓。 -/
+def Hom.IsFLinear (Φ : Hom M₁ N₁) : Prop :=
+  Φ.phi.comp (algebraMap F R) = algebraMap F S
+
+/-- **源 §1 的满射** ✓（印 171 ✓ 逐字：「A **surjection** `(\phi ,\psi):\mathcal{M}\to \mathcal{N}` is a
+morphism such that `\psi ,\phi` are surjections **as set maps**」✓）—— **两支皆满** ✓，**不得只取一支** ✓。 -/
+def Hom.IsSurjective (Φ : Hom M₁ N₁) : Prop :=
+  Function.Surjective Φ.phi ∧ Function.Surjective Φ.psi
+
+/-- **源 §1 的 local 态射** ✓（印 172 ✓ 逐字：「Define a morphism `(\phi ,\psi):\mathcal{M} / R\to
+\mathcal{N} / S` to be **local** if `\phi^{- 1}(S^{*}) = R^{*}`. That is, if **the preimage of every unit in
+`S` is a unit in `R`**」✓）—— 落为源给出的**第二个**等价形 ✓（原像判据 ✓）。 -/
+def Hom.IsLocal (Φ : Hom M₁ N₁) : Prop :=
+  ∀ a : R, IsUnit (Φ.phi a) → IsUnit a
+
+/-- **局部满射** ✓（印 172 ✓：「for all **local surjections** `\Psi`」✓ ＝ 局部 ∧ 满射 ∧ `F`-线性 ✓）。 -/
+def Hom.IsLocalSurjection (Φ : Hom M₁ N₁) : Prop :=
+  Hom.IsFLinear (F := F) Φ ∧ Φ.IsSurjective ∧ Φ.IsLocal
+
+end Morphisms
+
+section Projective
+
+variable {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+
+/-- **源 §1 的投射对象** ✓（印 171 ✓ 逐字：「If `\mathcal{P}` is an `F` structure of the same type as those
+in `\mathcal{C}`, then `\mathcal{P}` is a **projective object** for `\mathcal{C}` if whenever
+`\Delta :\mathcal{P}\to \mathcal{N}` and `\Psi :\mathcal{M}\to \mathcal{N}` are morphisms, where `\Psi` is a
+**surjection** and `\mathcal{M},\mathcal{N}\in \mathcal{C}`, then there is a
+`\Delta ':\mathcal{P}\to \mathcal{M}` such that `\Delta = \Psi\circ \Delta '`」✓）。
+
+**⚠ 源明写不要求 `\mathcal{P}\in\mathcal{C}`** ✓（「We emphasize that, as with `R(F,n,r)`, we do **not** ask
+that `\mathcal{P}` be in `\mathcal{C}`」✓，印 171 ✓）⟹ **本件不设 `C P`** ✓（它与 `ProjectiveObjectIn` ✓ 分列 ✓）。
+**⚠ 分支** ✓：① `\Psi` **满** ✓；② `\mathcal{M},\mathcal{N}\in\mathcal{C}` ✓；③ **存在** `\Delta'` ✓；
+④ **等式 `\Delta = \Psi\circ \Delta'`** ✓ —— **四条全落** ✓（L39 ✓）。 -/
+def ProjectiveObjectFor (C : FStruct.{u, u} F r s t → Prop)
+    (P : FStruct.{u, u} F r s t) : Prop :=
+  ∀ (M N : FStruct.{u, u} F r s t) (Δ : Hom P.str N.str) (Ψ : Hom M.str N.str),
+    Hom.IsFLinear (F := F) Ψ → Ψ.IsSurjective → C M → C N →
+      ∃ (Δ' : Hom P.str M.str), Hom.IsFLinear (F := F) Δ' ∧ Δ = Δ'.comp Ψ
+
+/-- **源 §1 的在 `\mathcal{C}` 中的投射对象** ✓（印 171 ✓ 逐字：「We say that `\mathcal{P}` is a projective
+object **in** `\mathcal{C}` if `\mathcal{P}\in \mathcal{C}`」✓）—— **两支** ✓（`ProjectiveObjectFor` ✓ ∧
+`C P` ✓），**不得与上条合并** ✓。 -/
+def ProjectiveObjectIn (C : FStruct.{u, u} F r s t → Prop)
+    (P : FStruct.{u, u} F r s t) : Prop :=
+  ProjectiveObjectFor C P ∧ C P
+
+/-- **源 §1 的局部投射** ✓（印 172 ✓ 逐字：「If `\mathcal{C}` is a category of `F` structures, then
+`\mathcal{P}\in \mathcal{C}` is a **local projective** if for all **local surjections**
+`\Psi :\mathcal{M}\to \mathcal{N}`, and all `\Delta :\mathcal{P}\to \mathcal{N}`, there is a
+`\Delta ':\mathcal{P}\to \mathcal{M}` such that `\Delta = \Psi\circ \Delta '`」✓ —— **句子完于印 172 底**
+✓，**本轮已核** ✓）。
+
+**⚠ 与 `ProjectiveObjectFor` 的两处差别** ✓：**(a)** 源在此**要求 `\mathcal{P}\in\mathcal{C}`** ✓（「`\mathcal{P}\in\mathcal{C}` is a local projective」✓）——
+故首合取为 `C P` ✓（**这也是空类探针写不出的原因** ✓，见下 ✓）；**(b)** `\Psi` 限为**局部**满射 ✓。
+**⚠ 分支** ✓：① `C P` ✓；② `\Psi` **局部满射** ✓；③ `\mathcal{M},\mathcal{N}\in\mathcal{C}` ✓（源在 category 语境下 ✓）；
+④ 存在 `\Delta'` ✓；⑤ 等式 ✓ —— **五条全落** ✓。 -/
+def LocalProjective (C : FStruct.{u, u} F r s t → Prop)
+    (P : FStruct.{u, u} F r s t) : Prop :=
+  C P ∧
+    ∀ (M N : FStruct.{u, u} F r s t) (Ψ : Hom M.str N.str) (Δ : Hom P.str N.str),
+      Hom.IsLocalSurjection (F := F) Ψ → C M → C N →
+        ∃ (Δ' : Hom P.str M.str), Hom.IsFLinear (F := F) Δ' ∧ Δ = Δ'.comp Ψ
+
+/-- **外形锁定 ①（投射对象支）** ✓：`ProjectiveObjectIn` 的**第一合取**逐字可取 ✓。 -/
+theorem ProjectiveObjectIn.projectiveFor {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {P : FStruct.{u, u} F r s t}
+    (h : ProjectiveObjectIn C P) : ProjectiveObjectFor C P :=
+  h.1
+
+/-- **外形锁定 ②（在类中支）** ✓。 -/
+theorem ProjectiveObjectIn.mem {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {P : FStruct.{u, u} F r s t}
+    (h : ProjectiveObjectIn C P) : C P :=
+  h.2
+
+/-- **外形锁定 ③（局部投射＝在类中 ＋ 局部提升）** ✓：`LocalProjective` 的**两合取**逐字可取 ✓
+（源「`\mathcal{P}\in\mathcal{C}` is a local projective」✓ ⟹ 首合取 `C P` **是定义的一部分** ✓）。 -/
+theorem LocalProjective.mem {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {P : FStruct.{u, u} F r s t}
+    (h : LocalProjective C P) : C P :=
+  h.1
+
+/-- **外形锁定 ④（局部投射的提升支）** ✓：**五条分支** ✓（`C P` 之外）一并锁定 ✓。 -/
+theorem LocalProjective.lifts {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {P : FStruct.{u, u} F r s t}
+    (h : LocalProjective C P) :
+    ∀ (M N : FStruct.{u, u} F r s t) (Ψ : Hom M.str N.str) (Δ : Hom P.str N.str),
+      Hom.IsLocalSurjection (F := F) Ψ → C M → C N →
+        ∃ (Δ' : Hom P.str M.str), Hom.IsFLinear (F := F) Δ' ∧ Δ = Δ'.comp Ψ :=
+  h.2
+
+/-- **L1 探针** ✓（**形状可满足** ✓）：**空类**的**投射对象**是**任意** `P` ✓ —— 前提 `C M` ✓ 被消去 ✓。
+**⚠ 这一条同时说明** ✓：`ProjectiveObjectFor` **不**含 `C P` ✓（与源的强调一致 ✓）。
+**⚠ 不能照办者** ✗：`ProjectiveObjectIn`／`LocalProjective` **都含 `C P`** ✓ ⟹ **空类下写不出探针** ✗
+（它们的非空性须**非空**的 `F`-类 ✓，即源的 `\mathcal{A}(F,n)`／`\mathcal{E}(G)` ✓ —— **本件未涉** ✗，`∅-unchecked` ✓）。 -/
+theorem projectiveObjectFor_false {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (P : FStruct.{u, u} F r s t) :
+    ProjectiveObjectFor (F := F) (fun _ => False) P := by
+  intro M N Δ Ψ _ _ hM _
+  exact False.elim hM
+
+end Projective
+
 end BaseChange
 
 /-! ## 9. 公理闸门 -/
@@ -1086,6 +1207,18 @@ end BaseChange
 #print axioms DenselyRepresenting.isDomain
 #print axioms DenselyRepresenting.away
 #print axioms denselyRepresenting_false_of
+#print axioms Hom.IsFLinear
+#print axioms Hom.IsSurjective
+#print axioms Hom.IsLocal
+#print axioms Hom.IsLocalSurjection
+#print axioms ProjectiveObjectFor
+#print axioms ProjectiveObjectIn
+#print axioms LocalProjective
+#print axioms ProjectiveObjectIn.projectiveFor
+#print axioms ProjectiveObjectIn.mem
+#print axioms LocalProjective.mem
+#print axioms LocalProjective.lifts
+#print axioms projectiveObjectFor_false
 #print axioms tensorPowerBaseChange_tmul
 #print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe
