@@ -160,7 +160,7 @@ sync.  The items added since then are:
   gap registration, following the precedent of the Fischer interface.  The use sites
   `exists_galoisProjectiveSection` and `exists_algebraMap_of_invariant` extract the section and the
   fixed-subring clause from those inputs.  The same file now also registers the source's
-  `proposition-0-2(c)` (`GaloisDescentHyp`): for a `G`-Galois `S/R` and an `F`-subalgebra `R' ⊆ R`
+  `proposition-0-2(b)` (`Prop02bStatement`: the vanishing of the first cohomology of the units, encoded as crossed homomorphisms being principal, with the zero-Picard hypothesis abstract) and `proposition-0-2(c)` (`GaloisDescentHyp`): for a `G`-Galois `S/R` and an `F`-subalgebra `R' ⊆ R`
   there are `F`-algebras `R''` finitely generated over `R'`, with `R' → R'' → R` a tower, and a
   `G`-Galois `R''`-algebra `S''` with `S` isomorphic to `S'' ⊗_{R''} R`; the encoding is single-universe
   throughout, the source is quoted rather than proved (it is one of the four results the source cites

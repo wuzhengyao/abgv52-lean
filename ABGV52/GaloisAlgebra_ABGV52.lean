@@ -367,6 +367,60 @@ theorem exists_galoisDescent
 
 end GaloisDescent
 
+/-! ## 源 `proposition-0-2(b)` 的**具名登记**（**Prop 0.2 四条至此全落** ✓）第 159 轮
+
+**源逐字** ✓（`raw/Saltman1982.tex:82--86` ✓）：「Let \(S/R\) be Galois with group \(G\). …
+**(b)** \cite[ p.~116]{DI71}. **Suppose \(R\) has zero Picard group. Then \(H^1(G, S^*) = (0)\).**」✓
+—— **⚠ 具名残余：本件不作证明** ✗（源在 `proposition-0-2` 的引导句明写「we quote four results … instead of proofs」✓，
+本条的证明在 `[DI71]` p.~116 ✓ —— **该源不在 `raw/`** ✗，**登记** ✓）。
+
+**⚠ 编码决定** ✓（**新读数 (67)** ✓）：`H^1(G, S^*) = (0)` **不**经范畴式群上同调 ✗
+（`\mathrm{groupCohomology}` 需把 `S^*` 装成 `\mathrm{Rep}\ \mathbb{Z}\ G` ✓ —— 须先造 `S^\times` 上的 `G`-作用
+＋ `\mathbb{Z}`-线性的相容 ✓，**机器多且脆** ✗），而取**显式交叉同态形** ✓（**同构于标准定义** ✓，**免全部装包** ✓）：
+> `H^1(G, S^*) = (0)` ⟺ **每一交叉同态 `u : G \to S^*`（即 `u_{gh} = u_g \cdot g \cdot u_h` ✓）皆为主**（`\exists w \in S^*,\ u_g \cdot (g \cdot w) = w` ✓）
+
+**⚠ 同 (63) 的取向** ✓：**能用域/环内显式形表达者，不搬范畴载体** ✓。
+**⚠ 与 (a) 的关系** ✓：源 (a) 明写「the group cohomology groups \(H^n(G, S^+)\) are zero for \(n \geq 1\)」✓
+（**加法层** ✓，`S^+` ＝ 加法群 ✓）—— **(b) 是乘法层（`S^*` ＝ 单位群 ✓）** ✓，二者**不同系数** ✓，**不可互推** ✓（**登记** ✓）。
+
+**⚠ 未落项（登记）** ✗：**结论侧的非空洞探针**（L10① 可实现性 ✓）**未落** ✗ —— 须证「某具体档（如 `G = \mathrm{PUnit}`、`S = \mathbb{Q}` ✓）
+交叉同态皆为主」✓；**本件已证其**可证性方向**（平凡作用档 ✓）**但**因 `\mathrm{PUnit}` 无 `\mathrm{MulSemiringAction}` 实例** ✓
+须**显式给作用** ✓（`\mathrm{letI}` 触发风格警告 ✗）⟹ **延后** ✗，**登记** ✓。 -/
+
+/-- **`H^1(G, S^*) = (0)` 的显式形** ✓（**交叉同态皆为主** ✓）：`u` 取单位值 ✓、满足交叉关系 ✓
+⟹ 存在单位 `w` 使 `u_g \cdot (g \cdot w) = w` ✓。 -/
+def H1UnitsVanishes (G : Type u) [Group G] (S : Type u) [CommRing S]
+    [MulSemiringAction G S] : Prop :=
+  ∀ u : G → S, (∀ g : G, IsUnit (u g)) →
+    (∀ g h : G, u (g * h) = u g * (g • u h)) →
+    ∃ w : S, IsUnit w ∧ ∀ g : G, u g * (g • w) = w
+
+/-- **源 `proposition-0-2(b)` 的具名陈述** ✓：「`R` 的 Picard 群为零 ⟹ `H^1(G, S^*) = (0)`」✓ ——
+**在「`S/R` 是 `G`-Galois」的**常设前提下** ✓（源 `tex :80` ✓）；**`\mathrm{ZeroPic}` 取为抽象谓词** ✓
+（**本仓无 Picard 群词汇** ✗ —— **同 `\mathrm{SRat}` 的处置** ✓，**登记** ✓）。 -/
+def Prop02bStatement (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+    (R : Type u) [CommRing R] (S : Type u) [CommRing S]
+    [Algebra F R] [Algebra R S] [Algebra F S] [IsScalarTower F R S]
+    [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (ZeroPic : Type u → Prop) : Prop :=
+  IsGaloisWithGroup R S G hRG → ZeroPic R → H1UnitsVanishes G S
+
+/-- **类型锁定** ✓：外形一旦改动，本 `Iff.rfl` 立即编译失败 ✓。 -/
+theorem prop02bStatement_typeLock (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+    (R : Type u) [CommRing R] (S : Type u) [CommRing S]
+    [Algebra F R] [Algebra R S] [Algebra F S] [IsScalarTower F R S]
+    [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (ZeroPic : Type u → Prop) :
+    (Prop02bStatement F G R S hRG ZeroPic)
+      = (IsGaloisWithGroup R S G hRG → ZeroPic R → H1UnitsVanishes G S) := rfl
+
+/-- **非空洞探针（前提侧）** ✓：`\mathrm{ZeroPic}` 这一**抽象参数可实例化** ✓（取恒真谓词 ✓）。 -/
+theorem prop02bStatement_zeroPic_nonempty :
+    ∃ ZeroPic : Type u → Prop, ZeroPic (ULift.{u} ℤ) :=
+  ⟨fun _ => True, trivial⟩
+
 /-! ## 公理闸门 -/
 
 #print axioms isGaloisWithGroup_typeLock
@@ -388,5 +442,9 @@ end GaloisDescent
 #print axioms galoisDescentHyp_data_nonempty
 #print axioms galoisDescent_gap_registered
 #print axioms exists_galoisDescent
+#print axioms H1UnitsVanishes
+#print axioms Prop02bStatement
+#print axioms prop02bStatement_typeLock
+#print axioms prop02bStatement_zeroPic_nonempty
 
 end ABGV52.BTier
