@@ -1758,6 +1758,70 @@ theorem exists_pow_mul_eq_of_finiteType_adjoin_eq_top {a : ι → K}
 
 end GeneratedFieldCaseSub
 
+/-! ## 4.23 **清分母 ⟹ 落进 `A[s^{-1}]`**（源 `R'' \subseteq R_1(1/s)` 之形）✓✅（第 155 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex:650--652` ✓）：「… there is an \(s \in R_1\) and an algebra
+\(S \supseteq R = R_1(1/s)\) such that \(S/R\) is Galois with group \(G\) and \(S \otimes_R L^G \cong L\).」✓
+—— 源的 `R = R_1(1/s)` ✓ 是 `R_1` 在**单个元素处的局部化** ✓，而 §4.22 给的正是「像落进该局部化」✓
+（**清分母** ✓）⟹ **本件把二者接上** ✓（**装配 (iv) 的包含步** ✓）。
+
+**⚠ 定理内容** ✓：若 `x` **清分母后**仍是 `A` 中元素的像 ✓（`\exists n\ a,\ \mathrm{algebraMap}\ s^n \cdot x = \mathrm{algebraMap}\ a` ✓），
+则 `x` **落在 `A[s^{-1}]` 内** ✓ —— 本件把 `A[s^{-1}]` 取为 `K` 中的**子代数** `\mathrm{Algebra.adjoin}\ A\ \{(\mathrm{algebraMap}\ s)^{-1}\}` ✓
+（**＝ `A[1/s]` 在 `K` 中的像** ✓，**免去局部化载体的搬用** ✓ —— **新读数 (63)** ✓）。
+
+**⚠ 证明** ✓：由 `\mathrm{algebraMap}\ s^n \cdot x = \mathrm{algebraMap}\ a` ✓ 得
+`x = \mathrm{algebraMap}\ a \cdot ((\mathrm{algebraMap}\ s)^{-1})^n` ✓（**`\mathrm{inv\_pow}`** ✓ ＋ **右消去** ✓）；
+再证该式落在 `\mathrm{adjoin}` 内 ✓（**基域项** ✓ 由 `\mathrm{Subalgebra.algebraMap\_mem}` ✓；**生成元** ✓ 由
+`\mathrm{Algebra.subset\_adjoin}` ✓；**乘积与幂** ✓ 由 `\mathrm{mul\_mem}` ✓／`\mathrm{Subalgebra.pow\_mem}` ✓）。
+
+**⚠ 两处编译期自纠** ✓（**留痕** ✓）：
+**①** **`(\mathrm{algebraMap}\ A\ K).\mathrm{injective}` 报 `\mathrm{IsSimpleRing}\ A`** ✗ —— **实测** ✓：
+**`A` 是整环、`K` 是域 ⇒ `\mathrm{algebraMap}` 未必单** ✗（**反例** ✓：`\mathbb{Z} \to \mathbb{F}_p` ✓）⟹
+**须显式假设 `[\mathrm{FaithfulSMul}\ A\ K]`** ✓（**＝ `\mathrm{algebraMap}` 单** ✓）**并取 `\mathrm{FaithfulSMul.algebraMap\_injective}`** ✓；
+**②** **`\mathrm{mul\_right\_cancel₀}` 是蕴含** ✗（**非 `\leftrightarrow`** ✓）⟹ **直接作函数用** ✓（**原写 `.mp` 报 `Function.mp` 不存在** ✗）。
+**⚠ 另一处（非错误，属工艺）** ✓：**实例的 section 作用域** ✓ —— `[\mathrm{Nontrivial}\ A] [\mathrm{NoZeroDivisors}\ A]`
+**只在第二条需要** ✓ ⟹ **须分置 section** ✓（否则报 **unused section variables** ✗）。 -/
+
+section AdjoinInverse
+
+variable {A : Type u} [CommRing A]
+variable {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K]
+
+/-- **清分母 ⟹ 落进 `A[s^{-1}]`** ✓✅（**单元素形** ✓）。 -/
+theorem mem_adjoin_inv_of_pow_mul_eq {s : A} (hs : s ≠ 0) {x : K}
+    (h : ∃ (n : ℕ) (a : A), algebraMap A K s ^ n * x = algebraMap A K a) :
+    x ∈ Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K) := by
+  obtain ⟨n, a, ha⟩ := h
+  have hsK : algebraMap A K s ≠ 0 :=
+    fun h0 => hs (FaithfulSMul.algebraMap_injective A K (by rw [h0, map_zero]))
+  have hx : x = algebraMap A K a * ((algebraMap A K s)⁻¹) ^ n := by
+    rw [inv_pow]
+    refine mul_right_cancel₀ (pow_ne_zero n hsK) ?_
+    rw [mul_assoc, inv_mul_cancel₀ (pow_ne_zero n hsK), mul_one]
+    simpa [mul_comm] using ha
+  rw [hx]
+  exact mul_mem (Subalgebra.algebraMap_mem _ a)
+    (Subalgebra.pow_mem _ (Algebra.subset_adjoin (by simp)) n)
+
+end AdjoinInverse
+
+section FiniteTypeImage
+
+variable {A : Type u} [CommRing A] [Nontrivial A] [NoZeroDivisors A]
+variable {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K]
+variable {B : Type u} [CommRing B] [Algebra A B] [Algebra.FiniteType A B]
+
+/-- **有限型代数的像落进 `A[s^{-1}]`** ✓✅（**源 `R'' \subseteq R_1(1/s)` 之形** ✓）：由 **§4.22** ✓ 得单个 `s` ✓
+使 `B` 的像**全体**落进 `A[s^{-1}]` ✓ —— **装配 (iv) 的包含步** ✓（**下一步**：由此沿 `\mathrm{AlgHom.codRestrict}` ✓
+得 `R'' \to R_1(1/s)` ✓ 的**代数同态** ✓，再作基变换 `S'' \otimes_{R''} R` ✓）。 -/
+theorem image_le_adjoin_inv_of_finiteType (φ : B →ₐ[A] K)
+    (hfrac : ∀ z : K, ∃ x y : A, y ≠ 0 ∧ algebraMap A K y * z = algebraMap A K x) :
+    ∃ s : A, s ≠ 0 ∧ ∀ x : B, φ x ∈ Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K) := by
+  obtain ⟨s, hs, h⟩ := exists_pow_mul_eq_of_finiteType φ hfrac
+  exact ⟨s, hs, fun x => mem_adjoin_inv_of_pow_mul_eq hs (h x)⟩
+
+end FiniteTypeImage
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -1837,5 +1901,7 @@ end GeneratedFieldCaseSub
 #print axioms exists_mul_eq_of_finite_adjoin_eq_top
 #print axioms exists_pow_mul_eq_of_finiteType
 #print axioms exists_pow_mul_eq_of_finiteType_adjoin_eq_top
+#print axioms mem_adjoin_inv_of_pow_mul_eq
+#print axioms image_le_adjoin_inv_of_finiteType
 
 end ABGV52
