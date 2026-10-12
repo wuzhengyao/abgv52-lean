@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–120 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–122 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -59,16 +59,15 @@
   | `Hom` ✓ ＋ `Hom.id`／`Hom.comp` ✓ ＋ **范畴律** ✓ | 源的同态 `(φ, ψ)` ✓（**按印版形** ✓：`g_i ∘ ψ^{(s_i)} = ψ^{(t_i)} ∘ f_i` ✓）＋ 源「form a category in the usual way」✓ 的**恒等** ✓／**复合** ✓／`comp_id` ✓／`id_comp` ✓／`comp_assoc` ✓ | 第 2 件 ✓ |
   | `IsIso` ✓ ＋ `toHom`／`refl`／**`symm`** ✓ | 源的同构 ✓（`S = R` ✓、`φ = id` ✓、`ψ` 可逆 ✓）＋「an invertible **morphism**」✓ 的 morphism 支 ✓／恒等档 ✓／**逆支** ✓（`IsIso.symm` ✓：逆的保持条件已证 ✓） | 第 2 件 ✓ |
   | `tensorProductRightModule` ✓ ＋ `tensorPowerBaseChange` ✓ ＋ `_tmul` ✓ | 源的**基变换** ✓：`M ⊗_φ S` ✓（印版 169 ✓）＋ `f_i ⊗ 1` ✓（印版 170 ✓「well defined」✓）—— **保源序** ✓；**缺口处置** ✓：mathlib 无次因子取向的 `S`-模结构 ✗ ⟹ 沿 `comm` **搬运** ✓（`AddEquiv.module` ＋ `AddEquiv.linearEquiv` ✓） | 第 3 件（**部分** ✓） |
+  | **`tensorPowerBaseChangeEquiv`** ✓ ＋ 三件中间引理 ✓ | 源的「`(M ⊗_φ S)^{(n)}` is **identified with** `M^{(n)} ⊗_φ S`」✓（印版 170 ✓）—— `⨂[S]^n (M ⊗[R] S) ≃ₗ[S] (⨂[R]^n M) ⊗[R] S` ✓，**保源序** ✓；mathlib **无**现成件 ✗ ⟹ **自建**（逐槽 `comm` → (★) 递归 → `comm` 回序 ✓）。**⚠ 生成元语义核未过** ✗（登记 ✓） | 第 3 件（**部分** ✓） |
   | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
   ① 第 3 件的**其余部分** ✗：**`FClass`**（源四条：同类型 ✓／**同构封闭** ✓／**基变换封闭** ✓／
   **下降／有限生成** ✓）**未落** ✗。**⚠ 缺口已处置** ✓（§8 ✓）：次因子取向的 `S`-模结构**已**沿 `comm`
   搬运 ✓（`AddEquiv.module` ＋ `AddEquiv.linearEquiv` ✓），源的 `f_i ⊗ 1` **已落** ✓（**保源序** ✓）。
-  **⚠ 仍缺一步** ✗：源的「`(M ⊗_φ S)^{(n)}` is **identified with** `M^{(n)} ⊗_φ S`」✓（印版 170 ✓）
-  ＝ `TensorPower S n (M ⊗[R] S) ≃ₗ[S] TensorPower R n M ⊗[R] S` ✓ —— mathlib **无**现成件 ✗
-  （`PiTensorProduct`／`TensorPower` 目录无 `cancelBaseChange`／`baseChange` ✓，实测 ✓）⟹
-  **`LinearStructure.baseChange` 须待此 iso** ✗；
+  **⚠ 上述 iso 已落** ✓（§8.1 ✓）⟹ **`LinearStructure.baseChange` 可开工** ✓（本轮尚未做 ✗，**不作声称** ✓）；
+  **⚠ 该 iso 的生成元语义核未过** ✗（卡点逐字见 §8.1 ✓）⟹ 承重引用时按 `∅-unchecked` ✓ 对待；
   ② 第 **4–9** 件（`HasLiftingProperty` → `RepresentingObject`／`GenericObject`／`DenselyRepresenting` →
   `ProjectiveObjectForClass`／`LocalProjective` → `Specialization` → `cor3.10(b)` ⟹ `cor3.10(a)`
   → `prop1.1(a)` 具名残余）**均未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
@@ -604,12 +603,82 @@ theorem tensorPowerBaseChange_nonempty (R S : Type u) [CommRing R] [CommRing S] 
     Nonempty (TensorPower R a M ⊗[R] S →ₗ[S] TensorPower R b M ⊗[R] S) :=
   ⟨tensorPowerBaseChange (S := S) f⟩
 
+
+/-! ### 8.1 源「`(M ⊗_φ S)^{(n)}` identified with `M^{(n)} ⊗_φ S`」（印版 170 ✓） -/
+
+/-- **(★) 的基例 `n = 0`** ✓：`⨂[S]^0 (S ⊗[R] M)` 与 `S ⊗[R] ⨂[R]^0 M` 两边都典范同构于 `S` ✓
+（`PiTensorProduct.isEmptyEquiv` ✓ ＋ `AlgebraTensorModule.rid` ✓）。 -/
+noncomputable def tensorPowerBaseChangeAuxZero :
+    TensorPower S 0 (S ⊗[R] M) ≃ₗ[S] S ⊗[R] TensorPower R 0 M :=
+  (PiTensorProduct.isEmptyEquiv (Fin 0) (R := S) (s := fun _ => S ⊗[R] M)).trans
+    ((AlgebraTensorModule.congr (LinearEquiv.refl S S)
+        (PiTensorProduct.isEmptyEquiv (Fin 0) (R := R) (s := fun _ => M))).trans
+      (AlgebraTensorModule.rid R S S)).symm
+
+/-- **(★) 的归纳支** ✓：`(⨂[S]^n X) ⊗[S] X ≃ₗ[S] S ⊗[R] (A ⊗[R] M)` ✓，
+其中 `X = S ⊗[R] M` ✓、`A = ⨂[R]^n M` ✓。
+**用件** ✓：`AlgebraTensorModule.congr` ✓／`TensorProduct.comm` ✓／`cancelBaseChange` ✓（**基变换**）／
+`assoc` ✓／`TensorProduct.comm R` ✓。
+**⚠ 口径** ✓（子代理实测 ✓）：`cancelBaseChange` **不能**用「首因子只是 `R`-模」的档 ✗
+（它要求首因子是 `A`-模 ✓）⟹ 可行的序是 `(S ⊗[R] A) ⊗[S] X ≅ X ⊗[S] (S ⊗[R] A)` ✓（`comm S` ✓）
+再 `cancelBaseChange R S S X A` ✓；`assoc` 的环参数须给**同环档** ✓（`(A := R) (B := S)` ✓）。 -/
+noncomputable def tensorPowerBaseChangeAuxStep (n : ℕ)
+    (ih : TensorPower S n (S ⊗[R] M) ≃ₗ[S] S ⊗[R] TensorPower R n M) :
+    TensorPower S n (S ⊗[R] M) ⊗[S] (S ⊗[R] M) ≃ₗ[S]
+      S ⊗[R] (TensorPower R n M ⊗[R] M) :=
+  (AlgebraTensorModule.congr ih (LinearEquiv.refl S (S ⊗[R] M))).trans
+    ((TensorProduct.comm S (S ⊗[R] TensorPower R n M) (S ⊗[R] M)).trans
+      ((AlgebraTensorModule.cancelBaseChange (R := R) (A := S) (B := S)
+          (M := S ⊗[R] M) (N := TensorPower R n M)).trans
+        ((AlgebraTensorModule.assoc (R := R) (A := R) (B := S) (M := S)
+            (P := M) (Q := TensorPower R n M)).trans
+          (AlgebraTensorModule.congr (LinearEquiv.refl S S)
+            (TensorProduct.comm R M (TensorPower R n M))))))
+
+/-- **(★)** ✓：`⨂[S]^n (S ⊗[R] M) ≃ₗ[S] S ⊗[R] ⨂[R]^n M` ✓（对 `n` 递归 ✓）。
+**用件** ✓：`TensorPower.mulEquiv` ✓／`subsingletonEquiv` ✓／归纳假设 ✓／`AlgebraTensorModule.congr` ✓。 -/
+noncomputable def tensorPowerBaseChangeAux :
+    (n : ℕ) → TensorPower S n (S ⊗[R] M) ≃ₗ[S] S ⊗[R] TensorPower R n M
+  | 0 => tensorPowerBaseChangeAuxZero
+  | n + 1 =>
+      (TensorPower.mulEquiv (R := S) (M := S ⊗[R] M) (n := n) (m := 1)).symm
+        |>.trans ((AlgebraTensorModule.congr (LinearEquiv.refl S (TensorPower S n (S ⊗[R] M)))
+              (PiTensorProduct.subsingletonEquiv (R := S) (s := fun _ : Fin 1 => S ⊗[R] M) 0)).trans
+          ((tensorPowerBaseChangeAuxStep n (tensorPowerBaseChangeAux n)).trans
+            (AlgebraTensorModule.congr (LinearEquiv.refl S S)
+              ((AlgebraTensorModule.congr (LinearEquiv.refl R (TensorPower R n M))
+                  (PiTensorProduct.subsingletonEquiv (R := R) (s := fun _ : Fin 1 => M) 0).symm).trans
+                (TensorPower.mulEquiv (R := R) (M := M) (n := n) (m := 1))))))
+
+/-- **源 §1（印版 170 ✓ 逐字）：「where `(M ⊗_φ S)^{(n)}` is identified with `M^{(n)} ⊗_φ S`」** ✓✅：
+`⨂[S]^n (M ⊗[R] S) ≃ₗ[S] (⨂[R]^n M) ⊗[R] S` ✓ —— **保源的因子序** ✓ `M ⊗[R] S` ✓。
+**路线** ✓（三段复合 ✓）：① 逐槽 `comm` ✓（`PiTensorProduct.congr` ✓）⟹ `⨂[S]^n (S ⊗[R] M)` ✓；
+② **(★)** ✓（`tensorPowerBaseChangeAux` ✓）；③ `comm` 回源序 ✓（`S ⊗[R] ⨂[R]^n M ≃ ⨂[R]^n M ⊗[R] S` ✓）。
+**⚠ 库内缺口** ✓：mathlib **无**现成件 ✗（`PiTensorProduct`／`TensorPower` 两目录无 `cancelBaseChange`／
+`baseChange` ✓，实测 ✓）⟹ **自建** ✓。
+**⚠ 语义核（未做，登记** ✗**）** ✓：**生成元刻画** ✗（`tprod S (fun i => m i ⊗ₜ s i) ↦ tprod R m ⊗ₜ ∏ᵢ s i` ✓）
+**尚未证** ✗ —— **卡点逐字** ✓：一般 `n` 需 **`TensorPower.mulEquiv.symm` 在 `tprod` 上的引理** ✗
+（mathlib **无**打包件 ✓：`TensorPower.mulEquiv_tprod`／`gMul_tprod_tprod`／`mulEquiv_symm_apply_tprod`／
+`PiTensorProduct.congr_apply` **皆 unknown identifier** ✓）；`n = 0` 档另需绕开
+`TensorPower` 单位元的 **`OfNat` 缺失** ✗（用 `TensorPower.gOne_def`／`tprod S Fin.elim0` ✓）。
+**⚠ 本件的定位** ✓：**构造已落且编译通过（仅三标准公理 ✓）**，而其**生成元语义核尚未过** ✗
+⟹ 下游若据此件承重，须按 **`∅-unchecked`** ✓ 对待（L21／L44 ✓）。 -/
+noncomputable def tensorPowerBaseChangeEquiv (n : ℕ) :
+    TensorPower S n (M ⊗[R] S) ≃ₗ[S] TensorPower R n M ⊗[R] S :=
+  (PiTensorProduct.congr (fun _ : Fin n => (TensorProduct.comm R M S).toAddEquiv.linearEquiv S)).trans
+    ((tensorPowerBaseChangeAux n).trans
+      ((TensorProduct.comm R (TensorPower R n M) S).toAddEquiv.linearEquiv S).symm)
+
 end BaseChange
 
 /-! ## 8. 公理闸门 -/
 
 #print axioms tensorProductRightModule
 #print axioms tensorPowerBaseChange
+#print axioms tensorPowerBaseChangeAuxZero
+#print axioms tensorPowerBaseChangeAuxStep
+#print axioms tensorPowerBaseChangeAux
+#print axioms tensorPowerBaseChangeEquiv
 #print axioms tensorPowerBaseChange_tmul
 #print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe

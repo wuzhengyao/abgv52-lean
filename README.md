@@ -292,9 +292,13 @@ sync.  The items added since then are:
   `TensorProduct.comm`, which keeps the factor order of the source; the induced map `f (x) 1` is
   then obtained by conjugating mathlib's `AlgebraTensorModule.map` with that isomorphism, its
   `S`-linearity coming from `AddEquiv.linearEquiv`, together with the pointwise description
-  `(f (x) 1)(x (x) s) = f x (x) s`.  One step is still missing before the base change of a linear
-  structure can be assembled: the identification `(M (x) S)^(n) = M^(n) (x) S` that the source
-  states on page 170, for which mathlib has no ready-made isomorphism.  Not yet formalized are
+  `(f (x) 1)(x (x) s) = f x (x) s`.  The identification `(M (x) S)^(n) = M^(n) (x) S` that the
+  source states on page 170 is there as well, as a three-part composite that keeps the factor order
+  of the source: a `comm` in each tensor slot, a recursion in the number of slots (base case through
+  `isEmptyEquiv` and `rid`, step through `mulEquiv`, `cancelBaseChange` and `assoc`), and a final
+  `comm`.  What is not yet computed is its value on generators: that needs a generator lemma for
+  `TensorPower.mulEquiv.symm` which mathlib does not provide, so the isomorphism is to be treated as
+  unchecked downstream until such a probe is written.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.
