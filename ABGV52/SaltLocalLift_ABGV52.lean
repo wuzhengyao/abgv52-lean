@@ -419,7 +419,35 @@ theorem exists_factor_through_of_injective_probe (A : Type u) [CommRing A] :
     (fun s => ⟨Algebra.algHom A A (Localization.Away (1 : A)) s, rfl⟩)
   exact ⟨ψ', by simpa using hψ'⟩
 
-/-! ## 10. 登记 -/
+/-! ## 10. 步 ⑤ 在 `T = F[x]_P` 上的**典范映射**（源「`F[x](1/w) ⊂ F[x]_P`」✓） -/
+
+/-- **典范映射 `A[1/w] →ₐ[A] A_P`** ✓✓（源里「`F[x₁,…,xₙ](1/w)` 落在 `F[x₁,…,xₙ]_P` 内」✓，
+印版 p.185 ✓）：由 `IsLocalization.liftAlgHom` ✓ 造出 ✓（`w ∉ P` ✓ ⟹ `algebraMap A A_P w` 是单位 ✓）。
+**⚠ 用途** ✓：§9 的核限制接口需要把它作为 `ι` 供给 ✓（尚缺其**单性** ✗，见文末登记 ✓）。 -/
+noncomputable def awayToAtPrime {A : Type u} [CommRing A] (P : Ideal A) [P.IsPrime] (w : A)
+    (hw : w ∉ P) : Localization.Away w →ₐ[A] Localization.AtPrime P :=
+  IsLocalization.liftAlgHom (M := Submonoid.powers w) (S := Localization.Away w)
+    (f := Algebra.algHom A A (Localization.AtPrime P)) (by
+      rintro ⟨y, hy⟩
+      obtain ⟨n, rfl⟩ := (Submonoid.mem_powers_iff y w).mp hy
+      change IsUnit ((algebraMap A (Localization.AtPrime P)) (w ^ n))
+      rw [map_pow]
+      exact (IsLocalization.map_units (S := Localization.AtPrime P)
+        (M := P.primeCompl) ⟨w, hw⟩).pow n)
+
+/-- **`A` 整环时 `algebraMap A A_P` 单** ✓✓（源「取 `K := q(R)`」✓ 一节的代数前置 ✓）：
+`P.primeCompl ≤ nonZeroDivisors A` ✓（`A` 整环 ✓ ⟹ `x ∉ P` ⟹ `x ≠ 0` ✓ ⟹ 非零因子 ✓）
+后用 `IsLocalization.injective` ✓。 -/
+theorem injective_algebraMap_atPrime {A : Type u} [CommRing A] [IsDomain A] (P : Ideal A)
+    [P.IsPrime] : Function.Injective (algebraMap A (Localization.AtPrime P)) := by
+  refine IsLocalization.injective (M := P.primeCompl) (Localization.AtPrime P) ?_
+  intro x hx
+  have hx0 : x ≠ 0 := fun h => hx (by rw [h]; exact P.zero_mem)
+  rw [mem_nonZeroDivisors_iff]
+  exact ⟨fun y hy => (eq_zero_or_eq_zero_of_mul_eq_zero hy).resolve_left hx0,
+    fun y hy => (eq_zero_or_eq_zero_of_mul_eq_zero hy).resolve_right hx0⟩
+
+/-! ## 11. 登记 -/
 
 /-- **登记** ✗（**源陈述缺假设** ✓✓，**印版级已核** ✓；L39 家族 ✓）：源 `thm3.9` 的**陈述**
 （**印版 p.184** ✓，逐字）只说「Let `φ : S → R` be an `F` algebra map between `F` algebra
@@ -449,8 +477,11 @@ theorem thm39_affineness_finding_registered : True := trivial
 `exists_mem_localization_ge_adjoin` ✓（**有限型子代数档** ✓）／`exists_mem_primeCompl_of_finset` ✓
 （**素理想档 `w ∉ P`** ✓））＋ **✅ 接口已落** ✓✓（本件 §9 ✓：
 `exists_factor_through_of_injective` ✓ 把「包含」兑现为「穿过 `A[1/w]`」✓）；
-**⚠ 仍缺** ✗：把 §9 用到 `T = F[x]_P` 上所需的 **`A[1/w] →ₐ[F] F[x]_P` 的单性** ✗
-（`IsLocalization.liftAlgHom` ✓ ＋ `IsLocalization.Away.surj` ✓ 可证 ✓，本件**未落** ✗）；
+**⚠ 仍缺** ✗：把 §9 用到 `T = F[x]_P` 上所需的 **`A[1/w] →ₐ[F] A_P` 的单性** ✗ ——
+**✅ 已备** ✓：典范映射本身（§10 的 `awayToAtPrime` ✓）与 `algebraMap A A_P` 的单性（§10 ✓）；
+**✗ 未落** ✓：其**单性**（第 108 轮实测的**卡点** ✓：末步「`z · u = 0`、`u` 为单位 ⟹ `z = 0`」须避开
+`Units.ne_zero` 的 `Nontrivial (Localization.Away w)` **实例搜索** ✗（该实例在库内**非自动** ✗）
+⟹ 改用「乘 `u⁻¹`」路线 ✓；另有 `Algebra.algHom` 别名与 `algebraMap` 的**目标外形**问题 ✗（须 `change` ✓）✓）；
 （b）**最后的组装** ✗：`F[x](1/w) → R(1/(r·v))`（`v = η₀ w` ✓）＋ 组装 `FactorsRationally` ✓
 （须用「局部化的局部化」识别 ✗）。
 
@@ -483,6 +514,8 @@ theorem thm39_gap_registered : True := trivial
 #print axioms exists_mem_primeCompl_of_finset
 #print axioms exists_factor_through_of_injective
 #print axioms exists_factor_through_of_injective_probe
+#print axioms awayToAtPrime
+#print axioms injective_algebraMap_atPrime
 #print axioms thm39_affineness_finding_registered
 #print axioms thm39_gap_registered
 
