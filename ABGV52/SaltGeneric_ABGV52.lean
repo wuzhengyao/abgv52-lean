@@ -2643,6 +2643,158 @@ theorem fixedField_gap_registered : True := trivial
 
 end BTier
 
+/-! ## 4.36 **装配 (c) 款结构桥（`t` 的 `g`-半）**：`R_1(1/s)` 落进 `F[x_σ](1/t)`（第 171 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex:650--652` ✓，印 **275** ✓）：
+> Write `a_i = f_i/g_i`, where the `f`'s and `g`'s are **polynomials** in the `x_σ`'s. … Then if `t` is
+> the **product of all the `g`'s and `k`'s**, we have that **`S \subset F[x_σ | σ ∈ G](1/t)`** ✓。
+
+**⚠ 该句的两半** ✓（**分母两族** ✓）：**`g`-半** ✓ ＝ 超越基 `a_i` 的分母 ✓（**本轮落** ✓）；
+**`k`-半** ✓ ＝ `S` 的生成元 `e_j = h_j/k_j` 的分母 ✓（**登记** ✓，见文末 ✗）。
+**⚠ 为何需要** ✓：源把 `\varphi` 定义在 `F[x_σ](1/t)` 上 ✓ 再**限制到** `R` ✓ 与 `S` ✓
+（`R = R_1(1/s)` ✓ 与 `S` ✓ 都在其内 ✓）—— 故 **`R_1(1/s)` 落进单个局部化**是 `\varphi : R \to K` 的**前置** ✓
+（r170 的局部化提升把 `\varphi` 从 `F[x_σ]` 送到 `F[x_σ](1/t)` ✓）。
+
+**⚠ 通用档** ✓（**承 (75)** ✓，**本轮第二次实测** ✓）：本节的件**不**写在具体的 `\mathrm{NoetherField}` 上 ✗
+（那使 `\mathrm{NoetherField}\ F\ G = \mathrm{FractionRing}\,(\mathrm{MvPolynomial}\ G\ F)` 这一**重项**在每条统一中反复出现 ✗
+—— **实测**：`\mathrm{field\_simp}` 处两次 **心跳耗尽** ✗）⟹ 改写为**任意** `\mathrm{IsFractionRing}\,(\mathrm{MvPolynomial}\ G\ F)\ L` 档 ✓
+（**重项只在调用点出现一次** ✓）；**两条域恒等式**另抽为**纯域**引理 ✓（项最轻 ✓）。
+**⚠ `G` 只需是指标类型** ✓（本节不需 `[\mathrm{Group}\ G]` ✓ —— **不留无用实例** ✓）。 -/
+
+section FieldIdentities
+
+variable {L : Type*} [Field L]
+
+/-- **域恒等式 ①** ✓：`t = s \cdot h`（`h \neq 0`）⟹ `s^{-1} = t^{-1} \cdot h` ✓
+（**纯域档** ✓ —— 供「`s^{-1}` 落进 `t` 的局部化」用 ✓）。 -/
+lemma inv_eq_inv_mul_of_eq_mul {s h t : L} (ht : t = s * h) (hh : h ≠ 0) :
+    s⁻¹ = t⁻¹ * h := by
+  rw [ht, mul_inv]
+  field_simp
+
+/-- **域恒等式 ②** ✓：`a \cdot b = c`（`a \neq 0`）⟹ `b^{-1} = a^2 \cdot (a \cdot c)^{-1}` ✓
+（供「`s_0^{-1}` 落进 `t = s \cdot h` 的局部化」用 ✓ —— 源把 `s_0` 的分母也并进 `t` ✓）。 -/
+lemma inv_eq_sq_mul_inv_of_mul_eq {a b c : L} (h : a * b = c) (ha : a ≠ 0) :
+    b⁻¹ = a^2 * (a * c)⁻¹ := by
+  rw [← h]
+  field_simp
+
+end FieldIdentities
+
+section FractionRingMulForm
+
+variable {A : Type u} [CommRing A] [IsDomain A] {K : Type u} [Field K] [Algebra A K]
+
+/-- **分式域元素都是乘法形的商** ✓：`\exists x\ y,\ y \neq 0 \wedge \mathrm{algebraMap}\ y \cdot z = \mathrm{algebraMap}\ x` ✓
+—— 即源「`a_i = f_i/g_i`」✓ 的**通用形** ✓（入口 ＝ `\mathrm{IsLocalization.mk'\_surjective}` ✓ ＋
+**`\mathrm{mk'\_spec'}`** ✓，**免去除法** ✓）。 -/
+theorem exists_mul_eq_of_isFractionRing [IsFractionRing A K] (z : K) :
+    ∃ x y : A, y ≠ 0 ∧ algebraMap A K y * z = algebraMap A K x := by
+  obtain ⟨⟨x, y⟩, hz⟩ := IsLocalization.mk'_surjective (nonZeroDivisors A) z
+  exact ⟨x, y, mem_nonZeroDivisors_iff_ne_zero.mp y.2, by rw [← hz, IsLocalization.mk'_spec']⟩
+
+end FractionRingMulForm
+
+section AwayImageOfAdjoin
+
+variable {F : Type u} [Field F] {G : Type u}
+variable {L : Type u} [Field L] [Algebra (MvPolynomial G F) L]
+variable [IsFractionRing (MvPolynomial G F) L]
+
+/-- **`g`-半（有限族）** ✓：`L` 的**有限族**全体落进 `F[x_σ](1/t)`（**单个** `t` ✓）——
+即源「`t` ＝ the product of all the `g`'s」✓ 的**代数核** ✓（入口 ＝ §4.21 的 `exists_mul_eq_of_finite` ✓
+＋ §4.23 的 `mem_adjoin_inv_of_pow_mul_eq` ✓）。 -/
+theorem exists_mem_adjoin_away_of_noether {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : ι → L) :
+    ∃ t : MvPolynomial G F, t ≠ 0 ∧ ∀ i : ι,
+      g i ∈ Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) L t)⁻¹} : Set L) := by
+  obtain ⟨t, ht, h⟩ := exists_mul_eq_of_finite (A := MvPolynomial G F) (K := L) g
+    (fun i => exists_mul_eq_of_isFractionRing (A := MvPolynomial G F) (K := L) (g i))
+  refine ⟨t, ht, fun i => ?_⟩
+  obtain ⟨x, hx⟩ := h i
+  exact mem_adjoin_inv_of_pow_mul_eq (A := MvPolynomial G F) (K := L) ht ⟨1, x, by simpa using hx⟩
+
+variable [Algebra F L] [IsScalarTower F (MvPolynomial G F) L]
+
+/-- **`g`-半（子代数形）** ✓✅：`\mathrm{Algebra.adjoin}\ F\ \{\mathrm{range}\ a\} \subseteq F[x_σ](1/t)` ✓
+—— 即源「`R_1 = F[a_1,\dots,a_n]`」✓ 落进 `F[x_σ](1/t)` ✓（(a) 款侧的**桥** ✓）。 -/
+theorem exists_adjoin_le_away_of_noether {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (a : ι → L) :
+    ∃ t : MvPolynomial G F, t ≠ 0 ∧ Algebra.adjoin F (Set.range a) ≤
+      Subalgebra.restrictScalars F (Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) L t)⁻¹} : Set L)) := by
+  obtain ⟨t, ht, h⟩ := exists_mem_adjoin_away_of_noether (F := F) (G := G) (L := L) a
+  exact ⟨t, ht, Algebra.adjoin_le_iff.mpr (by rintro x ⟨i, rfl⟩; exact h i)⟩
+
+/-- **`g`-半（含单位化）** ✓✅：`\mathrm{Algebra.adjoin}\ F\ (\{\mathrm{range}\ a\} \cup \{s_0, s_0^{-1}\}) \subseteq F[x_σ](1/t)` ✓
+—— 即源的 **`R = R_1(1/s)`** ✓（`s = s_0` ✓）落进 `F[x_σ](1/t)` ✓，**`s_0^{-1}` 亦在内** ✓。
+
+**⚠ 口径** ✓（**登记** ✓）：源只列 `t` ＝ the product of the **`g`'s and `k`'s** ✓，**未提分子** ✗；
+但源的结论「`R \subseteq S \subset F[x_σ](1/t)`」✓（`S \supseteq R = R_1(1/s)` ✓）**已蕴含** `s_0^{-1} \in F[x_σ](1/t)` ✓
+⟹ 本件把它**显式化** ✓：取 `t := s \cdot h` ✓（`h` ＝ `s_0` 的分子 ✓），
+由**域恒等式 ②** ✓ 得 `s_0^{-1} = (\mathrm{algebraMap}\ s)^2 \cdot (\mathrm{algebraMap}\ t)^{-1}` ✓ —— **仍是单个** `t` ✓
+（**只增大 `t`，不改变结论的形状** ✓）。 -/
+theorem exists_adjoin_inv_le_away_of_noether {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (a : ι → L) (s₀ : L) (hs₀ : s₀ ≠ 0) :
+    ∃ t : MvPolynomial G F, t ≠ 0 ∧ Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}) ≤
+      Subalgebra.restrictScalars F (Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) L t)⁻¹} : Set L)) := by
+  classical
+  obtain ⟨s, hs, h⟩ := exists_mul_eq_of_finite (A := MvPolynomial G F) (K := L)
+    (fun o : Option ι => o.elim s₀ a)
+    (fun o => exists_mul_eq_of_isFractionRing (A := MvPolynomial G F) (K := L) _)
+  obtain ⟨hnum, hnum_eq⟩ := h none
+  have hnum_eq' : algebraMap (MvPolynomial G F) L s * s₀ = algebraMap (MvPolynomial G F) L hnum := by
+    simpa only [Option.elim_none] using hnum_eq
+  set t : MvPolynomial G F := s * hnum with ht
+  set At := Algebra.adjoin (MvPolynomial G F)
+    ({(algebraMap (MvPolynomial G F) L t)⁻¹} : Set L) with hAt
+  have hsL : algebraMap (MvPolynomial G F) L s ≠ 0 := fun h0 =>
+    hs (IsFractionRing.injective (MvPolynomial G F) L (by rw [h0, map_zero]))
+  have hnumL : algebraMap (MvPolynomial G F) L hnum ≠ 0 := by
+    intro h0
+    rw [h0] at hnum_eq'
+    exact mul_ne_zero hsL hs₀ hnum_eq'
+  have hnum_ne : hnum ≠ 0 := fun h0 => hnumL (by rw [h0, map_zero])
+  have hs_inv_mem : (algebraMap (MvPolynomial G F) L s)⁻¹ ∈ At := by
+    have h1 : (algebraMap (MvPolynomial G F) L s)⁻¹
+        = (algebraMap (MvPolynomial G F) L t)⁻¹ * algebraMap (MvPolynomial G F) L hnum :=
+      inv_eq_inv_mul_of_eq_mul (by rw [ht, map_mul]) hnumL
+    rw [h1]
+    exact At.mul_mem (Algebra.subset_adjoin (by simp)) (At.algebraMap_mem hnum)
+  have hle : Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) L s)⁻¹} : Set L) ≤ At :=
+    Algebra.adjoin_le_iff.mpr (by rintro y (rfl : y = _); exact hs_inv_mem)
+  refine ⟨t, mul_ne_zero hs hnum_ne, Algebra.adjoin_le_iff.mpr ?_⟩
+  intro x hx
+  rcases hx with ⟨i, rfl⟩ | rfl | rfl
+  · obtain ⟨y, hy⟩ := h (some i)
+    exact hle (mem_adjoin_inv_of_pow_mul_eq (A := MvPolynomial G F) (K := L) hs
+      ⟨1, y, by simpa using hy⟩)
+  · exact hle (mem_adjoin_inv_of_pow_mul_eq (A := MvPolynomial G F) (K := L) hs
+      ⟨1, hnum, by simpa using hnum_eq'⟩)
+  · have key : s₀⁻¹ = (algebraMap (MvPolynomial G F) L s)^2
+        * (algebraMap (MvPolynomial G F) L t)⁻¹ := by
+      rw [ht, map_mul]
+      exact inv_eq_sq_mul_inv_of_mul_eq hnum_eq' hsL
+    rw [key]
+    exact At.mul_mem (At.pow_mem (At.algebraMap_mem s) 2) (Algebra.subset_adjoin (by simp))
+
+end AwayImageOfAdjoin
+
+section BridgeGap
+
+/-- **登记** ✗：**结构桥的 `k`-半** ✓（源「and `k`'s」✓ ＝ 「`S \subseteq F[x_σ](1/t)`」✓）**未落** ✗ ——
+装配中 `S` 由**下降**给出 ✓（`S = R \otimes_{R''} S''` ✓，r169 ✓），故须先有 **`S` 落进 `L`** 的桥 ✓；
+**机制已定** ✓（**两件** ✓）：**①** 由 **`\mathrm{GaloisProjectiveHyp}` 的投射性** ✓ 得 `S''` **平坦** ✓ ⟹
+`S'' \to S'' \otimes_{R''} L^G \cong L` **单射** ✓（**平坦 ⟹ 与单射张量仍单射** ✓ —— 待落 ✗）；
+**②** 再对**有限型**代数用 **§4.22** ✓（`A := R` ✓）把 `S` 的像清进单个局部化 ✓
+—— **`A`-代数结构的入口** ✓ ＝ `R \to S` ✓（**已有** ✓）。 -/
+theorem noetherEmbedding_gap_registered : True := trivial
+
+end BridgeGap
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2661,6 +2813,13 @@ end BTier
 #print axioms Theorem51Statement.shape
 #print axioms isRationalOver_self
 #print axioms isRationalOver_discrimination_gap_registered
+#print axioms inv_eq_inv_mul_of_eq_mul
+#print axioms inv_eq_sq_mul_inv_of_mul_eq
+#print axioms exists_mul_eq_of_isFractionRing
+#print axioms exists_mem_adjoin_away_of_noether
+#print axioms exists_adjoin_le_away_of_noether
+#print axioms exists_adjoin_inv_le_away_of_noether
+#print axioms noetherEmbedding_gap_registered
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit
