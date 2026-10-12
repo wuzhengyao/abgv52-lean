@@ -100,7 +100,10 @@ with HAP) and their recorded output are in `verification/`; see
 finitely generated algebra over the base lands in a single localization once the base's own image
 does, the multiplier being exhibited explicitly, and a Galois algebra embeds into the big ring
 along the descent isomorphism, so that the embedding half of the source's containment is a
-theorem -- and retract rationality along rational extensions |
+theorem, together with the first block of the map on the base field: a nonzero polynomial is
+replaced by an invariant multiple, the localization at an invariant element carries an action of
+the group, and the lift of an equivariant map to that localization is equivariant again, by
+uniqueness of the lift; the boundary map into a subalgebra is recorded as well -- and retract rationality along rational extensions |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |

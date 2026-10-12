@@ -2989,6 +2989,163 @@ theorem finiteTypeImage_gap_registered : True := trivial
 
 end FiniteTypeAnnihilation
 
+/-! ## 4.39 **装配 (c) 款 `R \to K` 接线（第一块）**：**不变量乘子** ＋ **局部化层的 `G`-作用与等变性**（第 175 轮）
+
+**⚠ 起点** ✓（§137.6 第 1 项 ✓）：`R \to K` 的**crux** ✓ ＝ **局部化层的等变性** ✗
+（源正因此先把 `t` 换成 `t' = \prod_\sigma \sigma(t)` ✓ —— §135.4 登记 ③ ✓）。**⚠ 本轮只压此项** ✓（**不转项** ✗）。
+
+**⚠ 四件** ✓：
+**①** `exists_invariant_mul` ✓✅ —— **源的不变量乘子** ✓：`\exists t' \neq 0`，`t'` 为 `G`-**不变** ✓ 且
+`Q(t) \subseteq Q(t')` ✓（取 `t' := \prod_\sigma \sigma \bullet t` ✓ —— **不变化直接用 §4.5 的 `noether_prod_smul_invariant`** ✓，
+**拆分用 `\mathrm{Finset.mul\_prod\_erase}`** ✓，**单调由 §4.37** ✓）；
+**②** `algHom_codRestrict_of_forall_mem` ✓✅ —— **像落进子代数 ⟹ `\mathrm{AlgHom}` 进该子代数** ✓（`\mathrm{AlgHom.codRestrict}` ✓）；
+**③** `awayRingHom` ＋ `awayMulSemiringAction` ✓✅ —— **`\mathrm{Localization.Away}\ t` 上的 `G`-作用** ✓（`t` 不变时 ✓；
+**入口 ＝ `\mathrm{IsLocalization.Away.lift}`** ✓ —— 由 `g \bullet t = t` 得 `\mathrm{algebraMap}\ t` 仍为**单位** ✓）；
+**④** **`awayLift_equivariant`** ✓✅ —— **局部化提升的等变性** ✓：等变 `\varphi` ✓ ＋ `t` 不变 ✓ ＋ 提升一致 ✓ ⟹ **`\varphi'` 等变** ✓
+（**证明 ＝ 唯一性** ✓：两个环同态在 `\mathrm{algebraMap}` 上一致 ✓ ⟹ 由 **`\mathrm{IsLocalization.ringHom\_ext}`** ✓ 相等 ✓）。
+**⚠ 工艺** ✓：**`change` 先对齐 smul 记号的展开形** ✓（`\mathrm{rw}` 在 smul 记法下**不匹配** ✗ —— 三处 ✓）；
+**`\mathrm{@[instance_reducible]}`** ✓ 加在作用定义上 ✓（**消 `\mathrm{classDefReducibility}` 警告** ✓）；
+**未用实例**（`[\mathrm{Algebra}\ F\ L]` 等 ✗）⟹ **移出 section** ✓（**(78)** ✓）。 -/
+
+section InvariantMultiplier
+
+variable (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+
+/-- **① 不变量乘子** ✓✅（源 `t' = \prod_\sigma \sigma(t)` ✓）：每个 `t \neq 0` 都有一个**不变**的倍数 `t' \neq 0` ✓，
+且 `Q(t) \subseteq Q(t')` ✓ —— 正是源为**等变性**所作的替换 ✓。 -/
+theorem exists_invariant_mul (t : MvPolynomial G F) (ht : t ≠ 0) :
+    ∃ t' : MvPolynomial G F, t' ≠ 0 ∧ (∀ g : G, g • t' = t') ∧
+      Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G)) ≤
+        Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) t')⁻¹} : Set (NoetherField F G)) := by
+  classical
+  have hne : ∀ σ : G, σ • t ≠ 0 := fun σ h0 => ht (by
+    have h1 : (MulSemiringAction.toRingEquiv G (MvPolynomial G F) σ) t
+        = (MulSemiringAction.toRingEquiv G (MvPolynomial G F) σ) 0 := by simpa using h0
+    exact (MulSemiringAction.toRingEquiv G (MvPolynomial G F) σ).injective h1)
+  refine ⟨∏ σ : G, σ • t, Finset.prod_ne_zero_iff.mpr (fun σ _ => hne σ),
+    fun g => noether_prod_smul_invariant F G t g, ?_⟩
+  have hsplit : (∏ σ : G, σ • t) = t * ∏ σ ∈ Finset.univ.erase (1 : G), σ • t := by
+    rw [← Finset.mul_prod_erase Finset.univ (fun σ => σ • t) (Finset.mem_univ (1 : G)), one_smul]
+  rw [hsplit]
+  exact adjoin_away_mono (A := MvPolynomial G F) (L := NoetherField F G) t _
+    (Finset.prod_ne_zero_iff.mpr (fun σ _ => hne σ))
+
+end InvariantMultiplier
+
+section CodRestrictAlgHom
+
+variable {F : Type u} [Field F] {G : Type u}
+variable {L : Type u} [Field L] [Algebra (MvPolynomial G F) L]
+variable [Algebra F L] [IsScalarTower F (MvPolynomial G F) L]
+
+/-- **② 像落进子代数 ⟹ `AlgHom` 进该子代数** ✓（`\mathrm{AlgHom.codRestrict}` ✓）——
+`R \to K` 接线的**载体步** ✓（`R` 的像落在 `Q` 内 ⟹ 得 `R \toₐ[F] \uparrow Q` ✓）。 -/
+theorem algHom_codRestrict_of_forall_mem {R : Type u} [CommRing R] [Algebra R L] [Algebra F R]
+    [IsScalarTower F R L] (Q : Subalgebra (MvPolynomial G F) L)
+    (hRQ : ∀ r : R, algebraMap R L r ∈ Q) :
+    ∃ Φ : R →ₐ[F] ↥(Subalgebra.restrictScalars F Q),
+      ∀ r : R, (Φ r : L) = algebraMap R L r :=
+  ⟨(IsScalarTower.toAlgHom F R L).codRestrict _ hRQ, fun _ => rfl⟩
+
+end CodRestrictAlgHom
+
+section AwayAction
+
+variable {F : Type u} [Field F] {G : Type u} [Group G]
+variable {t : MvPolynomial G F}
+
+/-- **③a 诱导自同态** ✓：`g` 在 `\mathrm{Localization.Away}\ t` 上的环自同态 ✓（`t` 不变 ⟹ 良定义 ✓）。 -/
+noncomputable def awayRingHom (ht : ∀ g : G, g • t = t) (g : G) :
+    Localization.Away t →+* Localization.Away t :=
+  IsLocalization.Away.lift (S := Localization.Away t) t
+    (g := (algebraMap (MvPolynomial G F) (Localization.Away t)).comp
+      (MulSemiringAction.toRingEquiv G (MvPolynomial G F) g).toRingHom) (by
+      change IsUnit (algebraMap (MvPolynomial G F) (Localization.Away t)
+        ((MulSemiringAction.toRingEquiv G (MvPolynomial G F) g) t))
+      rw [show (MulSemiringAction.toRingEquiv G (MvPolynomial G F) g) t = g • t from rfl, ht g]
+      exact IsLocalization.Away.algebraMap_isUnit t)
+
+/-- **③b 与 `\mathrm{algebraMap}` 的相容** ✓。 -/
+theorem awayRingHom_algebraMap (ht : ∀ g : G, g • t = t) (g : G) (p : MvPolynomial G F) :
+    awayRingHom (F := F) ht g (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+      = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p) := by
+  rw [show awayRingHom (F := F) ht g (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+      = ((awayRingHom (F := F) ht g).comp
+        (algebraMap (MvPolynomial G F) (Localization.Away t))) p from rfl,
+    awayRingHom, IsLocalization.Away.lift_comp (S := Localization.Away t)
+      (g := (algebraMap (MvPolynomial G F) (Localization.Away t)).comp
+        (MulSemiringAction.toRingEquiv G (MvPolynomial G F) g).toRingHom) t _]
+  rfl
+
+/-- **③ `\mathrm{Localization.Away}\ t` 上的 `G`-作用** ✓✅（**`t` 不变时** ✓；mathlib **无**此实例 ✗）。 -/
+@[instance_reducible]
+noncomputable def awayMulSemiringAction (ht : ∀ g : G, g • t = t) :
+    MulSemiringAction G (Localization.Away t) where
+  smul g := awayRingHom (F := F) ht g
+  one_smul x := by
+    have h1 : awayRingHom (F := F) ht 1 = RingHom.id (Localization.Away t) := by
+      apply IsLocalization.ringHom_ext (R := MvPolynomial G F) (S := Localization.Away t)
+        (Submonoid.powers t)
+      apply RingHom.ext
+      intro p
+      simp only [RingHom.comp_apply, RingHom.id_apply,
+        awayRingHom_algebraMap (F := F) ht, one_smul]
+    change awayRingHom (F := F) ht 1 x = x
+    rw [h1]
+    rfl
+  mul_smul g h x := by
+    have h1 : awayRingHom (F := F) ht (g * h)
+        = (awayRingHom (F := F) ht g).comp (awayRingHom (F := F) ht h) := by
+      apply IsLocalization.ringHom_ext (R := MvPolynomial G F) (S := Localization.Away t)
+        (Submonoid.powers t)
+      apply RingHom.ext
+      intro p
+      simp only [RingHom.comp_apply, awayRingHom_algebraMap (F := F) ht, mul_smul]
+    change awayRingHom (F := F) ht (g * h) x
+      = awayRingHom (F := F) ht g (awayRingHom (F := F) ht h x)
+    rw [h1]
+    rfl
+  smul_one g := map_one (awayRingHom (F := F) ht g)
+  smul_mul g x y := map_mul (awayRingHom (F := F) ht g) x y
+  smul_zero g := map_zero (awayRingHom (F := F) ht g)
+  smul_add g x y := map_add (awayRingHom (F := F) ht g) x y
+
+/-- **④ 局部化提升的等变性** ✓✅（**crux** ✓）：等变 `\varphi : F[x_\sigma] \toₐ[F] L'` ✓ ＋ `t` **不变** ✓ ＋
+提升 `\varphi'` 与 `\varphi` 在 `\mathrm{algebraMap}` 上一致 ✓ ⟹ **`\varphi'` 与 `G` 等变** ✓
+（**证明 ＝ 唯一性** ✓：两侧皆环同态 ✓，在 `\mathrm{algebraMap}` 的像上一致 ✓（**由 `\varphi` 的等变性** ✓）⟹
+`\mathrm{IsLocalization.ringHom\_ext}` ✓ 收口 ✓）。 -/
+theorem awayLift_equivariant (ht : ∀ g : G, g • t = t) {L' : Type u} [Field L'] [Algebra F L']
+    [MulSemiringAction G L']
+    (φ : MvPolynomial G F →ₐ[F] L') (heq : ∀ (g : G) (p : MvPolynomial G F), φ (g • p) = g • φ p)
+    (φ' : Localization.Away t →ₐ[F] L')
+    (hφ : ∀ p : MvPolynomial G F, φ' (algebraMap (MvPolynomial G F) (Localization.Away t) p) = φ p) :
+    letI := awayMulSemiringAction (F := F) ht
+    ∀ (g : G) (x : Localization.Away t), φ' (g • x) = g • φ' x := by
+  let _ := awayMulSemiringAction (F := F) ht
+  intro g x
+  have h2 : (φ'.toRingHom.comp (awayRingHom (F := F) ht g))
+      = ((MulSemiringAction.toRingEquiv G L' g).toRingHom.comp φ'.toRingHom) := by
+    apply IsLocalization.ringHom_ext (R := MvPolynomial G F) (S := Localization.Away t)
+      (Submonoid.powers t)
+    apply RingHom.ext
+    intro p
+    simp only [RingHom.comp_apply, awayRingHom_algebraMap (F := F) ht]
+    show φ' (algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+      = (MulSemiringAction.toRingEquiv G L' g)
+          (φ' (algebraMap (MvPolynomial G F) (Localization.Away t) p))
+    rw [hφ (g • p), hφ p,
+      show (MulSemiringAction.toRingEquiv G L' g) (φ p) = g • φ p from rfl]
+    exact heq g p
+  exact congrFun (congrArg DFunLike.coe h2) x
+
+/-- **登记** ✗：`R \to K` 接线的**余件** ✓ —— **广义不动域落地** ✓（r170 的 `\mathrm{exists\_algHom\_of\_equivariant\_of\_fixed}` ✓ 的
+"`R` 逐点固定"版 ✓）＋ **端到端组装** ✓（`R \to Q` ✓ → 提升 ✓ → 等变 ✓ → 落进 `K` ✓）。 -/
+theorem awayLift_gap_registered : True := trivial
+
+end AwayAction
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -3021,6 +3178,13 @@ end FiniteTypeAnnihilation
 #print axioms exists_adjoin_le_away_of_image_le
 #print axioms exists_image_le_away_of_finiteType
 #print axioms finiteTypeImage_gap_registered
+#print axioms exists_invariant_mul
+#print axioms algHom_codRestrict_of_forall_mem
+#print axioms awayRingHom
+#print axioms awayRingHom_algebraMap
+#print axioms awayMulSemiringAction
+#print axioms awayLift_equivariant
+#print axioms awayLift_gap_registered
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit
