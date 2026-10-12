@@ -80,6 +80,7 @@
 import ABGV52.Saltman_ABGV52
 import ABGV52.SaltCond_ABGV52
 import ABGV52.GenericExtension_ABGV52
+import Mathlib.Algebra.MvPolynomial.Funext
 
 universe u v
 
@@ -634,6 +635,81 @@ theorem galoisMatrix_det_ne_zero_iff_vectors {L : Type u} [Field L] [Algebra K L
 
 end GaloisDetTransport
 
+section MvPolynomialAvoidance
+
+/-- **源的「`K` 无限」那一步** ✓（源逐字：「Thus it suffices to find `a_1,\dots,a_n \in K` such that
+`f'(a_1,\dots,a_n) f(a_1,\dots,a_n) \neq 0`. **This is always possible because `K` is infinite**」✓）：
+**非零多项式在无限域上有非零取值** ✓（**基形** ✓）。
+
+**证明** ✓：若处处为零 ✓，则由 `MvPolynomial.funext` ✓（要求 `[IsDomain K] [Infinite K]` ✓）
+得该多项式 `= 0` ✓，与假设矛盾 ✓。
+**⚠ 载体** ✓：本件用 `MvPolynomial` ✓（**非**「函数」✓）—— 正是 §105.4 所记须先选定的**载体** ✓。 -/
+theorem exists_eval_ne_zero_of_ne_zero {K : Type u} [Field K] [Infinite K]
+    {σ : Type*} {p : MvPolynomial σ K} (hp : p ≠ 0) :
+    ∃ x : σ → K, MvPolynomial.eval x p ≠ 0 := by
+  by_contra h
+  simp only [not_exists, not_not] at h
+  exact hp (MvPolynomial.funext fun x => by rw [h x, map_zero])
+
+/-- **源那一步的**原形** ✓✅**：**两个非零多项式有公共非零点** ✓ —— 即源要的
+`f'(a) f(a) \neq 0` ✓（**两者同时非零** ✓）。证明 ＝ 对**积**用基形 ✓（`mul_ne_zero` ✓）＋ `map_mul` ✓
+＋ `mul_ne_zero_iff` ✓；**⚠ 用点** ✓：`K` 是域 ⟹ 无零因子 ✓（源同此 ✓）。 -/
+theorem exists_eval_mul_ne_zero {K : Type u} [Field K] [Infinite K]
+    {σ : Type*} {f g : MvPolynomial σ K} (hf : f ≠ 0) (hg : g ≠ 0) :
+    ∃ x : σ → K, MvPolynomial.eval x f ≠ 0 ∧ MvPolynomial.eval x g ≠ 0 := by
+  obtain ⟨x, hx⟩ := exists_eval_ne_zero_of_ne_zero (K := K) (mul_ne_zero hf hg)
+  rw [map_mul] at hx
+  exact ⟨x, (mul_ne_zero_iff.mp hx).1, (mul_ne_zero_iff.mp hx).2⟩
+
+end MvPolynomialAvoidance
+
+/-! ## 4.10 源 `(d)-②` 的**多项式化**：`f(y_1,\dots,y_n)` 就是坐标矩阵的行列式 ✓（第 143 轮）
+
+**源逐字** ✓（`tex :659--662` ✓）：「Formally write `z = y_1e_1 + \dots + y_ne_n` … Taking determinants, we have
+a **polynomial** `f(y_1,\dots,y_n)` such that `f(b_1,\dots,b_n) \neq 0` if and only if `z` generates a normal
+basis」✓ —— 本轮把该 `f` **显式造出** ✓（在 `MvPolynomial` 里 ✓），并证其**取值 ＝ 坐标矩阵的行列式** ✓。 -/
+
+section NormalBasisPolynomial
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **源的 `f(y_1,\dots,y_n)`** ✓：把 `z = \sum_i y_i \bullet e_i` 的坐标矩阵的**每个元素写成 `y` 的线性式** ✓，
+再**在多项式环里取行列式** ✓ —— 载体 `MvPolynomial G K` ✓（`G` 即变元下标 ✓，与 §4.8／§4.9 的 `\mathrm{galoisMatrix}`
+同一套下标 ✓，便于取值对接 ✓）。 -/
+noncomputable def normalBasisPoly {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L]
+    (b : Module.Basis G K L) : MvPolynomial G K :=
+  (Matrix.of (fun σ τ : G => ∑ i : G, MvPolynomial.X i * MvPolynomial.C (b.repr (σ • b i) τ))).det
+
+/-- **多项式化的**对接锁** ✓**：`f(y) = \det(\mathrm{galoisMatrix}\ b\ (\sum_i y_i \bullet e_i))` ✓ ——
+即**源的 `f`** 在点 `y` 处的取值**恰是** §4.8／§4.9 那个坐标矩阵的行列式 ✓ ⟹ **§4.10 与 §4.8／§4.9 对接** ✓，
+`MvPolynomial` 侧与 `L` 侧**不再悬空** ✓。
+
+**证明** ✓：`RingHom.map_det` ✓（`\mathrm{eval}` 是**环同态** ✓ ⟹ 与行列式交换 ✓）＋ 逐元素把
+`\mathrm{eval}\ y\ (\sum_i X_i \cdot C(\dots))` 归约为 `\sum_i y_i \cdot (\dots)` ✓
+（`Finset.smul_sum` ✓／`smul_comm` ✓／`map_smul` ✓，即 `\sigma`-作用与 `K`-标量的交换性 ✓）。
+**⚠ 一处编译期自纠** ✓：**不要 `simp only [\dots, \mathrm{galoisMatrix}]`** ✗ —— `\mathrm{galoisMatrix}` 是
+**半可约** `def` ✓ ⟹ 展开后目标**在 implicit 透明度下不类型正确** ✗（Lean 报 "not type-correct under the
+`implicit` transparency level" ✓）⟹ 改用 **`show`** ✓ 直接给出展开形 ✓。 -/
+theorem eval_normalBasisPoly {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L]
+    [SMulCommClass G K L] (b : Module.Basis G K L) (y : G → K) :
+    MvPolynomial.eval y (normalBasisPoly K G b)
+      = (galoisMatrix K G b (∑ i : G, y i • b i)).det := by
+  rw [normalBasisPoly, RingHom.map_det]
+  congr 1
+  ext σ τ
+  show MvPolynomial.eval y (∑ i : G, MvPolynomial.X i * MvPolynomial.C (b.repr (σ • b i) τ))
+      = b.repr (σ • ∑ i : G, y i • b i) τ
+  simp [map_sum, Finset.smul_sum, smul_comm, map_smul, smul_eq_mul]
+
+/-- **⚠ 登记（`(d)-②` 余项）** ✗：① **`f \neq 0`** ✗ —— 其源材料 ＝ **正规基存在性** ✓
+（mathlib `exists_linearIndependent_algEquiv_apply` ✓）＋ §4.9 的判据 ✓，**但** mathlib 那条是就
+`L \simeq_K L` ✓ 陈述的，而本件 `G` **抽象** ✓ ⟹ **须先有 `G \simeq \mathrm{Gal}(L/K)` 的识别** ✗（**在册** ✓）；
+② **`f'`** ✗（`t'` 对应的多项式 ✓）及其**非零** ✗ —— 源用「**the algebraic independence of the `\sigma`'s**」✓，
+**未建** ✗；③ **组装** ✗（`exists_eval_mul_ne_zero` ✓ 已备 ✓，待 ①② ✓）。 -/
+theorem normalBasisPoly_gap_registered : True := trivial
+
+end NormalBasisPolynomial
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -674,6 +750,11 @@ end GaloisDetTransport
 #print axioms galoisMatrix_det_ne_zero_iff
 #print axioms galoisMatrix_gap_registered
 #print axioms galoisMatrix_det_ne_zero_iff_vectors
+#print axioms exists_eval_ne_zero_of_ne_zero
+#print axioms exists_eval_mul_ne_zero
+#print axioms normalBasisPoly
+#print axioms eval_normalBasisPoly
+#print axioms normalBasisPoly_gap_registered
 #print axioms Lemma52Statement
 #print axioms Lemma52Statement.shape
 
