@@ -296,9 +296,13 @@ sync.  The items added since then are:
   source states on page 170 is there as well, as a three-part composite that keeps the factor order
   of the source: a `comm` in each tensor slot, a recursion in the number of slots (base case through
   `isEmptyEquiv` and `rid`, step through `mulEquiv`, `cancelBaseChange` and `assoc`), and a final
-  `comm`.  What is not yet computed is its value on generators: that needs a generator lemma for
-  `TensorPower.mulEquiv.symm` which mathlib does not provide, so the isomorphism is to be treated as
-  unchecked downstream until such a probe is written.  Not yet formalized are
+  `comm`.  The base change of a linear structure along an `R`-algebra uses that isomorphism to
+  sandwich `f (x) 1` between the two tensor-power models, and the base change of an `F` structure
+  along an `F`-map is built on top of it (`IsScalarTower F R S` is the library form of the map being
+  an `F`-map).  What is not yet computed is the value of the isomorphism on generators: that needs a
+  generator lemma for `TensorPower.mulEquiv.symm` which mathlib does not provide, so the isomorphism
+  and the base changes built on it are to be treated as unchecked downstream until such a probe is
+  written.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.

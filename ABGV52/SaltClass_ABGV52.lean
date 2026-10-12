@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–122 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–123 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -60,14 +60,17 @@
   | `IsIso` ✓ ＋ `toHom`／`refl`／**`symm`** ✓ | 源的同构 ✓（`S = R` ✓、`φ = id` ✓、`ψ` 可逆 ✓）＋「an invertible **morphism**」✓ 的 morphism 支 ✓／恒等档 ✓／**逆支** ✓（`IsIso.symm` ✓：逆的保持条件已证 ✓） | 第 2 件 ✓ |
   | `tensorProductRightModule` ✓ ＋ `tensorPowerBaseChange` ✓ ＋ `_tmul` ✓ | 源的**基变换** ✓：`M ⊗_φ S` ✓（印版 169 ✓）＋ `f_i ⊗ 1` ✓（印版 170 ✓「well defined」✓）—— **保源序** ✓；**缺口处置** ✓：mathlib 无次因子取向的 `S`-模结构 ✗ ⟹ 沿 `comm` **搬运** ✓（`AddEquiv.module` ＋ `AddEquiv.linearEquiv` ✓） | 第 3 件（**部分** ✓） |
   | **`tensorPowerBaseChangeEquiv`** ✓ ＋ 三件中间引理 ✓ | 源的「`(M ⊗_φ S)^{(n)}` is **identified with** `M^{(n)} ⊗_φ S`」✓（印版 170 ✓）—— `⨂[S]^n (M ⊗[R] S) ≃ₗ[S] (⨂[R]^n M) ⊗[R] S` ✓，**保源序** ✓；mathlib **无**现成件 ✗ ⟹ **自建**（逐槽 `comm` → (★) 递归 → `comm` 回序 ✓）。**⚠ 生成元语义核未过** ✗（登记 ✓） | 第 3 件（**部分** ✓） |
+  | **`LinearStructure.baseChange`** ✓ ＋ **`FStruct.baseChange`** ✓ ＋ 两锁两探针 ✓ | 源的**基变换** ✓（印 169--170 ✓）：`M ⊗_φ S` 的线性结构 ✓（`f_i` 支 ＝ 源序下的 `f_i ⊗ 1` ✓，用「identified with」iso ✓ **两面夹住** ✓）＋ **`F` 结构基变换** ✓（`[IsScalarTower F R S]` ✓ 即「`φ` 是 `F`-映射」✓） | 第 3 件（**部分** ✓） |
   | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
   ① 第 3 件的**其余部分** ✗：**`FClass`**（源四条：同类型 ✓／**同构封闭** ✓／**基变换封闭** ✓／
   **下降／有限生成** ✓）**未落** ✗。**⚠ 缺口已处置** ✓（§8 ✓）：次因子取向的 `S`-模结构**已**沿 `comm`
   搬运 ✓（`AddEquiv.module` ＋ `AddEquiv.linearEquiv` ✓），源的 `f_i ⊗ 1` **已落** ✓（**保源序** ✓）。
-  **⚠ 上述 iso 已落** ✓（§8.1 ✓）⟹ **`LinearStructure.baseChange` 可开工** ✓（本轮尚未做 ✗，**不作声称** ✓）；
-  **⚠ 该 iso 的生成元语义核未过** ✗（卡点逐字见 §8.1 ✓）⟹ 承重引用时按 `∅-unchecked` ✓ 对待；
+  **⚠ 上述 iso 与基变换已落** ✓（§8.1／§8.2／§8.3 ✓）—— **`LinearStructure.baseChange`** ✓ ＋
+  **`FStruct.baseChange`** ✓ 均已编译 ✓（§8.2／§8.3 ✓）；
+  **⚠ 该 iso 的生成元语义核未过** ✗（卡点逐字见 §8.1 ✓）⟹ **`baseChange` 一族一并按 `∅-unchecked`** ✓ 对待；
+  **⚠ 第 3 件的其余** ✗：**`FClass`**（源四条 ✓）**未落** ✗；
   ② 第 **4–9** 件（`HasLiftingProperty` → `RepresentingObject`／`GenericObject`／`DenselyRepresenting` →
   `ProjectiveObjectForClass`／`LocalProjective` → `Specialization` → `cor3.10(b)` ⟹ `cor3.10(a)`
   → `prop1.1(a)` 具名残余）**均未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
@@ -517,6 +520,8 @@ structure FStruct (r : ℕ) (s t : Fin r → ℕ) where
   /-- 线性结构本体 ✓（源 §1 的 `⟨R, M, f₁, …, f_r⟩` ✓）。 -/
   str : LinearStructure R M r s t
 
+attribute [instance] FStruct.commRing FStruct.algebra FStruct.addCommGroup FStruct.module
+
 /-- **定义外形锁定** ✓（构造子档）：`FStruct` 的字段与次序一旦漂移（如把实例支拆出打包 ✗、
 或把 `str` 提到 `R`／`M` 之前 ✗），本两条 `rfl` 立即编译失败 ✓。 -/
 theorem FStruct_typeLock (R : Type u) [CommRing R] [Algebra F R] (M : Type v)
@@ -669,9 +674,72 @@ noncomputable def tensorPowerBaseChangeEquiv (n : ℕ) :
     ((tensorPowerBaseChangeAux n).trans
       ((TensorProduct.comm R (TensorPower R n M) S).toAddEquiv.linearEquiv S).symm)
 
+
+/-! ### 8.2 源 §1 的**线性结构基变换**（印版 169--170 ✓） -/
+
+/-- **源 §1 的基变换** ✓（印版 169 ✓ 逐字：「`\mathcal{M}\otimes_{\phi}S = \langle S, M\otimes_{\phi}S,
+f_{1}\otimes 1,\dots ,f_{r}\otimes 1\rangle`」✓）：把 `X : LinearStructure R M r s t` 沿 `R → S`
+推到 `LinearStructure S (M ⊗[R] S) r s t` ✓，其 `f_i` 支 ＝ **源序下的 `f_i ⊗ 1`** ✓。
+
+**构造** ✓：把 `tensorPowerBaseChange (X.f i)` ✓（§8 ✓，`M^{(s_i)} ⊗ S → M^{(t_i)} ⊗ S` ✓）用印 170 的
+**「identified with」iso** ✓（§8.1 的 `tensorPowerBaseChangeEquiv` ✓）**两面夹住** ✓ ⟹ 得到
+`⨂[S]^(s_i) (M ⊗[R] S) →ₗ[S] ⨂[S]^(t_i) (M ⊗[R] S)` ✓ —— 正是 `LinearStructure S (M ⊗[R] S) r s t`
+的 `f` 字段所要的型 ✓。
+**⚠ 口径** ✓：源把 `(M ⊗_φ S)^{(n)}` 与 `M^{(n)} ⊗_φ S` **认同** ✓ ⟹ 本件即该认同下搬运的结果 ✓；
+**⚠ §8.1 的生成元语义核未过** ✗ ⟹ **本件同样按 `∅-unchecked`** ✓ 对待（L21／L44 ✓）。 -/
+noncomputable def LinearStructure.baseChange {r : ℕ} {s t : Fin r → ℕ}
+    (X : LinearStructure R M r s t) : LinearStructure S (M ⊗[R] S) r s t where
+  f i := (tensorPowerBaseChangeEquiv (R := R) (S := S) (M := M) (t i)).symm.toLinearMap.comp
+    ((tensorPowerBaseChange (R := R) (S := S) (X.f i)).comp
+      (tensorPowerBaseChangeEquiv (R := R) (S := S) (M := M) (s i)).toLinearMap)
+
+/-- **外形锁定** ✓：基变换的 `f` 支**逐字**是上条的复合（`tensorPowerBaseChange` 被两头夹住 ✓）——
+公式一旦漂移（如漏掉某一侧的 `comm`／`equiv` ✗），本 `rfl` 立即编译失败 ✓。 -/
+theorem LinearStructure.baseChange_typeLock {r : ℕ} {s t : Fin r → ℕ}
+    (X : LinearStructure R M r s t) (i : Fin r) :
+    (X.baseChange (S := S)).f i =
+      (tensorPowerBaseChangeEquiv (R := R) (S := S) (M := M) (t i)).symm.toLinearMap.comp
+        ((tensorPowerBaseChange (R := R) (S := S) (X.f i)).comp
+          (tensorPowerBaseChangeEquiv (R := R) (S := S) (M := M) (s i)).toLinearMap) :=
+  rfl
+
+/-- **L1 探针** ✓（**非空洞** ✓）：对**任意** `X` 与任意 `[Algebra R S]` ✓，基变换**可实例化** ✓。 -/
+theorem LinearStructure.baseChange_nonempty {r : ℕ} {s t : Fin r → ℕ}
+    (X : LinearStructure R M r s t) : Nonempty (LinearStructure S (M ⊗[R] S) r s t) :=
+  ⟨X.baseChange (S := S)⟩
+
+/-! ### 8.3 源 §1 的 **`F` 结构基变换**（印版 170 ✓） -/
+
+/-- **源 §1 的 `F` 结构基变换** ✓（源「an `F` map `\phi : R \to S` with `S` commutative」✓，印 170 ✓）：
+把 `X : FStruct F r s t` 沿 `F`-映射 `R → S` 推到 `S` 上的 `F` 结构 ✓ —— `R := S` ✓、
+`M := X.M ⊗[X.R] S` ✓、`str := X.str.baseChange` ✓。
+**⚠ 形式化约定** ✓：源的 `\phi` 是**任意** `F`-映射 ✓；本件用 **`[Algebra X.R S]` ＋
+`[IsScalarTower F X.R S]`** ✓ 落 —— 后者**正是**「`\phi` 是 `F`-映射」的库内形 ✓
+（即 `algebraMap F S = algebraMap X.R S ∘ algebraMap F X.R` ✓）。 -/
+noncomputable def FStruct.baseChange {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (X : FStruct F r s t) (S : Type u) [CommRing S] [Algebra F S] [Algebra X.R S]
+    [IsScalarTower F X.R S] : FStruct F r s t where
+  R := S
+  M := X.M ⊗[X.R] S
+  str := X.str.baseChange (R := X.R) (S := S)
+
+/-- **外形锁定** ✓：基变换后的**底环**必为 `S` ✓ —— 漂移即 `rfl` 失败 ✓。 -/
+theorem FStruct.baseChange_typeLock {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (X : FStruct F r s t) (S : Type u) [CommRing S] [Algebra F S] [Algebra X.R S]
+    [IsScalarTower F X.R S] :
+    (X.baseChange S).R = S :=
+  rfl
+
+/-- **L1 探针** ✓（**非空洞** ✓）：对任意 `X` 与任意满足 `[IsScalarTower F X.R S]` 的 `S` ✓，
+`F` 结构基变换**可实例化** ✓。 -/
+theorem FStruct.baseChange_nonempty {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (X : FStruct.{u, v} F r s t) (S : Type u) [CommRing S] [Algebra F S] [Algebra X.R S]
+    [IsScalarTower F X.R S] : Nonempty (FStruct.{u, max u v} F r s t) :=
+  ⟨X.baseChange S⟩
+
 end BaseChange
 
-/-! ## 8. 公理闸门 -/
+/-! ## 9. 公理闸门 -/
 
 #print axioms tensorProductRightModule
 #print axioms tensorPowerBaseChange
@@ -679,6 +747,12 @@ end BaseChange
 #print axioms tensorPowerBaseChangeAuxStep
 #print axioms tensorPowerBaseChangeAux
 #print axioms tensorPowerBaseChangeEquiv
+#print axioms LinearStructure.baseChange
+#print axioms LinearStructure.baseChange_typeLock
+#print axioms LinearStructure.baseChange_nonempty
+#print axioms FStruct.baseChange
+#print axioms FStruct.baseChange_typeLock
+#print axioms FStruct.baseChange_nonempty
 #print axioms tensorPowerBaseChange_tmul
 #print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe
