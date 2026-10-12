@@ -139,7 +139,14 @@ sync.  The items added since then are:
   as stated for degenerate coefficient rings (a counterexample with `Z[i]/Z` and `G = C2`), and the
   hypothesis slot that quantifies over *every* action satisfying `hR'G` is not inhabitable (the
   trivial action satisfies `hR'G` but fails faithfulness), so the usable form pins the action by the
-  canonicality equation `g • (1 ⊗ x) = 1 ⊗ (g • x)`.
+  canonicality equation `g • (1 ⊗ x) = 1 ⊗ (g • x)`.  The base-change step of the source's theorem
+  5.1 is then packaged for the assembly: the two instance hypotheses (finite generation and
+  projectivity) are replaced by the single registered external input, so that the hypothesis list of
+  that step matches the rest of the development; the non-triviality the statement needs is supplied
+  by a general lemma pulling it back along a ring homomorphism, which is how the descent isomorphism
+  provides it; and the case of a trivial group is recorded separately, since its faithfulness clause
+  is free there.  An application lock pins the hypothesis list, and the remaining input is
+  registered as the source's cited projectivity result.
 - `GenericExtension_ABGV52.lean`: definition 1.1, the `E(G)`-slice language (realization property,
   representing and generic objects, the lifting property).  The file carries two transcriptions of
   definition 1.1 -- the three clauses listed flat, and the `E(G)`-slice reading as a representing
