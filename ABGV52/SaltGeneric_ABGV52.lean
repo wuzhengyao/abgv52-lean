@@ -754,6 +754,19 @@ theorem exists_linearIndependent_smul [FiniteDimensional K L]
 
 end GaloisBridge
 
+section FiniteDimensionalOfBasis
+
+variable (K : Type u) [Field K] (G : Type u) [Fintype G]
+
+/-- **口径消除** ✓（r144 登记 ② 的兑现 ✓）：**基 ⟹ `[FiniteDimensional K L]`** ✓ ——
+`Module.Finite.of_basis` ✓（`[Fintype G]` ⟹ `[Finite G]` ✓）＋ `FiniteDimensional` 与 `Module.Finite` 的
+**定义等同** ✓ ⟹ §4.11 的 `[FiniteDimensional K L]` **前提可去** ✗⟹✓。 -/
+theorem finiteDimensional_of_basis {L : Type u} [Field L] [Algebra K L]
+    (b : Module.Basis G K L) : FiniteDimensional K L :=
+  Module.Finite.of_basis b
+
+end FiniteDimensionalOfBasis
+
 /-! ## 4.11 识别桥 ＋ **`(d)-②①` 结**：`f \neq 0` ✓（第 144 轮）
 
 **⚠ 三处共用缺口** ✓：`G \simeq \mathrm{Gal}(L/K)` 的**识别** ✓ 同时是 —— ① `(d)-②①` 的 `f \neq 0` ✓；
@@ -772,9 +785,10 @@ polynomial」✓。
 取 `y_i = b.\mathrm{repr}\ x\ i` ✓（`Basis.sum_repr` ✓：`\sum_i y_i \bullet e_i = x` ✓）得
 `f(y) = \det(\mathrm{galoisMatrix}\ b\ x) \neq 0` ✓ ⟹ **`f \neq 0`** ✓（**若 `f = 0` 则 `f(y) = 0`** ✗ 矛盾 ✓）。
 **⚠ 用点** ✓：源「`f` 非零」正是其**避零步**（§4.10 ✓）的**前提之一** ✓。 -/
-theorem normalBasisPoly_ne_zero {L : Type u} [Field L] [Algebra K L] [FiniteDimensional K L]
+theorem normalBasisPoly_ne_zero {L : Type u} [Field L] [Algebra K L]
     [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
     (h : Function.Bijective (smulAlgEquivHom K G L)) : normalBasisPoly K G b ≠ 0 := by
+  haveI : FiniteDimensional K L := finiteDimensional_of_basis K G b
   obtain ⟨x, hx⟩ := exists_linearIndependent_smul K G L h
   have hdet : (galoisMatrix K G b x).det ≠ 0 :=
     (galoisMatrix_det_ne_zero_iff_vectors K G b x).mpr hx
@@ -785,6 +799,37 @@ theorem normalBasisPoly_ne_zero {L : Type u} [Field L] [Algebra K L] [FiniteDime
   exact hdet h1.symm
 
 end NormalBasisPolyNeZero
+
+
+/-! ## 4.12 源 `(d)-②②` 的**载体**：`f'` 的多项式化（第 145 轮；**恒等式待落** ✗） -/
+
+section ConjEvalPoly
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G]
+
+/-- **源 `(d)-②②` 的 `f'` 的**载体** ✓** —— 源逐字：「Substituting the above expressions for the `\sigma(z)`'s,
+we have that `t(z,\sigma(z),\dots) = f'(y_1,\dots,y_n)` for some polynomial `f'`」✓ ⟹ `f'` ＝
+**把 `x_\tau` 代入 `\tau \bullet (\sum_i y_i \bullet e_i)`** ✓ 后的多项式 ✓。
+
+**⚠ 载体口径** ✓（**本轮新发现** ✓）：代入后的**系数在 `L` 中** ✗（`\tau \bullet e_i \in L` ✓）⟹ 载体须是
+**`MvPolynomial G L`** ✓（**不是** `MvPolynomial G K` ✗ —— 源写「coefficients in `K`」✓ 是因它用的是
+**不变**的 `t'` ✓，其取值**落在 `K`** ✓，即 (b) 段 ✓；**本件对一般 `t` 造** ✓，故载体在 `L` ✓，**登记** ✓）。
+用 `MvPolynomial.aeval` ✓（**可换基环** ✓：目标 `MvPolynomial G L` 是 `K`-代数 ✓）。 -/
+noncomputable def conjEvalPoly {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L]
+    (b : Module.Basis G K L) (t : MvPolynomial G K) : MvPolynomial G L :=
+  MvPolynomial.aeval (fun τ : G => ∑ i : G, MvPolynomial.C (τ • b i) * MvPolynomial.X i) t
+
+/-- **⚠ 登记（`(d)-②②` 余项，**未落** ✗）** ✓：
+**(i) 取值恒等式** ✗：`f'(y) = \mathrm{aeval}(\tau \mapsto \tau \bullet (\sum_i y_i \bullet e_i))\ t` ✓ ——
+**应可证** ✓（`\mathrm{aeval}` 与 `\mathrm{eval}` 的**复合律** ✓，或对 `t` 作 `induction_on` ✓
+**显式给 motive** ✓）；**实测障碍** ✓ ＝ `\mathrm{conjEvalPoly}` 是**半可约** `def` ✗ ⟹ 归纳各支**须先
+`show`** ✓ 给出**展开形** ✓（**㊹ 复发** ✓，见 §4.10／r143 ✓）；
+**(ii) 非零** ✗：源用「**the algebraic independence of the `\sigma`'s**」✓ —— **未建** ✗
+（**⚠ 先审后落** ✓：须先定其**可用形** ✓ —— `\mathrm{Dedekind}` 线性无关 ✓ vs 代数无关 ✗，**强度不同** ✗）；
+**(iii) 组装** ✓：`exists_eval_mul_ne_zero` ✓ **已备** ✓（由 `f \neq 0` ✓ ＋ `f' \neq 0` ✓ 得公共非零点 ✓）。 -/
+theorem conjEvalPoly_gap_registered : True := trivial
+
+end ConjEvalPoly
 
 /-! ## 5. 公理闸门 -/
 
@@ -832,6 +877,9 @@ end NormalBasisPolyNeZero
 #print axioms smulAlgEquivHom
 #print axioms exists_linearIndependent_smul
 #print axioms normalBasisPoly_ne_zero
+#print axioms finiteDimensional_of_basis
+#print axioms conjEvalPoly
+#print axioms conjEvalPoly_gap_registered
 #print axioms normalBasisPoly
 #print axioms eval_normalBasisPoly
 #print axioms normalBasisPoly_gap_registered
