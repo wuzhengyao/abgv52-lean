@@ -451,6 +451,20 @@ theorem Lemma52Statement.shape (K L : Type u) [Field K] [Field L] [Algebra F K] 
       MvPolynomial.aeval (fun σ : G => σ • z) t ≠ 0 :=
   h t
 
+/-- **⚠ 判别力探针（`L1` 在住性／非空性）** ✗✅（**第 148 轮新发现** ✗）：**本残余的假设类为空** ✗ ——
+**取 `t = 0`** ✓ 则内层存在式**恒假** ✓（`\mathrm{aeval}(\dots) 0 = 0` ✓，故合取项 `\neq 0` 不成立 ✓）
+⟹ **`Lemma52Statement` 是假命题** ✗（**与 `F`／`G`／`K`／`L` 无关** ✓）。
+
+**⟹ 处置** ✓：源的 `t` **本是非零多项式** ✓（源 `lemma-5.2` 的语境 ✓）⟹ 该陈述**须加 `t \neq 0`** ✓；
+**本库已有的可用形恰是非零形** ✓（`conjEvalPoly_ne_zero` ✓，§4.16 ✓；端到端 `\dots of\_ne\_zero` ✓，§4.17 ✓）。
+**⚠ 影响面** ✓（**实测** ✓）：`Lemma52Statement` 的**唯一**消费者是本节的 `.shape` ✓ ⟹ **该条空真** ✗（**登记** ✓）；
+**全库其余无消费者** ✓。 -/
+theorem Lemma52Statement.false_at_zero (K L : Type u) [Field K] [Field L] [Algebra F K]
+    [Algebra K L] [Algebra F L] [IsScalarTower F K L] [MulSemiringAction G L] :
+    ¬ Lemma52Statement F G K L := fun h => by
+  obtain ⟨z, b, -, hne⟩ := h 0
+  exact hne (map_zero _)
+
 end Lemma52StatementSec
 
 /-! ## 4.6 源 `lemma-5-2` 的**可用形**：求值等变性（**解 §4.5 的 `hev` 登记** ✓）＋ 「`t'` 总在 `K` 中」的直接形（第 139 轮） -/
@@ -827,7 +841,10 @@ noncomputable def conjEvalPoly {L : Type u} [Field L] [Algebra K L] [MulSemiring
 **原记「须先定可用形」的答案即此** ✓）；**⚠ 口径发现 ㊽** ✓（第 147 轮 ✓）：**「系数在 `K`」是承重的** ✗⟹✓ ——
 **避零步须在 `K` 上做** ✓（两侧多项式同为 `K`-系数 ✓）⟹ **L-点路线走不通** ✗（会与 §4.9 的 **K-坐标判据**错配 ✗，
 **实测** ✓：`eval₂ (algebraMap K L) y (normalBasisPoly …)` 的值在 `L` ✗ 而判据的 `\det` 在 `K` ✗）；
-**(iii) 组装** ✓✅ —— **第 147 轮已落** ✓（`exists_linearIndependent_smul_aeval_ne_zero` ✓，**条件形** ✓）。 -/
+**(ii) 已证** ✓✅ —— **第 148 轮** ✓：**`conjEvalPoly_ne_zero`** ✓（**§4.16** ✓，**非零核心** ✓），
+且**避零条改在 `L` 上取** ✓（**§4.15** ✓）⟹ **`K`-系数形无须使用** ✓（**㊽ 的处置兑现** ✓）；
+**(iii) 组装** ✓✅ —— **第 147 轮已落** ✓（`exists_linearIndependent_smul_aeval_ne_zero` ✓，**条件形** ✓；
+**无条件形见 §4.17** ✓）。 -/
 theorem conjEvalPoly_gap_registered : True := trivial
 
 end ConjEvalPoly
@@ -901,7 +918,12 @@ polynomial `f'` **with coefficients in `K`**. **By the algebraic independence of
 
 **⚠ 为什么是 `t' = \prod_\sigma \sigma \bullet t`** ✓（**本轮口径发现 ㊽** ✓）：源的第二条件是关于**不变**式 `t'` ✓，
 其取值**落在 `K`** ✓（(b) 段 ✓）⟹ **只有对 `t'` 才可能有 `K`-系数多项式** ✓；对**一般 `t`** ✗ 取值在 `L` ✓、
-系数须在 `L` ✗ ⟹ 本件**只对 `t'` 陈述** ✓（**忠实** ✓）。 -/
+系数须在 `L` ✗ ⟹ 本件**只对 `t'` 陈述** ✓（**忠实** ✓）。
+
+**⚠ 第 148 轮口径修正** ✓（**㊽ 的处置** ✓）：本残余**已不在关键路径上** ✓ —— **§4.15** 的 `K`-点密度避零 ✓
+＋ **§4.16** 的非零核心 ✓ **直接供足 §4.14 的前提** ✓（**无须任何 `K`-系数下降** ✓）。
+**⚠ ㊽ 的发现仍有效** ✓（两条 L-点路径确实失败 ✓，**实测** ✓）；但其**结论**「必须下降到 `K`」**被取代** ✓
+（**第三条路**：多项式仍在 `L` 上 ✓，只把避零点限制在 `K`-点 ✓）⟹ 本件**保留作留痕** ✓。 -/
 def ConjEvalPolyKStatement {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L]
     (b : Module.Basis G K L) (t : MvPolynomial G K) : Prop :=
   ∃ p : MvPolynomial G K, p ≠ 0 ∧ ∀ a : G → K,
@@ -939,7 +961,8 @@ variable (K : Type u) [Field K] [Infinite K] (G : Type u) [Group G] [Fintype G] 
 再由 **(c)** ✓（§4.7 ✓：`\mathrm{noether\_aeval\_ne\_zero\_of\_prod\_ne\_zero}` ✓）降为 `\mathrm{ev}(t) \neq 0` ✓。
 
 **⚠ 意义** ✓：**`[6]`「`(d)` 的组装」至此闭合** ✓；**全库仅余 `(ii)` 一块** ✗（**已隔离为具名残余** ✓）
-⟹ **`lemma-5.2` 的证明**只差 (ii) ✓。 -/
+⟹ **`lemma-5.2` 的证明**只差 (ii) ✓。
+**⚠ 第 148 轮** ✓：**(ii) 已证** ✓✅；**无条件形**见 **§4.17** ✓（**本条件形保留** ✓）。 -/
 theorem exists_linearIndependent_smul_aeval_ne_zero {L : Type u} [Field L] [Algebra K L]
     [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
     (h : Function.Bijective (smulAlgEquivHom K G L)) (t : MvPolynomial G K)
@@ -958,6 +981,290 @@ theorem exists_linearIndependent_smul_aeval_ne_zero {L : Type u} [Field L] [Alge
   · exact noether_aeval_ne_zero_of_prod_ne_zero K G (∑ i : G, a i • b i) t hmap
 
 end EndToEndSec
+
+/-! ## 4.15 **新路线（Ⅰ）：`K`-点密度避零** ✓✅（第 148 轮 —— **解 ㊽ 的障碍** ✓）
+
+**⚠ 本轮口径修正** ✓（**㊽ 的处置兑现** ✓）：第 147 轮实测两条 **L-点路线** ✗ **失败** ✓（**保留** ✓：
+① `\mathrm{eval}_2 (\mathrm{algebraMap}\ K\ L)\ y\ (\mathrm{normalBasisPoly}\dots)` 的值在 `L` ✗ 而判据的
+`\det` 在 `K` ✗；② L-点的坐标矩阵与 `z` 的 `K`-坐标矩阵**是两个不同矩阵** ✗），并据此判
+「源的『系数在 `K`』是**承重的**」✓。**⚠ 该判断只对「`\mathrm{exists\_eval\_mul\_ne\_zero}` 型避零」成立** ✗，
+**对目标不成立** ✓ —— 关键在 **mathlib 的 `MvPolynomial.funext_set`** ✓（**第 147 轮未察** ✗）：
+**域上 L-系数多项式在一条「各边无限」的盒上处处为零 ⟹ 恒零** ✓。取盒边 ＝
+`\mathrm{Set.range}(\mathrm{algebraMap}\ K\ L)` ✓（**`K` 无限 ＋ `\mathrm{algebraMap}` 单射 ⟹ 该边无限** ✓）
+⟹ **「在 `K`-点上处处为零」即「恒零」** ✓✅ ⟹ **「在 `K`-点上可避零」对 L-系数多项式照常成立** ✓。
+**⟹ 处置** ✓：**两个相乘的多项式改在 `MvPolynomial G L` 中取** ✓（**同环** ✓），**避零点仍限在 `K^G`** ✓
+（**故 §4.9 的 `K`-坐标判据照用** ✓）⟹ **无须任何系数下降** ✓、**`(ii)` 的 `K`-系数形无须使用** ✓。
+**⚠ 与既有读数的关系** ✓：**㊽** 的**发现**（两条 L-点路径确实走不通 ✓）**仍有效** ✓；其**结论**
+（「必须下降到 `K`」✗）**被本条取代** ✓ —— 本条是**同一障碍的第三条路** ✓：
+**多项式仍在 `L` 上，只把避零点限制在 `K`-点** ✓。 -/
+
+section KPointDensity
+
+variable (K : Type u) [Field K] [Infinite K] (L : Type u) [Field L] [Algebra K L]
+
+/-- **`K`-点密度** ✓✅（**本轮核心工具** ✓）：**L-系数多项式若在 `K`-点上处处为零则恒零** ✓ ——
+由 **`MvPolynomial.funext_set`** ✓（`[CommRing L] [IsDomain L]` ＋ 盒边 `s_i = \mathrm{Set.range}(\mathrm{algebraMap}\ K\ L)` ✓，
+**各边无限** ✓ 由 `\mathrm{Set.infinite\_range\_of\_injective}` ✓ ＋ `K` 无限 ✓）。
+
+**⚠ 为什么关键** ✓：它把「避零」的**取值域**与「多项式」的**系数域**解耦 ✓ ——
+第 147 轮的两条失败路径 ✗ 都源于**把两者绑在一起** ✗（「同环」要求）。 -/
+theorem mvPolynomial_eq_zero_of_eval_eq_zero_on_range {σ : Type*} {p : MvPolynomial σ L}
+    (h : ∀ x : σ → L, (∀ i, x i ∈ Set.range (algebraMap K L))
+      → MvPolynomial.eval x p = 0) : p = 0 := by
+  refine MvPolynomial.funext_set (fun _ : σ => Set.range (algebraMap K L)) (fun _ => ?_) ?_
+  · exact Set.infinite_range_of_injective (algebraMap K L).injective
+  · intro x hx
+    rw [h x (fun i => hx i (Set.mem_univ i)), map_zero]
+
+/-- **`K`-点上的同时避零（L-系数版）** ✓✅：**两个非零的 L-系数多项式有公共的 `K`-非零点** ✓ ——
+即 §4.10 的 `\mathrm{exists\_eval\_mul\_ne\_zero}` ✓ 的 **L-系数推广** ✓（**避零点仍限在 `K^G`** ✓）。
+
+**证明** ✓：对**积**用 §4.15 的密度条 ✓（`L` 是域 ⟹ `\Phi \Psi \neq 0` ✓）＋ `map_mul` ✓
+＋ `mul_ne_zero_iff` ✓（**与 §4.10 的基形同构** ✓，只把载体从 `K` 换成 `L` ✓）。 -/
+theorem exists_eval_mul_ne_zero_of_range {σ : Type*} {Φ Ψ : MvPolynomial σ L}
+    (hΦ : Φ ≠ 0) (hΨ : Ψ ≠ 0) :
+    ∃ x : σ → L, (∀ i, x i ∈ Set.range (algebraMap K L))
+      ∧ MvPolynomial.eval x Φ ≠ 0 ∧ MvPolynomial.eval x Ψ ≠ 0 := by
+  have hne : Φ * Ψ ≠ 0 := mul_ne_zero hΦ hΨ
+  obtain ⟨x, hx, hxne⟩ : ∃ x : σ → L, (∀ i, x i ∈ Set.range (algebraMap K L))
+      ∧ MvPolynomial.eval x (Φ * Ψ) ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hne (mvPolynomial_eq_zero_of_eval_eq_zero_on_range K L
+      (fun x hx => by simp [h x hx]))
+  rw [map_mul] at hxne
+  exact ⟨x, hx, (mul_ne_zero_iff.mp hxne).1, (mul_ne_zero_iff.mp hxne).2⟩
+
+end KPointDensity
+
+section NewRouteEndToEnd
+
+variable (K : Type u) [Field K] [Infinite K] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **端到端（新路线，条件形）** ✓✅：**只差** `\mathrm{conjEvalPoly}\ K\ G\ b\ (\prod_\sigma \sigma \bullet t) \neq 0` ✓
+（**§4.16 即证之** ✓）。
+
+**证明** ✓（**与 §4.14 逐件对应** ✓，**只换避零条** ✓）：**(1)** `f \neq 0` ✓（§4.11 ✓）；
+**(2)** `\mathrm{map}(\mathrm{algebraMap})\ f \neq 0` ✓（`\mathrm{map}` 单射 ✓）；
+**(3)** **§4.15 的 L-系数避零** ✓ 给 `x : G \to L` ✓（**各分量在 `\mathrm{range}(\mathrm{algebraMap})`** ✓）
+使 `\mathrm{eval}\ x` 在 `\mathrm{map}(\mathrm{algebraMap})\ f` 与 `\Phi` 上**皆非零** ✓；
+**(4)** 由 `\mathrm{Set.mem\_range}` ✓ 取 `a : G \to K` ✓（`x = \mathrm{algebraMap} \circ a` ✓）；
+**(5)** `\mathrm{eval_map}` ✓ ＋ `\mathrm{eval}_2\_comp` ✓ 把第一个非零降为 `\mathrm{eval}\ a\ f \neq 0` ✓
+⟹ **§4.10 的对接锁** ✓ ＋ **§4.9／§4.8 的判据** ✓ 给 `\mathrm{LI}` ✓；
+**(6)** `\mathrm{eval\_conjEvalPoly}` ✓（§4.13 ✓）＋ `\mathrm{noether\_aeval\_ne\_zero\_of\_prod\_ne\_zero}` ✓（§4.7 ✓）
+把第二个非零降为 `\mathrm{aeval}\ (\sigma \mapsto \sigma \bullet z)\ t \neq 0` ✓。 -/
+theorem exists_linearIndependent_smul_aeval_ne_zero_of_conjEvalPoly_ne_zero
+    {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L] [SMulCommClass G K L]
+    (b : Module.Basis G K L) (h : Function.Bijective (smulAlgEquivHom K G L))
+    (t : MvPolynomial G K) (hΦ : conjEvalPoly K G b (∏ σ : G, σ • t) ≠ 0) :
+    ∃ z : L, LinearIndependent K (fun σ : G => σ • z)
+      ∧ MvPolynomial.aeval (fun σ : G => σ • z) t ≠ 0 := by
+  have hf : normalBasisPoly K G b ≠ 0 := normalBasisPoly_ne_zero K G b h
+  have hfL : MvPolynomial.map (algebraMap K L) (normalBasisPoly K G b) ≠ 0 := fun h0 =>
+    hf (MvPolynomial.map_injective (algebraMap K L) (algebraMap K L).injective
+      (by rw [h0, map_zero]))
+  obtain ⟨x, hx, hx1, hx2⟩ := exists_eval_mul_ne_zero_of_range K L hfL hΦ
+  have hx' : ∀ i : G, ∃ c : K, algebraMap K L c = x i := fun i => Set.mem_range.mp (hx i)
+  choose a ha using hx'
+  have hxeq : x = fun i : G => algebraMap K L (a i) := funext fun i => (ha i).symm
+  have hfa : MvPolynomial.eval a (normalBasisPoly K G b) ≠ 0 := fun h0 =>
+    hx1 (by
+      rw [hxeq, MvPolynomial.eval_map]
+      show MvPolynomial.eval₂ (algebraMap K L) ((algebraMap K L) ∘ a) (normalBasisPoly K G b) = 0
+      rw [← MvPolynomial.eval₂_comp, h0, map_zero])
+  have h2 : MvPolynomial.aeval (fun σ : G => σ • (∑ i : G, a i • b i))
+      (∏ σ : G, σ • t) ≠ 0 := fun h0 =>
+    hx2 (by rw [hxeq, eval_conjEvalPoly K G b (∏ σ : G, σ • t) a, h0])
+  exact ⟨∑ i : G, a i • b i, by
+      rw [← galoisMatrix_det_ne_zero_iff_vectors K G b, ← eval_normalBasisPoly K G b a]
+      exact hfa,
+    noether_aeval_ne_zero_of_prod_ne_zero K G (∑ i : G, a i • b i) t h2⟩
+
+end NewRouteEndToEnd
+
+/-! ## 4.16 **新路线（Ⅱ）：`(ii)` 的非零核心 ＝ 源的「代数无关」** ✓✅（第 148 轮）
+
+**源逐字** ✓（`tex :660--662` ✓）：「**By the algebraic independence of the `\sigma`'s, `f'` is nonzero**」✓ ——
+本轮把「代数无关」落为**一条定理** ✓：**线性代入 `x_\tau \mapsto \sum_i (\tau \bullet b_i) x_i` 是单射** ✓
+（**工作形**：`\mathrm{conjEvalPoly}\ K\ G\ b\ t' \neq 0` ✓，其中 `t' = \prod_\sigma \sigma \bullet t` ✓）。
+
+**⚠ 为什么这就是「代数无关」** ✓：源要的 `f'` 非零 ✓ 等价于**该代入在 `t'` 上不为零** ✓；
+而代入由 `|G|` 个线性形式给出 ✓ ⟹ **分次论证下，单射 ⟺ 这些形式线性无关** ✓；
+而它们线性无关**正由 Dedekind 定理供给** ✓（**σ 互异 ＋ 基** ✓）。 -/
+
+section DedekindKernel
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G]
+
+/-- **Dedekind ⟹ 核为零** ✓✅：`\sum_\tau l_\tau (\tau \bullet b_i) = 0\ (i \in G)` ⟹ `l = 0` ✓。
+
+**证明** ✓：**(1)** 把**逐坐标**条件升为**逐向量**条件 ✓ —— 任何 `x \in L` 写成 `x = \sum_i (b.\mathrm{repr}\ x\ i) \bullet b_i` ✓，
+再用 `\tau` 的 `K`-线性 ✓ 把和拆开 ✓ ⟹ `\sum_\tau l_\tau (\tau \bullet x) = 0\ \forall x` ✓；
+**(2)** 即线性映射 `\sum_\tau l_\tau \bullet (\tau : L \to_K L) = 0` ✓（`\mathrm{LinearMap.ext}` ✓）；
+**(3)** 由 **mathlib `linearIndependent_algHom_toLinearMap`** ✓（**Dedekind 定理** ✓；**第 147 轮未察** ✗）
+＋ **识别桥的单射性** ✓（`\mathrm{AlgEquiv} \to \mathrm{AlgHom}` 单射 ✓ 复合 ✓）得这些 `\tau` **L-线性无关** ✓
+⟹ `l = 0` ✓（`\mathrm{linearIndependent\_iff'}` ✓ 取 `s = \mathrm{univ}` ✓）。 -/
+theorem smul_basis_linearCombination_eq_zero {L : Type u} [Field L] [Algebra K L]
+    [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
+    (h : Function.Injective (smulAlgEquivHom K G L)) {l : G → L}
+    (hl : ∀ i : G, ∑ τ : G, l τ * (τ • b i) = 0) : l = 0 := by
+  let v : G → (L →ₗ[K] L) := fun τ =>
+    AlgHom.toLinearMap (((smulAlgEquivHom K G L τ : L ≃ₐ[K] L)) : L →ₐ[K] L)
+  have hLI : LinearIndependent L v :=
+    (linearIndependent_algHom_toLinearMap K L L).comp
+      (fun τ : G => (((smulAlgEquivHom K G L τ : L ≃ₐ[K] L)) : L →ₐ[K] L))
+      (AlgEquiv.coe_toAlgHom_injective.comp h)
+  have hb : ∀ i : G, (∑ τ : G, l τ • v τ) (b i) = 0 := by
+    intro i
+    rw [LinearMap.sum_apply]
+    simpa [v, smul_eq_mul, smulAlgEquivHom, smulAlgEquiv] using hl i
+  have hzero : (∑ τ : G, l τ • v τ : L →ₗ[K] L) = 0 := by
+    ext x
+    rw [LinearMap.zero_apply, ← b.sum_repr x, map_sum]
+    refine Finset.sum_eq_zero (fun i _ => ?_)
+    rw [map_smul, hb i, smul_zero]
+  funext i
+  exact linearIndependent_iff'.mp hLI Finset.univ l (by simpa using hzero) i (Finset.mem_univ i)
+
+end DedekindKernel
+
+section ConjEvalPolyNeZeroProof
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **`(ii)` 的非零核心** ✓✅：**`t \neq 0` ⟹ `\mathrm{conjEvalPoly}\ K\ G\ b\ (\prod_\sigma \sigma \bullet t) \neq 0`** ✓ ——
+即源「**By the algebraic independence of the `\sigma`'s, `f'` is nonzero**」✓ 的**形式化** ✓。
+
+**⚠ 口径** ✓：本件**只要 `\mathrm{Injective}`** ✓（**不**要 `G \simeq \mathrm{Gal}(L/K)` 的满射性 ✓）
+⟹ `(ii)` **不依赖识别桥** ✓（识别桥只为 §4.11 的 `f \neq 0` ✓ 即源「some normal basis exists」✓ 所需 ✓）。
+
+**证明** ✓（**三件** ✓）：**(1)** `t' \neq 0` ✓ —— `t \neq 0` ＋ `MvPolynomial G K` 是域上多项式环 ✓
+＋ `G` 经环自同构作用 ✓（**若 `\sigma \bullet t = 0` 则 `t = \sigma^{-1} \bullet (\sigma \bullet t) = 0`** ✓）
+⟹ 各因子非零 ⟹ 积非零 ✓（`\mathrm{Finset.prod\_ne\_zero\_iff}` ✓）；
+**(2)** **矩阵 `M_{\tau i} = \tau \bullet b_i` 的行 `L`-线性无关** ✓ —— 由 §4.16 的核为零条 ✓；
+**(3)** 由 `\mathrm{IsUnit}\ M` ✓（`\mathrm{Matrix.linearIndependent\_rows\_iff\_isUnit}` ✓）取 `u = M` 的**单位** ✓，
+以 `M^{-1}` 构造**逆代入** `\ell'` ✓，并证 **`\mathrm{aeval}\ \ell' \circ \mathrm{aeval}\ \ell = \mathrm{map}(\mathrm{algebraMap})`** ✓
+（**对 `p` 作 `MvPolynomial.induction_on`** ✓；`\mathrm{mul\_X}` 支归约到
+`\mathrm{aeval}\ \ell'\ (\ell\ \tau) = x_\tau` ✓，后者由 `M \cdot M^{-1} = 1` ✓ **逐项算出** ✓）
+⟹ `\mathrm{aeval}\ \ell` **左可逆** ✓ ⟹ **单射** ✓ ⟹ `\mathrm{aeval}\ \ell\ t' \neq 0` ✓。
+
+**⚠ 工艺读数** ✓：**㊹**（半可约 `def` 别挡在归纳路径上 ✓）：本件归纳的 motive 里**不出现 `\ell'`／`\ell` 的展开** ✓，
+且 `\mathrm{aeval}\ \ell'\ (\ell\ \tau)` 的算式**先以 `\mathrm{calc}` 显式写出** ✓ ⟹ **无须 `show`** ✓。 -/
+theorem conjEvalPoly_ne_zero {L : Type u} [Field L] [Algebra K L]
+    [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
+    (h : Function.Injective (smulAlgEquivHom K G L)) {t : MvPolynomial G K} (ht : t ≠ 0) :
+    conjEvalPoly K G b (∏ σ : G, σ • t) ≠ 0 := by
+  have ht' : (∏ σ : G, σ • t : MvPolynomial G K) ≠ 0 := by
+    rw [Finset.prod_ne_zero_iff]
+    intro σ _
+    exact fun h0 => ht (by
+      simpa [← mul_smul] using congrArg (fun q : MvPolynomial G K => σ⁻¹ • q) h0)
+  have sum_extend : ∀ (s : Finset G) (g c : G → L), (∀ i ∉ s, g i = 0) →
+      (∑ i ∈ s, g i * c i) = ∑ i : G, g i * c i := fun s g c hg =>
+    Finset.sum_subset (Finset.subset_univ s) (fun x _ hx => by rw [hg x hx, zero_mul])
+  set M : Matrix G G L := Matrix.of (fun τ i : G => τ • b i) with hM
+  have hrows : LinearIndependent L M.row := by
+    rw [linearIndependent_iff'']
+    intro s g hg hsum i
+    have hcoord : ∀ i' : G, ∑ x : G, g x * (x • b i') = 0 := by
+      intro i'
+      have h1 : (∑ x ∈ s, g x • M.row x) i' = 0 := by rw [hsum]; rfl
+      have h2 : (∑ x ∈ s, g x • M.row x) i' = ∑ x ∈ s, g x * (x • b i') := by
+        rw [Finset.sum_apply]
+        refine Finset.sum_congr rfl (fun x _ => ?_)
+        simp only [hM, Matrix.row, Matrix.of_apply, Pi.smul_apply, smul_eq_mul]
+      rw [h2, sum_extend s g (fun x => x • b i') hg] at h1
+      exact h1
+    exact congrFun (smul_basis_linearCombination_eq_zero K G b h hcoord) i
+  have hunit : IsUnit M := (Matrix.linearIndependent_rows_iff_isUnit).mp hrows
+  let ℓ : G → MvPolynomial G L := fun τ => ∑ i : G, MvPolynomial.C (τ • b i) * MvPolynomial.X i
+  let ℓ' : G → MvPolynomial G L := fun i => ∑ υ : G,
+    MvPolynomial.C ((↑(hunit.unit⁻¹) : Matrix G G L) i υ) * MvPolynomial.X υ
+  have hX : ∀ τ : G, MvPolynomial.aeval ℓ' (ℓ τ) = MvPolynomial.X τ := by
+    intro τ
+    have hMu : M * (↑hunit.unit⁻¹ : Matrix G G L) = 1 := hunit.mul_val_inv
+    have h1 : ∀ i : G, MvPolynomial.aeval ℓ'
+        (MvPolynomial.C (τ • b i) * MvPolynomial.X i)
+        = ∑ υ : G, MvPolynomial.C ((τ • b i) * (↑hunit.unit⁻¹ : Matrix G G L) i υ)
+            * MvPolynomial.X υ := by
+      intro i
+      simp only [ℓ', map_mul, MvPolynomial.aeval_X, MvPolynomial.aeval_C,
+        MvPolynomial.algebraMap_eq, Finset.mul_sum]
+      refine Finset.sum_congr rfl (fun υ _ => ?_)
+      rw [← mul_assoc, ← MvPolynomial.C_mul]
+    calc MvPolynomial.aeval ℓ' (ℓ τ)
+        = ∑ i : G, MvPolynomial.aeval ℓ' (MvPolynomial.C (τ • b i) * MvPolynomial.X i) := by
+          simp only [ℓ, map_sum]
+      _ = ∑ i : G, ∑ υ : G, MvPolynomial.C ((τ • b i) * (↑hunit.unit⁻¹ : Matrix G G L) i υ)
+            * MvPolynomial.X υ := Finset.sum_congr rfl (fun i _ => h1 i)
+      _ = ∑ υ : G, (∑ i : G, MvPolynomial.C ((τ • b i) * (↑hunit.unit⁻¹ : Matrix G G L) i υ))
+            * MvPolynomial.X υ := by
+          rw [Finset.sum_comm]
+          exact Finset.sum_congr rfl (fun υ _ => (Finset.sum_mul Finset.univ _ _).symm)
+      _ = ∑ υ : G, MvPolynomial.C (∑ i : G, (τ • b i) * (↑hunit.unit⁻¹ : Matrix G G L) i υ)
+            * MvPolynomial.X υ := by
+          refine Finset.sum_congr rfl (fun υ _ => ?_)
+          rw [← map_sum]
+      _ = ∑ υ : G, MvPolynomial.C ((M * (↑hunit.unit⁻¹ : Matrix G G L)) τ υ) * MvPolynomial.X υ := by
+          refine Finset.sum_congr rfl (fun υ _ => ?_)
+          rw [Matrix.mul_apply]
+          exact congrArg (fun z => MvPolynomial.C z * MvPolynomial.X υ)
+            (Finset.sum_congr rfl (fun j _ => rfl)).symm
+      _ = ∑ υ : G, MvPolynomial.C ((1 : Matrix G G L) τ υ) * MvPolynomial.X υ := by rw [hMu]
+      _ = MvPolynomial.X τ := by
+          rw [Finset.sum_eq_single τ]
+          · rw [Matrix.one_apply, if_pos rfl, MvPolynomial.C_1, one_mul]
+          · intro υ _ hυ
+            rw [Matrix.one_apply, if_neg (Ne.symm hυ), MvPolynomial.C_0, zero_mul]
+          · intro hτ; exact absurd (Finset.mem_univ τ) hτ
+  have hkey : ∀ p : MvPolynomial G K,
+      MvPolynomial.aeval ℓ' (MvPolynomial.aeval ℓ p) = MvPolynomial.map (algebraMap K L) p := by
+    intro p
+    induction p using MvPolynomial.induction_on with
+    | C a =>
+        show MvPolynomial.aeval ℓ' (MvPolynomial.aeval ℓ (MvPolynomial.C a))
+          = MvPolynomial.map (algebraMap K L) (MvPolynomial.C a)
+        rw [MvPolynomial.aeval_C, MvPolynomial.map_C,
+          IsScalarTower.algebraMap_apply K L (MvPolynomial G L),
+          MvPolynomial.algebraMap_eq, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq]
+    | add p q hp hq => simp only [map_add, hp, hq]
+    | mul_X p n hp =>
+        have h1 : MvPolynomial.aeval ℓ (p * MvPolynomial.X n)
+            = MvPolynomial.aeval ℓ p * ℓ n := by
+          rw [map_mul, MvPolynomial.aeval_X]
+        rw [h1, map_mul, map_mul, hp, hX n, MvPolynomial.map_X]
+  have hmain : MvPolynomial.aeval ℓ (∏ σ : G, σ • t) ≠ 0 := fun h0 =>
+    ht' ((MvPolynomial.map_injective (algebraMap K L) (algebraMap K L).injective) (by
+      simp only [← hkey (∏ σ : G, σ • t), h0, map_zero]))
+  show conjEvalPoly K G b (∏ σ : G, σ • t) ≠ 0
+  exact hmain
+
+end ConjEvalPolyNeZeroProof
+
+/-! ## 4.17 **端到端（无条件形）** ✓✅（第 148 轮 —— **`(d)` 全落** ✓）
+
+**⚠ 结论** ✓：`t \neq 0` ＋ **识别桥** ⟹ 源 `lemma-5.2` 证明要的结论 ✓
+（**存在 `z` 使 `\{\sigma \bullet z\}` 线性无关 且 `t(z,\sigma(z),\dots) \neq 0`** ✓）。
+**⚠ 全库关于 `(d)` 的具名残余至此清空** ✓✅ —— §4.14 的**条件形** ✓ 由 §4.15 ✓ ＋ §4.16 ✓ 供足前提 ✓；
+`\mathrm{ConjEvalPolyKStatement}`（§4.14 的忠实具名残余 ✓）**保留作留痕** ✓，
+但**已不在关键路径上** ✓（**第 148 轮口径修正** ✓，见 §4.15 ✓）。
+**⚠ 余下的前提** ✓：**(1)** `t \neq 0` ✓（**源语境下 `t` 是非零多项式** ✓）；**(2)** **识别桥**
+`G \to^* (L \simeq_K L)` **单射** ✓（**§4.11 的 `f \neq 0` 需其满射性** ✓，源语境下自动 ✓；**在册** ✓）。 -/
+
+section EndToEndUncond
+
+variable (K : Type u) [Field K] [Infinite K] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **端到端：无条件形** ✓✅ —— `t \neq 0` ＋ 识别桥 ⟹ 结论 ✓（**不再需要任何具名残余** ✓）。 -/
+theorem exists_linearIndependent_smul_aeval_ne_zero_of_ne_zero {L : Type u} [Field L]
+    [Algebra K L] [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
+    (h : Function.Bijective (smulAlgEquivHom K G L)) (t : MvPolynomial G K) (ht : t ≠ 0) :
+    ∃ z : L, LinearIndependent K (fun σ : G => σ • z)
+      ∧ MvPolynomial.aeval (fun σ : G => σ • z) t ≠ 0 :=
+  exists_linearIndependent_smul_aeval_ne_zero_of_conjEvalPoly_ne_zero K G b h t
+    (conjEvalPoly_ne_zero K G b h.injective ht)
+
+end EndToEndUncond
 
 /-! ## 5. 公理闸门 -/
 
@@ -1018,5 +1325,12 @@ end EndToEndSec
 #print axioms normalBasisPoly_gap_registered
 #print axioms Lemma52Statement
 #print axioms Lemma52Statement.shape
+#print axioms Lemma52Statement.false_at_zero
+#print axioms mvPolynomial_eq_zero_of_eval_eq_zero_on_range
+#print axioms exists_eval_mul_ne_zero_of_range
+#print axioms exists_linearIndependent_smul_aeval_ne_zero_of_conjEvalPoly_ne_zero
+#print axioms smul_basis_linearCombination_eq_zero
+#print axioms conjEvalPoly_ne_zero
+#print axioms exists_linearIndependent_smul_aeval_ne_zero_of_ne_zero
 
 end ABGV52
