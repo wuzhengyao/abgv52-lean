@@ -2054,6 +2054,63 @@ theorem exists_ringHom_away_to_field (s : A) [IsLocalization.Away s Rloc] (hs : 
 
 end AwayToField
 
+/-! ## 4.28 **`A[s^{-1}]` 的元素是分数**（局部化同构的 `surj` 内容）✓（第 162 轮）
+
+**⚠ 装配背景** ✓：§4.27 给了**抽象局部化 → K** 的环同态 ✓；要把它升为**同构** ✓（**`IsGenericExtension`(a) 所需** ✓，
+**读数 (67) 的载体桥** ✓），须证两件：**①** **像的包含** ✗（**登记，见下** ✓）；**②** **每个元素都是分数** ✓✅（**本轮落** ✓）。
+**⚠ 本轮件的用途** ✓：**② 正是 `\mathrm{IsLocalization}` 结构里 `\mathrm{surj}` 一款的内容** ✓
+（**每个 `x \in A[s^{-1}]` 都可写成 `a / s^n`** ✓）—— 反过来说 ✓：**`A[s^{-1}]` 被 `A` 与 `s^{-1}` 的分数穷尽** ✓。
+
+**⚠ 证明** ✓：对 `\mathrm{Algebra.adjoin}\ A\ \{(s)^{-1}\}` 作**结构归纳** ✓（**四支** ✓：生成元 ✓／基域 ✓／加法 ✓／乘法 ✓），
+**逐支**给出「分母为 `s` 的幂」的形 ✓：**生成元支** `n = 1`、`a = 1` ✓（`s^{-1} \cdot s = 1` ✓，**用 `\mathrm{inv\_mul\_cancel₀}`** ✓）；
+**基域支** `n = 0` ✓；**加法支** `n + m`、`a s^m + b s^n` ✓；**乘法支** `n + m`、`a b` ✓
+（**⚠ 分子须在 `A` 内** ✓ —— 故取 `a \cdot s^m + b \cdot s^n \in A` ✓ 再经 `\mathrm{map\_add}`／`\mathrm{map\_mul}`／**`\mathrm{map\_pow}`** ✓ 展开 ✓）。
+
+**⚠ 登记（本轮未落）** ✗：**像的包含** ✓（`\mathrm{adjoin}\ A\ \{(s)^{-1}\} \subseteq \psi.\mathrm{range}` ✓）——
+**思路已定** ✓（`\mathrm{Algebra.mem\_adjoin\_iff}` ✓ ＋ `\mathrm{Subring.closure\_le}` ✓ ＋
+**`\mathrm{IsLocalization.map\_units}`** ✓，**引理名已找到** ✓：配 `\mathrm{Submonoid.mem\_powers\_iff}` ✓ 得 `s \in \mathrm{powers}\ s` ✓）；
+**本轮阻塞** ✗：**`\mathrm{Units}` 的强制转换簿记** ✗ —— 目标是 `\psi (\uparrow u^{-1}) = (\mathrm{algebraMap}\ s)^{-1}` ✓，
+而 `\mathrm{map\_inv₀}`／`\mathrm{Units.val\_inv\_eq\_inv\_val}`／`\mathrm{Units.inv\_val}` **三种写法均未匹配** ✗（**实测** ✓）
+⟹ **次轮改用 `\mathrm{IsUnit.map}`** ✓（**已有环同态 `\psi`** ✓，**可绕开强制转换** ✓）**或 `\mathrm{show}` 显式化** ✓。 -/
+
+section AwayFractionForm
+
+variable {A : Type u} [CommRing A]
+variable {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K]
+
+/-- **`A[s^{-1}]` 的元素是分数** ✓✅：`x \in \mathrm{Algebra.adjoin}\ A\ \{(s)^{-1}\}` ⟹
+`\exists n\ a,\ x \cdot s^n = \mathrm{algebraMap}\ a` ✓（`s := \mathrm{algebraMap}\ A\ K\ s` ✓）。 -/
+theorem exists_pow_mul_eq_of_mem_adjoin_inv (s : A) (hs : s ≠ 0) :
+    ∀ x ∈ Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K),
+      ∃ (n : ℕ) (a : A), x * (algebraMap A K s) ^ n = algebraMap A K a := by
+  have hsK : algebraMap A K s ≠ 0 :=
+    fun h0 => hs (FaithfulSMul.algebraMap_injective A K (by rw [h0, map_zero]))
+  intro x hx
+  refine Algebra.adjoin_induction (p := fun x _ => ∃ (n : ℕ) (a : A),
+    x * (algebraMap A K s) ^ n = algebraMap A K a) ?_ ?_ ?_ ?_ hx
+  · intro y hy
+    rw [Set.mem_singleton_iff] at hy
+    subst hy
+    exact ⟨1, 1, by rw [pow_one, inv_mul_cancel₀ hsK, map_one]⟩
+  · intro a
+    exact ⟨0, a, by rw [pow_zero, mul_one]⟩
+  · intro x y _ _ ihx ihy
+    obtain ⟨n, a, hx'⟩ := ihx
+    obtain ⟨m, b, hy'⟩ := ihy
+    refine ⟨n + m, a * s ^ m + b * s ^ n, ?_⟩
+    rw [map_add, map_mul, map_mul, map_pow, map_pow, pow_add]
+    rw [show (x + y) * ((algebraMap A K s) ^ n * (algebraMap A K s) ^ m)
+          = (x * (algebraMap A K s) ^ n) * (algebraMap A K s) ^ m
+            + (y * (algebraMap A K s) ^ m) * (algebraMap A K s) ^ n from by ring,
+      hx', hy']
+  · intro x y _ _ ihx ihy
+    obtain ⟨n, a, hx'⟩ := ihx
+    obtain ⟨m, b, hy'⟩ := ihy
+    refine ⟨n + m, a * b, ?_⟩
+    rw [map_mul, pow_add, mul_mul_mul_comm, hx', hy']
+
+end AwayFractionForm
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2145,5 +2202,6 @@ end AwayToField
 #print axioms nonempty_algEquiv_mvPolynomial_adjoin
 #print axioms finiteType_adjoin_range
 #print axioms exists_ringHom_away_to_field
+#print axioms exists_pow_mul_eq_of_mem_adjoin_inv
 
 end ABGV52
