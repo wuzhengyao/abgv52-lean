@@ -41,6 +41,14 @@
       **⚠ 本轮已锁两编码一致** ✓：`isGenericExtension_iff_isGenericObjectEG` ✓（同一谓词，只差合取次序 ✓）。
       ⟹ **M6 的真实缺口 ＝ 该对象的存在性定理** ✗（Saltman 1982 §1 的构造 ✓），
       **不是**词汇 ✓ —— 该存在性**本件未落** ✗。
+      **⚠ 第 134 轮** ✓：本件另落**两条存在性路线**的**具名陈述** ✓ —— `Theorem21Statement` ✓（源印 257 ✓）
+      ＋ `Theorem51Statement` ✓（源印 274--275 ✓，经 Noether 构造 ✓），**皆为具名残余** ✗（**不作证明** ✗）；
+      并补 Noether 侧词汇 ✓（`IsRationalOver` ✓／`NoetherField` ✓）与 L1 探针 ✓。
+      **⚠ 第 135 轮** ✓：落 **§4.4 的桥** ✓ —— `MulSemiringAction G (MvPolynomial G F)` ✓（mathlib **无** ✗，
+      自建 ✓）＋ 其**分式域提升** ✓（`IsFractionRing.mulSemiringAction` ✓）＋ **源作用锁两件** ✓
+      （`smul_X_noether` ✓：`\sigma(x_\tau) = x_{\sigma\tau}` ✓；`smul_C_noether` ✓：`G` 在 `F` 上平凡 ✓）
+      ＋ **提升相容锁** ✓ ＋ **忠实性探针** ✓ ⟹ **`Theorem51Statement` 的实例化路径已通** ✓✅
+      （`theorem51Statement_noetherField` ✓）；**⚠ 但两条存在性定理本身仍未证** ✗。
     - **⚠ 上游 [23] 的页码偏移已定案** ✓（本轮）：`Saltman1982` 的**印刷页 ＝ PDF 页 + 249** ✓
       （实测：PDF 5 ＝ 印 **254** ✓；与刊载页域 250--283 ✓ 自洽 ✓）⟹ 原注「印刷页偏移未核」✗ **已结** ✓；
       头注上列 pinpoint（印 257／265／274--275／279 ✓）可据此折算为 PDF 8／16／25--26／30 ✓。
@@ -198,9 +206,14 @@ def IsRationalOver (F K : Type u) [Field F] [CommRing K] [Algebra F K] : Prop :=
 
 /-- 源印 274 的 **Noether 构造**的**函数域** ✓：`L = F(x_\sigma \mid \sigma \in G)` ✓
 （＝多项式环 `MvPolynomial G F` 的**分式域** ✓）。
-**⚠ 登记（第 134 轮）** ✓：本 `abbrev` **当前无消费者** ✗ —— `Theorem51Statement` ✓ 量化 `L` ✓ 而**不用**本件 ✓；
-它是为**尚未落**的「`FractionRing` 上的提升自同构」✓（源作用 `\sigma(x_\tau) = x_{\sigma\tau}` ✓ 的分式域提升 ✓）**预留** ✓
-（mathlib 实测**无** `MulSemiringAction G (FractionRing (MvPolynomial G F))` ✗）⟹ **未落** ✗。 -/
+**⚠ 登记（第 134 轮记「无消费者」⟹ **第 135 轮已解除** ✓✅）**：本 `abbrev` **现有消费者** ✓ ——
+**§4.4** ✓ 在其上落 `MulSemiringAction G` ✓ ＋ `SMulCommClass G F` ✓ 两件实例 ✓ 与提升相容锁 ✓，
+并被 `theorem51Statement_noetherField` ✓ 用作源 `theorem-5-1` 的**特定** `L` ✓。
+**⚠ 第 134 轮的登记内容（留痕）** ✓：当时「`Theorem51Statement` ✓ 量化 `L` ✓ 而**不用**本件 ✓；为**尚未落**的
+「`FractionRing` 上的提升自同构」✓（源作用 `\sigma(x_\tau) = x_{\sigma\tau}` ✓ 的分式域提升 ✓）**预留** ✓
+（mathlib 实测**无** `MulSemiringAction G (FractionRing (MvPolynomial G F))` ✗）⟹ **未落** ✗」——
+该「未落」**已于第 135 轮落** ✓（mathlib **有** `IsFractionRing.mulSemiringAction` ✓ —— 第 134 轮的实测
+**只**查了 `synthInstanceFailed` ✗，**未**查该 `def` 级 API ✗ ⟹ **工艺读数 ㊲** ✓）。 -/
 abbrev NoetherField (F G : Type u) [Field F] : Type u := FractionRing (MvPolynomial G F)
 
 /-- **L1 探针（载体非退化）** ✓：`NoetherField` 的 `CommRing` 实例可**直接合成** ✓（`inferInstance` ✓）
@@ -215,17 +228,20 @@ there is a generic Galois extension for `G` over `F`**」✓（**印 275 上方*
 「`f(b_1,\dots ,b_n)\neq 0` if and only if `z` generates a **normal basis**」✓）。
 
 **⚠ 与源的**两处**偏离** ✓**（**登记** ✓；**二者皆放宽本陈述的**前提** ✓ ⟹ 数学上本陈述**强于**源 ✓；
-**⚠ 但「证本陈述 ⟹ 证源」**形式上未闭合** ✗** —— 偏离 **(i)** 把 `L` **量化** ✓，而源的**特定** `L`
-（＝`NoetherField F G` ✓）在本库**无** `MulSemiringAction` 实例 ✗ ⟹ 源陈述经本陈述的**实例化路径未通** ✓
-（**登记** ✓；见下方 `NoetherField` ✓ 的「无消费者」登记 ✓）。**⚠ 第 134 轮补注** ✓：源印 **282** ✓
+**⚠ 「证本陈述 ⟹ 证源」的形式前提**：**第 134 轮记「未通」** ✗ ⟹ **第 135 轮已闭合** ✓✅** —— **§4.4** ✓
+落 `MulSemiringAction G (NoetherField F G)` ✓ ＋ `SMulCommClass G F (NoetherField F G)` ✓ 两件实例 ⟹
+源的**特定** `L`（＝`NoetherField F G` ✓）**可实例化** ✓，其**用点**由 `theorem51Statement_noetherField` ✓
+显式给出 ✓（**⚠ 仅「形式前提」** ✓ —— `Theorem51Statement` 本身**仍是具名残余** ✗）。
+**⚠ 第 134 轮补注** ✓：源印 **282** ✓
 （＝ PDF 33 ✓）的 `Note added in proof` 明写「the results of **Theorem 5.3 and Corollary 5.4** should be
 limited to **infinite** fields `F`. This implies that `F` should be assumed infinite in **Section 3**」✓
 ⟹ 无限性前提在源中是**承重**的 ✓（支持偏离 (ii) 的登记 ✓））：
 **(i)** 源把 `L` **固定**为 `L = F(x_\sigma \mid \sigma \in G)` ✓、作用固定为 `\sigma(x_\tau) = x_{\sigma\tau}` ✓；
-本件**量化** `L` 与作用 ✓ —— 因 mathlib **无**
-`MulSemiringAction G (FractionRing (MvPolynomial G F))` ✗（**实测**：`MvPolynomial` 上与 `FractionRing` 上
-**两处** `synthInstanceFailed` ✓），自建须先造 `FractionRing` 上的**提升自同构** ✓（**未落** ✗）；
-`NoetherField` ✓ 已就位 ✓ 供其用 ✓。
+本件**量化** `L` 与作用 ✓ —— **⚠ 第 134 轮记「因 mathlib 无 `MulSemiringAction G (FractionRing (MvPolynomial G F))`
+⟹ 自建须先造提升自同构 ⟹ 未落」** ✗ ⟹ **第 135 轮已解** ✓✅：mathlib **并无** `MvPolynomial` 上的实例 ✗（该实测**对** ✓），
+但**有** `IsFractionRing.mulSemiringAction` ✓ —— 环自同构**诱导**分式域自同构 ✓ ⟹ 只需在 `MvPolynomial` 上自建 ✓
+（§4.4 ✓）再**提升** ✓ 即可（**工艺读数 ㊲** ✓：`synthInstanceFailed` ✗ **不等于**该结构不可得 ✓ —— 须另查
+**`def` 级 API** ✓）；`NoetherField` ✓ 现有消费者 ✓（见其登记 ✓）。
 **(ii)** 源要 `F` **无限** ✓；本件**未设**该前提 ✓（若证明需要再补 ✓，**登记** ✓）。
 **⚠ 源的另一处判别性事实** ✓（`remark` 印 275 ✓）：「The **converse** of `theorem-5-1` is **false**.
 `C_{47}` has a generic extension over `Q`, but **Swan showed Noether's Problem false** for this group」✓
@@ -264,6 +280,95 @@ theorem isRationalOver_self (F : Type u) [Field F] (n : ℕ) :
 本谓词的**阴性**读数**只用于生成、不得用于排除** ✓（L19 ✓）。 -/
 theorem isRationalOver_discrimination_gap_registered : True := trivial
 
+/-! ## 4.4 Noether 作用的**桥**（源印 274：「Let `G` act on `L` by letting `G` act trivially on `F` and by
+setting `\sigma(x_\tau) = x_{\sigma\tau}`」✓）—— 第 135 轮 -/
+
+section NoetherBridge
+
+variable (F : Type u) [Field F] (G : Type u) [Group G]
+
+/-- **Noether 作用的环自同构** ✓（源印 274 ✓）：`g` 在变量上按 `\tau \mapsto g\tau` ✓ 作用
+（`MvPolynomial.renameEquiv F (Equiv.mulLeft g)` ✓）。
+**⚠ mathlib 无现成实例** ✗（**实测**：`MulSemiringAction G (MvPolynomial G F)` 的 `synthInstanceFailed` ✗）；
+mathlib 只给 `rename`／`renameEquiv` ✓（`rename_X` ✓：`(rename f) (X i) = X (f i)` ✓）⟹ 本件**自建** ✓。 -/
+noncomputable def noetherRingHom : G →* (MvPolynomial G F ≃+* MvPolynomial G F) where
+  toFun g := (MvPolynomial.renameEquiv F (Equiv.mulLeft g)).toRingEquiv
+  map_one' := by ext p; simp
+  map_mul' g h := by ext p; simp
+
+/-- **`MvPolynomial` 上的 Noether 作用** ✓ —— 把 `noetherRingHom` 沿 `MulSemiringAction.compHom` ✓
+拉回 ✓（与 mathlib `IsFractionRing.mulSemiringAction` ✓ **同一工艺** ✓）。 -/
+noncomputable instance instNoetherActionMvPolynomial : MulSemiringAction G (MvPolynomial G F) :=
+  MulSemiringAction.compHom (MvPolynomial G F) (noetherRingHom F G)
+
+/-- **源作用锁 ①**（**源陈述逐字** ✓）：`\sigma(x_\tau) = x_{\sigma\tau}` ✓。
+**⚠ 判别力** ✓：把右端 `g * τ` 改成 `τ * g` ✗ 或 `τ` ✗ 即**编译失败** ✓ ⟹ 该锁把作用**钉在源的作用上** ✓。 -/
+theorem smul_X_noether (g τ : G) :
+    g • (MvPolynomial.X τ : MvPolynomial G F) = MvPolynomial.X (g * τ) := by
+  show (noetherRingHom F G g) (MvPolynomial.X τ) = MvPolynomial.X (g * τ)
+  simp [noetherRingHom, MvPolynomial.rename_X]
+
+/-- **源作用锁 ②**（**源陈述逐字** ✓）：源「letting `G` act **trivially** on `F`」✓ ⟹ `g` 在系数上平凡 ✓。 -/
+theorem smul_C_noether (g : G) (c : F) :
+    g • (MvPolynomial.C c : MvPolynomial G F) = MvPolynomial.C c := by
+  show (noetherRingHom F G g) (MvPolynomial.C c) = MvPolynomial.C c
+  simp [noetherRingHom]
+
+/-- **忠实性（L19 判别力探针）** ✓：该作用**非平凡** ✓ —— 取 `p = X 1` 得 `X g = X h` ✓ ⟹ `g = h` ✓
+（`MvPolynomial.X_injective` ✓）。
+**⚠ 意义** ✓：若谓词层「作用」退化为**平凡作用** ✗ 则本条失败 ✓ ⟹ 本桥**不是**空壳 ✓。 -/
+instance instFaithfulSMulMvPolynomial : FaithfulSMul G (MvPolynomial G F) :=
+  ⟨fun {g h} hgh => by
+    have h1 : g • (MvPolynomial.X (1 : G) : MvPolynomial G F)
+        = h • (MvPolynomial.X (1 : G) : MvPolynomial G F) := by rw [hgh]
+    simp only [smul_X_noether, mul_one] at h1
+    exact MvPolynomial.X_injective h1⟩
+
+/-- **`G` 与 `F` 的标量作用交换** ✓（作用经 **`F`-代数**自同构 ✓ ⟹ 与系数标量交换 ✓）。
+**⚠ 用点** ✓：`IsFractionRing.smulCommClass` ✓ 与 `FixedPoints.subalgebra` ✓ 都需要它 ✓。 -/
+instance instSMulCommClassMvPolynomial : SMulCommClass G F (MvPolynomial G F) where
+  smul_comm g c p := by
+    show (noetherRingHom F G g) (c • p) = c • (noetherRingHom F G g) p
+    rw [Algebra.smul_def, Algebra.smul_def, map_mul]
+    congr 1
+    simp [noetherRingHom]
+
+/-- **桥：把 Noether 作用提升到分式域** ✓（mathlib `IsFractionRing.mulSemiringAction` ✓ ——
+环自同构诱导分式域自同构 ✓）。 -/
+noncomputable instance instNoetherActionNoetherField : MulSemiringAction G (NoetherField F G) :=
+  IsFractionRing.mulSemiringAction G (MvPolynomial G F) (NoetherField F G)
+
+/-- **`SMulCommClass` 随提升保留** ✓（mathlib `IsFractionRing.smulCommClass` ✓）。 -/
+instance instSMulCommClassNoetherField : SMulCommClass G F (NoetherField F G) :=
+  IsFractionRing.smulCommClass G F (MvPolynomial G F) F (NoetherField F G)
+
+/-- **提升相容锁** ✓：分式域上的作用**限制回**多项式环的 Noether 作用 ✓
+（`g • (algebraMap p) = algebraMap (g • p)` ✓）。
+**⚠ 判别力** ✓：它把「随便一个分式域作用」✗ 与「**源作用之提升**」✓ 分开 ✓。 -/
+theorem smul_algebraMap_noether (g : G) (p : MvPolynomial G F) :
+    g • (algebraMap (MvPolynomial G F) (NoetherField F G) p)
+      = algebraMap (MvPolynomial G F) (NoetherField F G) (g • p) := by
+  show (IsFractionRing.ringEquivOfRingEquivHom (MvPolynomial G F) (NoetherField F G)
+      ((MulSemiringAction.toRingEquiv G (MvPolynomial G F)) g)) (algebraMap _ _ p) = _
+  rw [IsFractionRing.ringEquivOfRingEquivHom_apply,
+      IsFractionRing.ringEquivOfRingEquiv_algebraMap]
+  rfl
+
+/-- **L1 探针（忠实性随提升保留）** ✓（mathlib `IsFractionRing.faithfulSMul` ✓：作用在 `B` 上忠实
+⟹ 在分式域上忠实 ✓）。 -/
+instance instFaithfulSMulNoetherField : FaithfulSMul G (NoetherField F G) :=
+  IsFractionRing.faithfulSMul G (MvPolynomial G F) (NoetherField F G)
+
+/-- **§97.3 的实例化路径已闭合** ✓✅：源 `theorem-5-1` 的**特定** `L` ＝ `NoetherField F G` ✓
+现**可实例化** ✓（`MulSemiringAction` ✓ ＋ `SMulCommClass` ✓ 两件实例齐 ✓）⟹ 「证 `Theorem51Statement`
+即证源」的**形式前提**已通 ✓（**⚠ 仅形式前提** ✗ —— `Theorem51Statement` 本身**仍是具名残余** ✗）。 -/
+theorem theorem51Statement_noetherField [Fintype G] (h : Theorem51Statement F G)
+    (hL : IsRationalOver F ↥(FixedPoints.subalgebra F (NoetherField F G) G)) :
+    Nonempty (GenericExtensionWitness F G) :=
+  h (NoetherField F G) hL
+
+end NoetherBridge
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -282,5 +387,16 @@ theorem isRationalOver_discrimination_gap_registered : True := trivial
 #print axioms Theorem51Statement.shape
 #print axioms isRationalOver_self
 #print axioms isRationalOver_discrimination_gap_registered
+#print axioms noetherRingHom
+#print axioms instNoetherActionMvPolynomial
+#print axioms smul_X_noether
+#print axioms smul_C_noether
+#print axioms instFaithfulSMulMvPolynomial
+#print axioms instSMulCommClassMvPolynomial
+#print axioms instNoetherActionNoetherField
+#print axioms instSMulCommClassNoetherField
+#print axioms smul_algebraMap_noether
+#print axioms instFaithfulSMulNoetherField
+#print axioms theorem51Statement_noetherField
 
 end ABGV52
