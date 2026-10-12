@@ -26,6 +26,7 @@ import ABGV52.GenericExtension_ABGV52
 import Mathlib.Algebra.Algebra.Subalgebra.Basic
 import Mathlib.Algebra.Module.Projective
 import Mathlib.LinearAlgebra.TensorProduct.Basic
+import Mathlib.RingTheory.Flat.Basic
 import Mathlib.LinearAlgebra.DirectSum.Finsupp
 import Mathlib.LinearAlgebra.Contraction
 import Mathlib.Algebra.Module.Equiv.Basic
@@ -1369,6 +1370,86 @@ theorem galoisProjective_baseChange_gap_registered : True := trivial
 
 end BaseChangeNamed
 
+/-! ## 装配 **(c) 款** 的机制 ①：**平坦 ⟹ `S \hookrightarrow S \otimes_R L^G`**（第 172 轮）
+
+**⚠ 起点** ✓（§134.4 的登记 ✓）：(c) 款结构桥的 **`k`-半** ✓（源「and `k`'s」✓ ＝ **`S \subset F[x_σ](1/t)`** ✓）
+的**第一步**是 **`S` 落进 `L`** ✓ —— 装配中 `S''` 由**下降**给出 ✓（`L \cong S'' \otimes_{R''} L^G` ✓，r150 ✓），
+故须证 `S'' \to S'' \otimes_{R''} L^G` **单射** ✓。
+
+**⚠ 机制** ✓（**平坦** ✓）：`S''` 由 **`\mathrm{GaloisProjectiveHyp}`** ✓（＝源 `proposition-0-2(a)` ✓）
+**投射** ⟹ **平坦** ✓ ⟹ **与单射张量仍单射** ✓（`Module.Flat.lTensor_preserves_injective_linearMap` ✓）。
+**⚠ 取向** ✓：本件落 `s \mapsto s \otimes 1` ✓（**`S''` 在左** ✓ —— 与**下降同构**的取向**一致** ✓；
+r169 的 **`S`** 取 `T \otimes_{R''} S''` ✓，两者由 `TensorProduct.comm` ✓ 相联 ✓，**各自就位** ✓）。
+**⚠ 登记** ✓：`R'' \to L^G` 的**单射性** ✓ 作**显式假设** ✓（下降的**编码**只给 `R'' \to S''` 的单射 ✗，
+`R'' \to R` 的单射**未列** ✓ —— **不隐藏** ✓）。 -/
+
+section FlatInjective
+
+variable {R S T : Type*} [CommRing R] [CommRing S] [CommRing T]
+variable [Algebra R S] [Algebra R T]
+
+/-- **平坦 ⟹ `s \mapsto s \otimes 1` 单射** ✓（**通用件** ✓）：`S` 平坦于 `R` ✓、`R \to T` 单射 ⟹
+`S \to S \otimes_R T` ✓（`s \mapsto s \otimes 1` ✓）**单射** ✓。
+
+**证明** ✓（**三件** ✓）：**①** `Algebra.linearMap R T` **单射** ✓（＝假设 ✓）；
+**②** **平坦** ✓ 把它沿 `S` 张量化后**仍单射** ✓（`\mathrm{lTensor}` ✓）；
+**③** 与 `s \mapsto s \otimes 1_R` ✓（＝ `\mathrm{TensorProduct.rid}` 之逆 ✓，**单射** ✓）**复合** ✓。 -/
+theorem injective_tmul_one_of_flat [Module.Flat R S]
+    (h : Function.Injective (algebraMap R T)) :
+    Function.Injective (fun s : S => s ⊗ₜ[R] (1 : T)) := by
+  have hf : Function.Injective ((Algebra.linearMap R T).lTensor S) :=
+    Module.Flat.lTensor_preserves_injective_linearMap _ h
+  have hg : Function.Injective (fun s : S => s ⊗ₜ[R] (1 : R)) := by
+    intro x y hxy
+    have := congrArg (TensorProduct.rid R S) hxy
+    simpa using this
+  intro a b hab
+  refine hg (hf ?_)
+  simp only [LinearMap.lTensor_tmul, Algebra.linearMap_apply, map_one]
+  simpa using hab
+
+/-- **非空洞探针（L1）** ✓：本件前提类的**数据部分**可实例化 ✓ —— `R = S = T = ℚ` ✓
+（`Module.Flat ℚ ℚ` ✓ 由**投射** ⟹ 平坦 ✓；`algebraMap ℚ ℚ` **单射** ✓）。 -/
+theorem flat_injective_data_nonempty :
+    Nonempty (Module.Flat ℚ ℚ) ∧ Function.Injective (algebraMap ℚ ℚ) :=
+  ⟨⟨inferInstance⟩, fun _ _ h => h⟩
+
+end FlatInjective
+
+section GaloisProjectiveEmbedding
+
+variable {R S T : Type u} [CommRing R] [CommRing S] [CommRing T]
+variable [Algebra R S] [Algebra R T]
+variable {G : Type u} [Group G] [Fintype G] [MulSemiringAction G S]
+
+/-- **(c) 款 `k`-半 的机制 ①（装配形）** ✓✅：`S/R` 为 `G`-Galois ✓ ＋ **具名输入** `GaloisProjectiveHyp` ✓
+（**投射** ⟹ **平坦** ✓）＋ `R \to T` **单射** ✓ ⟹ **`S \hookrightarrow S \otimes_R T`** ✓
+（`s \mapsto s \otimes 1` ✓）—— 取 `T := L^G` ✓ 并由**下降同构** `S'' \otimes_{R''} L^G \cong L` ✓ 即得 `S'' \hookrightarrow L` ✓。 -/
+theorem injective_tmul_one_of_galoisProjective
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hgal : IsGaloisWithGroup R S G hRG)
+    (hProj : GaloisProjectiveHyp R S G hRG)
+    (h : Function.Injective (algebraMap R T)) :
+    Function.Injective (fun s : S => s ⊗ₜ[R] (1 : T)) := by
+  have hPrj : Module.Projective R S := (hProj hgal).2
+  exact injective_tmul_one_of_flat (R := R) (S := S) (T := T) h
+
+/-- **应用锁** ✅（钉**假设表** ✓）：以**恰好** `hRG`／`hgal`／`hProj`／`h` 调用 ✓ ⟹
+假设表一旦增删（如退回裸实例前提、或再要 `[Module.Finite]`）本 `example` 立即编译失败 ✓。 -/
+example (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hgal : IsGaloisWithGroup R S G hRG)
+    (hProj : GaloisProjectiveHyp R S G hRG)
+    (h : Function.Injective (algebraMap R T)) :
+    Function.Injective (fun s : S => s ⊗ₜ[R] (1 : T)) :=
+  injective_tmul_one_of_galoisProjective hRG hgal hProj h
+
+/-- **登记** ✗：本件的**用点**（把下降同构 `L \cong S'' \otimes_{R''} L^G` ✓ 与单射**复合**得 `S'' \hookrightarrow L` ✓，
+再对 `S''` 的**有限生成族** ✓ 与 `R''` 的像 ✓ 用 §4.21／§4.22 ✓ 清分母 ⟹ `S'' \subseteq F[x_σ](1/t)` ✓）
+**未落** ✗ —— **`k`-半**的**接线** ✓（**下一手** ✓）。 -/
+theorem injective_tmul_one_gap_registered : True := trivial
+
+end GaloisProjectiveEmbedding
+
 /-! ## 公理闸门 -/
 
 #print axioms dual_eval_injective_of_projective
@@ -1442,5 +1523,9 @@ end BaseChangeNamed
 #print axioms galoisBaseChangeHyp_of_galoisProjective
 #print axioms isGaloisWithGroup_tensorLeft_of_galoisProjective_of_subsingletonGroup
 #print axioms galoisProjective_baseChange_gap_registered
+#print axioms injective_tmul_one_of_flat
+#print axioms flat_injective_data_nonempty
+#print axioms injective_tmul_one_of_galoisProjective
+#print axioms injective_tmul_one_gap_registered
 
 end ABGV52.BTier

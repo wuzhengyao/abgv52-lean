@@ -2795,6 +2795,94 @@ theorem noetherEmbedding_gap_registered : True := trivial
 
 end BridgeGap
 
+/-! ## 4.37 **装配 (c) 款 `k`-半 的机制 ②**：**两族分母并成一个 `t`**（第 172 轮）
+
+**⚠ 起点** ✓（§134.4 的登记 ✓）：源「if `t` is the **product of all the `g`'s and `k`'s**」✓ ——
+即源的 `t` **同时**吸收**两族**分母 ✓：**`g`'s** ✓ ＝ 超越基 `a_i`（**§4.36 已落** ✓）、
+**`k`'s** ✓ ＝ `S` 的生成元 ✓。本轮把**合并**那一步落为**可复用件** ✓：给定「`R` 的像已在 `F[x](1/t_0)` 内」✓
+与「一族元素各自是 `F[x_σ]` 中两元素之商」✓，则存在**单个** `t` 使**两族一并**落进 `F[x](1/t)` ✓。
+
+**⚠ 三件** ✓：**①** `adjoin_away_mono` ✓（`Q_t \subseteq Q_{t \cdot t'}` ✓，**域恒等式 ①** 直接用 ✓
+—— **§4.36 的复用** ✓）；**②** `sup_adjoin_away_le` ✓（两个局部化的**并**仍是单个局部化 ✓）；
+**③** `exists_adjoin_union_le_away` ✓（**合并** ✓ ＝ 源「product of all the `g`'s and `k`'s」✓）。
+**⚠ 假设表** ✓：`adjoin_away_mono` **不需** `t \neq 0` ✗（`t = 0` 档两边相同 ✓）⟹ **不留无用前提** ✓
+（**最弱假设表** ✓）；`[\mathrm{IsDomain}\ A]` 亦**不需** ✓（`\mathrm{IsFractionRing}` 已给单射 ✓）。 -/
+
+section AwayMonotone
+
+variable {A : Type u} [CommRing A] {L : Type u} [Field L] [Algebra A L]
+variable [IsFractionRing A L]
+
+/-- **局部化的单调性** ✓：`t^{-1}` 落进 `(t \cdot t')` 的局部化 ✓（`t^{-1} = (t t')^{-1} \cdot t'` ✓，
+**域恒等式 ①** ✓）。 -/
+theorem adjoin_away_mono (t t' : A) (ht' : t' ≠ 0) :
+    Algebra.adjoin A ({(algebraMap A L t)⁻¹} : Set L) ≤
+      Algebra.adjoin A ({(algebraMap A L (t * t'))⁻¹} : Set L) := by
+  have ht'L : algebraMap A L t' ≠ 0 := fun h0 =>
+    ht' (IsFractionRing.injective A L (by rw [h0, map_zero]))
+  refine Algebra.adjoin_le_iff.mpr ?_
+  rintro y (rfl : y = _)
+  have h1 : (algebraMap A L t)⁻¹ = (algebraMap A L (t * t'))⁻¹ * algebraMap A L t' :=
+    inv_eq_inv_mul_of_eq_mul (by rw [map_mul]) ht'L
+  rw [h1]
+  exact mul_mem (Algebra.subset_adjoin (by simp)) (Subalgebra.algebraMap_mem _ t')
+
+/-- **两个局部化的并仍是单个局部化** ✓：`Q_t \sqcup Q_{t'} \subseteq Q_{t \cdot t'}` ✓
+（两支分别由**单调性** ✓ 给出 —— 第二支用 `t' t = t t'` ✓ 重排 ✓）。 -/
+theorem sup_adjoin_away_le (t t' : A) (ht : t ≠ 0) (ht' : t' ≠ 0) :
+    Algebra.adjoin A ({(algebraMap A L t)⁻¹} : Set L) ⊔
+      Algebra.adjoin A ({(algebraMap A L t')⁻¹} : Set L) ≤
+      Algebra.adjoin A ({(algebraMap A L (t * t'))⁻¹} : Set L) := by
+  have htL : algebraMap A L t ≠ 0 := fun h0 =>
+    ht (IsFractionRing.injective A L (by rw [h0, map_zero]))
+  refine sup_le (adjoin_away_mono t t' ht') ?_
+  refine Algebra.adjoin_le_iff.mpr ?_
+  rintro y (rfl : y = _)
+  have h1 : (algebraMap A L t')⁻¹ = (algebraMap A L (t * t'))⁻¹ * algebraMap A L t :=
+    inv_eq_inv_mul_of_eq_mul (by rw [map_mul, mul_comm]) htL
+  rw [h1]
+  exact mul_mem (Algebra.subset_adjoin (by simp)) (Subalgebra.algebraMap_mem _ t)
+
+end AwayMonotone
+
+section UnionClearing
+
+variable {F : Type u} [Field F] {G : Type u}
+variable {L : Type u} [Field L] [Algebra (MvPolynomial G F) L]
+variable [IsFractionRing (MvPolynomial G F) L]
+variable [Algebra F L] [IsScalarTower F (MvPolynomial G F) L]
+
+/-- **两族分母并成一个 `t`** ✓✅（源「`t` ＝ the **product of all the `g`'s and `k`'s**」✓）：
+给定 `R`（以 `a` 的 `F`-adjoin 形给出 ✓）的像已在 `F[x](1/t_0)` 内 ✓、与一族任意元素 `e` ✓
+（**各自**是 `F[x_σ]` 中两元素之商时 —— **由 §4.36 的 ④ 自动成立** ✓），
+则存在**单个** `t` 使 **`a` 与 `e` 两族一并**落进 `F[x](1/t)` ✓（取 `t := t_0 \cdot t_1` ✓）。
+**⚠ 用途** ✓：`a` ＝ 超越基 ✓（**`g`'s** ✓）、`e` ＝ `S` 的生成元的像 ✓（**`k`'s** ✓）⟹
+正是源的 `t` ✓（**§4.36 的 ⑥ 已覆盖 `s_0^{-1}`** ✓，故 `R = R_1(1/s)` 亦在内 ✓）。 -/
+theorem exists_adjoin_union_le_away {ι ι' : Type*} [Fintype ι] [DecidableEq ι]
+    [Fintype ι'] [DecidableEq ι'] (t₀ : MvPolynomial G F) (ht₀ : t₀ ≠ 0) (a : ι → L)
+    (ha : Algebra.adjoin F (Set.range a) ≤ Subalgebra.restrictScalars F
+      (Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) L t₀)⁻¹} : Set L)))
+    (e : ι' → L) :
+    ∃ t : MvPolynomial G F, t ≠ 0 ∧ Algebra.adjoin F (Set.range a ∪ Set.range e) ≤
+      Subalgebra.restrictScalars F (Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) L t)⁻¹} : Set L)) := by
+  obtain ⟨t₁, ht₁, h₁⟩ := exists_mem_adjoin_away_of_noether (F := F) (G := G) (L := L) e
+  refine ⟨t₀ * t₁, mul_ne_zero ht₀ ht₁, Algebra.adjoin_le_iff.mpr ?_⟩
+  rintro x (⟨i, rfl⟩ | ⟨j, rfl⟩)
+  · exact adjoin_away_mono t₀ t₁ ht₁ (ha (Algebra.subset_adjoin (Set.mem_range_self i)))
+  · have hmem : e j ∈ Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) L t₁)⁻¹} : Set L) := h₁ j
+    have := adjoin_away_mono t₁ t₀ ht₀ hmem
+    rwa [mul_comm t₁ t₀] at this
+
+/-- **登记** ✗：**`k`-半**的**接线** ✓（把 r172 的 `\mathrm{injective\_tmul\_one\_of\_galoisProjective}` ✓
+与**下降同构** `S'' \otimes_{R''} L^G \cong L` ✓ 复合得 `S'' \hookrightarrow L` ✓，再取 `S''` 的**有限生成族** ✓
+用本节的**合并件** ✓）**未落** ✗ —— **下一手** ✓。 -/
+theorem unionClearing_gap_registered : True := trivial
+
+end UnionClearing
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2820,6 +2908,10 @@ end BridgeGap
 #print axioms exists_adjoin_le_away_of_noether
 #print axioms exists_adjoin_inv_le_away_of_noether
 #print axioms noetherEmbedding_gap_registered
+#print axioms adjoin_away_mono
+#print axioms sup_adjoin_away_le
+#print axioms exists_adjoin_union_le_away
+#print axioms unionClearing_gap_registered
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit
