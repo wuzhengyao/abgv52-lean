@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–124 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–125 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -62,6 +62,8 @@
   | **`tensorPowerBaseChangeEquiv`** ✓ ＋ 三件中间引理 ✓ | 源的「`(M ⊗_φ S)^{(n)}` is **identified with** `M^{(n)} ⊗_φ S`」✓（印版 170 ✓）—— `⨂[S]^n (M ⊗[R] S) ≃ₗ[S] (⨂[R]^n M) ⊗[R] S` ✓，**保源序** ✓；mathlib **无**现成件 ✗ ⟹ **自建**（逐槽 `comm` → (★) 递归 → `comm` 回序 ✓）。**⚠ 生成元语义核未过** ✗（登记 ✓） | 第 3 件（**部分** ✓） |
   | **`LinearStructure.baseChange`** ✓ ＋ **`FStruct.baseChange`** ✓ ＋ 两锁两探针 ✓ | 源的**基变换** ✓（印 169--170 ✓）：`M ⊗_φ S` 的线性结构 ✓（`f_i` 支 ＝ 源序下的 `f_i ⊗ 1` ✓，用「identified with」iso ✓ **两面夹住** ✓）＋ **`F` 结构基变换** ✓（`[IsScalarTower F R S]` ✓ 即「`φ` 是 `F`-映射」✓） | 第 3 件（**部分** ✓） |
   | **`DescentData`** ✓ ＋ **`IsFClass`** ✓ ＋ 三锁 ＋ 一探针 ✓ | 源的 **`F`-类** ✓（印版 170 ✓）—— 三条：**同构封闭** ✓／**基变换封闭** ✓／**下降＋有限生成** ✓（`DescentData` 打包 ✓：`R' ⊆ R''` ✓／`Algebra.FiniteType` ✓／`M'' ⊗_{R''} R ≅ M` ✓）；**⚠ 模的宇宙与底环同为 `u`** ✓（保基变换宇宙不变 ✓） | 第 3 件 ✓ |
+  | **`LiftingData`** ✓ ＋ **`HasLiftingProperty`** ✓ ＋ 一锁一探针 ✓ | 源的**提升性质** ✓（印版 170 ✓）：局部 `F` 代数 `T` ✓／结构 over **剩余域** `T/M` ✓／存在 `\mathcal{M}'/T ∈ C` ✓／**基回同构且 `T/M`-线性** ✓（四支逐一落 ✓） | 第 4 件 ✓ |
+  | **`Realization`** ✓ ＋ **`RepresentingObject`** ✓ ＋ `IsSpecialization` ✓ ＋ **`GenericObject`** ✓ ＋ 三锁两探针 ✓ | 源的**表示／一般对象／特化** ✓（印版 170 ✓）：仿射 ✓（＝有限生成 `F`-代数 ✓）／对每域 `K` 上 `\mathcal{N}/K ∈ C` 存在 `F`-映射 `\phi` ✓（`Realization` ✓）／`R ≅ F[x_1,…,x_n](1/r)` ✓ | 第 5 件（**部分** ✓） |
   | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
@@ -75,14 +77,18 @@
   **⚠ 但两条登记在案** ✗：**(a)** §8.1 的 iso **生成元语义核未过** ✗ ⟹ `baseChange` 一族按 `∅-unchecked` ✓；
   **(b)** `IsFClass` **只证了定义外形可满足** ✓（空类 ✓），**未证**任何**非空** `F`-类满足它 ✓
   （源以 `\cite{18}`／`\cite{7}`／`\cite{22}` 作据 ✓，本件未涉 ✗）；
-  ② 第 **4–9** 件（`HasLiftingProperty` → `RepresentingObject`／`GenericObject`／`DenselyRepresenting` →
-  `ProjectiveObjectForClass`／`LocalProjective` → `Specialization` → `cor3.10(b)` ⟹ `cor3.10(a)`
+  ② **第 4 件已落** ✓（`LiftingData` ✓ ＋ `HasLiftingProperty` ✓）；**第 5 件部分落** ✓
+  （`Realization` ✓／`RepresentingObject` ✓／`IsSpecialization` ✓／`GenericObject` ✓；
+  **`DenselyRepresenting` 未落** ✗ —— 其定义在印版 172 ✓，**该页尚未逐句核** ✗ ⟹ 待审后落 ✓）；
+  ③ 第 **6–9** 件（`ProjectiveObjectForClass`／`LocalProjective` → `cor3.10(b)` ⟹ `cor3.10(a)`
   → `prop1.1(a)` 具名残余）**均未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import Mathlib.LinearAlgebra.TensorPower.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Tower
 import Mathlib.RingTheory.FiniteType
+import Mathlib.RingTheory.LocalRing.ResidueField.Basic
+import Mathlib.RingTheory.Localization.Away.Basic
 import Mathlib.Algebra.Algebra.Subalgebra.Basic
 
 open TensorProduct
@@ -835,6 +841,161 @@ theorem isFClass_false {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ} :
   · intro X R' hX
     exact False.elim hX
 
+
+/-! ### 8.5 源 §1 的**提升性质**（印版 170 ✓） -/
+
+/-- **源 §1 的提升数据** ✓（印版 170 ✓：「whenever `T`, `M` is a **local** `F` algebra and
+`\mathcal{M}\in \mathcal{C}` is over `T / M`, then there is a `\mathcal{M}^{\prime}/T\in \mathcal{C}`
+such that `\mathcal{M}^{\prime}\otimes_{T}T / M\cong \mathcal{M}`」✓）。
+
+**⚠ 记号** ✓：源的 `T`, `M` ＝ **局部环 `T` 与其极大理想 `M`** ✓（`\mathcal{M}` ✓ 才是结构 ✓，
+与理想 `M` 不同字形 ✓）；`T / M` ＝ **剩余域** ✓ ⟹ 落为 `IsLocalRing.ResidueField T` ✓。
+**⚠ 为何打包** ✓：`N` 的 `AddCommGroup`／`Module T` 实例是**数据** ✓，而 `\exists` **不接受实例绑定** ✗
+（附四十六 ⑳ ✓）⟹ 打包为结构 ✓。 -/
+structure LiftingData {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) (T : Type u) [CommRing T] [Algebra F T] [IsLocalRing T]
+    (M' : Type u) [AddCommGroup M'] [Module (IsLocalRing.ResidueField T) M']
+    (X : LinearStructure (IsLocalRing.ResidueField T) M' r s t) where
+  /-- 源：`\mathcal{M}^{\prime}` 的载体 ✓。 -/
+  N : Type u
+  [addCommGroup : AddCommGroup N]
+  [module : Module T N]
+  /-- 源：`\mathcal{M}^{\prime}/T` 是**线性结构** ✓（底环为 `T` ✓，不是 `T/M` ✓）。 -/
+  str : LinearStructure T N r s t
+  /-- 源：`\mathcal{M}^{\prime}/T\in \mathcal{C}` ✓。 -/
+  mem : C ⟨T, N, str⟩
+  /-- 源：`\mathcal{M}^{\prime}\otimes_{T}T / M\cong \mathcal{M}` ✓，**同构是 `T / M`-线性** ✓
+  （「the isomorphism being `T / M` linear, by definition」✓）—— 落为同底环 `T/M` ✓ 的 `IsIso` ✓。 -/
+  iso : IsIso (str.baseChange (S := IsLocalRing.ResidueField T)) X
+
+/-- **源 §1 的提升性质** ✓（印版 170 ✓ 逐字：「We say an `F` class `\mathcal{C}` has the **lifting
+property** if whenever `T`, `M` is a **local** `F` algebra and `\mathcal{M}\in \mathcal{C}` is over
+`T / M`, then there is a `\mathcal{M}^{\prime}/T\in \mathcal{C}` such that
+`\mathcal{M}^{\prime}\otimes_{T}T / M\cong \mathcal{M}`」✓）。
+
+**四条分支** ✓（**逐一落** ✓，L39 ✓）：① `T` 是**局部 `F` 代数** ✓（`[IsLocalRing T]` ＋ `[Algebra F T]` ✓）；
+② `\mathcal{M}` **over `T/M`** ✓（底环取 `IsLocalRing.ResidueField T` ✓）；③ **存在** `\mathcal{M}'/T\in\mathcal{C}` ✓
+（`LiftingData.str` ✓ ＋ `.mem` ✓）；④ **基变换回 `\mathcal{M}`** ✓（`.iso` ✓）。
+**⚠ 前提** ✓：源在 `\mathcal{M}\in\mathcal{C}` ✓ 下断言 ⟹ 落为 `C ⟨…⟩ →` ✓（**不得吞前提** ✓，§87.3 ✓）。
+**⚠ `∅-unchecked` 传染** ✓：④ 支经 `baseChange` ✓ ⟹ 沿 §86.2／§87.4 的登记 ✓。 -/
+def HasLiftingProperty {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) : Prop :=
+  ∀ (T : Type u) [CommRing T] [Algebra F T] [IsLocalRing T]
+    (M' : Type u) [AddCommGroup M'] [Module (IsLocalRing.ResidueField T) M']
+    (X : LinearStructure (IsLocalRing.ResidueField T) M' r s t),
+    C ⟨IsLocalRing.ResidueField T, M', X⟩ → Nonempty (LiftingData C T M' X)
+
+/-- **外形锁定** ✓：`HasLiftingProperty` 的**用点形**逐字可取 ✓ —— 四条分支或前提一旦漂移即失败 ✓
+（「局部 `F` 代数」✓／「over `T/M`」✓／「存在 `\mathcal{M}'/T\in\mathcal{C}`」✓／「基回同构」✓）。 -/
+theorem HasLiftingProperty.lift {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : HasLiftingProperty C)
+    (T : Type u) [CommRing T] [Algebra F T] [IsLocalRing T]
+    (M' : Type u) [AddCommGroup M'] [Module (IsLocalRing.ResidueField T) M']
+    (X : LinearStructure (IsLocalRing.ResidueField T) M' r s t)
+    (hX : C ⟨IsLocalRing.ResidueField T, M', X⟩) :
+    Nonempty (LiftingData C T M' X) :=
+  h T M' X hX
+
+/-- **L1 探针** ✓（**定义外形可满足** ✓）：**空类**具有提升性质 ✓ —— 前提 `C _ = False` ✓ 直接消去 ✓。
+**⚠ 定位** ✓：本探针只证「`HasLiftingProperty` 的**形状不自相矛盾**」✓；
+**⚠ 不证** ✗：**非空**的 `F`-类（如源的 `\mathcal{A}(F,n)` ✓／`\mathcal{E}(G)` ✓）是否**真**具此性质 ✓ ——
+那**正是** §3 的 `thm3.11`／`thm3.12` 与 `cor3.10` 整条链的内容 ✓，**本件未涉** ✗（按 `∅-unchecked` ✓）。 -/
+theorem hasLiftingProperty_false {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ} :
+    HasLiftingProperty (F := F) (r := r) (s := s) (t := t) (fun _ => False) := by
+  intro T _ _ _ M' _ _ X hX
+  exact False.elim hX
+
+
+/-! ### 8.6 源 §1 的**表示对象／一般对象／特化**（印版 170 ✓） -/
+
+/-- **源 §1 的「实现」数据** ✓（印版 170 ✓：「if `R` is an **affine** `F` algebra and if whenever
+`\mathcal{N}/K\in \mathcal{C}` with `K` a field, then there is an `F` map `\phi :R\to K` such that
+`\mathcal{N}\cong \mathcal{M}\otimes_{\phi}K`」✓）。
+
+**⚠ 为何打包** ✓：`\phi :R\to K` 是**存在量词**下的 ✓，而 Lean 里它对应**实例**
+（`Algebra X.R K` ✓ ＋ `IsScalarTower F X.R K` ✓ ＝ 「`\phi` 是 `F`-映射」✓，与 §8.3 同口径 ✓），
+而 `\exists` **不接受实例绑定** ✗（附四十六 ⑳ ✓）⟹ 打包为结构 ✓（实例字段 ✓ 供后随字段使用 ✓）。 -/
+structure Realization {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (X : FStruct.{u, u} F r s t) (K : Type u) [Field K] [Algebra F K]
+    (N : Type u) [AddCommGroup N] [Module K N] (Y : LinearStructure K N r s t) where
+  [algebra : Algebra X.R K]
+  [tower : IsScalarTower F X.R K]
+  /-- 源：`\mathcal{N}\cong \mathcal{M}\otimes_{\phi}K` ✓（同底环 `K` ✓ 的 `IsIso` ✓；
+  用 `X.str.baseChange` ✓ 而非 `(X.baseChange K).str` ✓ —— 后者底环是投影 ✗，实例搜索不化约 ✓）。 -/
+  iso : IsIso (X.str.baseChange (S := K)) Y
+
+/-- **源 §1 的表示对象** ✓（印版 170 ✓ 逐字：「`\mathcal{M}/R\in \mathcal{C}` is a **representing object**
+for `\mathcal{C}` if `R` is an **affine** `F` algebra and if whenever `\mathcal{N}/K\in \mathcal{C}` with
+`K` a field, then there is an `F` map `\phi :R\to K` such that
+`\mathcal{N}\cong \mathcal{M}\otimes_{\phi}K`」✓）。
+
+**两条** ✓（**逐一落** ✓，L39 ✓）：① **`R` 是仿射 `F` 代数** ✓（落为 `Algebra.FiniteType F X.R` ✓ ——
+**⚠ 口径** ✓：Saltman 的「affine」＝ **有限生成 `F`-代数** ✓，登记 ✓）；② 对**每个域 `K`** ✓ 上的
+`\mathcal{N}/K\in\mathcal{C}` ✓，**存在 `\phi : R\to K`** ✓（`Realization` ✓）使
+`\mathcal{N}\cong \mathcal{M}\otimes_{\phi}K` ✓。
+**⚠ 前提** ✓：源在 `\mathcal{N}\in\mathcal{C}` ✓ 下断言 ⟹ 落为 `C ⟨…⟩ →` ✓（**不得吞前提** ✓，§87.3 ✓）。 -/
+def RepresentingObject {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) (X : FStruct.{u, u} F r s t) : Prop :=
+  Algebra.FiniteType F X.R ∧
+    ∀ (K : Type u) [Field K] [Algebra F K] (N : Type u) [AddCommGroup N] [Module K N]
+      (Y : LinearStructure K N r s t), C ⟨K, N, Y⟩ → Nonempty (Realization X K N Y)
+
+/-- **源 §1 的特化** ✓（印版 170 ✓：「In this circumstance we say that `\mathcal{N}/K` is a
+**specialization** of `\mathcal{M}/R` and that `\phi` **realizes** `\mathcal{N}/K`」✓）——
+即「存在 `\phi` 使 `\mathcal{N}\cong \mathcal{M}\otimes_{\phi}K`」✓，与 `Realization` 同内容 ✓（源只给名 ✓）。 -/
+def IsSpecialization {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (X : FStruct.{u, u} F r s t) (K : Type u) [Field K] [Algebra F K]
+    (N : Type u) [AddCommGroup N] [Module K N] (Y : LinearStructure K N r s t) : Prop :=
+  Nonempty (Realization X K N Y)
+
+/-- **源 §1 的一般对象** ✓（印版 170 ✓ 逐字：「Finally, a **generic object** `\mathcal{M}/R\in \mathcal{C}`
+is a representing object such that `R` has the form `F[x_{1},\dots ,x_{n}](1 / r)`; that is, such that
+`R` is a **localized polynomial ring**」✓）—— 落为 `RepresentingObject` ✓ ＋
+**`\exists n, r`，`R \cong F[x_1,\dots ,x_n](1/r)`** ✓（`Localization.Away r` ✓ ＋ `AlgEquiv` ✓）。 -/
+def GenericObject {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) (X : FStruct.{u, u} F r s t) : Prop :=
+  RepresentingObject C X ∧
+    ∃ (n : ℕ) (r : MvPolynomial (Fin n) F), Nonempty (Localization.Away r ≃ₐ[F] X.R)
+
+/-- **外形锁定 ①（仿射支）** ✓：`RepresentingObject` 的**第一合取**逐字可取 ✓。 -/
+theorem RepresentingObject.affine {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {X : FStruct.{u, u} F r s t}
+    (h : RepresentingObject C X) : Algebra.FiniteType F X.R :=
+  h.1
+
+/-- **外形锁定 ②（实现支）** ✓：源「whenever `\mathcal{N}/K\in\mathcal{C}` …there is `\phi` …」✓ 逐字可取 ✓
+（**含前提 `C ⟨K, N, Y⟩`** ✓）。 -/
+theorem RepresentingObject.specializes {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {X : FStruct.{u, u} F r s t}
+    (h : RepresentingObject C X) :
+    ∀ (K : Type u) [Field K] [Algebra F K] (N : Type u) [AddCommGroup N] [Module K N]
+      (Y : LinearStructure K N r s t), C ⟨K, N, Y⟩ → Nonempty (Realization X K N Y) :=
+  h.2
+
+/-- **外形锁定 ③（一般对象两支）** ✓：`GenericObject` ＝ **表示对象** ✓ ∧ **局部化多项式环形** ✓。 -/
+theorem GenericObject.isRepresenting {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {X : FStruct.{u, u} F r s t}
+    (h : GenericObject C X) : RepresentingObject C X :=
+  h.1
+
+/-- **L1 探针 ①** ✓（**非空洞** ✓，且**前提可满足** ✓）：给定**仿射** `X` ✓，`X` 是**空类**的表示对象 ✓
+（② 支由前提 `C _ = False` ✓ 消去 ✓）；**⚠ 这一条同时**证「① 支 `Algebra.FiniteType F X.R` 并非自动成立」
+✓（它出现在假设里 ✓，不是定理 ✓）。 -/
+theorem representingObject_false_of_affine {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (X : FStruct.{u, u} F r s t) (h : Algebra.FiniteType F X.R) :
+    RepresentingObject (F := F) (r := r) (s := s) (t := t) (fun _ => False) X :=
+  ⟨h, fun _ _ _ _ _ _ _ hY => False.elim hY⟩
+
+/-- **L1 探针 ②** ✓（**具体见证** ✓，**非空洞** ✓）：取 `R := F` ✓（**仿射** ✓）与 `r = 0` ✓ 的**平凡结构** ✓，
+它是**空类**的**表示对象** ✓ —— 即源 §1 该定义**确有实例** ✓（**⚠ 只对空类** ✓；非空类的表示对象存在性
+**正是** §3 的 `thm3.11`／`thm3.12` 的内容 ✓，**本件未涉** ✗）。 -/
+theorem representingObject_probe {F : Type u} [Field F] :
+    RepresentingObject
+      (F := F) (r := 0) (s := Fin.elim0) (t := Fin.elim0) (fun _ => False)
+      ⟨F, F, (⟨fun i => Fin.elim0 i⟩ :
+        LinearStructure F F 0 Fin.elim0 Fin.elim0)⟩ :=
+  ⟨inferInstance, fun _ _ _ _ _ _ _ hY => False.elim hY⟩
+
 end BaseChange
 
 /-! ## 9. 公理闸门 -/
@@ -857,6 +1018,19 @@ end BaseChange
 #print axioms IsFClass.baseChange_closed
 #print axioms IsFClass.descent
 #print axioms isFClass_false
+#print axioms LiftingData
+#print axioms HasLiftingProperty
+#print axioms HasLiftingProperty.lift
+#print axioms hasLiftingProperty_false
+#print axioms Realization
+#print axioms RepresentingObject
+#print axioms IsSpecialization
+#print axioms GenericObject
+#print axioms RepresentingObject.affine
+#print axioms RepresentingObject.specializes
+#print axioms GenericObject.isRepresenting
+#print axioms representingObject_false_of_affine
+#print axioms representingObject_probe
 #print axioms tensorPowerBaseChange_tmul
 #print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe

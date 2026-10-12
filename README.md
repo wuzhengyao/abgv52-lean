@@ -309,7 +309,12 @@ sync.  The items added since then are:
   modules are taken in the same universe as the ground ring so that base change is universe-stable
   and the class can be a single predicate.  That the shape is satisfiable is recorded; that a
   non-empty class satisfies it, as the source asserts for Azumaya algebras and Galois extensions, is
-  not.  Not yet formalized are
+  not.  The lifting property is a predicate on classes: a local F algebra with a structure over its
+  residue field in the class lifts to a structure over the algebra itself, whose base change back
+  agrees.  Representing objects, the specializations they induce, and generic objects -- those whose
+  ring is a localized polynomial ring -- are there as well, with the existential over the map of
+  rings packaged as data, since an existential cannot bind instances, and with the source's affine
+  hypothesis read as finite generation.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.
