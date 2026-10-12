@@ -2111,6 +2111,59 @@ theorem exists_pow_mul_eq_of_mem_adjoin_inv (s : A) (hs : s ≠ 0) :
 
 end AwayFractionForm
 
+/-! ## 4.29 **`A[s^{-1}]` 与 `Localization.subalgebra`**（局部化同构的现成机器）✓（第 163 轮）
+
+**⚠ 装配背景** ✓：§4.27／§4.28 在为**抽象局部化 → K** 的环同态升同构铺路 ✓；本轮的侦察**改变了路线** ✓。
+
+**✅ 重大发现** ✓（**新读数 (70)** ✓）：**mathlib 已有**`\mathrm{Localization.subalgebra}` ✓
+（`RingTheory/Localization/AsSubring.lean` ✓）—— 对 `[\mathrm{IsFractionRing}\ A\ K]` ✓ 与子幺半群 `S \le A^0` ✓，
+它给出 **`K` 中「`A` 在 `S` 处的局部化」子代数** ✓（载体 ＝ 形如 `\mathrm{IsLocalization.mk'}\ K\ a\ \langle s, \_\rangle` 的元素 ✓），
+**并附现成实例** ✓ `\mathrm{IsLocalization}\ S\ \uparrow(\mathrm{Localization.subalgebra}\ K\ S\ hS)` ✓。
+**⚠ 这一步把同构路线的**机器**从「自建四款」✗ 降为「识别子代数 ＋ 搬实例」✓** ✓（**读数 (67) 的应用** ✓）。
+
+**⚠ 本轮落地两件** ✓：
+**①** `powers_le_nonZeroDivisors` ✓✅ —— **`s \neq 0 \Rightarrow \mathrm{powers}\ s \le A^0`** ✓
+（**`\mathrm{Localization.subalgebra}` 的前提** ✓；由 `\mathrm{mem\_nonZeroDivisors\_iff\_ne\_zero}` ✓ ＋
+**`\mathrm{pow\_mem}`** ✓）；
+**②** `isLocalization_localizationSubalgebra` ✓✅ —— **类型锁定** ✓：**该子代数确实是局部化** ✓（`\mathrm{inferInstance}` ✓）。
+
+**⚠ 登记（本轮未落，**路线已定**）** ✗：**`\mathrm{Algebra.adjoin}\ A\ \{(s)^{-1}\} = \mathrm{Localization.subalgebra}\ K\ (\mathrm{powers}\ s)\ hS`** ✗
+—— **两向** ✓：**（⊆）** 由 `\mathrm{mem\_range\_mapToFractionRing\_iff}` ✓ 取 `a`／`s^n` ✓，
+再用 **`\mathrm{IsLocalization.mk'\_spec}`** ✓ 与 `\mathrm{inv\_pow}` ✓ 得分数形 ✓；
+**（⊇）** 由 **§4.28 的分数形** ✓（`x \cdot s^n = \mathrm{algebraMap}\ a` ✓ ⟹ `x = \mathrm{algebraMap}\ a \cdot ((s)^{-1})^n` ✓ ∈ adjoin ✓）。
+**⚠ 阻塞** ✗（**本轮实测** ✓）：**`\mathrm{IsLocalization.mk'}` 一侧的 `\mathrm{Units}`／强制转换簿记** ✗
+（与 §4.28 登记同一类 ✗）⟹ **次轮**：**先写 `\mathrm{show}` 显式形** ✓ 或**改从 `\mathrm{subalgebra}` 的载体描述出发** ✓。
+**⚠ 收益** ✓：一旦该等式落地 ✓，**`\mathrm{IsLocalization.Away}\ s\ \uparrow(\mathrm{adjoin}\ A\ \{(s)^{-1}\})`** ✓
+**由改写 ＋ `\mathrm{inferInstance}` 即得** ✓，再经 **`\mathrm{IsLocalization.algEquiv}`** ✓ 得**同构** ✓ ⟹ **`\mathrm{IsGenericExtension}`(a) 齐备** ✓。 -/
+
+section AdjoinEqLocalization
+
+variable {A : Type u} [CommRing A] [Nontrivial A] [NoZeroDivisors A]
+variable {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K]
+
+/-- **`s \neq 0` ⟹ `s` 的幂全在非零因子里** ✓✅（**`\mathrm{Localization.subalgebra}` 的前提** ✓）。 -/
+theorem powers_le_nonZeroDivisors (s : A) (hs : s ≠ 0) :
+    Submonoid.powers s ≤ nonZeroDivisors A := by
+  intro y hy
+  obtain ⟨n, rfl⟩ := (Submonoid.mem_powers_iff y s).mp hy
+  exact pow_mem (mem_nonZeroDivisors_iff_ne_zero.mpr hs) n
+
+end AdjoinEqLocalization
+
+section SubalgebraInstance
+
+variable {A : Type u} [CommRing A] [Nontrivial A] [NoZeroDivisors A]
+variable {K : Type u} [Field K] [Algebra A K] [IsFractionRing A K]
+
+/-- **现成实例的类型锁定** ✓✅：`\mathrm{Localization.subalgebra}\ K\ S\ hS` **就是** `A` 在 `S` 处的局部化 ✓
+（**mathlib 已给** ✓：`\mathrm{Localization.isLocalization\_subalgebra}` ✓）。 -/
+theorem isLocalization_localizationSubalgebra (s : A) (hs : s ≠ 0) :
+    IsLocalization (Submonoid.powers s)
+      (Localization.subalgebra K (Submonoid.powers s) (powers_le_nonZeroDivisors s hs)) :=
+  inferInstance
+
+end SubalgebraInstance
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2203,5 +2256,7 @@ end AwayFractionForm
 #print axioms finiteType_adjoin_range
 #print axioms exists_ringHom_away_to_field
 #print axioms exists_pow_mul_eq_of_mem_adjoin_inv
+#print axioms powers_le_nonZeroDivisors
+#print axioms isLocalization_localizationSubalgebra
 
 end ABGV52
