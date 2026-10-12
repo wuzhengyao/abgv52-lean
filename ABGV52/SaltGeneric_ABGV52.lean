@@ -81,6 +81,7 @@ import ABGV52.Saltman_ABGV52
 import ABGV52.SaltCond_ABGV52
 import ABGV52.GenericExtension_ABGV52
 import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 import Mathlib.FieldTheory.Galois.NormalBasis
 
 universe u v
@@ -1372,6 +1373,128 @@ theorem lemma52Statement_nonzero_true (K L : Type u) [Field K] [Field L] [Algebr
 
 end Lemma52TrueFormProof
 
+/-! ## 4.19 **源 `theorem-5-1` 证明的**首句**：从 `IsRationalOver` 提取超越基** ✓✅（第 151 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex:649` ✓）：「Suppose \(a_1,\dots,a_n \in L^G\) are a **transcendence base**
+for \(L^G\) over \(F\). Set \(R_1 = F[a_1,\dots,a_n] \subset L^G\).」✓ —— 即**该定理证明的第一步**就是
+**从「`L^G` 在 `F` 上有理」（＝ Noether 假设 ✓）取出一个超越基** ✓，然后才能：
+**(i)** 造 `R_1 = F[a_1,\dots,a_n]` ✓（由 §4.2 的 `IsRationalOver` ✓ 之同构**搬到具体元素** ✓）；
+**(ii)** 用 **§4.18 的 `prop-0-2(c)`** ✓ 下降 ✓；**(iii)** 写 `a_i = f_i/g_i` ✓（需 `L^G = \mathrm{Frac}(R_1)` ✓）。
+**⚠ 登记（§101.2 供给表 ③）** ✓：该项长期在册为「**缺** ✗（**纯工程缺口** ✓）」⟹ **本轮落** ✓。
+
+**⚠ 载体选择** ✓（**登记** ✓）：本件用 **mathlib `IsRationalOver`** ✓（＝「与某有理函数域同构」✓）为**起点** ✓，
+把超越基落为 **`AlgebraicIndependent` ＋ `IntermediateField.adjoin = ⊤`** ✓ —— 即「**域生成的**」形 ✓
+（**⚠ 与 mathlib `IsTranscendenceBasis`** ✓ 的差别 ✓：后者的第二合取写在 **`Algebra.adjoin`** ✓（**子代数**形 ✓）上 ✓；
+**两者在域档下等价** ✓ —— **本件取域生成形** ✓ 因源的用途（造 `R_1` ＋ `L^G = \mathrm{Frac}(R_1)` ✓）**正需域生成** ✓；
+**⚠ 桥接未落** ✗（**登记** ✓））。
+**⚠ 迁移工艺** ✓（**新读数 (59)** ✓）：**基例在分式域上直接可证** ✓（`IsFractionRing.div_surjective` ✓ 给出
+`z = a/b` ✓ ＋ **`MvPolynomial.adjoin_range_X`** ✓ ＋ **`IntermediateField.algebra_adjoin_le_adjoin`** ✓
+＋ **`IntermediateField.div_mem`** ✓）；**一般档由 `IntermediateField.adjoin_map`** ✓（**映射与 adjoin 交换** ✓）
+**把基例搬到 `K`** ✓ —— **避开**了「`Algebra.IsAlgebraic` 沿 `\mathrm{AlgEquiv}` 迁移」✗ 的**实例泥潭** ✗。 -/
+
+section FractionRingBase
+
+variable (F : Type u) [Field F] (n : ℕ)
+
+/-- **基例** ✓✅：**有理函数域由其变元（作为域）生成** ✓ ——
+`\mathrm{IntermediateField.adjoin}\ F\ \{\mathrm{algebraMap}(x_i)\} = \top` ✓（`x_i = X_i` ✓）。
+
+**证明** ✓：`\top \le \mathrm{adjoin}` ✓ —— 任取 `z : \mathrm{FractionRing}\,R` ✓，由
+`\mathrm{IsFractionRing.div\_surjective}` ✓ 写 `z = \mathrm{algebraMap}\ a / \mathrm{algebraMap}\ b` ✓；
+`\mathrm{algebraMap}\ a \in \mathrm{adjoin}` ✓（因 `a \in \mathrm{Algebra.adjoin}\ F\ \{\text{变元}\}` ✓
+＝ **`\top`** ✓ 由 **`MvPolynomial.adjoin_range_X`** ✓，再经 **`IntermediateField.algebra_adjoin_le_adjoin`** ✓ 升到域 adjoin ✓）；
+最后由 **`IntermediateField.div_mem`** ✓ 收 ✓。 -/
+theorem adjoin_algebraMap_X_fractionRing :
+    IntermediateField.adjoin F (Set.range (fun i : Fin n =>
+      algebraMap (MvPolynomial (Fin n) F) (FractionRing (MvPolynomial (Fin n) F))
+        (MvPolynomial.X i))) = ⊤ := by
+  have key : ∀ x : MvPolynomial (Fin n) F,
+      algebraMap (MvPolynomial (Fin n) F) (FractionRing (MvPolynomial (Fin n) F)) x ∈
+        IntermediateField.adjoin F (Set.range (fun i : Fin n =>
+          algebraMap (MvPolynomial (Fin n) F) (FractionRing (MvPolynomial (Fin n) F))
+            (MvPolynomial.X i))) := by
+    intro x
+    refine IntermediateField.algebra_adjoin_le_adjoin F (Set.range (fun i : Fin n =>
+      algebraMap (MvPolynomial (Fin n) F) (FractionRing (MvPolynomial (Fin n) F))
+        (MvPolynomial.X i))) ?_
+    have hmap : Algebra.adjoin F (Set.range (fun i : Fin n =>
+          algebraMap (MvPolynomial (Fin n) F) (FractionRing (MvPolynomial (Fin n) F))
+            (MvPolynomial.X i)))
+        = (Algebra.adjoin F (Set.range (MvPolynomial.X :
+            Fin n → MvPolynomial (Fin n) F))).map
+          (IsScalarTower.toAlgHom F (MvPolynomial (Fin n) F)
+            (FractionRing (MvPolynomial (Fin n) F))) := by
+      rw [AlgHom.map_adjoin]
+      congr 1
+      exact Set.range_comp _ _
+    rw [hmap]
+    exact Subalgebra.mem_map.mpr ⟨x, by rw [MvPolynomial.adjoin_range_X]; trivial, rfl⟩
+  refine le_antisymm le_top ?_
+  intro z _
+  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (MvPolynomial (Fin n) F) z
+  exact IntermediateField.div_mem _ (key a) (key b)
+
+end FractionRingBase
+
+section TranscendenceExtraction
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K]
+
+/-- **独立半** ✓✅：**`IsRationalOver` ⟹ 存在代数无关族** ✓ —— 即超越基的**独立那一半** ✓。
+
+**证明** ✓：`\mathrm{IsRationalOver}` ✓ 给 `K \simeq_F \mathrm{Frac}(F[x_1,\dots,x_n])` ✓；
+**变元代数无关** ✓（`MvPolynomial.algebraicIndependent_X` ✓）⟹ 经**两次 `AlgebraicIndependent.map'`** ✓
+（**`\mathrm{algebraMap}` 单射** ✓ 由 `IsFractionRing.injective` ✓；**同构的单射性** ✓）搬到 `K` ✓。 -/
+theorem exists_algebraicIndependent_of_isRationalOver (h : IsRationalOver F K) :
+    ∃ (n : ℕ) (a : Fin n → K), AlgebraicIndependent F a := by
+  obtain ⟨n, ⟨e⟩⟩ := h
+  refine ⟨n, (e.symm : FractionRing (MvPolynomial (Fin n) F) →ₐ[F] K) ∘
+    (fun i => algebraMap (MvPolynomial (Fin n) F) (FractionRing (MvPolynomial (Fin n) F))
+      (MvPolynomial.X i)), ?_⟩
+  have h1 : AlgebraicIndependent F (fun i : Fin n =>
+      algebraMap (MvPolynomial (Fin n) F) (FractionRing (MvPolynomial (Fin n) F))
+        (MvPolynomial.X i)) :=
+    (MvPolynomial.algebraicIndependent_X (Fin n) F).map'
+      (f := IsScalarTower.toAlgHom F (MvPolynomial (Fin n) F)
+        (FractionRing (MvPolynomial (Fin n) F)))
+      (IsFractionRing.injective (MvPolynomial (Fin n) F)
+        (FractionRing (MvPolynomial (Fin n) F)))
+  exact h1.map' (f := (e.symm : FractionRing (MvPolynomial (Fin n) F) →ₐ[F] K))
+    e.symm.injective
+
+/-- **源 `theorem-5-1` 证明首句的**完整抽取** ✓✅**：**`IsRationalOver F K` ⟹ 存在超越基**
+（**域生成形** ✓：**代数无关** ✓ ＋ **域 adjoin 为 `\top`** ✓）。
+
+**⚠ 意义** ✓（**源下一步的接口** ✓）：由此 `a` 可造源的 `R_1 = F[a_1,\dots,a_n] \subset K` ✓
+（`F`-子代数 ✓），并用 **§4.18 的 `prop-0-2(c)`** ✓ 下降 ✓ —— 即 **`theorem-5-1` 装配的**前置件**✓。
+**证明** ✓：**独立半** ✓（同上 ✓）＋ **生成半** ✓：`Set.range_comp` ✓ 把 `\mathrm{range}(e^{-1} \circ y)` 写成
+`e^{-1}'' \mathrm{range}(y)` ✓，再用 **`IntermediateField.adjoin_map`** ✓ **把 §4.19 的基例沿 `e^{-1}` 搬走** ✓
+（`\mathrm{adjoin} = \top \mapsto \mathrm{map}\ e^{-1}\ \top = \top` ✓，**后一等号由 `e^{-1}` 的满射性** ✓）。
+**⚠ 为何此路避坑** ✓：**域 adjoin 形**只需 `\mathrm{adjoin}` 的**映射律** ✓（`adjoin_map` ✓），
+**不需要** `\mathrm{Algebra.IsAlgebraic}` 沿同构的迁移 ✗（后者要造 `\mathrm{Algebra}\ A_0\ K` 实例 ✓，
+**实测为泥潭** ✗ —— **新读数 (59)** ✓）。 -/
+theorem exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver (h : IsRationalOver F K) :
+    ∃ (n : ℕ) (a : Fin n → K), AlgebraicIndependent F a ∧
+      IntermediateField.adjoin F (Set.range a) = ⊤ := by
+  obtain ⟨n, ⟨e⟩⟩ := h
+  set R := MvPolynomial (Fin n) F with hR
+  set Fr := FractionRing R with hFr
+  set y : Fin n → Fr := fun i => algebraMap R Fr (MvPolynomial.X i) with hy
+  refine ⟨n, (e.symm : Fr →ₐ[F] K) ∘ y, ?_, ?_⟩
+  · exact ((MvPolynomial.algebraicIndependent_X (Fin n) F).map'
+      (f := IsScalarTower.toAlgHom F R Fr) (IsFractionRing.injective R Fr)).map'
+      (f := (e.symm : Fr →ₐ[F] K)) e.symm.injective
+  · have hbase : IntermediateField.adjoin F (Set.range y) = ⊤ :=
+      adjoin_algebraMap_X_fractionRing F n
+    have htop : IntermediateField.map (e.symm : Fr →ₐ[F] K) ⊤ = ⊤ := by
+      refine le_antisymm le_top ?_
+      intro x _
+      exact ⟨e x, trivial, by simp⟩
+    rw [Set.range_comp, ← IntermediateField.adjoin_map F (Set.range y) (e.symm : Fr →ₐ[F] K),
+      hbase, htop]
+
+end TranscendenceExtraction
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -1442,5 +1565,8 @@ end Lemma52TrueFormProof
 #print axioms exists_basis_eq_smul_of_linearIndependent
 #print axioms Lemma52StatementNonzero
 #print axioms lemma52Statement_nonzero_true
+#print axioms adjoin_algebraMap_X_fractionRing
+#print axioms exists_algebraicIndependent_of_isRationalOver
+#print axioms exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver
 
 end ABGV52
