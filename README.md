@@ -229,7 +229,13 @@ sync.  The items added since then are:
   residue map is injective, so the lifting property gives an honest lift of every map out of `R(1/r)`
   into a field), and the two identifications the printed proof names — `F[x]_P` is
   `Localization.AtPrime` and its residue field is the fraction field of `F[x]/P`, which is how the
-  proof reads off `T/M = K`.  The converse and `thm3.8` are registered as gaps.
+  proof reads off `T/M = K`.  The setup half of the converse is also there: localizing a domain at a
+  non-zero element stays a domain, the residue map `R(1/r) → T/𝔪` of the proof is built from the
+  quotient isomorphism and the fraction-ring structure, and applying the lifting property at
+  `T = F[x]_P` produces the map `ψ : S → T` the proof needs.  What is still missing from the
+  converse is the refinement "`ψ(S) ⊆ F[x](1/w)` for some `w ∉ P`" and the final assembly; the
+  finding above was also refined: affineness of `R` does *not* give affineness of `R(1/r)`, so the
+  target must carry that hypothesis separately.  The converse and `thm3.8` are registered as gaps.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.

@@ -29,6 +29,7 @@ import Mathlib.RingTheory.Localization.Away.Basic
 import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 import Mathlib.RingTheory.FiniteType
 import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
+import Mathlib.RingTheory.Localization.AtPrime.Basic
 open TensorProduct MvPolynomial
 universe u
 noncomputable section
@@ -247,7 +248,49 @@ mathlib 已给 `IsFractionRing (A ⧸ P) P.ResidueField` ✓）。 -/
 theorem isFractionRing_residueField_atPrime {A : Type u} [CommRing A] (P : Ideal A) [P.IsPrime] :
     IsFractionRing (A ⧸ P) (Ideal.ResidueField P) := inferInstance
 
-/-! ## 7. 登记 -/
+/-! ## 7. 反方向的**设置**：`F[x]_P` 上的提升（源印版 p.185 中段 ✓） -/
+
+/-- **整环在非零元处的局部化仍是整环** ✓（`IsLocalization.Away.isDomain` ✓）——
+源反方向里「`R(1/r)` 是整环」✓（因而 `P = ker η₀` 为素理想 ✓）的**前置** ✓。 -/
+theorem isDomain_localization_away {R : Type u} [CommRing R] [IsDomain R] {r : R} (hr : r ≠ 0) :
+    IsDomain (Localization.Away r) :=
+  IsLocalization.Away.isDomain (Localization.Away r) hr
+
+/-- **源反方向的残差映射** ✓✓（源「`T/M = K`」＋「`η` extends to the map `η : T → K`」✓，印版 p.185 ✓）：
+由 §66 的满射 `η₀ : F[x] ↠ R'` ✓、`P := ker η₀` ✓、`T := F[x]_P` ✓ 与 mathlib 的
+`IsFractionRing (F[x] ⧸ P) P.ResidueField` ✓ 复合得 `R' →ₐ[F] T/𝔪` ✓ ——
+即源里那条 `R(1/r) → K` ✓（本工程**取 `K := P.ResidueField`** ✓，从而**免去** `q(R)` 的识别 ✗）。
+**⚠ 载体** ✓：`P` 的素性以**实例参数**承载 ✓（`RingHom.ker_isPrime` ✓ 是定理而非实例 ✗）。 -/
+noncomputable def residueMapOfSurjective {F R' : Type u} [Field F] [CommRing R'] [Algebra F R']
+    {n : ℕ} (η₀ : MvPolynomial (Fin n) F →ₐ[F] R') (hη₀ : Function.Surjective η₀)
+    [(RingHom.ker η₀).IsPrime] :
+    R' →ₐ[F] Ideal.ResidueField (RingHom.ker η₀) :=
+  (Algebra.algHom F (MvPolynomial (Fin n) F ⧸ RingHom.ker η₀)
+      (Ideal.ResidueField (RingHom.ker η₀))).comp
+    ((Ideal.quotientKerAlgEquivOfSurjective hη₀).symm : R' →ₐ[F] _)
+
+/-- **源反方向的中段** ✓✓✓（印版 p.185 逐字：「Applying 3.9(ii) … we have an `F` algebra map
+`ψ : S → F[x₁,…,xₙ]_P = T` such that `η ∘ ψ = i ∘ φ`」✓）：把 `HasLocalLifting` 用在
+**`T := F[x]_P`** 上 ✓ —— 对任一满射 `η₀ : F[x] ↠ R(1/r)` ✓，得 `ψ : S →ₐ[F] T` ✓ 且
+**剩余域里有** `ρ (ψ s) = ρR (φ s /1)` ✓。
+**⚠ 应用手法** ✓：此处 `H` 须以**显式实例**应用 ✓（`@H T inferInstance …` ✓，§67.4 读数 ✓）。 -/
+theorem exists_lift_to_atPrime_of_hasLocalLifting {F S R : Type u} [Field F]
+    [CommRing S] [Algebra F S] [CommRing R] [IsDomain R] [Algebra F R] (φ : S →ₐ[F] R)
+    (h : HasLocalLifting F S R φ) :
+    ∃ r : R, r ≠ 0 ∧ ∀ {n : ℕ} (η₀ : MvPolynomial (Fin n) F →ₐ[F] Localization.Away r)
+      (hη₀ : Function.Surjective η₀) [(RingHom.ker η₀).IsPrime],
+      ∃ ψ : S →ₐ[F] Localization.AtPrime (RingHom.ker η₀),
+        ∀ s : S, IsLocalRing.residue (Localization.AtPrime (RingHom.ker η₀)) (ψ s)
+          = residueMapOfSurjective (F := F) η₀ hη₀
+              (algebraMap R (Localization.Away r) (φ s)) := by
+  obtain ⟨r, hr, H⟩ := h
+  refine ⟨r, hr, ?_⟩
+  intro n η₀ hη₀ _
+  obtain ⟨ψ, hψ⟩ := @H (Localization.AtPrime (RingHom.ker η₀)) inferInstance inferInstance
+    inferInstance (residueMapOfSurjective (F := F) η₀ hη₀)
+  exact ⟨ψ, hψ⟩
+
+/-! ## 8. 登记 -/
 
 /-- **登记** ✗（**源陈述缺假设** ✓✓，**印版级已核** ✓；L39 家族 ✓）：源 `thm3.9` 的**陈述**
 （**印版 p.184** ✓，逐字）只说「Let `φ : S → R` be an `F` algebra map between `F` algebra
@@ -257,19 +300,26 @@ theorem isFractionRing_residueField_atPrime {A : Type u} [CommRing A] (P : Ideal
 **对照** ✓：同页上方的 `thm3.8` 的陈述**明写**「an **affine** `F` algebra `S`」✓ ⟹
 `thm3.9` 的省略是**陈述层面**的 ✓，非术语约定 ✗。
 **形式化侧结论** ✓：本工程的反方向**目标形**须**显式**带 `Algebra.FiniteType F S` ✓ 与
-`Algebra.FiniteType F (Localization.Away r)` ✓（§4 ✓ 的仿射层即其前置 ✓）。
+`Algebra.FiniteType F (Localization.Away r)` ✓（§4 的仿射层即其前置 ✓）。
+
+**⚠ 本轮细化（第 105 轮 ✓，**同族第二发现** ✓）**：**`R` 仿射推不出 `R(1/r)` 仿射** ✗ ——
+实测 ✓：源证法里「`R(1/r)` 是仿射」**不能**由 §4 的满射复合得到 ✗（局部化映射 `R → R(1/r)`
+**一般不是满射** ✗）；标准反例 ✓：`R = F[x]`、`r = x` 时 `R(1/r) = F[x,1/x]` **不是**有限生成
+`F`-代数 ✗（**⚠ 该反例尚未在库内形式化** ✗，故本条**不作承重** ✓，仅作**目标形**的依据 ✓）。
+⟹ 反方向的目标形须**另带** `Algebra.FiniteType F (Localization.Away r)` ✓（而**非**由 `R` 仿射导出 ✗）。
 **⚠ 优先级** ✓：该发现与蓝图 §3.3 T3 的「源仅设 `q(S₁)=K` 而证明需 `q(S₂)=K`」**同型** ✓
 （`deadend`／勘误候选 ✓）。 -/
 theorem thm39_affineness_finding_registered : True := trivial
 
 /-- **登记** ✗：本层**未落**的两件 ✓（均须按 §47／§52 同法先作**来源核验** ✓）：
 
-① **`thm3.9` 的反方向**（(ii)⟹(i) ✓，印版 p.185 ✓）：源证明用
-「`R(1/r)` **仿射** ⟹ 取 `F[x₁..xₙ] ↠ R(1/r)`」✓（**§4 ✓ 已备** ✓）、
-「局部化 `F[x₁..xₙ]_P`（`P = ker η` ✓）」✓、「`η` 延拓到 `T → K`」✓、
-「`T/M = K`（`K = q(R)` ✓）」✓、「`ψ(S) ⊆ F[x](1/w)` 对某 `w ∉ P`」✓
-（**有限型子代数落在单元局部化中** ✓ —— 本工程 `SaltSwan_ABGV52.exists_localization_ge_adjoin` ✓ **已备** ✓）；
-余下的零件 ✓：`Localization.AtPrime` ✓ ＋ `T/M = q(R)` ✓（剩余域 ≅ 分式域 ✓）。
+① **`thm3.9` 的反方向**（(ii)⟹(i) ✓，印版 p.185 ✓）：**✅ 设置已完成** ✓✓（本件 §7 ✓：
+`η₀` ✓／`P = ker η₀` ✓／`T = F[x]_P` ✓／残差映射 ✓／**`ψ : S → T` 取自 `HasLocalLifting`** ✓）；
+**✗ 仍缺两段** ✓：（a）「`ψ(S) ⊆ F[x](1/w)` 对某 `w ∉ P`」✓
+（**有限型子代数落在单元局部化中** ✗ —— `SaltSwan_ABGV52.exists_localization_ge_adjoin` ✓ 是**分式域**档 ✗，
+**不**直接覆盖「局部化的有限型子代数」✗ ⟹ 须另证 ✗）；
+（b）**最后的组装** ✗：`F[x](1/w) → R(1/(r·v))`（`v = η₀ w` ✓）＋ 组装 `FactorsRationally` ✓
+（须用「局部化的局部化」识别 ✗）。
 
 ② **`thm3.8`** ✓（印版 p.184 ✓）：需 ① 的**双向** ✓ ＋ `lem3.5` ✓（`SaltCor_ABGV52.lem3_5` ✓ 已有 ✓）。
 
@@ -292,6 +342,9 @@ theorem thm39_gap_registered : True := trivial
 #print axioms exists_lift_to_field_of_hasLocalLifting
 #print axioms isLocalRing_localization_atPrime
 #print axioms isFractionRing_residueField_atPrime
+#print axioms isDomain_localization_away
+#print axioms residueMapOfSurjective
+#print axioms exists_lift_to_atPrime_of_hasLocalLifting
 #print axioms thm39_affineness_finding_registered
 #print axioms thm39_gap_registered
 
