@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–128 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–129 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -67,6 +67,7 @@
   | **`DenselyRepresenting`** ✓ ＋ 三锁一探针 ✓ | 源的**稠密表示对象** ✓（印版 171 ✓ **本轮逐句核** ✓）：**是表示对象** ✓ ∧ **`R` 是整环** ✓ ∧ **对任意 `0 ≠ s`，`\\mathcal{M} ⊗_R R(1/s)` 仍是表示对象** ✓ | 第 5 件 ✓ |
   | **`Hom.IsFLinear`／`IsSurjective`／`IsLocal`／`IsLocalSurjection`** ✓ ＋ **`ProjectiveObjectFor`**／**`ProjectiveObjectIn`**／**`LocalProjective`** ✓ ＋ 四锁一探针 ✓ | 源的**态射性质与投射对象** ✓（印版 171--173 ✓，**本轮逐句核** ✓）：满射（`\\phi`／`\\psi` **皆满**）✓／local（单位原像仍是单位 ✓）✓／投射对象（源明写**不**要求 `\\mathcal{P}\\in\\mathcal{C}` ✓）✓／在类中的投射 ✓／局部投射（**含 `C P`** ✓ ＋ **局部**满射 ✓） | 第 6 件 ✓ |
   | **`RepresentingObject.isSpecialization`** ✓ ＋ **`Thm13aStatement`** ✓（**具名残余** ✗）＋ 一锁 ✓ | 源的**特化收尾** ✓（印 170 ✓：表示对象 ⟹ 每域上在类中的对象是其**特化** ✓）＋ **`thm1.3(a)`** ✓（印 172 底 ✓，**只给陈述、不作证明** ✗，其识别引理未落 ✗；**(b)(c)(d) 范围外** ✗ —— 依赖 `\\mathcal{{E}}(G)`／`\\mathcal{{A}}(n)` 定义 ✓） | 第 7 件 ✓ |
+  | **`RelativeLiftingProperty`** ✓ ＋ **`RetractRational`**／**`FactorsRationally`**（`def3.1`／`def3.2` ✓）＋ **`Cor310aStatement`**／**`Cor310bStatement`**（**具名残余** ✗）＋ 六锁 ✓ | 源的**相对提升** ✓（印 172 底 ✓）／**有理性收缩**与**有理分解** ✓（印 180--182 ✓）／**`cor3.10` 两支** ✓（印 186 ✓ **逐支核** ✓）—— **只给陈述、不作证明** ✗ | 第 8 件（**陈述全部落** ✓） |
   | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
@@ -83,9 +84,11 @@
   ② **第 4 件已落** ✓（`LiftingData` ✓ ＋ `HasLiftingProperty` ✓）；**第 5 件已落** ✓✅
   （`Realization` ✓／`RepresentingObject` ✓／`IsSpecialization` ✓／`GenericObject` ✓／
   **`DenselyRepresenting`** ✓ —— 其定义在**印版 171** ✓（**非 172** ✗，上轮登记已更正 ✓），**本轮已逐句核** ✓）；
-  ③ **第 6 件已落** ✓；**第 7 件已落** ✓（`IsSpecialization` ✓ ＋ **收尾联动** ✓ ＋
-  **`thm1.3(a)` 具名残余** ✓ —— **⚠ 其证明未落** ✗（核心识别引理见 §8.9 ✓），**(b)(c)(d) 范围外** ✗）；
-  **第 8–9 件未落** ✗（`cor3.10(b)` ⟹ `cor3.10(a)` → `prop1.1(a)` 具名残余）⟹ **`cor3.10(a)` 仍未形式化** ✗。
+  ③ **第 6／7 件已落** ✓；**第 8 件的陈述全部落** ✓（`RelativeLiftingProperty` ✓／
+  `RetractRational` ✓（`def3.1` ✓）／`FactorsRationally` ✓（`def3.2` ✓）／`Cor310aStatement` ✓／
+  `Cor310bStatement` ✓）—— **⚠ 全部为具名残余：只给陈述、不作证明** ✗（其证明须 `def3.1` 与 `def3.2`
+  之间的桥 ✓，即印 181--182 的 `lem3.3`／`cor3.4`／`lem3.5` ✓，**本件未落** ✗）；
+  **第 9 件未落** ✗（`prop1.1`（a）（b）＋ 具名残余）⟹ **`cor3.10(a)` 的证明未形式化** ✗。
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import Mathlib.LinearAlgebra.TensorPower.Basic
@@ -93,6 +96,7 @@ import Mathlib.LinearAlgebra.TensorProduct.Tower
 import Mathlib.RingTheory.FiniteType
 import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 import Mathlib.RingTheory.Localization.Away.Basic
+import Mathlib.RingTheory.Localization.FractionRing
 import Mathlib.Algebra.Algebra.Subalgebra.Basic
 
 open TensorProduct
@@ -1208,6 +1212,191 @@ theorem Thm13aStatement.shape {F : Type u} [Field F] {r : ℕ} {s t : Fin r → 
       ∀ (a : P.R), a ≠ 0 → LocalProjective C (P.baseChange (Localization.Away a)) :=
   h hC
 
+
+/-! ### 8.10 源 §1／§3 的定义：**相对提升**（印 172 底 ✓）／**有理性收缩**（`def3.1` ✓）／
+**有理分解**（`def3.2` ✓） -/
+
+section RelativeLifting
+
+variable {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+
+/-- **源的相对提升性质** ✓（印 172 底 ✓ 逐字：「Suppose `\mathcal{C}` and `\mathcal{C}^{\prime}` are both `F`
+classes of the same type and `\mathcal{C}\subseteq \mathcal{C}^{\prime}`. We say that
+`(\mathcal{C},\mathcal{C}^{\prime})` have the lifting property if for every local `F` algebra `T`, `M` and every
+`\mathcal{M}\in \mathcal{C}` over `T / M` there is a `\mathcal{M}^{\prime}/T\in \mathcal{C}^{\prime}` such that
+`\mathcal{M}^{\prime}\otimes_{T}T / M\cong \mathcal{M}`」✓ —— **该页本轮（r127）已逐句核** ✓）。
+
+**三条** ✓（**逐一落** ✓）：① **两类同型** ✓（同为 `FStruct.{u,u} F r s t` ✓ ⇒ 自动 ✓）；
+② **`\mathcal{C}\subseteq \mathcal{C}^{\prime}`** ✓（落为**逐点含入** ✓）；③ **提升目标在 `\mathcal{C}^{\prime}`** ✓
+（`LiftingData C'` ✓ —— 与绝对档 `HasLiftingProperty C` ✓ 的**唯一**差别 ✓）。 -/
+def RelativeLiftingProperty (C C' : FStruct.{u, u} F r s t → Prop) : Prop :=
+  (∀ X, C X → C' X) ∧
+    ∀ (T : Type u) [CommRing T] [Algebra F T] [IsLocalRing T]
+      (M' : Type u) [AddCommGroup M'] [Module (IsLocalRing.ResidueField T) M']
+      (X : LinearStructure (IsLocalRing.ResidueField T) M' r s t),
+      C ⟨IsLocalRing.ResidueField T, M', X⟩ → Nonempty (LiftingData C' T M' X)
+
+/-- **外形锁定** ✓：`RelativeLiftingProperty` 的**两合取**（含入 ✓／提升 ✓）逐字可取 ✓ ——
+含入被吞或提升目标换回 `C` ✗ 即失败 ✓。 -/
+theorem RelativeLiftingProperty.inclusion {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C C' : FStruct.{u, u} F r s t → Prop} (h : RelativeLiftingProperty C C') :
+    ∀ X, C X → C' X :=
+  h.1
+
+/-- **外形锁定** ✓：提升支逐字可取 ✓（**目标在 `C'`** ✓）。 -/
+theorem RelativeLiftingProperty.lifts {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C C' : FStruct.{u, u} F r s t → Prop} (h : RelativeLiftingProperty C C') :
+    ∀ (T : Type u) [CommRing T] [Algebra F T] [IsLocalRing T]
+      (M' : Type u) [AddCommGroup M'] [Module (IsLocalRing.ResidueField T) M']
+      (X : LinearStructure (IsLocalRing.ResidueField T) M' r s t),
+      C ⟨IsLocalRing.ResidueField T, M', X⟩ → Nonempty (LiftingData C' T M' X) :=
+  h.2
+
+end RelativeLifting
+
+section RetractRational
+
+/-- **源 `def3.1` 的见证数据** ✓（印 180--182 ✓ **逐字核**）：「Let `K\supseteq F` be fields. `K / F` is called
+**retract rational** if and only if `K` is the **quotient field** of an `F` algebra domain `S\subseteq K`, such
+that there are `F` algebra maps `\phi :S\to F[x_{1},\dots ,x_{n}](1 / w)` and
+`\psi :F[x_{1},\dots ,x_{n}](1 / w)\to S` where `F[x_{1},\dots ,x_{n}](1 / w)` is a **localized polynomial
+ring** and `\psi \circ \phi` is the **identity** on `S`」✓）。
+
+**⚠ 为何打包** ✓：`S` 的实例（`CommRing`／`IsDomain`／`Algebra F`／`Algebra S K`／`IsFractionRing S K` ✓）
+是**数据** ✓，而 `\exists` 不接受实例绑定 ✗（附四十六 ⑳ ✓）⟹ 打包 ✓。
+**三家** ✓：`K` 是 `S` 的**商域** ✓（`IsFractionRing S K` ✓）／`S\subseteq K` ✓（`Algebra S K` ＋
+`IsScalarTower F S K` ✓）／**收缩** `\psi\circ\phi = \mathrm{id}_S` ✓（**逐点**形 ✓）。 -/
+structure RetractRationalData (F K : Type u) [Field F] [Field K] [Algebra F K] where
+  S : Type u
+  [commRing : CommRing S]
+  [isDomain : IsDomain S]
+  [algebra : Algebra F S]
+  [algebraK : Algebra S K]
+  [tower : IsScalarTower F S K]
+  [isFractionRing : IsFractionRing S K]
+  n : ℕ
+  w : MvPolynomial (Fin n) F
+  phi : S →ₐ[F] Localization.Away w
+  psi : Localization.Away w →ₐ[F] S
+  /-- 源：`\psi \circ \phi` is the **identity** on `S` ✓。 -/
+  comp : ∀ s : S, psi (phi s) = s
+
+/-- **源 `def3.1`：有理性收缩** ✓（`K/F` is called **retract rational** ✓）—— 即**见证数据非空** ✓。 -/
+def RetractRational (F K : Type u) [Field F] [Field K] [Algebra F K] : Prop :=
+  Nonempty (RetractRationalData F K)
+
+/-- **源 `def3.2` 的见证数据** ✓（印 180--182 ✓ **逐字核**）：「Let `S`, `R` be `F` algebra domains, and let
+`\phi :S\to R` be an `F` algebra map. We say `\phi` **factors rationally** if and only if there is a
+**localized polynomial ring** `F[x_{1},\dots ,x_{n}](1 / w)`, a `0\neq r\in R`, and `F` algebra maps
+`\psi :S\to F[x_{1},\dots ,x_{n}](1 / w)` and `\eta :F[x_{1},\dots ,x_{n}](1 / w)\to R(1 / r)` such that
+`\phi = \eta \circ \psi`」✓）。
+
+**⚠ `IsDomain` 取显式假设而非实例** ✓（源「Let `S`, `R` be `F` algebra **domains**」✓ 是**前提** ✓；
+且在 `cor3.10(b)` 的语句里它以**蕴含**出现 ✓ ⟹ 若作实例则实例搜索失败 ✗，实测 ✓）。
+
+**⚠ 末等的形状** ✓：`\phi = \eta\circ\psi` ✓ 中 `\phi` 的**陪域是 `R`** ✓ 而 `\eta\circ\psi` 的**陪域是 `R(1/r)`** ✓
+⟹ 落为**逐点等式** `\eta (\psi s) = \mathrm{algebraMap}\,R\,R(1/r)\,(\phi s)` ✓（源式中的隐含强制 ✓，**登记** ✓）。 -/
+structure FactorsRationallyData {F S R : Type u} [Field F] [CommRing S]
+    [CommRing R] [Algebra F S] [Algebra F R] (hS : IsDomain S) (hR : IsDomain R)
+    (φ : S →ₐ[F] R) where
+  n : ℕ
+  w : MvPolynomial (Fin n) F
+  r : R
+  hr : r ≠ 0
+  psi : S →ₐ[F] Localization.Away w
+  eta : Localization.Away w →ₐ[F] Localization.Away r
+  /-- 源：`\phi = \eta \circ \psi` ✓（逐点形，含 `R\to R(1/r)` 的隐含强制 ✓）。 -/
+  comp : ∀ s : S, eta (psi s) = algebraMap R (Localization.Away r) (φ s)
+
+/-- **源 `def3.2`：有理分解** ✓（`\phi` **factors rationally** ✓）—— 即**见证数据非空** ✓。 -/
+def FactorsRationally {F S R : Type u} [Field F] [CommRing S]
+    [CommRing R] [Algebra F S] [Algebra F R] (hS : IsDomain S) (hR : IsDomain R)
+    (φ : S →ₐ[F] R) : Prop :=
+  Nonempty (FactorsRationallyData hS hR φ)
+
+
+/-! ### 8.11 源 `cor3.10` 的**具名残余**（印 186 ✓ **本轮已逐支核**；证明在印 186 底 ✓） -/
+
+/-- **源 `cor3.10(a)` 的具名陈述** ✓（印 186 ✓ 逐字核：「Let `\mathcal{C}` be an `F` class, `\mathcal{P} / R\in \mathcal{C}`
+a **local projective object which is also densely representing**. If `K` is the **quotient field of `R`**, then
+`\mathcal{C}` has the **lifting property** if and only if `K / F` is **retract rational**」✓）。
+
+**⚠ 具名残余：本件不作证明** ✗（源自己说「(a) is a special case of (b)」✓，见 §8.11 末 ✓）。
+**用件** ✓：`LocalProjective` ✓／`DenselyRepresenting` ✓／`HasLiftingProperty` ✓／`RetractRational` ✓
+（`def3.1` ✓）；**⚠ `K` 是 `R` 的商域** ✓ 落为 `[IsFractionRing P.R K]` ✓ ＋ `[Algebra P.R K]` ✓
+＋ `[IsScalarTower F P.R K]` ✓（**`S\subseteq K` 的库内形** ✓）。 -/
+def Cor310aStatement {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) : Prop :=
+  ∀ (P : FStruct.{u, u} F r s t), LocalProjective C P → DenselyRepresenting C P →
+    ∀ (K : Type u) [Field K] [Algebra F K] [Algebra P.R K] [IsScalarTower F P.R K]
+      [IsFractionRing P.R K],
+      (HasLiftingProperty C ↔ RetractRational F K)
+
+/-- **源 `cor3.10(b)` 的假设数据** ✓（印 186 ✓ 逐字核：「Suppose `R`**,** `S` are `F` algebra **affine
+domains**, and `\phi :S\to R` is an `F` algebra map such that `\mathcal{M}\cong \mathcal{P}\otimes_{S}R`
+**over `R`**」✓）。
+
+**⚠ 为何打包** ✓：`\phi` 诱导的 `Algebra S R`（＋ `IsScalarTower F S R` ✓）是**实例** ✓，而 `\exists`／
+语句里无法 `letI` ✓（附四十六 ⑳ ✓）⟹ 打包 ✓；`\phi` 本身与之一并记入 ✓（`phi_eq` ✓ 说明二者是**同一个映射** ✓）。 -/
+structure Cor310bData {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (M P : FStruct.{u, u} F r s t) where
+  [algebra : Algebra P.R M.R]
+  [tower : IsScalarTower F P.R M.R]
+  /-- 源：`\phi :S\to R` ✓。 -/
+  φ : P.R →ₐ[F] M.R
+  /-- `\phi` **就是**上面那个 `Algebra` 结构的映射 ✓（**登记** ✓：源的 `\phi` 是给定的 `F`-映射 ✓）。 -/
+  phi_eq : ∀ x : P.R, φ x = algebraMap P.R M.R x
+  /-- 源：`\mathcal{M}\cong \mathcal{P}\otimes_{S}R` **over `R`** ✓（同底环 `M.R` ✓ 的 `IsIso` ✓）。 -/
+  iso : IsIso (P.str.baseChange (S := M.R)) M.str
+
+/-- **源 `cor3.10(b)` 的具名陈述** ✓（印 186 ✓ 逐字核：「Let `\mathcal{C}\subseteq \mathcal{C}^{\prime}` be `F`
+classes of the same type, let `\mathcal{M} / R\in \mathcal{C}` be a **densely representing object**, and let
+`\mathcal{P} / S\in \mathcal{C}^{\prime}` be a **local projective object**. Suppose `R`, `S` are `F` algebra
+**affine domains** … Then `(\mathcal{C},\mathcal{C}^{\prime})` has the **(relative) lifting property** if and only if
+`\phi` **factors rationally**」✓）。
+
+**⚠ 具名残余：本件不作证明** ✗。**四条前提逐一落** ✓（L39 ✓）：① **两类同型 ＋ 含入** ✓（由
+`RelativeLiftingProperty` ✓ 自带 ✓）；② `\mathcal{M}/R` **稠密表示** ✓（`DenselyRepresenting C M` ✓）；
+③ `\mathcal{P}/S` **局部投射** ✓（`LocalProjective C' P` ✓）；④ **`R,S` 仿射整环** ✓
+（`Algebra.FiniteType` ✓ ＋ `IsDomain` ✓ —— **两支各写** ✓）。 -/
+def Cor310bStatement {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C C' : FStruct.{u, u} F r s t → Prop) : Prop :=
+  ∀ (M P : FStruct.{u, u} F r s t)
+    (_hM : DenselyRepresenting C M) (_hP : LocalProjective C' P)
+    (_haM : Algebra.FiniteType F M.R) (hdM : IsDomain M.R)
+    (_haP : Algebra.FiniteType F P.R) (hdP : IsDomain P.R),
+    ∀ D : Cor310bData M P,
+      (RelativeLiftingProperty C C' ↔ FactorsRationally hdP hdM D.φ)
+
+/-- **外形锁定 ①** ✓：`Cor310aStatement` 的**用点形**逐字可取 ✓（含 **`K` 是商域** ✓ 与
+**提升 ⟺ 有理性收缩** ✓）。 -/
+theorem Cor310aStatement.shape {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : Cor310aStatement C)
+    (P : FStruct.{u, u} F r s t) (hP : LocalProjective C P) (hD : DenselyRepresenting C P)
+    (K : Type u) [Field K] [Algebra F K] [Algebra P.R K] [IsScalarTower F P.R K]
+    [IsFractionRing P.R K] :
+    (HasLiftingProperty C ↔ RetractRational F K) :=
+  h P hP hD K
+
+/-- **外形锁定 ②** ✓：`Cor310bStatement` 的**四条前提 ＋ 等价**逐字可取 ✓。 -/
+theorem Cor310bStatement.shape {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C C' : FStruct.{u, u} F r s t → Prop} (h : Cor310bStatement C C')
+    (M P : FStruct.{u, u} F r s t)
+    (hM : DenselyRepresenting C M) (hP : LocalProjective C' P)
+    (haM : Algebra.FiniteType F M.R) (hdM : IsDomain M.R)
+    (haP : Algebra.FiniteType F P.R) (hdP : IsDomain P.R) (D : Cor310bData M P) :
+    (RelativeLiftingProperty C C' ↔ FactorsRationally hdP hdM D.φ) :=
+  h M P hM hP haM hdM haP hdP D
+
+/-- **源 `cor3.10` 证明的首句** ✓（印 186 底 ✓ 逐字：「As before, **(a) is a special case of (b)**」✓）——
+**具名残余** ✗：**本件不作证明** ✓（其证明须 `RetractRational`／`FactorsRationally` 之间的桥 ✓，
+即源印 181--182 的 `lem3.3`／`cor3.4`／`lem3.5` ✓ —— **本件未落** ✗，按 `∅-unchecked` ✓ 对待）。 -/
+def Cor310Reduction {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) : Prop :=
+  Cor310aStatement C
+
+end RetractRational
+
 end Projective
 
 end BaseChange
@@ -1265,6 +1454,19 @@ end BaseChange
 #print axioms RepresentingObject.isSpecialization
 #print axioms Thm13aStatement
 #print axioms Thm13aStatement.shape
+#print axioms RelativeLiftingProperty
+#print axioms RelativeLiftingProperty.inclusion
+#print axioms RelativeLiftingProperty.lifts
+#print axioms RetractRationalData
+#print axioms RetractRational
+#print axioms FactorsRationallyData
+#print axioms FactorsRationally
+#print axioms Cor310aStatement
+#print axioms Cor310bData
+#print axioms Cor310bStatement
+#print axioms Cor310aStatement.shape
+#print axioms Cor310bStatement.shape
+#print axioms Cor310Reduction
 #print axioms tensorPowerBaseChange_tmul
 #print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe

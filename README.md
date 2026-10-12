@@ -324,7 +324,11 @@ sync.  The items added since then are:
   source names them, and a representing object induces one for every object over a field in the
   class.  Theorem 1.3(a) is recorded as a statement only: its proof turns on identifying a
   Hom-set, and the three remaining parts of that theorem need the Azumaya and Galois classes, which
-  are outside this file.  Not yet formalized are
+  are outside this file.  The relative form of the lifting property is there, along with the field
+  theory the corollary is stated in: retract rationality, which asks for a domain with a quotient
+  field and a retraction through a localized polynomial ring, and rational factoring of a map of
+  domains.  Corollary 3.10 itself, both parts, is recorded as a statement only, since its proof
+  rests on the bridge between those two notions that is not built here.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.
