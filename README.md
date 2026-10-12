@@ -220,8 +220,12 @@ sync.  The items added since then are:
   the lifting property of `thm3.9(ii)` (a local `F`-algebra is an `IsLocalRing`, the residue field
   is its `IsLocalRing.ResidueField` and the canonical map is `IsLocalRing.residue`), proves the unit
   criterion of a local ring that the source's argument needs, and proves the easy direction of
-  `thm3.9` — rationally factoring maps lift along residue maps — by the source's own construction;
-  the converse and `thm3.8` are registered as gaps, since they need the affineness layer.
+  `thm3.9` — rationally factoring maps lift along residue maps — by the source's own construction.
+  The file also supplies the affineness layer that the converse needs (a finitely generated algebra
+  is a quotient of a polynomial ring, with prime kernel and the quotient identified), and it registers
+  a statement-completeness finding checked against the printed paper: the statement of `thm3.9` omits
+  the affineness of `S` and of `R(1/r)` although its proof uses both, while `thm3.8` on the same page
+  does say "affine".  The converse and `thm3.8` are registered as gaps.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.

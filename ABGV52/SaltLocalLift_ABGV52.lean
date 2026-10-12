@@ -27,6 +27,7 @@
 import ABGV52.SaltDef_ABGV52
 import Mathlib.RingTheory.Localization.Away.Basic
 import Mathlib.RingTheory.LocalRing.ResidueField.Basic
+import Mathlib.RingTheory.FiniteType
 open TensorProduct MvPolynomial
 universe u
 
@@ -155,19 +156,67 @@ theorem hasLocalLifting_of_factorsRationally {F S R : Type u} [Field F]
     = ψ (algebraMap R (Localization.Away r) (φ s))
   rw [hpt, hfac s]
 
-/-! ## 4. 登记 -/
+/-! ## 4. 仿射层（源 `thm3.9` 证明 `:528–531` 的两处**「affine」** ✓） -/
+
+/-- **仿射 ⟹ 多项式环的满射** ✓✓（源逐字：「Since `R(1/r)` is **affine**, there is an `F` algebra
+surjection `η : F[x₁,…,xₙ] → R(1/r)`」✓，印版 p.185 ✓）：
+`Algebra.FiniteType F R` ⟹ 存在 `n` 与**满射** `η : F[x₁,…,xₙ] →ₐ[F] R` ✓。
+**证法** ✓：`Algebra.FiniteType.iff_quotient_mvPolynomial''` ✓（**mathlib 已备** ✓，
+`Fin n` 档 ✓，与本工程 `FactorsRationally` 的载体一致 ✓）。 -/
+theorem exists_surjective_mvPolynomial_of_finiteType {F R : Type u} [Field F] [CommRing R]
+    [Algebra F R] (h : Algebra.FiniteType F R) :
+    ∃ (n : ℕ) (η : MvPolynomial (Fin n) F →ₐ[F] R), Function.Surjective η :=
+  Algebra.FiniteType.iff_quotient_mvPolynomial''.mp h
+
+/-- **反方向** ✓：多项式环有满射落到 `R` ⟹ `R` 仿射 ✓（同一 `iff` 的另一半 ✓）。 -/
+theorem finiteType_of_surjective_mvPolynomial {F R : Type u} [Field F] [CommRing R]
+    [Algebra F R] {n : ℕ} (η : MvPolynomial (Fin n) F →ₐ[F] R)
+    (h : Function.Surjective η) : Algebra.FiniteType F R :=
+  Algebra.FiniteType.iff_quotient_mvPolynomial''.mpr ⟨n, η, h⟩
+
+/-- **用点** ✓（源逐字：「Let `P` be the **kernel** of `η`」✓，印版 p.185 ✓）：仿射**整环** ⟹
+存在满射 `η` 且其**核为素理想** ✓（`RingHom.ker_isPrime` ✓ —— 目标为整环 ✓）。 -/
+theorem exists_surjective_mvPolynomial_with_prime_ker {F R : Type u} [Field F] [CommRing R]
+    [IsDomain R] [Algebra F R] (h : Algebra.FiniteType F R) :
+    ∃ (n : ℕ) (η : MvPolynomial (Fin n) F →ₐ[F] R),
+      Function.Surjective η ∧ (RingHom.ker η).IsPrime := by
+  obtain ⟨n, η, hη⟩ := exists_surjective_mvPolynomial_of_finiteType (F := F) h
+  exact ⟨n, η, hη, RingHom.ker_isPrime η⟩
+
+/-- **用点** ✓（源同句 ✓）：该满射给出**同构** `F[x₁,…,xₙ] ⧸ P ≃ₐ[F] R` ✓
+（`Ideal.quotientKerAlgEquivOfSurjective` ✓）—— 即源把 `R(1/r)` 认成 `F[x]/P` ✓ 的那一步 ✓。 -/
+theorem quotient_ker_algEquiv_of_surjective {F R : Type u} [Field F] [CommRing R] [Algebra F R]
+    {n : ℕ} (η : MvPolynomial (Fin n) F →ₐ[F] R) (h : Function.Surjective η) :
+    Nonempty ((MvPolynomial (Fin n) F ⧸ RingHom.ker η) ≃ₐ[F] R) :=
+  ⟨Ideal.quotientKerAlgEquivOfSurjective h⟩
+
+/-! ## 5. 登记 -/
+
+/-- **登记** ✗（**源陈述缺假设** ✓✓，**印版级已核** ✓；L39 家族 ✓）：源 `thm3.9` 的**陈述**
+（**印版 p.184** ✓，逐字）只说「Let `φ : S → R` be an `F` algebra map between `F` algebra
+**domains**」✗ —— **未**列**仿射性** ✗；而其**证明**（**印版 p.185** ✓，逐字）两处**都用到** ✓：
+「**Since `R(1/r)` is affine**, there is an `F` algebra surjection `η : F[x₁,…,xₙ] → R(1/r)`」✓、
+「**Since `S` is affine**, `ψ(S) ⊂ F[x₁,…,xₙ](1/w)` for some `w ∉ P`」✓。
+**对照** ✓：同页上方的 `thm3.8` 的陈述**明写**「an **affine** `F` algebra `S`」✓ ⟹
+`thm3.9` 的省略是**陈述层面**的 ✓，非术语约定 ✗。
+**形式化侧结论** ✓：本工程的反方向**目标形**须**显式**带 `Algebra.FiniteType F S` ✓ 与
+`Algebra.FiniteType F (Localization.Away r)` ✓（§4 ✓ 的仿射层即其前置 ✓）。
+**⚠ 优先级** ✓：该发现与蓝图 §3.3 T3 的「源仅设 `q(S₁)=K` 而证明需 `q(S₂)=K`」**同型** ✓
+（`deadend`／勘误候选 ✓）。 -/
+theorem thm39_affineness_finding_registered : True := trivial
 
 /-- **登记** ✗：本层**未落**的两件 ✓（均须按 §47／§52 同法先作**来源核验** ✓）：
 
-① **`thm3.9` 的反方向**（(ii)⟹(i) ✓，源 `:528–536` ✓）：源证明用
-「`R(1/r)` **仿射** ⟹ 取 `F[x₁..xₙ] ↠ R(1/r)`」✓、「局部化 `F[x]_P`」✓、
-「`ψ(S) ⊆ F[x](1/w)` 对某个 `w ∉ P`」✓ —— 这三步需要 **`Algebra.FiniteType`／仿射层** ✓
-（本工程 M2 邻域 ✓），本件**未触及** ✗。
+① **`thm3.9` 的反方向**（(ii)⟹(i) ✓，印版 p.185 ✓）：源证明用
+「`R(1/r)` **仿射** ⟹ 取 `F[x₁..xₙ] ↠ R(1/r)`」✓（**§4 ✓ 已备** ✓）、
+「局部化 `F[x₁..xₙ]_P`（`P = ker η` ✓）」✓、「`η` 延拓到 `T → K`」✓、
+「`T/M = K`（`K = q(R)` ✓）」✓、「`ψ(S) ⊆ F[x](1/w)` 对某 `w ∉ P`」✓
+（**有限型子代数落在单元局部化中** ✓ —— 本工程 `SaltSwan_ABGV52.exists_localization_ge_adjoin` ✓ **已备** ✓）；
+余下的零件 ✓：`Localization.AtPrime` ✓ ＋ `T/M = q(R)` ✓（剩余域 ≅ 分式域 ✓）。
 
-② **`thm3.8`** ✓（`retract rational ⟺ 局部提升` ✓）：需要 ① 的**双向** ✓ ＋ `lem3.5` ✓
-（本工程 `SaltCor_ABGV52.lem3_5` ✓ 已有 ✓）＋ 「`K = q(S)`、`S` 为局部化多项式收缩」✓。
+② **`thm3.8`** ✓（印版 p.184 ✓）：需 ① 的**双向** ✓ ＋ `lem3.5` ✓（`SaltCor_ABGV52.lem3_5` ✓ 已有 ✓）。
 
-**⚠ 与 M3 其余件的关系** ✓：`cor3.10(a)` ✓（源 `:545` ✓）需要**局部投射对象** ✓ ＋
+**⚠ 与 M3 其余件的关系** ✓：`cor3.10(a)` ✓（印版 p.186 ✓）需要**局部投射对象** ✓ ＋
 **densely representing** ✓ ＋ 本件的**双向** ✓ ⟹ 亦在 ① 之后 ✓。 -/
 theorem thm39_gap_registered : True := trivial
 
@@ -178,6 +227,11 @@ theorem thm39_gap_registered : True := trivial
 #print axioms hasLocalLifting_typeLock
 #print axioms hasLocalLifting_id_data_nonempty
 #print axioms hasLocalLifting_of_factorsRationally
+#print axioms exists_surjective_mvPolynomial_of_finiteType
+#print axioms finiteType_of_surjective_mvPolynomial
+#print axioms exists_surjective_mvPolynomial_with_prime_ker
+#print axioms quotient_ker_algEquiv_of_surjective
+#print axioms thm39_affineness_finding_registered
 #print axioms thm39_gap_registered
 
 end ABGV52
