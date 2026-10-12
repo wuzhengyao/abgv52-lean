@@ -2243,6 +2243,55 @@ theorem adjoin_inv_eq_localizationSubalgebra (s : A) (hs : s ≠ 0) :
 end AdjoinEqLocalization
 
 
+/-! ## 4.31 **局部化同构**（`IsGenericExtension`(a) 的原料齐备）✓✅（第 165 轮）
+
+**⚠ 起点** ✓：§4.30 ✓ 已给**子代数等式** ✓（`\mathrm{adjoin}\ A\ \{(s)^{-1}\} = \mathrm{Localization.subalgebra}\ K\ (\mathrm{powers}\ s)\ hS` ✓）；
+§4.30 的登记 ✗ 两项**本轮全解** ✓✅。
+
+**⚠ 本轮三件** ✓：
+**①** `isLocalization_powers_adjoin_inv` ✓✅ —— **`\mathrm{IsLocalization}\ (\mathrm{powers}\ s)\ \uparrow(\mathrm{adjoin}\ A\ \{(s)^{-1}\})`** ✓
+（**搬用路线** ✓：**`\mathrm{Subalgebra.equivOfEq}`** ✓ 把子代数等式转成 **`A`-代数同构** ✓，
+再用 **`\mathrm{IsLocalization.isLocalization\_of\_algEquiv}`** ✓ 搬实例 ✓ —— **r164 的「`\mathrm{Eq.rec}` 隐式实例参数不改写」问题由此绕开** ✓✅）；
+**②** `isLocalization_away_adjoin_inv` ✓✅ —— **`\mathrm{Away}` 形** ✓
+（**实测** ✓：`\mathrm{IsLocalization.Away}` 是 **`@[\mathrm{reducible}]` 的 `\mathrm{def}` ＝ `\mathrm{powers}` 形** ✓
+⟹ **直接 `\mathrm{exact}` 即过** ✓ —— **r164 的「非 defeq」判定被推翻** ✓✅，**读数 (73)** ✓）；
+**③** **`nonempty_algEquiv_localizationAway_adjoin_inv`** ✓✅ —— **局部化同构** ✓：
+`\exists\,(\mathrm{Localization.Away}\ s \simeq_A \uparrow(\mathrm{adjoin}\ A\ \{(s)^{-1}\}))` ✓
+（**入口** ✓：**`\mathrm{IsLocalization.algEquiv}`** ✓ —— **同一环的两处局部化典范同构** ✓）。
+
+**⚠ 意义** ✓：**`\mathrm{IsGenericExtension}`(a) 款的原料至此齐备** ✓ ——
+**余**：把 r158 的多项式环同构 ✓ 与本次局部化同构 ✓ **沿基环同构复合** ✓（**读数 (51) 的应用** ✓：**先查
+「局部化沿基环同构的搬运」引理** ✓）。
+**⚠ 新读数 (73)** ✓（**「非 defeq」判定须复核 `[\mathrm{reducible}]`** ✓）：**凡判某两形「非 defeq」前，先 `\#print` 其定义** ✓ ——
+本轮的 `\mathrm{IsLocalization.Away}` ✓ 是 `@[\mathrm{reducible}]` ✓ ⟹ **r164 的受阻判定有误** ✓，**当轮已据实更正** ✓。 -/
+
+
+
+section ISLocalizationAdjoin
+
+variable {A : Type u} [CommRing A] [Nontrivial A] [NoZeroDivisors A]
+variable {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K] [IsFractionRing A K]
+
+/-- **`A[s⁻¹]` 是 `A` 在 `s` 的幂处的局部化** ✓（由子代数等式 ＋ `isLocalization_of_algEquiv` 搬用）。 -/
+theorem isLocalization_powers_adjoin_inv (s : A) (hs : s ≠ 0) :
+    IsLocalization (Submonoid.powers s) ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) :=
+  IsLocalization.isLocalization_of_algEquiv (Submonoid.powers s)
+    (Subalgebra.equivOfEq _ _ (adjoin_inv_eq_localizationSubalgebra (K := K) s hs).symm)
+
+/-- **`Away` 形**（`IsLocalization.Away` 是 `@[reducible]` 的 `powers` 形）。 -/
+theorem isLocalization_away_adjoin_inv (s : A) (hs : s ≠ 0) :
+    IsLocalization.Away s ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) :=
+  isLocalization_powers_adjoin_inv (K := K) s hs
+
+/-- **局部化同构** ✓：抽象局部化 ≃ `A[s⁻¹]`（`A`-代数同构）—— **`IsGenericExtension`(a) 的直接原料** ✓。 -/
+theorem nonempty_algEquiv_localizationAway_adjoin_inv (s : A) (hs : s ≠ 0) :
+    Nonempty (Localization.Away s ≃ₐ[A] ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K))) :=
+  haveI := isLocalization_away_adjoin_inv (K := K) s hs
+  ⟨IsLocalization.algEquiv (Submonoid.powers s) _ _⟩
+
+end ISLocalizationAdjoin
+
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2338,5 +2387,8 @@ end AdjoinEqLocalization
 #print axioms powers_le_nonZeroDivisors
 #print axioms isLocalization_localizationSubalgebra
 #print axioms adjoin_inv_eq_localizationSubalgebra
+#print axioms isLocalization_powers_adjoin_inv
+#print axioms isLocalization_away_adjoin_inv
+#print axioms nonempty_algEquiv_localizationAway_adjoin_inv
 
 end ABGV52
