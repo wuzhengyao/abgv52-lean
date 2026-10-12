@@ -213,9 +213,15 @@ sync.  The items added since then are:
   itself is needed only to *construct* that action and does not appear among the hypotheses.  The use
   point `exists_localized_lift_equivariant_of_galoisHyps_away` instantiates it for that action.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
-  `SaltRatOver`, `SaltLocalProj` carry the 1984 definitions, the rational-to-retract bridge, Swan's
-  lemma, the corollary/reduction pair, the 2-power condition layer, the named generic-object residual,
-  retract rationality along rational extensions, and the local-projective layer of step 10.
+  `SaltRatOver`, `SaltLocalProj`, `SaltLocalLift` carry the 1984 definitions, the
+  rational-to-retract bridge, Swan's lemma, the corollary/reduction pair, the 2-power condition
+  layer, the named generic-object residual, retract rationality along rational extensions, the
+  local-projective layer of step 10, and the local-lifting layer of §3.  The last of these states
+  the lifting property of `thm3.9(ii)` (a local `F`-algebra is an `IsLocalRing`, the residue field
+  is its `IsLocalRing.ResidueField` and the canonical map is `IsLocalRing.residue`), proves the unit
+  criterion of a local ring that the source's argument needs, and proves the easy direction of
+  `thm3.9` — rationally factoring maps lift along residue maps — by the source's own construction;
+  the converse and `thm3.8` are registered as gaps, since they need the affineness layer.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
