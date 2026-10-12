@@ -184,9 +184,13 @@ sync.  The items added since then are:
   `exists_tensor_away_lift` (a map inverting `s` factors through the localization, by
   `IsLocalization.liftAlgHom` and `Algebra.TensorProduct.productMap`) and the resulting equivalence
   `exists_tensor_away_lift_iff`.  Uniqueness of that factorization is not claimed, since the source's
-  argument uses only existence.  What remains for step 10 is the descent of the `G`-action to the
-  localization (so that `S = F₊[V](1/s)` becomes an object of the slice) and the identification
-  `S^G = F₊[V]^G(1/s)`; both are registered as gaps.
+  argument uses only existence.  The file then carries out the descent of the `G`-action to the
+  localization, so that the source object of step 10(c) becomes an object of the slice: for a
+  `G`-invariant `s`, `Localization.Away s` carries a `MulSemiringAction` (`locMulSemiringAction`,
+  with the use point `symLocMulSemiringAction` for `S = F₊[V](1/s)`).  The action is defined through
+  the universal property (`locActBase`, `locActAlgHom`) and its laws are proved by `algHom_ext`
+  rather than by comparing localization equivalences.  What remains for step 10 is the identification
+  `S^G = F₊[V]^G(1/s)` and the assembly of the pieces into (c) itself; both are registered as gaps.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
   `SaltRatOver`, `SaltLocalProj` carry the 1984 definitions, the rational-to-retract bridge, Swan's
   lemma, the corollary/reduction pair, the 2-power condition layer, the named generic-object residual,
