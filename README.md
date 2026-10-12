@@ -141,7 +141,11 @@ sync.  The items added since then are:
   trivial action satisfies `hR'G` but fails faithfulness), so the usable form pins the action by the
   canonicality equation `g • (1 ⊗ x) = 1 ⊗ (g • x)`.
 - `GenericExtension_ABGV52.lean`: definition 1.1, the `E(G)`-slice language (realization property,
-  representing and generic objects, the lifting property), the Lifting property for generic objects
+  representing and generic objects, the lifting property).  The file carries two transcriptions of
+  definition 1.1 -- the three clauses listed flat, and the `E(G)`-slice reading as a representing
+  object whose ring is a localized polynomial ring -- and a lock records that the two are the same
+  predicate up to the order of the conjunction.  The printed page of the source is PDF page plus
+  249, re-verified here against the printed 254 on PDF 5; the Lifting property for generic objects
   (Saltman's Proposition 1.1(a), whose source proof is omitted) and its `_strong`, `_stronger` and
   `_strongest` variants.  `_strongest` proves the statement with *no* base-change hypothesis at all:
   the step that consumed it now constructs the Galois structure on `T ⊗_R S` directly.  The earlier

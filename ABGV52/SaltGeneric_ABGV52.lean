@@ -7,7 +7,7 @@
   Adv. in Math. 43, 250–283：「A 交换、F 满足 2^r 条件时 generic object 存在」——
   蓝图 §1.2：**2^r 条件只在此步进入**）。~~KB 无 [23] 源件~~ **已入 KB（2026-10-10 用户供源：`raw/Saltman1982.{tex,pdf}`，
   citekey `Saltman1982`，receipt `2b3ed6f6…`；文献笔记 [[1982-Saltman-generic-galois]]）**——
-  pinpoint = [23] 印 p. 257／p. 265／pp. 274–275／p. 279 此后库内可核（⚠ 印刷页偏移未核）；
+  pinpoint = [23] 印 p. 257／p. 265／pp. 274–275／p. 279 此后库内可核（**印刷页偏移已定案**：印刷页 = PDF 页 + 249 ✓，第 131 轮实测）；
   2^r 条件句的源 = `theorem-2-1`（F(ρ(r))/F 循环）。具名形暂维持（内容消费待复核波）。⚠ 页偏移登记：
   Saltman1984 的印刷页 = PDF 页 **+ 164**（任务书原写「+220」有误——那是
   Saltman1987 的偏移）。
@@ -17,13 +17,29 @@
   * 论文侧该定理的自然语言「证明」= **无**——纯外部引用（Saltman1984 Cor 3.13）。
   * Lean 路线 = Salt* 内部工程（M1/M2 已交付）＋条件层（`SaltCond_ABGV52.lean`）
     ＋本件 [23] 残差具名——与论文引用结构对齐（同样把它**当假设用**）。
-  * **偏离登记**：本波**不触碰** M3–M6 工程（不假装已证）。具体地——
-    - M3（局部提升判据：thm1.3(c)＋thm3.8/3.9＋cor3.10(a)）：**未做**；
-    - M4（§1 范畴语言：E(G)-类／lifting property／generic object）：**未做**；
-    - M6（装配：thm3.12(b)＋端点识别）：**未做**。
-    ⟹ 本件**不**声称「`GenericObjectExists ⟹ SaltmanHyp`」的**数学装配**已完成；
-    该装配只在 M3/M4/M6 完成后才可得。本件做的是**重量分解**（见下表）与
-    **H-档分解恒等式**（形状层，两个方向分别消耗 SaltCond 与 F1 的库内定理）。
+  * **偏离登记（2026-10-12 第 131 轮更新）**：本件**仍不**声称「`GenericObjectExists ⟹
+    SaltmanHyp`」的**数学装配**已完成。各里程碑的**现状态**如下（**逐条重核过，非沿用旧注**）——
+    - **M3**（局部提升判据）：**已完整** ✓（状态笔记 §75.4：「`thm3.9` ⇄ `thm3.8`」✓；
+      `def3.1`／`def3.2`／`lem3.3`／`cor3.4`／`lem3.5` 已在库 ✓，源文回证见 §75／§82）；
+    - **M4**（§1 范畴语言）：**陈述层已完整** ✓（状态笔记 §93.3：§77.2 第 1–9 件 ✓；
+      新件 `SaltClass_ABGV52.lean` ✓：`LinearStructure`→`Hom`／`IsIso`→`FStruct`／`IsFClass`→
+      `HasLiftingProperty`→`RepresentingObject`／`GenericObject`／`DenselyRepresenting`→
+      `RelativeLiftingProperty`／`RetractRational`／`FactorsRationally`→`Prop11aStatement`／
+      `Prop11bStatement` ✓）。**⚠ 六件具名残余** ✗：`Thm13aStatement`／`Cor310aStatement`／
+      `Cor310bStatement`／`Cor310Reduction`／`Prop11aStatement`／`Prop11bStatement` —— **只给陈述、
+      不作证明** ✓（`SaltClass_ABGV52.lean` §8.9／§8.11／§8.12 ✓）；
+    - **M6**（装配：thm3.12(b)＋端点识别）：**仍未做** ✗，但其**词汇已就位** ✓ ——
+      本仓 `GenericExtension_ABGV52.lean` ✓ 已有 `RealizationProperty` ✓（源 `definition-1-1`(c) ✓）／
+      `IsGenericExtension` ✓（`definition-1-1` 三款 ✓）／`IsRepresentingObjectEG` ✓／
+      `IsGenericObjectEG` ✓（源 §1「representing object」＋「localized polynomial ring」✓）；
+      **⚠ 本轮已锁两编码一致** ✓：`isGenericExtension_iff_isGenericObjectEG` ✓（同一谓词，只差合取次序 ✓）。
+      ⟹ **M6 的真实缺口 ＝ 该对象的存在性定理** ✗（Saltman 1982 §1 的构造 ✓），
+      **不是**词汇 ✓ —— 该存在性**本件未落** ✗。
+    - **⚠ 上游 [23] 的页码偏移已定案** ✓（本轮）：`Saltman1982` 的**印刷页 ＝ PDF 页 + 249** ✓
+      （实测：PDF 5 ＝ 印 **254** ✓；与刊载页域 250--283 ✓ 自洽 ✓）⟹ 原注「印刷页偏移未核」✗ **已结** ✓；
+      头注上列 pinpoint（印 257／265／274--275／279 ✓）可据此折算为 PDF 8／16／25--26／30 ✓。
+    ⟹ 本件做的是**重量分解**（见下表）与 **H-档分解恒等式**（形状层，两个方向分别消耗
+    SaltCond 与 F1 的库内定理 ✓）。
 
   本件内容：`SaltmanHyp` 黑箱的「重量分解对账」
   =============================================
