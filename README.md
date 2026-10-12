@@ -103,7 +103,10 @@ along the descent isomorphism, so that the embedding half of the source's contai
 theorem, together with the first block of the map on the base field: a nonzero polynomial is
 replaced by an invariant multiple, the localization at an invariant element carries an action of
 the group, and the lift of an equivariant map to that localization is equivariant again, by
-uniqueness of the lift; the boundary map into a subalgebra is recorded as well -- and retract rationality along rational extensions |
+uniqueness of the lift; the boundary map into a subalgebra is recorded as well, and the fixed-field step in the form where
+the subring is pointwise fixed rather than the base of a Galois pair, together with the
+compatibility of the action on the localization with the canonical map into the field, which is
+what makes the preimages of the base elements fixed -- and retract rationality along rational extensions |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
