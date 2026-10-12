@@ -379,11 +379,13 @@ to be the **similarity class** of `E`」✓。
 **本仓未摄** ✗）；
 ② **编码** ✓（**一处须精确** ✓）：源 `ρ(M) = 0` 的**字面**编码是 **`IsSimilar G M 0`** ✓
 （直接对照源对 `ρ` 的 `similarity class` 定义 ✓）—— 但 `Rep.{0,0,0} ℤ G` **无直接可用的 `Zero` 实例** ✗
-（**已在册** ✓，状态笔记 §9 的 `positive_control_gap_registered` ✓）⟹ 本件取工程**既有**编码
+（**已在册** ✓，状态笔记 §9 的 `positive_control_gap_registered` ✓；**⚠ 其障碍已于第 137 轮查明并解除** ✓ ——
+见 **§4.6** ✓）⟹ 本件取工程**既有**编码
 **`IsInvertible G M`** ✓（＝「`M` 是某置换格的直和项」✓，本件 `:153` ✓ —— 与 `RetractCriterionHyp` ✓ 语境
-及 `NotRetract` ✓ 用法一致 ✓）。**⚠ 两者关系未证** ✗（**登记** ✓）：`IsSimilar G M 0 → IsInvertible G M`
-**应可证** ✓（补 `0 ⊞ S₂ ≅ S₂` ✓），但其**逆**一般**不**成立 ✗（`IsInvertible` 的补项 `N` **任意** ✗，
-**弱于** `IsSimilar G M 0` 的「置换补项」✓）⟹ 本件用的是**较弱**的结论 ✓（**证之仍证源** ✓）；
+及 `NotRetract` ✓ 用法一致 ✓）。**⚠ 两者关系** ✓：**正向** ＝ **第 137 轮已证** ✓✅
+（`isInvertible_of_isSimilar_zero` ✓，见 **§4.6** ✓；第 136 轮原记「未证」✗ —— **留痕** ✓）：
+`IsSimilar G M 0 → IsInvertible G M` **已证** ✓；**⚠ 其逆**一般**不**成立 ✗（`IsInvertible` 的补项 `N`
+**任意** ✗，**弱于** `IsSimilar G M 0` 的「置换补项」✓）⟹ 本件用的是**较弱**的结论 ✓（**证之仍证源** ✓）—— **登记** ✓；
 ③ **抽象化** ✓：`K` 与 `SRat` 是**抽象**的 ✗ ⟹ 本陈述**不含**「`K = Q(L/F,M)`」的识别 ✓
 （该识别**未建** ✗，与 `EMHyp` ✓ 同一取舍 ✓）。 -/
 def BirationalInvarianceStatement (G : Type) [Group G] (M : Rep.{0,0,0} ℤ G)
@@ -408,6 +410,39 @@ theorem birationalInvarianceStatement_iff_isInvertible (G : Type) [Group G]
     BirationalInvarianceStatement G M K (fun _ => True) ↔ IsInvertible G M :=
   ⟨fun h => h trivial, fun h _ => h⟩
 
+/-! ## §4.6 M5 的**编码桥**：`IsSimilar G M 0 ⟹ IsInvertible G M` ✓（第 137 轮；**解 §9 的零对象登记** ✓）
+
+**⚠ 工艺读数 ㊴** ✓：**「无 `Zero` 实例」≠「零对象不可得」** ✗ —— mathlib 的 `HasZeroObject.zero'`
+（即 `Zero C` 实例 ✓）**故意**注册为 **`scoped[ZeroObject]`** ✗（`CategoryTheory/Limits/Shapes/ZeroObjects.lean`
+逐字：「This **cannot** be a global instance as it will trigger for every `Zero C` typeclass search」✓）⟹
+**`open scoped ZeroObject`** ✓ 即得 `(0 : Rep.{0,0,0} ℤ G)` ✓（**实测** ✓）。**§9** 的
+`positive_control_gap_registered`（逐字：「`Rep.{0,0,0} ℤ G` **无可直接用 `Zero` 实例**」✗）**其障碍即此** ✓。
+**同族** ✓：**㊲**（`synthInstanceFailed` ≠ 不可得 ✓）—— 两者同形状 ＝ **把「我没找到」误读为「不存在」** ✗；
+**本条多一层** ✓：**找到了，但没打开作用域** ✗（`scoped` 实例**不在**全局搜索里 ✓）。 -/
+
+section EncodingBridge
+
+open scoped ZeroObject
+
+/-- **M5 编码桥** ✓（**第 136 轮**所登记「`IsSimilar G M 0` 与 `IsInvertible G M` 关系未证」✗ 的**正向** ✓）：
+`M ∼ 0` ⟹ `M` 可逆 ✓ —— 即源 `ρ(M) = 0` 的**字面形** ✓ ⟹ 工程编码 `IsInvertible G M` ✓。
+
+**证明** ✓：`IsSimilar G M 0` 展开为 `∃ S₁ S₂, 置换 S₁ ∧ 置换 S₂ ∧ Nonempty (M ⊞ S₁ ≅ 0 ⊞ S₂)` ✓；
+取 `N := S₁` ✓、`P := S₂` ✓，并用 `isoZeroBiprod` ✓（`Y ≅ 0 ⊞ Y` ✓，取 `symm` ✓）把 `0 ⊞ S₂` 换成 `S₂` ✓
+⟹ `IsInvertible G M` ✓（**无需**任何新 import ✓）。 -/
+theorem isInvertible_of_isSimilar_zero (G : Type) [Group G] (M : Rep.{0,0,0} ℤ G)
+    (h : IsSimilar G M 0) : IsInvertible G M := by
+  obtain ⟨S₁, S₂, _h₁, h₂, ⟨e⟩⟩ := h
+  exact ⟨S₁, S₂, h₂, ⟨e ≪≫ (isoZeroBiprod (isZero_zero (Rep.{0,0,0} ℤ G))).symm⟩⟩
+
+/-- **L1 探针（`IsInvertible` 非空）** ✓（**本件首条见证** ✓）：**零模可逆** ✓ —— 由 `isSimilar_refl` ✓
+（`0 ∼ 0` ✓）与 `isInvertible_of_isSimilar_zero` ✓ 立得 ✓ ⟹ `IsInvertible` 的**类非空** ✓
+（**登记** ✓：本件在**本条之前**无任何 `IsInvertible` 的见证 ✗，见 §4.6 说明 ✓）。 -/
+theorem isInvertible_zero (G : Type) [Group G] : IsInvertible G (0 : Rep.{0,0,0} ℤ G) :=
+  isInvertible_of_isSimilar_zero G 0 (isSimilar_refl G 0)
+
+end EncodingBridge
+
 /-! ## §5 公理闸门 -/
 
 #print axioms isSimilar_refl
@@ -425,5 +460,7 @@ theorem birationalInvarianceStatement_iff_isInvertible (G : Type) [Group G]
 #print axioms BirationalInvarianceStatement
 #print axioms birationalInvarianceStatement_of_isInvertible
 #print axioms birationalInvarianceStatement_iff_isInvertible
+#print axioms isInvertible_of_isSimilar_zero
+#print axioms isInvertible_zero
 
 end ABGV52

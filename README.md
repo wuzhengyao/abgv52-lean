@@ -349,7 +349,8 @@ sync.  The items added since then are:
   `Flasque_ABGV52.lean` (the flasque class: the flasque and coflasque predicates, the similarity
   relation with its laws, invertibility, flasque resolutions with the named subgroup-permutation
   input, the coflasque consequences of invertibility, and the birational-invariance residual read off
-  printed page 189 of the 1984 paper), `HypRefute_ABGV52.lean` (the machine-checked refutations of the
+  printed page 189 of the 1984 paper, together with the encoding bridge that carries the source's
+  literal similar-to-zero form to the invertibility form this development uses), `HypRefute_ABGV52.lean` (the machine-checked refutations of the
   two flasque hypotheses as originally stated), `LatticeHyp_ABGV52.lean`, `TateLayer_ABGV52.lean`,
   `TateTrivial_ABGV52.lean`, `SubgroupPerm_ABGV52.lean`, `NotRetract_ABGV52.lean`,
   `NotRetractChallenge_ABGV52.lean` (the 4.13 non-retract-rationality chain and its independent
