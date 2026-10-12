@@ -65,6 +65,7 @@
 -/
 import ABGV52.Saltman_ABGV52
 import ABGV52.SaltCond_ABGV52
+import ABGV52.GenericExtension_ABGV52
 
 universe u v
 
@@ -130,6 +131,55 @@ theorem not_genericObjectExists_false (F : Type v) [Field F] (K : Type) :
     ¬ GenericObjectExists H F K (fun _ => False) :=
   fun h => h (saltmanCondition_H F)
 
+/-! ## 4.1 [23] 的**源头具名**（Saltman 1982 `theorem-2-1`）—— **本轮逐字核** ✓
+
+源 `raw/Saltman1982.{tex,pdf}`（citekey `Saltman1982` ✓，receipt `2b3ed6f6…` ✓，**印刷页 = PDF 页 + 249** ✓）：
+**印 257**（＝ PDF 8 ✓）逐字 —— 「We begin by stating our **main theorem on the existence of generic
+extensions for abelian groups**. Let `A` be a finite abelian group, and `F` a field of characteristic
+prime to the order of `A`. Denote by `r` the highest power of 2 dividing the exponent of `A`.」✓ 紧接
+**`THEOREM 2.1.`**「Suppose `F(\rho(r))/F` is a **cyclic** extension. Then **there is a generic Galois
+extension for `A` over `F`**」✓（**本轮读图定案** ✓；与 tex `:214--219` **逐字符合** ✓）。
+**⚠ 该源件的载体状态** ✓：2026-10-11 做过**字形级修正** ✓（`\times\to\rtimes` 21 处 ＋ 折叠段 `\wr` 滑落 2 处 ✓；
+旧 tex 存档 `Saltman1982.tex.preGlyphfix` ✓）⟹ **显示数据**引用前须回 PDF 目视 ✓（L16 ✓）。 -/
+
+/-- **[23] 存在性的见证数据** ✓（源 `theorem-2-1` 的「there is a generic Galois extension for `A` over `F`」✓）
+—— 打包 `R`／`S` 及其全部实例 ✓（`\exists` **不接受实例绑定** ✗，附四十六 ⑳ ✓）。 -/
+structure GenericExtensionWitness (F : Type v) [Field F] (A : Type u) [Group A] [Fintype A] where
+  R : Type u
+  S : Type u
+  [commRingR : CommRing R]
+  [commRingS : CommRing S]
+  [algebraFR : Algebra F R]
+  [algebraRS : Algebra R S]
+  [algebraFS : Algebra F S]
+  [tower : IsScalarTower F R S]
+  [mulSemiringActionS : MulSemiringAction A S]
+  /-- 源 `definition-1-1` 之前所需的**等变前提** ✓（`G`-作用与 `R`-作用交换 ✓）。 -/
+  hRG : ∀ (g : A) (r : R) (t : S), g • (r • t) = r • (g • t)
+  /-- 源：`S/R` 是 `A` 在 `F` 上的 **generic Galois extension** ✓（`definition-1-1` 三款 ✓；**在 `ABGV52.BTier` 命名空间** ✓）。 -/
+  isGeneric : ABGV52.BTier.IsGenericExtension F A R S hRG
+
+/-- **源 `theorem-2-1`（印 257 ✓ 逐字核）的具名陈述** ✓ —— **⚠ 具名残余：本件不作证明** ✗**。
+
+**⚠ 前提的库内形** ✓：源的两条前提（`F` 的特征**与 `|A|` 互素** ✓；`F(\rho(r))/F` **循环** ✓，`r` ＝ `2`
+整除 `\mathrm{exp}(A)` 的最高幂 ✓）由本仓既有的 **`SaltmanCondition A F`** ✓ 承载 ✓
+（＝ `ringChar F = 2 \vee \exists\rho,\ \mathrm{IsPrimitiveRoot}\ \rho\ (\mathrm{twoPowerPart}\ (\mathrm{exponent}\ A))
+\wedge \mathrm{IsCyclicExtension}\ F\ F\langle\rho\rangle` ✓，`SaltCond_ABGV52.lean:98` ✓）。
+**⚠ 口径观察** ✓（**登记，本轮不改** ✗）：`SaltmanCondition` 的**第一析取支**是 `ringChar F = 2` ✓、
+**第二支**只要求 `2`-部的本原根存在 ✓ —— 而源把「特征与 **`|A|`** 互素」✓（含**奇部** ✓）**单列**为假设 ✓
+⟹ 库内条件**可能弱于**源 ✓（**未证** ✗）；登记于状态笔记 ✓。 -/
+def Theorem21Statement (A : Type u) [Group A] [Fintype A] (F : Type v) [Field F] : Prop :=
+  SaltmanCondition A F → Nonempty (GenericExtensionWitness F A)
+
+/-- **外形锁定** ✓：`Theorem21Statement` 的**两段**（**含 `SaltmanCondition A F` 前提** ✓／
+`Nonempty (GenericExtensionWitness F A)` ✓）逐字可取 ✓ —— **前提被吞或见证改形即失败** ✓
+（**⚠ 前提须作独立假设传入** ✓：`Theorem21Statement` 是**蕴含** ✓，故锁形须显式给前提 ✓ —— 与
+`Thm13aStatement.shape` ✓ 同一工艺 ✓）。 -/
+theorem Theorem21Statement.shape (A : Type u) [Group A] [Fintype A] (F : Type v) [Field F]
+    (h : Theorem21Statement A F) (hC : SaltmanCondition A F) :
+    Nonempty (GenericExtensionWitness F A) :=
+  h hC
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -138,5 +188,8 @@ theorem not_genericObjectExists_false (F : Type v) [Field F] (K : Type) :
 #print axioms genericObjectExists_iff
 #print axioms genericObjectExists_satisfiable
 #print axioms not_genericObjectExists_false
+#print axioms GenericExtensionWitness
+#print axioms Theorem21Statement
+#print axioms Theorem21Statement.shape
 
 end ABGV52
