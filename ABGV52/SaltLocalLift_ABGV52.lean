@@ -31,6 +31,7 @@ import Mathlib.RingTheory.FiniteType
 import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 import Mathlib.RingTheory.Localization.AtPrime.Basic
 open TensorProduct MvPolynomial
+open scoped Ring
 universe u
 noncomputable section
 
@@ -398,11 +399,12 @@ theorem exists_mem_primeCompl_of_finset {A B : Type u} [CommRing A] [CommRing B]
 **⚠ 用途** ✓：源步 ⑤ 说 `ψ(S) ⊂ F[x](1/w)` ✓ —— 本条即把该「包含」**兑现**为
 「`ψ` 穿过 `F[x](1/w)`」✓（把 `T = F[x]_P` 上的 `ψ` 换成 `F[x](1/w)` 上的 `ψ'` ✓），
 供最后组装 `φ = η ∘ ψ'` ✓ 使用 ✓。 -/
-theorem exists_factor_through_of_injective {A B S : Type u} [CommRing A] [CommRing B] [CommRing S]
-    [Algebra A B] [Algebra A S] (w : A) (ι : Localization.Away w →ₐ[A] B)
-    (hι : Function.Injective ι) (ψ : S →ₐ[A] B) (hψ : ∀ s : S, ψ s ∈ ι.range) :
-    ∃ ψ' : S →ₐ[A] Localization.Away w, ι.comp ψ' = ψ := by
-  refine ⟨(((AlgEquiv.ofInjective ι hι).symm : ι.range →ₐ[A] Localization.Away w)).comp
+theorem exists_factor_through_of_injective {R A B S : Type u} [CommSemiring R] [CommRing A]
+    [CommRing B] [CommRing S] [Algebra R A] [Algebra R B] [Algebra R S] (w : A)
+    (ι : Localization.Away w →ₐ[R] B)
+    (hι : Function.Injective ι) (ψ : S →ₐ[R] B) (hψ : ∀ s : S, ψ s ∈ ι.range) :
+    ∃ ψ' : S →ₐ[R] Localization.Away w, ι.comp ψ' = ψ := by
+  refine ⟨(((AlgEquiv.ofInjective ι hι).symm : ι.range →ₐ[R] Localization.Away w)).comp
     (ψ.codRestrict ι.range hψ), ?_⟩
   ext s
   exact congrArg Subtype.val (AlgEquiv.apply_symm_apply (AlgEquiv.ofInjective ι hι) _)
@@ -412,7 +414,7 @@ theorem exists_factor_through_of_injective {A B S : Type u} [CommRing A] [CommRi
 theorem exists_factor_through_of_injective_probe (A : Type u) [CommRing A] :
     ∃ ψ' : A →ₐ[A] Localization.Away (1 : A),
       ψ' = Algebra.algHom A A (Localization.Away (1 : A)) := by
-  obtain ⟨ψ', hψ'⟩ := exists_factor_through_of_injective (A := A)
+  obtain ⟨ψ', hψ'⟩ := exists_factor_through_of_injective (R := A) (A := A)
     (B := Localization.Away (1 : A)) (S := A) 1
     (AlgHom.id A (Localization.Away (1 : A))) Function.injective_id
     (Algebra.algHom A A (Localization.Away (1 : A)))
@@ -491,7 +493,412 @@ theorem injective_awayToAtPrime_probe :
     Function.Injective (awayToAtPrime (⊥ : Ideal ℚ) (1 : ℚ) (by simp)) :=
   injective_awayToAtPrime _ _ _
 
-/-! ## 11. 登记 -/
+/-! ## 11. 最后组装（源 `thm3.9` 的 **(ii)⟹(i)** ✓，印版 p.185 尾段 ✓）
+
+**源逐字** ✓（`pdftoppm` 按页核 ✓，**PDF 页 21 ＝ 印版 185** ✓）：反方向取
+`η₀ : F[x] ↠ R(1/r)` ✓（`P = ker η₀` ✓、`T = F[x]_P` ✓）→ §7 得 `ψ : S → T` ✓ →
+§8 的公共分母得 `ψ(S) ⊂ F[x](1/w)`（`w ∉ P` ✓）→ §9 把该包含**兑现**为穿过 `A[1/w]` 的 `ψ'` ✓ →
+「Also, `η` yields a surjection `η : F[x₁,…,xₙ](1/w) → R(1/rv)` **where `v = η(w)`**」✓ →
+「In all, `φ : S → R(1/rv)` is the composition of `ψ` and `η`」✓。
+
+**本节七件** ✓：
+① `awayToAwayOfDvd` ✓（「局部化的局部化」✓：`a ∣ b` ⟹ `R(1/a) → R(1/b)` ✓）；
+② `localizedEta` ✓（**`η`** ✓：取 `r' := r₀·c` ✓，`c` 由 `IsLocalization.Away.surj` ✓ 给
+`η₀ w · (r₀/1)^n = c/1` ✓ 定出 ✓ —— 即印版的 `v = η(w)` ✓）；
+③ `residueFieldMap` ✓（**`K'`** ✓：映到**域档** `𝔨(P) := Ideal.ResidueField P` ✓）；
+④ 两条识别 ✓（`K' ∘ σ = residueMapOfSurjective` ✓；`K' ∘ η = residue ∘ ι` ✓，
+其代数内核是 `residue (algebraMap A A_P a) = algebraMap A 𝔨(P) a` ✓）；
+⑤ `injective_residueFieldMap` ✓（**`K'` 单** ✓）；⑥ `finiteType_away_of_field` ✓（L1 探针用 ✓）；
+⑦ `factorsRationally_of_hasLocalLifting` ✓（**收口** ＝ `FactorsRationally` ✓）。
+**⚠ 结构读数** ✓：`R(1/r') → R(1/r₀)` **不存在** ✗（`c` 在 `R(1/r₀)` 里未必可逆 ✗）
+⟹「映回小局部化」的路 **不通** ✗，故 ④⑤ 必须走**域档 `𝔨(P)`** ✓。 -/
+
+/-- **工具** ✓：`A_P` 的剩余域里 `residue ∘ algebraMap = algebraMap A 𝔨(P)` ✓
+（`IsLocalRing.ResidueField.algebraMap_eq` ✓ ＋ `IsScalarTower.algebraMap_apply` ✓）。
+**⚠ 意义** ✓：这是源「`T/M = K`」✓ 在 `A` 上的**计算形** ✓。 -/
+theorem residue_algebraMap_eq_algebraMap {A : Type u} [CommRing A] (P : Ideal A) [P.IsPrime]
+    (a : A) : IsLocalRing.residue (Localization.AtPrime P) (algebraMap A (Localization.AtPrime P) a)
+      = algebraMap A (Ideal.ResidueField P) a := by
+  rw [← IsLocalRing.ResidueField.algebraMap_eq (Localization.AtPrime P)]
+  exact (IsScalarTower.algebraMap_apply A (Localization.AtPrime P) (Ideal.ResidueField P) a).symm
+
+/-- **件 ①「局部化的局部化」** ✓✓：`a ∣ b` ⟹ 典范 `R(1/a) →ₐ[F] R(1/b)` ✓
+（`IsLocalization.Away.liftAlgHom` ✓ ＋ `IsLocalization.Away.isUnit_of_dvd` ✓）。
+**⚠ 用途** ✓：把 `η₀` 从 `R(1/r₀)` 推到 `R(1/(r₀·c))` ✓ —— 源里「`R(1/rv)`」✓ 的实体 ✓。 -/
+noncomputable def awayToAwayOfDvd {F R : Type u} [Field F] [CommRing R] [Algebra F R]
+    {a b : R} (h : a ∣ b) : Localization.Away a →ₐ[F] Localization.Away b :=
+  IsLocalization.Away.liftAlgHom (x := a) (f := Algebra.algHom F R (Localization.Away b))
+    (show IsUnit ((Algebra.algHom F R (Localization.Away b)) a) from
+      IsLocalization.Away.isUnit_of_dvd (S := Localization.Away b) (x := b) h)
+
+theorem awayToAwayOfDvd_algebraMap {F R : Type u} [Field F] [CommRing R] [Algebra F R]
+    {a b : R} (h : a ∣ b) (x : R) :
+    awayToAwayOfDvd (F := F) h (algebraMap R (Localization.Away a) x)
+      = algebraMap R (Localization.Away b) x := by
+  rw [awayToAwayOfDvd, IsLocalization.Away.liftAlgHom_apply,
+    IsLocalization.Away.lift_eq (x := a) _ x]
+  rfl
+
+/-- **件 ② 的单位性输入** ✓✓：`(σ ∘ η₀) w` 是单位 ✓ —— 因
+`η₀ w · (r₀/1)^n = c/1` ✓ 而 `c` 与 `r₀/1` 在 `R(1/(r₀·c))` 里**都被倒过来** ✓。
+**⚠ 口径** ✓：末步**不**用 `Units.ne_zero` ✗（要 `Nontrivial` 实例 ✗）⟹
+用 `IsUnit.mul_left_eq_zero` ✓ ＋ `IsUnit.ringInverse` ✓。 -/
+theorem isUnit_comp_eta0_at_w {F R : Type u} [Field F] [CommRing R] [IsDomain R]
+    [Algebra F R] {m : ℕ} {r₀ : R} (η₀ : MvPolynomial (Fin m) F →ₐ[F] Localization.Away r₀)
+    {c : R} {w : MvPolynomial (Fin m) F} {n : ℕ}
+    (hsurj : η₀ w * (algebraMap R (Localization.Away r₀) r₀) ^ n
+      = algebraMap R (Localization.Away r₀) c) :
+    IsUnit ((awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩).comp η₀ w) := by
+  have hσ : ∀ x : R,
+      awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩
+          (algebraMap R (Localization.Away r₀) x)
+        = algebraMap R (Localization.Away (r₀ * c)) x :=
+    fun x => awayToAwayOfDvd_algebraMap (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩ x
+  have hkey : awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩ (η₀ w)
+      * (awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩
+          (algebraMap R (Localization.Away r₀) r₀)) ^ n
+      = algebraMap R (Localization.Away (r₀ * c)) c := by
+    have h0 := congrArg (awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩) hsurj
+    simpa only [map_mul, map_pow, hσ] using h0
+  have hcunit : IsUnit (algebraMap R (Localization.Away (r₀ * c)) c) :=
+    IsLocalization.Away.isUnit_of_dvd (S := Localization.Away (r₀ * c)) (x := r₀ * c)
+      (dvd_mul_left c r₀)
+  have huσ : IsUnit (awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩
+      (algebraMap R (Localization.Away r₀) r₀)) := by
+    rw [hσ r₀]
+    exact IsLocalization.Away.isUnit_of_dvd (S := Localization.Away (r₀ * c)) (x := r₀ * c)
+      (dvd_mul_right r₀ c)
+  have hx : awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩ (η₀ w)
+      = algebraMap R (Localization.Away (r₀ * c)) c
+        * ((awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩
+            (algebraMap R (Localization.Away r₀) r₀)) ^ n)⁻¹ʳ := by
+    rw [← hkey, mul_assoc, Ring.mul_inverse_cancel _ ((huσ.pow n)), mul_one]
+  rw [AlgHom.comp_apply, hx]
+  exact IsUnit.mul hcunit ((huσ.pow n).ringInverse)
+
+/-- **工具** ✓：`algebraMap R (R(1/r))` **单** ✓（`R` 整环、`r ≠ 0` ✓）——
+`Submonoid.powers r ≤ nonZeroDivisors R` ✓（`r ≠ 0` ✓ ⟹ `r^n ≠ 0` ✓）。 -/
+theorem injective_algebraMap_away {R : Type u} [CommRing R] [IsDomain R] {r : R} (hr : r ≠ 0) :
+    Function.Injective (algebraMap R (Localization.Away r)) := by
+  refine IsLocalization.injective (M := Submonoid.powers r) (Localization.Away r) ?_
+  intro x hx
+  obtain ⟨n, rfl⟩ := (Submonoid.mem_powers_iff x r).mp hx
+  rw [mem_nonZeroDivisors_iff]
+  exact ⟨fun y hy => (eq_zero_or_eq_zero_of_mul_eq_zero hy).resolve_left (pow_ne_zero n hr),
+    fun y hy => (eq_zero_or_eq_zero_of_mul_eq_zero hy).resolve_right (pow_ne_zero n hr)⟩
+
+/-- **工具** ✓：`residueMapOfSurjective η₀ hη₀` **单** ✓（它是「商同构 ＋ `A⧸P → 𝔨(P)`」的复合 ✓，
+而后者由 `Ideal.injective_algebraMap_quotient_residueField` ✓ 单 ✓）。 -/
+theorem injective_residueMapOfSurjective {F R' : Type u} [Field F] [CommRing R']
+    [Algebra F R'] {m : ℕ} (η₀ : MvPolynomial (Fin m) F →ₐ[F] R')
+    (hη₀ : Function.Surjective η₀) [(RingHom.ker η₀).IsPrime] :
+    Function.Injective (residueMapOfSurjective (F := F) η₀ hη₀) := by
+  rw [injective_iff_map_eq_zero]
+  intro x hx
+  change algebraMap (MvPolynomial (Fin m) F ⧸ RingHom.ker η₀)
+      (Ideal.ResidueField (RingHom.ker η₀))
+      ((Ideal.quotientKerAlgEquivOfSurjective hη₀).symm x) = 0 at hx
+  have h0 : (Ideal.quotientKerAlgEquivOfSurjective hη₀).symm x = 0 :=
+    Ideal.injective_algebraMap_quotient_residueField (I := RingHom.ker η₀)
+      (R := MvPolynomial (Fin m) F) (by rw [hx, map_zero])
+  simpa using h0
+
+/-- **工具** ✓：`K'` 的**输入映射** `R →ₐ[F] 𝔨(P)` **单** ✓（＝
+`residueMapOfSurjective ∘ algebraMap R (R(1/r₀))` ✓，两条都单 ✓）。 -/
+theorem injective_residueFieldMap_input {F R : Type u} [Field F] [CommRing R] [IsDomain R]
+    [Algebra F R] {m : ℕ} {r₀ : R} (hr₀ : r₀ ≠ 0)
+    (η₀ : MvPolynomial (Fin m) F →ₐ[F] Localization.Away r₀)
+    (hη₀ : Function.Surjective η₀) [(RingHom.ker η₀).IsPrime] :
+    Function.Injective ((residueMapOfSurjective (F := F) η₀ hη₀).comp
+      (Algebra.algHom F R (Localization.Away r₀))) := by
+  have h2 : Function.Injective ((residueMapOfSurjective (F := F) η₀ hη₀)
+      ∘ (algebraMap R (Localization.Away r₀))) :=
+    (injective_residueMapOfSurjective (F := F) η₀ hη₀).comp
+      (injective_algebraMap_away (R := R) hr₀)
+  intro x y hxy
+  exact h2 hxy
+
+/-- **件 ② 成品「`η`」** ✓✓✓：`η : F[x](1/w) →ₐ[F] R(1/(r₀·c))` ✓ ——
+由 `IsLocalization.Away.liftAlgHom` ✓ 下降 `σ ∘ η₀` ✓（单位性见上条 ✓）。
+**⚠ 形态** ✓：`c` 是 `η₀ w` 在 `R(1/r₀)` 里的**分子** ✓ ⟹ 目标 `R(1/(r₀·c))` 正是
+印版的 **`R(1/rv)`**（`v = η(w)` ✓）✓。 -/
+noncomputable def localizedEta {F R : Type u} [Field F] [CommRing R] [IsDomain R]
+    [Algebra F R] {m : ℕ} {r₀ : R} (η₀ : MvPolynomial (Fin m) F →ₐ[F] Localization.Away r₀)
+    {c : R} {w : MvPolynomial (Fin m) F} {n : ℕ}
+    (hsurj : η₀ w * (algebraMap R (Localization.Away r₀) r₀) ^ n
+      = algebraMap R (Localization.Away r₀) c) :
+    Localization.Away w →ₐ[F] Localization.Away (r₀ * c) :=
+  IsLocalization.Away.liftAlgHom (x := w)
+    (f := (awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩).comp η₀)
+    (isUnit_comp_eta0_at_w (F := F) η₀ hsurj)
+
+theorem localizedEta_algebraMap {F R : Type u} [Field F] [CommRing R] [IsDomain R]
+    [Algebra F R] {m : ℕ} {r₀ : R} (η₀ : MvPolynomial (Fin m) F →ₐ[F] Localization.Away r₀)
+    {c : R} {w : MvPolynomial (Fin m) F} {n : ℕ}
+    (hsurj : η₀ w * (algebraMap R (Localization.Away r₀) r₀) ^ n
+      = algebraMap R (Localization.Away r₀) c)
+    (p : MvPolynomial (Fin m) F) :
+    localizedEta (F := F) η₀ hsurj
+        (algebraMap (MvPolynomial (Fin m) F) (Localization.Away w) p)
+      = awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩ (η₀ p) := by
+  rw [localizedEta, IsLocalization.Away.liftAlgHom_apply,
+    IsLocalization.Away.lift_eq (x := w) _ p]
+  rfl
+
+/-- **件 ③ 成品「`K'`」** ✓✓✓：`K' : R(1/(r₀·c)) →ₐ[F] 𝔨(P)`（`P = ker η₀` ✓）——
+**域档** ✓（源「`T/M = K`」✓ 的实体 ✓）：由 `IsLocalization.Away.liftAlgHom` ✓ 下降
+`k := residueMapOfSurjective η₀ hη₀ ∘ algebraMap R (R(1/r₀))` ✓。
+**⚠ 单位性** ✓：`k (r₀·c) ≠ 0` ✓（`k` 单 ✓ ＋ `r₀·c ≠ 0` ✓）⟹ 域中为单位 ✓。 -/
+noncomputable def residueFieldMap {F R : Type u} [Field F] [CommRing R] [IsDomain R]
+    [Algebra F R] {m : ℕ} {r₀ : R} (hr₀ : r₀ ≠ 0)
+    (η₀ : MvPolynomial (Fin m) F →ₐ[F] Localization.Away r₀)
+    (hη₀ : Function.Surjective η₀) [(RingHom.ker η₀).IsPrime] {c : R} (hc : c ≠ 0) :
+    Localization.Away (r₀ * c) →ₐ[F] Ideal.ResidueField (RingHom.ker η₀) :=
+  IsLocalization.Away.liftAlgHom (x := r₀ * c)
+    (f := (residueMapOfSurjective (F := F) η₀ hη₀).comp (Algebra.algHom F R (Localization.Away r₀)))
+    (show IsUnit (((residueMapOfSurjective (F := F) η₀ hη₀).comp
+        (Algebra.algHom F R (Localization.Away r₀))) (r₀ * c)) from
+      isUnit_iff_ne_zero.mpr (fun hzero => mul_ne_zero hr₀ hc
+        (injective_residueFieldMap_input (F := F) hr₀ η₀ hη₀ (by rw [hzero, map_zero]))))
+
+theorem residueFieldMap_algebraMap {F R : Type u} [Field F] [CommRing R] [IsDomain R]
+    [Algebra F R] {m : ℕ} {r₀ : R} (hr₀ : r₀ ≠ 0)
+    (η₀ : MvPolynomial (Fin m) F →ₐ[F] Localization.Away r₀)
+    (hη₀ : Function.Surjective η₀) [(RingHom.ker η₀).IsPrime] {c : R} (hc : c ≠ 0) (x : R) :
+    residueFieldMap (F := F) hr₀ η₀ hη₀ hc (algebraMap R (Localization.Away (r₀ * c)) x)
+      = (residueMapOfSurjective (F := F) η₀ hη₀) (algebraMap R (Localization.Away r₀) x) := by
+  rw [residueFieldMap, IsLocalization.Away.liftAlgHom_apply,
+    IsLocalization.Away.lift_eq (x := r₀ * c) _ x]
+  rfl
+
+/-- **件 ④ 识别之一** ✓✓：`K' ∘ σ = residueMapOfSurjective η₀ hη₀` ✓
+（两条 `R(1/r₀) →ₐ[F] 𝔨(P)` 在 `R` 上一致 ✓ ⟹ `IsLocalization.algHom_ext` ✓）。 -/
+theorem residueFieldMap_comp_awayToAway {F R : Type u} [Field F] [CommRing R] [IsDomain R]
+    [Algebra F R] {m : ℕ} {r₀ : R} (hr₀ : r₀ ≠ 0)
+    (η₀ : MvPolynomial (Fin m) F →ₐ[F] Localization.Away r₀)
+    (hη₀ : Function.Surjective η₀) [(RingHom.ker η₀).IsPrime] {c : R} (hc : c ≠ 0) :
+    (residueFieldMap (F := F) hr₀ η₀ hη₀ hc).comp
+        (awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩)
+      = residueMapOfSurjective (F := F) η₀ hη₀ := by
+  refine IsLocalization.algHom_ext (A := R) (W := Submonoid.powers r₀) ?_
+  refine AlgHom.ext fun x => ?_
+  simp only [AlgHom.comp_apply]
+  rw [show (Algebra.algHom F R (Localization.Away r₀)) x
+      = algebraMap R (Localization.Away r₀) x from rfl]
+  rw [awayToAwayOfDvd_algebraMap (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩ x]
+  rw [residueFieldMap_algebraMap (F := F) hr₀ η₀ hη₀ hc x]
+
+/-- **工具** ✓：`residueMapOfSurjective (η₀ p)` 与 `algebraMap A 𝔨(P) p` 一致 ✓
+（商同构在 `mk p` 上的取值 ✓ ＋ `Ideal.algebraMap_quotient_residueField_mk` ✓）。 -/
+theorem residueMap_eta0_eq_algebraMap {F R' : Type u} [Field F] [CommRing R']
+    [Algebra F R'] {m : ℕ} (η₀ : MvPolynomial (Fin m) F →ₐ[F] R')
+    (hη₀ : Function.Surjective η₀) [(RingHom.ker η₀).IsPrime]
+    (p : MvPolynomial (Fin m) F) :
+    (residueMapOfSurjective (F := F) η₀ hη₀) (η₀ p)
+      = algebraMap (MvPolynomial (Fin m) F) (Ideal.ResidueField (RingHom.ker η₀)) p := by
+  change (Algebra.algHom F (MvPolynomial (Fin m) F ⧸ RingHom.ker η₀)
+      (Ideal.ResidueField (RingHom.ker η₀)))
+    ((Ideal.quotientKerAlgEquivOfSurjective hη₀).symm (η₀ p)) = _
+  rw [Ideal.quotientKerAlgEquivOfSurjective_symm_apply]
+  change algebraMap (MvPolynomial (Fin m) F ⧸ RingHom.ker η₀)
+      (Ideal.ResidueField (RingHom.ker η₀)) (Ideal.Quotient.mk (RingHom.ker η₀) p)
+    = algebraMap (MvPolynomial (Fin m) F) (Ideal.ResidueField (RingHom.ker η₀)) p
+  exact (Ideal.algebraMap_quotient_residueField_mk (I := RingHom.ker η₀) p).symm
+
+/-- **工具** ✓：`residue ∘ ι ∘ algebraMap A` ＝ `algebraMap A 𝔨(P)` ✓ —— 即源
+「`η extends to the map `η : T → K`」✓ 在 `A` 上的计算形 ✓。 -/
+theorem residue_algebraMap_awayToAtPrime {F A : Type u} [Field F] [CommRing A]
+    [Algebra F A] (P : Ideal A) [P.IsPrime] (w : A) (hw : w ∉ P) (p : A) :
+    (Algebra.algHom F (Localization.AtPrime P) (Ideal.ResidueField P))
+        (awayToAtPrime P w hw (algebraMap A (Localization.Away w) p))
+      = algebraMap A (Ideal.ResidueField P) p := by
+  rw [show awayToAtPrime P w hw (algebraMap A (Localization.Away w) p)
+      = algebraMap A (Localization.AtPrime P) p from by simp [awayToAtPrime]]
+  change IsLocalRing.residue (Localization.AtPrime P) (algebraMap A (Localization.AtPrime P) p) = _
+  exact residue_algebraMap_eq_algebraMap P p
+
+/-- **件 ④ 识别之二** ✓✓✓：`K' ∘ η = residue ∘ ι` ✓ —— 源「`η ∘ ψ = i ∘ φ`」✓ 的实体 ✓。
+**证法** ✓：`IsLocalization.algHom_ext (powers w)` ✓，两条在 `A` 上分别落到
+`residueMapOfSurjective (η₀ p)` ✓ 与 `residue (algebraMap A A_P p)` ✓，
+再由 `residueMap_eta0_eq_algebraMap` ✓ 与 `residue_algebraMap_awayToAtPrime` ✓ 收口 ✓。
+**⚠ 载体** ✓：`ι = awayToAtPrime` 是 **`A`-代数**同态 ✓，须经 `AlgHom.restrictScalars F` ✓
+方与 `F`-代数侧的 `K' ∘ η` 同台 ✓（实测需 `AlgHom.restrictScalars_apply` ✓ 摆正 ✓）。 -/
+theorem residueFieldMap_comp_localizedEta {F R : Type u} [Field F] [CommRing R] [IsDomain R]
+    [Algebra F R] {m : ℕ} {r₀ : R} (hr₀ : r₀ ≠ 0)
+    (η₀ : MvPolynomial (Fin m) F →ₐ[F] Localization.Away r₀)
+    (hη₀ : Function.Surjective η₀) [(RingHom.ker η₀).IsPrime] {c : R} (hc : c ≠ 0)
+    {w : MvPolynomial (Fin m) F} {n : ℕ}
+    (hsurj : η₀ w * (algebraMap R (Localization.Away r₀) r₀) ^ n
+      = algebraMap R (Localization.Away r₀) c)
+    (hw : w ∉ RingHom.ker η₀) :
+    (residueFieldMap (F := F) hr₀ η₀ hη₀ hc).comp (localizedEta (F := F) η₀ hsurj)
+      = (Algebra.algHom F (Localization.AtPrime (RingHom.ker η₀))
+          (Ideal.ResidueField (RingHom.ker η₀))).comp
+        ((awayToAtPrime (RingHom.ker η₀) w hw).restrictScalars F) := by
+  refine IsLocalization.algHom_ext (A := MvPolynomial (Fin m) F) (W := Submonoid.powers w) ?_
+  refine AlgHom.ext fun p => ?_
+  simp only [AlgHom.comp_apply]
+  rw [show (Algebra.algHom F (MvPolynomial (Fin m) F) (Localization.Away w)) p
+      = algebraMap (MvPolynomial (Fin m) F) (Localization.Away w) p from rfl]
+  rw [localizedEta_algebraMap (F := F) η₀ hsurj p]
+  rw [show residueFieldMap (F := F) hr₀ η₀ hη₀ hc
+        (awayToAwayOfDvd (F := F) (a := r₀) (b := r₀ * c) ⟨c, rfl⟩ (η₀ p))
+      = (residueMapOfSurjective (F := F) η₀ hη₀) (η₀ p)
+      from congrArg (fun f => f (η₀ p))
+        (residueFieldMap_comp_awayToAway (F := F) hr₀ η₀ hη₀ hc)]
+  rw [residueMap_eta0_eq_algebraMap (F := F) η₀ hη₀ p]
+  rw [AlgHom.restrictScalars_apply]
+  rw [residue_algebraMap_awayToAtPrime (F := F) (RingHom.ker η₀) w hw p]
+
+/-- **件 ⑤「`K'` 单」** ✓✓✓：由输入映射单 ✓ 与 `IsLocalization.injective_iff_map_algebraMap_eq` ✓。 -/
+theorem injective_residueFieldMap {F R : Type u} [Field F] [CommRing R] [IsDomain R]
+    [Algebra F R] {m : ℕ} {r₀ : R} (hr₀ : r₀ ≠ 0)
+    (η₀ : MvPolynomial (Fin m) F →ₐ[F] Localization.Away r₀)
+    (hη₀ : Function.Surjective η₀) [(RingHom.ker η₀).IsPrime] {c : R} (hc : c ≠ 0) :
+    Function.Injective (residueFieldMap (F := F) hr₀ η₀ hη₀ hc) := by
+  refine (IsLocalization.injective_iff_map_algebraMap_eq (M := Submonoid.powers (r₀ * c))
+    (f := (residueFieldMap (F := F) hr₀ η₀ hη₀ hc).toRingHom)).mpr ?_
+  intro x y
+  rw [show (residueFieldMap (F := F) hr₀ η₀ hη₀ hc).toRingHom
+        (algebraMap R (Localization.Away (r₀ * c)) x)
+      = (residueMapOfSurjective (F := F) η₀ hη₀) (algebraMap R (Localization.Away r₀) x)
+      from residueFieldMap_algebraMap (F := F) hr₀ η₀ hη₀ hc x]
+  rw [show (residueFieldMap (F := F) hr₀ η₀ hη₀ hc).toRingHom
+        (algebraMap R (Localization.Away (r₀ * c)) y)
+      = (residueMapOfSurjective (F := F) η₀ hη₀) (algebraMap R (Localization.Away r₀) y)
+      from residueFieldMap_algebraMap (F := F) hr₀ η₀ hη₀ hc y]
+  constructor
+  · intro h
+    rw [injective_algebraMap_away (R := R) (mul_ne_zero hr₀ hc) h]
+  · intro h
+    rw [injective_residueFieldMap_input (F := F) hr₀ η₀ hη₀ h]
+
+/-- **工具（L1 探针用）** ✓：`F` 是域、`r ≠ 0` ⟹ `F(1/r)` 是**有限型** `F`-代数 ✓
+（`r` 为单位 ✓ ⟹ `algebraMap F F(1/r)` **满** ✓ ⟹ `Algebra.FiniteType.of_surjective` ✓）。 -/
+theorem finiteType_away_of_field {F : Type u} [Field F] (r : F) (hr : r ≠ 0) :
+    Algebra.FiniteType F (Localization.Away r) := by
+  refine Algebra.FiniteType.of_surjective (Algebra.algHom F F (Localization.Away r)) ?_
+  intro y
+  obtain ⟨n, a, ha⟩ := IsLocalization.Away.surj (S := Localization.Away r) r y
+  refine ⟨a * (r⁻¹) ^ n, ?_⟩
+  rw [map_mul, map_pow]
+  have hbc : algebraMap F (Localization.Away r) r * algebraMap F (Localization.Away r) r⁻¹ = 1 := by
+    rw [← map_mul, mul_inv_cancel₀ hr, map_one]
+  have hpow : (algebraMap F (Localization.Away r) r) ^ n
+      * (algebraMap F (Localization.Away r) r⁻¹) ^ n = 1 := by
+    rw [← mul_pow, hbc, one_pow]
+  change algebraMap F (Localization.Away r) a
+      * (algebraMap F (Localization.Away r) r⁻¹) ^ n = y
+  rw [← ha, mul_assoc, hpow, mul_one]
+
+set_option linter.style.haveILetI false in
+/-- **件 ⑦ ＝ `thm3.9` 的 (ii)⟹(i)（反方向）** ✓✓✓✓：`HasLocalLifting` ⟹ `FactorsRationally` ✓。
+**证法** ✓（§72.4 的六件 ✓，逐步对应源印版 p.185 ✓）：
+取 `r₀` ✓（`HasLocalLifting` 的见证 ✓）＋ 仿射满射 `η₀ : F[x] ↠ R(1/r₀)` ✓（`hRaff` ✓）
+＋ `P := ker η₀` ✓（`R(1/r₀)` 是整环 ✓ ⟹ `P` 素 ✓）→ §7 得 `ψ : S → T = F[x]_P` ✓ →
+`S` 仿射 ✓ ⟹ 生成元集 `sf` ✓ ⟹ §8 给公共分母 `w ∉ P` ✓ ⟹ §9 得 `ψ'` ✓ →
+`c, n` ✓ 由 `Away.surj` ✓ → `η := localizedEta` ✓、`K' := residueFieldMap` ✓ →
+两端映 `K'` ✓ 后用 `hψ` ✓ 与 §11 的两条识别 ✓ 得同一个值 ✓ ⟹ `K'` 单 ✓ ⟹ 收口 ✓。
+**⚠ 假设口径** ✓：`Algebra.FiniteType F S` ✓ 与 `∀ r ≠ 0, Algebra.FiniteType F (R(1/r))` ✓
+**两件都须显式** ✓（§68 的印版级发现 ✓：源 `thm3.9` 的**陈述**未写仿射性 ✓，
+而其**证明**两处都用到 ✓）。
+**非空洞** ✓（L1 ✓）：探针见下条 ✓。 -/
+theorem factorsRationally_of_hasLocalLifting {F S R : Type u} [Field F]
+    [CommRing S] [IsDomain S] [Algebra F S] [CommRing R] [IsDomain R] [Algebra F R]
+    (φ : S →ₐ[F] R) (hS : Algebra.FiniteType F S) (hφ : HasLocalLifting F S R φ)
+    (hRaff : ∀ r : R, r ≠ 0 → Algebra.FiniteType F (Localization.Away r)) :
+    FactorsRationally F S R φ := by
+  classical
+  obtain ⟨r₀, hr₀, H⟩ := hφ
+  obtain ⟨r₀, hr₀, Hlift⟩ := exists_lift_to_atPrime_of_hasLocalLifting (F := F) (φ := φ)
+    (show HasLocalLifting F S R φ from ⟨r₀, hr₀, H⟩)
+  obtain ⟨m, η₀, hη₀⟩ := exists_surjective_mvPolynomial_of_finiteType (F := F) (hRaff r₀ hr₀)
+  haveI : IsDomain (Localization.Away r₀) := isDomain_localization_away (R := R) hr₀
+  haveI hP : (RingHom.ker η₀).IsPrime := RingHom.ker_isPrime η₀
+  obtain ⟨ψ, hψ⟩ := Hlift η₀ hη₀
+  obtain ⟨sf, hsf⟩ := hS.out
+  obtain ⟨m₀, hm₀⟩ := exists_mem_localization_ge_adjoin (A := MvPolynomial (Fin m) F)
+    (B := Localization.AtPrime (RingHom.ker η₀)) (M := (RingHom.ker η₀).primeCompl) (sf.image ψ)
+  let w : MvPolynomial (Fin m) F := (m₀ : MvPolynomial (Fin m) F)
+  have hwP : w ∉ RingHom.ker η₀ := m₀.2
+  have hw0 : w ≠ 0 := fun h => hwP (by rw [h]; exact (RingHom.mem_ker).mpr (map_zero η₀))
+  have hι : ∀ p : MvPolynomial (Fin m) F,
+      awayToAtPrime (RingHom.ker η₀) w hwP
+          (algebraMap (MvPolynomial (Fin m) F) (Localization.Away w) p)
+        = algebraMap (MvPolynomial (Fin m) F) (Localization.AtPrime (RingHom.ker η₀)) p := by
+    intro p
+    simp [awayToAtPrime]
+  have hinv : awayToAtPrime (RingHom.ker η₀) w hwP (IsLocalization.Away.invSelf w)
+      * algebraMap (MvPolynomial (Fin m) F) (Localization.AtPrime (RingHom.ker η₀)) w = 1 := by
+    rw [← hι w, ← map_mul, mul_comm (IsLocalization.Away.invSelf w),
+      IsLocalization.Away.mul_invSelf, map_one]
+  have hmem_range : ∀ y : Localization.AtPrime (RingHom.ker η₀),
+      (∃ (a : MvPolynomial (Fin m) F) (k : ℕ),
+        y * (algebraMap (MvPolynomial (Fin m) F) (Localization.AtPrime (RingHom.ker η₀)) w) ^ k
+          = algebraMap (MvPolynomial (Fin m) F) (Localization.AtPrime (RingHom.ker η₀)) a)
+      → y ∈ ((awayToAtPrime (RingHom.ker η₀) w hwP).restrictScalars F).range := by
+    intro y hy
+    obtain ⟨a, k, hk⟩ := hy
+    have huv : (algebraMap (MvPolynomial (Fin m) F) (Localization.AtPrime (RingHom.ker η₀)) w) ^ k
+        * (awayToAtPrime (RingHom.ker η₀) w hwP (IsLocalization.Away.invSelf w)) ^ k = 1 := by
+      rw [← mul_pow, mul_comm, hinv, one_pow]
+    refine ⟨algebraMap (MvPolynomial (Fin m) F) (Localization.Away w) a
+      * (IsLocalization.Away.invSelf w) ^ k, ?_⟩
+    show awayToAtPrime (RingHom.ker η₀) w hwP
+      (algebraMap (MvPolynomial (Fin m) F) (Localization.Away w) a
+        * (IsLocalization.Away.invSelf w) ^ k) = y
+    rw [map_mul, map_pow, hι a]
+    rw [← hk, mul_assoc, huv, mul_one]
+  have hgen : ∀ t ∈ sf, ψ t ∈ ((awayToAtPrime (RingHom.ker η₀) w hwP).restrictScalars F).range := by
+    intro t ht
+    have hmem : ψ t ∈ (sf.image ψ : Set (Localization.AtPrime (RingHom.ker η₀))) :=
+      Finset.mem_image.mpr ⟨t, ht, rfl⟩
+    exact hmem_range (ψ t) (hm₀ (ψ t) (Algebra.subset_adjoin hmem))
+  have hrange : ∀ s : S, ψ s ∈ ((awayToAtPrime (RingHom.ker η₀) w hwP).restrictScalars F).range := by
+    intro s
+    have hle : (⊤ : Subalgebra F S)
+        ≤ (((awayToAtPrime (RingHom.ker η₀) w hwP).restrictScalars F).range).comap ψ := by
+      rw [← hsf]
+      exact Algebra.adjoin_le (fun t ht => hgen t ht)
+    exact (Subalgebra.mem_comap _ ψ s).mp (hle Algebra.mem_top)
+  obtain ⟨ψ', hψ'⟩ := exists_factor_through_of_injective (R := F) (A := MvPolynomial (Fin m) F) w
+    ((awayToAtPrime (RingHom.ker η₀) w hwP).restrictScalars F)
+    (injective_awayToAtPrime (RingHom.ker η₀) w hwP) ψ hrange
+  obtain ⟨n, c, hsurj⟩ := IsLocalization.Away.surj (S := Localization.Away r₀) r₀ (η₀ w)
+  have hηw : η₀ w ≠ 0 := fun h => hwP h
+  have hc0 : algebraMap R (Localization.Away r₀) c ≠ 0 := by
+    intro h0
+    exact hηw ((IsUnit.mul_left_eq_zero
+      (IsLocalization.Away.algebraMap_pow_isUnit (S := Localization.Away r₀) (x := r₀) n)).mp
+        (by rw [hsurj, h0]))
+  have hc : c ≠ 0 := fun h0 => hc0 (by rw [h0, map_zero])
+  refine ⟨m, w, hw0, r₀ * c, mul_ne_zero hr₀ hc,
+    ψ', localizedEta (F := F) η₀ hsurj, ?_⟩
+  intro s
+  refine injective_residueFieldMap (F := F) hr₀ η₀ hη₀ hc ?_
+  rw [residueFieldMap_algebraMap (F := F) hr₀ η₀ hη₀ hc (φ s)]
+  rw [← hψ s]
+  rw [show residueFieldMap (F := F) hr₀ η₀ hη₀ hc
+        (localizedEta (F := F) η₀ hsurj (ψ' s))
+      = (Algebra.algHom F (Localization.AtPrime (RingHom.ker η₀))
+          (Ideal.ResidueField (RingHom.ker η₀)))
+          (awayToAtPrime (RingHom.ker η₀) w hwP (ψ' s))
+      from congrArg (fun f => f (ψ' s))
+        (residueFieldMap_comp_localizedEta (F := F) hr₀ η₀ hη₀ hc hsurj hwP)]
+  rw [show awayToAtPrime (RingHom.ker η₀) w hwP (ψ' s) = ψ s
+      from congrArg (fun f => f s) hψ']
+  rfl
+
+/-- **非空洞探针（L1）** ✓✅：`F = S = R = ℚ`、`φ = AlgHom.id` 档 ✓ ——
+三件假设**同时可满足** ✓（`Algebra.FiniteType ℚ ℚ` ✓ ／ `hasLocalLifting_id_data_nonempty` ✓ ／
+`finiteType_away_of_field` ✓），且**结论真的被本条推出** ✓ ⟹
+假设类**非空** ✓、结论**非空洞** ✓。 -/
+theorem factorsRationally_of_hasLocalLifting_probe :
+    FactorsRationally ℚ ℚ ℚ (AlgHom.id ℚ ℚ) :=
+  factorsRationally_of_hasLocalLifting (F := ℚ) (AlgHom.id ℚ ℚ) inferInstance
+    (hasLocalLifting_id_data_nonempty ℚ) (fun r hr => finiteType_away_of_field r hr)
+
+/-! ## 12. 登记 -/
 
 /-- **登记** ✗（**源陈述缺假设** ✓✓，**印版级已核** ✓；L39 家族 ✓）：源 `thm3.9` 的**陈述**
 （**印版 p.184** ✓，逐字）只说「Let `φ : S → R` be an `F` algebra map between `F` algebra
@@ -512,24 +919,20 @@ theorem injective_awayToAtPrime_probe :
 （`deadend`／勘误候选 ✓）。 -/
 theorem thm39_affineness_finding_registered : True := trivial
 
-/-- **登记** ✗：本层**未落**的两件 ✓（均须按 §47／§52 同法先作**来源核验** ✓）：
+/-- **登记** ✗：本层**余下一件** ✓（须按 §47／§52 同法先作**来源核验** ✓）：
 
-① **`thm3.9` 的反方向**（(ii)⟹(i) ✓，印版 p.185 ✓）：**✅ 设置已完成** ✓✓（本件 §7 ✓：
+① **`thm3.9` 的反方向**（(ii)⟹(i) ✓，印版 p.185 ✓）：**✅✅✅ 已落** ✓✓（**第 110 轮** ✓，§11 ✓：
+`factorsRationally_of_hasLocalLifting` ✓）。**沿途各段的落点** ✓：**设置** ✓（§7 ✓：
 `η₀` ✓／`P = ker η₀` ✓／`T = F[x]_P` ✓／残差映射 ✓／**`ψ : S → T` 取自 `HasLocalLifting`** ✓）；
-**✅ 仍缺一段** ✓（第 107 轮更新 ✓）：（a）「`ψ(S) ⊆ F[x](1/w)` 对某 `w ∉ P`」✓ ——
-**✅ 工具已落** ✓✓（本件 §8 ✓：`exists_mem_localization_ge_finset` ✓／
-`exists_mem_localization_ge_adjoin` ✓（**有限型子代数档** ✓）／`exists_mem_primeCompl_of_finset` ✓
-（**素理想档 `w ∉ P`** ✓））＋ **✅ 接口已落** ✓✓（本件 §9 ✓：
-`exists_factor_through_of_injective` ✓ 把「包含」兑现为「穿过 `A[1/w]`」✓）；
-**⚠ 仍缺** ✗：把 §9 用到 `T = F[x]_P` 上所需的 **`A[1/w] →ₐ[F] A_P` 的单性** ——
-**✅✅ 已落** ✓✓（**第 109 轮** ✓，§10 末 ✓：`injective_awayToAtPrime` ✓；
-§71.2 的两条口径**逐条实测** ✓：（a）末步 ✅ 用 `IsUnit.mul_left_eq_zero` ✓
-（**无** `Nontrivial` 要求 ✓，即「乘 `u⁻¹`」路线 ✓）；（b）`Algebra.algHom` 别名目标
-✅ `simp [awayToAtPrime]` ✓ 已摆正 ✓，**无需 `change`** ✓）；
-（b）**最后的组装** ✗：`F[x](1/w) → R(1/(r·v))`（`v = η₀ w` ✓）＋ 组装 `FactorsRationally` ✓
-（须用「局部化的局部化」识别 ✗）。
+**步 ⑤ 工具与接口** ✓（§8 ✓／§9 ✓：公共分母 ✓／兑现为穿过 `A[1/w]` ✓）；
+**单性** ✓（§10 末 ✓：`injective_awayToAtPrime` ✓，第 109 轮 ✓）；
+**最后组装** ✓（§11 ✓：`awayToAwayOfDvd` ✓／`localizedEta` ✓／`residueFieldMap` ✓／
+两条识别 ✓／`injective_residueFieldMap` ✓）。
+**⚠ 假设口径** ✓：目标形**显式**带 `Algebra.FiniteType F S` ✓ 与
+`∀ r ≠ 0, Algebra.FiniteType F (R(1/r))` ✓（**非**由 `R` 仿射导出 ✗，见上条 ✓）。
 
-② **`thm3.8`** ✓（印版 p.184 ✓）：需 ① 的**双向** ✓ ＋ `lem3.5` ✓（`SaltCor_ABGV52.lem3_5` ✓ 已有 ✓）。
+② **`thm3.8`** ✓（印版 p.184 ✓）：需 ① 的**双向** ✓（**已有** ✓）＋ `lem3.5` ✓
+（`SaltCor_ABGV52.lem3_5` ✓ 已有 ✓）⟹ **下一轮** ✓。
 
 **⚠ 与 M3 其余件的关系** ✓：`cor3.10(a)` ✓（印版 p.186 ✓）需要**局部投射对象** ✓ ＋
 **densely representing** ✓ ＋ 本件的**双向** ✓ ⟹ 亦在 ① 之后 ✓。 -/
@@ -562,6 +965,25 @@ theorem thm39_gap_registered : True := trivial
 #print axioms injective_algebraMap_atPrime
 #print axioms injective_awayToAtPrime
 #print axioms injective_awayToAtPrime_probe
+#print axioms residue_algebraMap_eq_algebraMap
+#print axioms awayToAwayOfDvd
+#print axioms awayToAwayOfDvd_algebraMap
+#print axioms isUnit_comp_eta0_at_w
+#print axioms injective_algebraMap_away
+#print axioms injective_residueMapOfSurjective
+#print axioms injective_residueFieldMap_input
+#print axioms localizedEta
+#print axioms localizedEta_algebraMap
+#print axioms residueFieldMap
+#print axioms residueFieldMap_algebraMap
+#print axioms residueFieldMap_comp_awayToAway
+#print axioms residueMap_eta0_eq_algebraMap
+#print axioms residue_algebraMap_awayToAtPrime
+#print axioms residueFieldMap_comp_localizedEta
+#print axioms injective_residueFieldMap
+#print axioms finiteType_away_of_field
+#print axioms factorsRationally_of_hasLocalLifting
+#print axioms factorsRationally_of_hasLocalLifting_probe
 #print axioms thm39_affineness_finding_registered
 #print axioms thm39_gap_registered
 

@@ -235,15 +235,20 @@ sync.  The items added since then are:
   `T = F[x]_P` produces the map `ψ : S → T` the proof needs.  The algebraic kernel of the refinement
   "`ψ(S) ⊆ F[x](1/w)` for some `w ∉ P`" is in place too: finitely many elements of a localization
   share a common denominator, and consequently a finitely generated subalgebra of a localization lies
-  in a one-element localization, in the prime form `w ∉ P`.  What is still missing from the converse
-  is the final assembly.  The containment of the refinement is also cashed out as an interface: an
-  algebra map whose image lies in the range of an injective one-element localization factors through
-  it.  Alongside it sits the canonical map `A[1/w] -> A_P` (as the inclusion `F[x](1/w) inside
-  F[x]_P` the proof uses) together with injectivity of the structure map into the localization at a
-  prime over a domain, and now also injectivity of that canonical map itself (for a domain `A`, a
-  prime `P` and `w ∉ P`), which is what the refinement interface needs in order to be applied at
-  `F[x]_P`.  The finding above was likewise refined: affineness of `R` does *not* give
-  affineness of `R(1/r)`, so the target must carry that hypothesis separately.  The converse and `thm3.8` are registered as gaps.
+  in a one-element localization, in the prime form `w ∉ P`.  The containment of the refinement is
+  also cashed out as an interface: an algebra map whose image lies in the range of an injective
+  one-element localization factors through it.  Alongside it sits the canonical map `A[1/w] -> A_P`
+  (as the inclusion `F[x](1/w) inside F[x]_P` the proof uses) together with injectivity of the
+  structure map into the localization at a prime over a domain, and also injectivity of that
+  canonical map itself (for a domain `A`, a prime `P` and `w ∉ P`), which is what the refinement
+  interface needs in order to be applied at `F[x]_P`.  The converse of `thm3.9` is now assembled:
+  from the lifting property, an affine surjection onto `R(1/r)`, its prime kernel `P` and the map
+  `ψ : S -> F[x]_P`, the finitely many images of a generating set of `S` share a denominator
+  `w ∉ P`, the refinement interface produces `ψ' : S -> F[x](1/w)`, and the rational factorization
+  is closed by mapping both sides into the residue field of `F[x]_P` — the localization
+  `R(1/r₀) -> R(1/(r₀ c))` and the localization of `η₀` at `w` are constructed for that purpose.
+  The finding above was likewise refined: affineness of `R` does *not* give affineness of `R(1/r)`,
+  so the target must carry that hypothesis separately.  `thm3.8` is registered as the remaining gap.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
