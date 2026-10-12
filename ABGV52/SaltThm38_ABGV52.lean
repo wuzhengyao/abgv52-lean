@@ -89,10 +89,89 @@ theorem thm3_8_probe (F : Type u) [Field F] :
       ∀ r : ↥(⊤ : Subalgebra F F), r ≠ 0 → Algebra.FiniteType F (Localization.Away r) :=
   (thm3_8 (⊤ : Subalgebra F F) (isFractionRing_top_self F)).mp (isRetractRational_self F)
 
+/-! ## 4. 源 `thm3.8` 的 **∃ `S` 形**（印版 184 的**陈述**形 ✓；含 L1 探针 ✓）
+
+**走向** ✓（源 `thm3.8` 的陈述用 **∃ `S`** ✓：「`K` **is** the quotient field of an affine `F`
+algebra `S` which satisfies …」✓）：由 `IsRetractRational` 的见证抽出**子代数** ✓ ——
+① 见证 `S` ✓（§2 的 `S` 是**抽象类型** ✓，非子代数 ✗）；② `IsFractionRing S K` ⟹ 结构映射**单** ✓；
+③ 取 `S' := (algebraMap S K).range` ✓（`Subalgebra F K` ✓）；④ 搬运两件 ✓：
+`Algebra.FiniteType` ✓ 沿 `↥S' ≃ₐ[F] S` ✓（`Algebra.FiniteType.equiv` ✓）、
+`IsFractionRing ↥S' K` ✓ 沿 `↥S' ≃+* S` ✓（`IsFractionRing.of_ringEquiv_left` ✓，
+其第三参数即「两条结构映射经 `e` 一致」✓ —— 由 `AlgEquiv.ofInjective` 在 `range` 上的
+计算形给出 ✓）。**⚠ 无需搬运 `HasLocalLifting`** ✓：∃ 形右侧经 §2 的 `thm3_8` ✓
+在**新子代数**上直接重跑 ✓（`(thm3_8 S' hS').mp hrt` ✓）。 -/
+
+/-- **从「retract rational」抽出「仿射的子代数」** ✓✓✓：`IsRetractRational F K` ⟹
+存在 `S : Subalgebra F K`，`S` **仿射** ✓ 且 `K = q(S)` ✓。
+**证法** ✓：由 `IsRetractRational` 的见证 `φ`／`ψ` ✓ 得 `ψ` **满** ✓（`ψ ∘ φ = id` ✓）⟹
+`FiniteType F S` ✓（`Algebra.FiniteType.of_surjective` ✓ 用在 `FiniteType F (F[x](1/w))` ✓ 上，
+后者由 §1 的工具 ✓）；再取 `S' := range` ✓ 搬运 ✓。
+**⚠ 用途** ✓：源 `thm3.8` 的 **∃ `S`** 形 ✓ 的唯一缺件 ✓。 -/
+theorem exists_affine_subalgebra_of_isRetractRational {F K : Type u} [Field F] [Field K]
+    [Algebra F K] (h : IsRetractRational F K) :
+    ∃ (S : Subalgebra F K), Algebra.FiniteType F ↥S ∧ IsFractionRing ↥S K := by
+  obtain ⟨S, hCR, hDom, hAFS, hASK, hTSK, hFrac, n, w, hw, φ, ψ, hcomp⟩ := h
+  let : CommRing S := hCR
+  let : IsDomain S := hDom
+  let : Algebra F S := hAFS
+  let : Algebra S K := hASK
+  let : IsScalarTower F S K := hTSK
+  let : IsFractionRing S K := hFrac
+  have hsurj : Function.Surjective ψ :=
+    fun s => ⟨φ s, by simpa [AlgHom.comp_apply] using congrArg (fun f => f s) hcomp⟩
+  have hFinA : Algebra.FiniteType F (Localization.Away w) := finiteType_localizationAway w
+  have hFinS : Algebra.FiniteType F S := Algebra.FiniteType.of_surjective ψ hsurj
+  have hinj : Function.Injective (IsScalarTower.toAlgHom F S K) := IsFractionRing.injective S K
+  let S' : Subalgebra F K := (IsScalarTower.toAlgHom F S K).range
+  let e : S ≃ₐ[F] ↥S' := AlgEquiv.ofInjective (IsScalarTower.toAlgHom F S K) hinj
+  have hFinS' : Algebra.FiniteType F ↥S' := Algebra.FiniteType.equiv hFinS e
+  have hFracS' : IsFractionRing ↥S' K :=
+    IsFractionRing.of_ringEquiv_left (R := ↥S') (S := S) (K := K) e.toRingEquiv.symm
+      (fun x => by
+        have h2 : ((e (e.symm x) : ↥S') : K) = (x : K) :=
+          congrArg (fun y : ↥S' => (y : K)) (AlgEquiv.apply_symm_apply e x)
+        change (x : K) = IsScalarTower.toAlgHom F S K (e.symm x)
+        rw [← h2]
+        rfl)
+  exact ⟨S', hFinS', hFracS'⟩
+
+/-- **源 `thm3.8`（∃ `S` 形 ✓ ＝ 源陈述的形 ✓，印版 184 ✓）** ✓✓✓✅：
+`K/F` **retract rational** ✓ ⟺ **存在** 仿射 `F`-子代数 `S ⊆ K` ✓（`K = q(S)` ✓）
+使源 `thm3.8(ii)` 成立 ✓（`HasLocalLifting F ↥S ↥S id` ✓ ＋
+`∀ r ≠ 0, FiniteType F (S(1/r))` ✓）。
+**证法** ✓：**(⟸)** ＝ §2 的 `thm3_8` ✓（`S` 给定档 ✓）的 `.mpr` ✓；
+**(⟹)** ＝ 上条的抽出 ✓ ＋ §2 的 `thm3_8` ✓ 的 `.mp` ✓。
+**⚠ 与 §2 的关系** ✓：§2 是**相对化形** ✓（`S` 给定 ✓，源**证明**所走 ✓）；
+本条补上**源陈述**的 ∃ 形 ✓ ⟹ `thm3.9`＋`thm3.8` 的 M3 链 ✓ 至此**完整** ✓。
+**非空洞** ✓（L1 ✓）：探针见下条 ✓。 -/
+theorem thm3_8_exists {F K : Type u} [Field F] [Field K] [Algebra F K] :
+    IsRetractRational F K ↔
+      ∃ (S : Subalgebra F K) (_ : Algebra.FiniteType F ↥S) (_ : IsFractionRing ↥S K),
+        HasLocalLifting F ↥S ↥S (AlgHom.id F ↥S) ∧
+          ∀ r : ↥S, r ≠ 0 → Algebra.FiniteType F (Localization.Away r) := by
+  constructor
+  · intro hrt
+    obtain ⟨S, hfin, hfrac⟩ := exists_affine_subalgebra_of_isRetractRational hrt
+    exact ⟨S, hfin, hfrac, (thm3_8 S hfrac).mp hrt⟩
+  · rintro ⟨S, hfin, hfrac, hcond⟩
+    let : Algebra.FiniteType F ↥S := hfin
+    exact (thm3_8 S hfrac).mpr hcond
+
+/-- **非空洞探针（L1）** ✓✅：`K = F` 档 ✓ —— 由 `isRetractRational_self` ✓ 经本条 ✓ 得
+**∃ 形右侧的内容** ✓ ⟹ 该条件**可满足** ✓（**非空洞** ✓）。 -/
+theorem thm3_8_exists_probe (F : Type u) [Field F] :
+    ∃ (S : Subalgebra F F) (_ : Algebra.FiniteType F ↥S) (_ : IsFractionRing ↥S F),
+      HasLocalLifting F ↥S ↥S (AlgHom.id F ↥S) ∧
+        ∀ r : ↥S, r ≠ 0 → Algebra.FiniteType F (Localization.Away r) :=
+  thm3_8_exists.mp (isRetractRational_self F)
+
 /-! ## 公理闸门 -/
 
 #print axioms finiteType_localizationAway
 #print axioms thm3_8
 #print axioms thm3_8_probe
+#print axioms exists_affine_subalgebra_of_isRetractRational
+#print axioms thm3_8_exists
+#print axioms thm3_8_exists_probe
 
 end ABGV52
