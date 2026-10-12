@@ -168,10 +168,22 @@ sync.  The items added since then are:
   *proved*, not merely stated, by `isProjectiveObjectSymmetric_of_galoisHyps` from the two named
   inputs above: the lifting theorem plus equivariance, and the fixed-subring clause — the blueprint's
   step 9 `lem1.2`, modulo those two registered inputs.
+- `SaltLocalProj_ABGV52.lean`: the *local* layer for the blueprint's step 10, Saltman's
+  `thm1.3(a)(c)`.  The source's notion of a *local* morphism (`φ⁻¹(S*) = R*`, the preimage of every
+  unit is a unit) is mathlib's `IsLocalHom`, so no new term is introduced; a discriminating witness
+  shows the condition is genuine: localizing `ℚ[X]` at `X` turns the non-unit `X` into a unit, so the
+  canonical map `ℚ[X] → ℚ[X](1/X)` is *not* `IsLocalHom` — exactly the gap between "surjective" and
+  "local surjective" that step 10 turns on.  On top of that the file gives the local-projective
+  object statement `IsLocalProjectiveSymmetric` (same shape as the step-9 statement, with the map
+  required to be a local surjection), proves that projectivity implies local projectivity, feeds it
+  the two named inputs of step 9, and proves the kernel of the source's step (a): the lift of a map
+  whose value at the localizing element `s` is a unit again sends `s` to a unit, because the
+  surjection is local.  The two remaining pieces of step 10 (the localization universal property and
+  the identification `S^G = F₊[V]^G(1/s)`) are registered as gaps.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
-  `SaltRatOver` carry the 1984 definitions, the rational-to-retract bridge, Swan's lemma, the
-  corollary/reduction pair, the 2-power condition layer, the named generic-object residual and
-  retract rationality along rational extensions.
+  `SaltRatOver`, `SaltLocalProj` carry the 1984 definitions, the rational-to-retract bridge, Swan's
+  lemma, the corollary/reduction pair, the 2-power condition layer, the named generic-object residual,
+  retract rationality along rational extensions, and the local-projective layer of step 10.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
