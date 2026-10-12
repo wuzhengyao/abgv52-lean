@@ -213,7 +213,7 @@ sync.  The items added since then are:
   itself is needed only to *construct* that action and does not appear among the hypotheses.  The use
   point `exists_localized_lift_equivariant_of_galoisHyps_away` instantiates it for that action.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
-  `SaltRatOver`, `SaltLocalProj`, `SaltLocalLift` carry the 1984 definitions, the
+  `SaltRatOver`, `SaltLocalProj`, `SaltLocalLift`, `SaltThm38` carry the 1984 definitions, the
   rational-to-retract bridge, Swan's lemma, the corollary/reduction pair, the 2-power condition
   layer, the named generic-object residual, retract rationality along rational extensions, the
   local-projective layer of step 10, and the local-lifting layer of §3.  The last of these states
@@ -248,7 +248,11 @@ sync.  The items added since then are:
   is closed by mapping both sides into the residue field of `F[x]_P` — the localization
   `R(1/r₀) -> R(1/(r₀ c))` and the localization of `η₀` at `w` are constructed for that purpose.
   The finding above was likewise refined: affineness of `R` does *not* give affineness of `R(1/r)`,
-  so the target must carry that hypothesis separately.  `thm3.8` is registered as the remaining gap.
+  so the target must carry that hypothesis separately.  The equivalence of `thm3.8` is proved in the
+  relative form used by the source's own proof: for a given affine subalgebra `S` with `K` its
+  fraction field, `K/F` is retract rational exactly when `S` has the lifting property and its
+  one-element localizations are affine; what remains open there is only the step that extracts such
+  an `S` from the retract-rationality witness itself.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
