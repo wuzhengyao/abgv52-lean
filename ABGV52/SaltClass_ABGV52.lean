@@ -26,20 +26,28 @@
   与**同句**给出的类型序列 `(s_{i},t_{i})` **自相矛盾** ✓ —— 该矛盾在 tex 层**不可见** ✗
   （两句都被 OCR 退化到同一形状 ✓）。**本件按印版落** ✓。
 
-  ## ✅ 回填处置（2026-10-12，**用户指令** ✓；第 118 轮 ✓）
+  ## ✅ 回填处置（2026-10-12，**用户指令** ✓；第 118--119 轮 ✓）
 
-  用户令「**修改 `Saltman1984.tex` 使得符合 PDF**」✓ ⟹ **tex 已按印版逐字回填** ✓：
-  §1 共 **5 处** ✓（`:92` ✓／`:98` ✓／`:104` ✓／`:106` ✓／`:137` ✓），**全部为 OCR 丢失下标或撇号** ✓
-  （§1 另有一处**候选未定** ✗：`:159` 的 `\equiv` 与印版该处符号在现有扫描分辨率下不可别 ✓，**未改** ✓）。
+  用户令「**修改 `Saltman1984.tex` 使得符合 PDF**」✓ ⟹ **tex 已按印版逐字回填** ✓。
+  **第 118 轮** ✓：§1 共 **5 处** ✓（`:92` ✓／`:98` ✓／`:104` ✓／`:106` ✓／`:137` ✓），
+  **全部为 OCR 丢失下标或撇号** ✓。
+  **第 119 轮** ✓：① **§3 承重陈述逐句核** ✓ —— `def3.1`（印 180 ✓）／`def3.2`（印 181 ✓）／
+  `lem3.3`（印 181 ✓）／`cor3.4`（印 182 ✓）／`lem3.5`（印 182 ✓）**逐字符合** ✓；
+  ② 新增回填 **`:412`** ✓：`\begin{lemma}[Swan]` → `\begin{lemma}` ＋ **`\cite{27}`** ✓
+  （印版该位是**引用 `[27]`** ✓，转换件把它换成了作者名标题 ✗）；③ 新增回填 **`:159`** ✓：
+  `\equiv` → **`\cong`** ✓（**用户裁定** ✓；全 tex `\equiv` 共 31 处，其余皆散文「equivalent」
+  或 `\not\equiv` ✓，**未动** ✓）。
   旧件存档 `raw/Saltman1984.tex.preConformance` ✓、旧 receipt 存档
   `raw/Saltman1984.receipt.preConformance.json` ✓，receipt 已再生 ✓
-  （原 tex sha `27ccd530…` → `2978a17f…` ✓）。
+  （原 tex sha `27ccd530…` → 现 `7ba24311…` ✓）。
 
   **⚠ 上文「tex 退化形」为历史记录** ✓（＝回填**前**的状态 ✓），**不再是现状态** ✓；
-  **⚠ 审计范围** ✓：仅 **§1**（印 169--172 = PDF 5--8 ✓）已**逐句核** ✓；
-  **其余页（印 173--215）未审** ✗ ⟹ 按 `∅-unchecked` 对待 ✓（**不作「已符合」的声称** ✗）。
+  **⚠ 口径** ✓：tex 中若干处**比印版更全或更正确** ✓（印 181「`T` is of `R`」脱字 ✓、
+  印 181 证明中「`S(1/s_1)`」脱下标 ✓）—— 此类**不**回填 ✓（**不把印版笔误写进 tex** ✓），逐处登记 ✓；
+  **⚠ 审计范围** ✓：已**逐句核** ＝ **§1**（印 169--172 = PDF 5--8 ✓）＋ **§3 的上述五条**（印 180--182 ✓）；
+  **其余页（印 183--215）未审** ✗ ⟹ 按 `∅-unchecked` 对待 ✓（**不作「已符合」的声称** ✗）。
 
-  ## 本件内容（§77.2 施工单**第 1–2 件** ✓）
+  ## 本件内容（§77.2 施工单**第 1–3 件**（第 3 件部分 ✓））
 
   | 件 | 内容 | 读法 |
   |---|---|---|
@@ -52,9 +60,13 @@
   | `IsIso` ✓ ＋ `toHom`／`refl`／**`symm`** ✓ | 源的同构 ✓（`S = R` ✓、`φ = id` ✓、`ψ` 可逆 ✓）＋「an invertible **morphism**」✓ 的 morphism 支 ✓／恒等档 ✓／**逆支** ✓（`IsIso.symm` ✓：逆的保持条件已证 ✓） | 第 2 件 ✓ |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
-  ① 第 **3–9** 件（`FStruct`／`FClass` → `HasLiftingProperty` → `RepresentingObject`／`GenericObject`／
-  `DenselyRepresenting` → `ProjectiveObjectForClass`／`LocalProjective` → `Specialization` →
-  `cor3.10(b)` ⟹ `cor3.10(a)` → `prop1.1(a)` 具名残余）**均未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
+  ① 第 3 件的**其余部分** ✗：**`FClass`**（源四条：同类型 ✓／**同构封闭** ✓／**基变换封闭** ✓／
+  **下降／有限生成** ✓）**未落** ✗ —— 其**基变换支**需先解决：mathlib **有** `Module S (S ⊗[R] M)` ✓
+  而**无** `Module S (M ⊗[R] S)` ✗（实测 ✓）⟹ 须或**证** `TensorProduct.comm` 的 `S`-**线性** ✓
+  （把 `S`-模结构搬到源的 `M ⊗_φ S` 序 ✓），或改在 `S ⊗[R] M` 载体上落（**偏离源序** ✗，须登记 ✓）；
+  ② 第 **4–9** 件（`HasLiftingProperty` → `RepresentingObject`／`GenericObject`／`DenselyRepresenting` →
+  `ProjectiveObjectForClass`／`LocalProjective` → `Specialization` → `cor3.10(b)` ⟹ `cor3.10(a)`
+  → `prop1.1(a)` 具名残余）**均未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import Mathlib.LinearAlgebra.TensorPower.Basic
@@ -469,8 +481,73 @@ theorem IsIso_symm_nonempty {M₁ : LinearStructure R M r s t} {N₁ : LinearStr
 
 end IsIsoStructure
 
-/-! ## 7. 公理闸门 -/
+/-! ## 7. 源 §1：`F` 结构（印版 170 ✓） -/
 
+section FStruct
+
+variable (F : Type u) [Field F]
+
+/-- **源 §1 的 `F` 结构** ✓（印版 170 ✓ 逐字：「An `F` structure is a linear structure `M/R` such that
+`F ⊂ R`」✓）：固定类型 `(r, s, t)` 的、底环含 `F` 的线性结构 ✓。
+
+**⚠ 形式化约定** ✓：「`F ⊂ R`」落为 **`[Algebra F R]`** ✓ —— 对**非零** `R`，`algebraMap F R` 自动**单** ✓
+（域无非平凡理想 ✓、`1 ≠ 0` ✓）⟹ 与「`F` 是 `R` 的子环」**同义** ✓；源的 `F ⊂ R` **本身**排除 `R = 0` ✓
+（**加性收紧，非放宽** ✓，登记 ✓）。
+
+**⚠ 打包口径** ✓：本件把源「class of `F` structures」的元素落在**打包结构**上 ✓（`R`／`M` 及其实例
+随 `str` 一起打包 ✓）—— 理由 ✓：类的后续四条封闭性（**同构** ✓／**基变换** ✓／**下降** ✓）
+**都会改变底环** ✓，未打包形（`C : ∀ R [CommRing R] …, Prop`）会让每次搬运都重新装配类型类 ✓。 -/
+structure FStruct (r : ℕ) (s t : Fin r → ℕ) where
+  /-- 底环 ✓（源的 `R` ✓；「`F ⊂ R`」由 `algebra` 支承载 ✓）。 -/
+  R : Type u
+  [commRing : CommRing R]
+  [algebra : Algebra F R]
+  /-- 承载模 ✓（源的 `M` ✓）。 -/
+  M : Type v
+  [addCommGroup : AddCommGroup M]
+  [module : Module R M]
+  /-- 线性结构本体 ✓（源 §1 的 `⟨R, M, f₁, …, f_r⟩` ✓）。 -/
+  str : LinearStructure R M r s t
+
+/-- **定义外形锁定** ✓（构造子档）：`FStruct` 的字段与次序一旦漂移（如把实例支拆出打包 ✗、
+或把 `str` 提到 `R`／`M` 之前 ✗），本两条 `rfl` 立即编译失败 ✓。 -/
+theorem FStruct_typeLock (R : Type u) [CommRing R] [Algebra F R] (M : Type v)
+    [AddCommGroup M] [Module R M] (str : LinearStructure R M r s t) :
+    (FStruct.mk (F := F) R M str : FStruct F r s t).R = R :=
+  rfl
+
+theorem FStruct_typeLock_str (R : Type u) [CommRing R] [Algebra F R] (M : Type v)
+    [AddCommGroup M] [Module R M] (str : LinearStructure R M r s t) :
+    (FStruct.mk (F := F) R M str : FStruct F r s t).str = str :=
+  rfl
+
+/-- **L1 探针** ✓（**非空洞** ✓）：取 `R := F` ✓（此时「`F ⊂ R`」退化为 `F ⊆ F` ✓）、`M := F` ✓、
+`r = 1`、`s 0 = t 0 = 1`、`f 0 = id` ✓ ⟹ **`F` 结构类非空** ✓（源 §1 三类例子之最简实体 ✓）。 -/
+def fStructProbe : FStruct F 1 (fun _ => 1) (fun _ => 1) where
+  R := F
+  M := F
+  str := linearStructureProbe F F
+
+/-- **L1 探针（合并读数）** ✓：`F` 结构在 `r = 1` 档**可实例化** ✓。 -/
+theorem FStruct_nonempty : Nonempty (FStruct.{u, u} F 1 (fun _ => 1) (fun _ => 1)) :=
+  ⟨fStructProbe F⟩
+
+/-- **L1 探针（任意底环档 ✓）**：对**任意**满足 `[Algebra F R]` 的 `R` 与任意线性结构 ✓，
+`FStruct.mk` 给出一个 `F` 结构 ✓ ⟹ 非空洞性**不**依赖 `R = F` 的特殊选取 ✓。 -/
+theorem FStruct_nonempty_of (R : Type u) [CommRing R] [Algebra F R] (M : Type v)
+    [AddCommGroup M] [Module R M] (str : LinearStructure R M r s t) :
+    Nonempty (FStruct.{u, v} F r s t) :=
+  ⟨FStruct.mk (F := F) R M str⟩
+
+end FStruct
+
+/-! ## 8. 公理闸门 -/
+
+#print axioms fStructProbe
+#print axioms FStruct_typeLock
+#print axioms FStruct_typeLock_str
+#print axioms FStruct_nonempty
+#print axioms FStruct_nonempty_of
 #print axioms tensorPower_zero_equiv
 #print axioms LinearStructure_typeLock
 #print axioms LinearStructure_type_typeLock

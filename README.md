@@ -282,7 +282,11 @@ sync.  The items added since then are:
   proved pointwise, from the identity and functoriality cases of the induced map: if `P` and `Q` are
   the induced maps at `s_i` and at `t_i`, and `P'` and `Q'` their inverses, then
   `Q' (B y) = Q' (B (P (P' y))) = Q' (Q (A (P' y))) = A (P' y)`, where `A` and `B` are the two
-  structure maps and `B . P = Q . A` is the preservation condition.  Not yet formalized are
+  structure maps and `B . P = Q . A` is the preservation condition.  The same file carries the
+  source's notion of an *`F` structure*, a linear structure over a ring containing `F`; because the
+  closure properties of a class change the base ring, that notion is bundled, with the ring, the
+  module and the structure travelling together, and it comes with two definitional-shape locks and
+  three non-vacuity probes, one of them at an arbitrary base ring.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.
