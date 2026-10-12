@@ -88,7 +88,7 @@ with HAP) and their recorded output are in `verification/`; see
 | `Hyp_*`, `C1`--`C8b` | shared setup (group, lattice, Procesi map) and the computation H^2(H, M\|_H) ≅ C_9 |
 | `S1`--`S5` | exponent and stable-* statements, and the wiring of the criterion |
 | `D1`--`D14` | criterion-facing definitions and interfaces |
-| `P1`--`P6`, `PThm`, `PChallenge` | p-general lattice and theorem statements, with an independent restatement |
+| `P1`--`P6` (with `P5a`, `P5b`), `PThm`, `PChallenge` | p-general lattice and theorem statements, with an independent restatement |
 | `G1b`--`G4`, `GThm`, `GChallenge` | the geometric-identification reduction layer (named-hypothesis transport) |
 | `MH`, `MQ`, `MI`, `BR` | the rational model of the Procesi kernel and the base-change bridge |
 | `F1`, `R1`, `PC2`, `FaithfulMH` | faithfulness of the action, retract-rationality wiring, permutation-class lemma, faithfulness obstruction |
@@ -342,6 +342,19 @@ sync.  The items added since then are:
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.
+
+- The files added after the snapshot that neither the table above nor the bullets above name.  This
+  bullet completes the list: it was obtained by diffing the gate's 122-item `FILES` table against the
+  file names occurring in this README, so it is exhaustive rather than illustrative.  They are
+  `Flasque_ABGV52.lean` (the flasque class: the flasque and coflasque predicates, the similarity
+  relation with its laws, invertibility, flasque resolutions with the named subgroup-permutation
+  input, the coflasque consequences of invertibility, and the birational-invariance residual read off
+  printed page 189 of the 1984 paper), `HypRefute_ABGV52.lean` (the machine-checked refutations of the
+  two flasque hypotheses as originally stated), `LatticeHyp_ABGV52.lean`, `TateLayer_ABGV52.lean`,
+  `TateTrivial_ABGV52.lean`, `SubgroupPerm_ABGV52.lean`, `NotRetract_ABGV52.lean`,
+  `NotRetractChallenge_ABGV52.lean` (the 4.13 non-retract-rationality chain and its independent
+  restatement), `RetractCrit_ABGV52.lean`, `StableRationalBricks_ABGV52.lean`,
+  `Superlattice_ABGV52.lean`, `SuperlatticeClass_ABGV52.lean`, and `FischerRegular_ABGV52.lean`.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
