@@ -2164,6 +2164,85 @@ theorem isLocalization_localizationSubalgebra (s : A) (hs : s ≠ 0) :
 
 end SubalgebraInstance
 
+/-! ## 4.30 **`A[s^{-1}]` ＝ `Localization.subalgebra`**（局部化同构落地）✓✅（第 164 轮）
+
+**⚠ 起点** ✓：§4.29 登记「`\mathrm{Algebra.adjoin}\ A\ \{(s)^{-1}\} = \mathrm{Localization.subalgebra}\ K\ (\mathrm{powers}\ s)\ hS`」✗
+（**路线已定** ✓）—— **本轮落地** ✓✅。
+
+**⚠ 本轮三件** ✓：
+**①** **`adjoin_inv_eq_localizationSubalgebra`** ✓✅ —— **两侧相等** ✓；
+**②** **`\mathrm{IsLocalization}\ (\mathrm{powers}\ s)\ \uparrow(\mathrm{adjoin}\ A\ \{(s)^{-1}\})`** ✗（**登记** ✓ ——
+**⚠ 本轮实测** ✗：由等式**搬实例**（`\mathrm{Eq.rec}` 方向 ✓）时，`\mathrm{IsLocalization}` 的**隐式实例参数**
+（`\mathrm{toCommSemiring}`／`\mathrm{algebra}`）**不随之改写** ✗ ⟹ **报类型不匹配** ✗）；
+**③** **`\mathrm{Away}` 形** ✗ —— **实测** ✓：`\mathrm{Away}` 形**不是** `\mathrm{powers}` 形的 defeq ✗ ⟹ 须**显式桥** ✓。
+
+**⚠ 证明要点** ✓（**（⊆）向** ✓）：把 `\mathrm{Localization.subalgebra}` **先 `\mathrm{dsimp\ only}`** ✓
+（**它是 `\mathrm{def}`** ✗ —— **不 `\mathrm{dsimp}` 则 `\mathrm{Subalgebra.copy\_eq}` 不匹配** ✗，**实测** ✓）
+**再 `\mathrm{rw}\ [\mathrm{Subalgebra.copy\_eq}]`** ✓ 化到值域 ✓，用 **`\mathrm{mem\_range\_mapToFractionRing\_iff}`** ✓ 取 `a`／`s^n` ✓，
+最后以 **`\mathrm{IsLocalization.mk'\_spec}`** ✓ ＋ `\mathrm{inv\_pow}` ✓ 得分数形 ✓；
+**（⊇）向** ✓ 由 **§4.28** ✓ ＋ `\mathrm{mk'\_spec}` ✓ ＋ **右消去** ✓（两侧同乘 `s^n` ✓）。
+
+**⚠ 五处编译期自纠** ✓（**留痕** ✓）：**①** **`\mathrm{IsLocalization.of\_le}` 方向反** ✗
+（它是 `M \le N` 的**放大**方向 ✓；**`\mathrm{powers}\ s \le A^0` 是缩小** ✗）⟹ **`\mathrm{mk'}` 用的仍是 `A^0` 处实例** ✓
+（**（`\mathrm{IsFractionRing}` 给** ✓），**无须**另造 ✓；**②** **`\mathrm{le\_antisymm}` 两支方向弄反** ✗（**实测** ✓）；
+**③** `\mathrm{Subalgebra.copy}` 的**成员判定不是 defeq** ✗ ⟹ 须 `\mathrm{dsimp}` ＋ `\mathrm{copy\_eq}` ✓；
+**④** **`\mathrm{Submonoid.pow\_mem}` 须显式子幺半群参数** ✗；**⑤** **`\mathrm{map\_pow}` 的方向** ✗（**对 `hspec` 而非目标** ✓）。
+**⚠ 登记（未落）** ✗：**`\mathrm{IsLocalization.Away}\ s\ \uparrow(\mathrm{adjoin}\ \ldots)`** ✗ ——
+**实测** ✓：`\mathrm{Away}` 形**不是** `\mathrm{powers}` 形的 defeq ✗ ⟹ 须**显式桥** ✓（次轮查 `\mathrm{IsLocalization.Away}` 的构造引理 ✓）。 -/
+
+
+
+section AdjoinEqLocalization
+
+variable {A : Type u} [CommRing A] [Nontrivial A] [NoZeroDivisors A]
+variable {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K] [IsFractionRing A K]
+
+/-- **adjoin 与局部化子代数相等** ✓：`A[s⁻¹]` 就是 `A` 在 `s` 的幂处的局部化（视作 `K` 的子代数）。 -/
+theorem adjoin_inv_eq_localizationSubalgebra (s : A) (hs : s ≠ 0) :
+    Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)
+      = Localization.subalgebra K (Submonoid.powers s) (powers_le_nonZeroDivisors s hs) := by
+  have hsK : algebraMap A K s ≠ 0 :=
+    fun h0 => hs (FaithfulSMul.algebraMap_injective A K (by rw [h0, map_zero]))
+  refine le_antisymm ?_ ?_
+  · intro x hx
+    obtain ⟨n, a, hxa⟩ := exists_pow_mul_eq_of_mem_adjoin_inv (K := K) s hs x hx
+    have hmem : s ^ n ∈ Submonoid.powers s :=
+      Submonoid.pow_mem (Submonoid.powers s) ((Submonoid.mem_powers_iff s s).mpr ⟨1, pow_one s⟩) n
+    dsimp only [Localization.subalgebra]
+    rw [Subalgebra.copy_eq]
+    refine (Localization.mem_range_mapToFractionRing_iff K (Submonoid.powers s)
+      (Localization (Submonoid.powers s)) (powers_le_nonZeroDivisors s hs) x).mpr
+      ⟨a, s ^ n, hmem, ?_⟩
+    have hspec := IsLocalization.mk'_spec K a ⟨s ^ n, powers_le_nonZeroDivisors s hs hmem⟩
+    rw [map_pow] at hspec
+    exact mul_right_cancel₀ (pow_ne_zero n hsK) (by rw [hxa, hspec])
+  · intro x hx
+    dsimp only [Localization.subalgebra] at hx
+    rw [Subalgebra.copy_eq] at hx
+    have hx' := (Localization.mem_range_mapToFractionRing_iff K (Submonoid.powers s)
+      (Localization (Submonoid.powers s)) (powers_le_nonZeroDivisors s hs) x).mp hx
+    obtain ⟨a, t, ht, rfl⟩ := hx'
+    obtain ⟨n, rfl⟩ := (Submonoid.mem_powers_iff t s).mp ht
+    have hmem : s ^ n ∈ Submonoid.powers s :=
+      Submonoid.pow_mem (Submonoid.powers s) ((Submonoid.mem_powers_iff s s).mpr ⟨1, pow_one s⟩) n
+    have hspec := IsLocalization.mk'_spec K a ⟨s ^ n,
+      powers_le_nonZeroDivisors s hs hmem⟩
+    have h1 : IsLocalization.mk' K a ⟨s ^ n, powers_le_nonZeroDivisors s hs hmem⟩
+        * (algebraMap A K s) ^ n = algebraMap A K a := by
+      rw [map_pow] at hspec
+      exact hspec
+    have h2 : IsLocalization.mk' K a ⟨s ^ n, powers_le_nonZeroDivisors s hs hmem⟩
+        = algebraMap A K a * ((algebraMap A K s)⁻¹) ^ n := by
+      rw [inv_pow]
+      exact mul_right_cancel₀ (pow_ne_zero n hsK)
+        (by rw [h1, mul_assoc, inv_mul_cancel₀ (pow_ne_zero n hsK), mul_one])
+    rw [h2]
+    exact mul_mem (Subalgebra.algebraMap_mem _ a)
+      (Subalgebra.pow_mem _ (Algebra.subset_adjoin (by simp)) n)
+
+end AdjoinEqLocalization
+
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2258,5 +2337,6 @@ end SubalgebraInstance
 #print axioms exists_pow_mul_eq_of_mem_adjoin_inv
 #print axioms powers_le_nonZeroDivisors
 #print axioms isLocalization_localizationSubalgebra
+#print axioms adjoin_inv_eq_localizationSubalgebra
 
 end ABGV52
