@@ -582,17 +582,57 @@ theorem galoisMatrix_det_ne_zero_iff {L : Type u} [Field L] [Algebra K L]
     _ ↔ LinearIndependent K (fun σ : G => (b.repr (σ • z) : G → K)) :=
         galoisMatrix_isUnit_iff K G b z
 
-/-- **⚠ 登记（`(d)` 余下两块，**未落** ✗）** ✓：
-① **搬运** ✗：本判据的坐标族是 `G → K` 的元素 ✓，而源说的是 `\{\sigma \bullet z\}` **在 `L` 中**线性无关 ✓ ——
-两者经 `b.repr` ✓ 与 `Finsupp.linearEquivFunOnFinite` ✓ **线性等价** ✓，**应可搬** ✓，但本件**未落** ✗：
-**障碍逐字** ✓ ＝ `LinearIndependent.map` ✓ 要求 **`[Ring R]`** ✗，其**输出项的实例路径**与目标（`[Field K]` 路径 ✗）
-**不同** ✗ ⟹ `simpa`／`rw` 均**因实例路径不合**而失败 ✗；手证路（`linearCombination_linear_comp` ✓）**须加 mathlib import** ✓
-且 **`heartbeats` 超限** ✗ ⟹ **登记待下轮** ✓；
+/-- **⚠ 登记（`(d)` 余下两块）** ✓：
+① **搬运** ✓✅ —— **第 142 轮已落** ✓（见 **§4.9** ✓；**原记「未落」留痕** ✓）：
+本判据的坐标族是 `G → K` 的元素 ✓，而源说的是 `\{\sigma \bullet z\}` **在 `L` 中**线性无关 ✓ ——
+两者经 `b.repr` ✓ 与 `Finsupp.linearEquivFunOnFinite` ✓ **线性等价** ✓ ⟹ **可搬** ✓；
+**⚠ 原障碍的处置** ✓（**㊸** ✓）：`LinearIndependent.map` ✓ 要求 **`[Ring R]`** ✗ 是其**实例路径**不合之源 ✗ ⟹
+**改走 `LinearIndependent` 的**定义** ✓**（逐字：`Function.Injective (Finsupp.linearCombination R v)` ✓）＋
+**`Finsupp.linearCombination_linear_comp`** ✓（**只要求 `[Semiring R]`** ✓）⟹ **全程同实例** ✓、**无需新 import** ✓、
+**无 `heartbeats` 问题** ✓；
 ② **多项式化** ✗：源要的是**多项式** `f(y_1,\dots,y_n)` ✓（`y` 为 `z` 的坐标 ✓）与**无限域避零** ✓ ——
 其零件（`Polynomial.exists_eval_ne_zero_of_natDegree_lt_card` ✓／多元版 ✓）**已在 mathlib** ✓，**未组装** ✗。 -/
 theorem galoisMatrix_gap_registered : True := trivial
 
 end GaloisDetCriterion
+
+/-! ## 4.9 源 `(d)` 的**搬运**：判据搬回 `L` 中的向量 ✓（第 142 轮；**解 §4.8 登记 ①** ✓✅）
+
+**⚠ 工艺读数 ㊸ 的兑现** ✓：§4.8 登记的障碍是 `LinearIndependent.map` ✓ 的 **`[Ring R]`** ✗ 实例路径不合 ✗。
+**处置 ＝ 走该引理**的**定义** ✓** —— `LinearIndependent R v` 逐字是 `Function.Injective (Finsupp.linearCombination R v)` ✓
+（`#print LinearIndependent` ✓），而 **`Finsupp.linearCombination_linear_comp`** ✓ **只要求 `[Semiring R]`** ✓
+⟹ **全程同一实例** ✓，**`simpa`／`rw` 不再受阻** ✓，**且无需新 import** ✓、**无需调 `maxHeartbeats`** ✓。 -/
+
+section GaloisDetTransport
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **线性等价搬运** ✓：`\mathrm{LI}(e \circ v) \Leftrightarrow \mathrm{LI}(v)` ✓（`e` 为线性等价 ✓）。
+**证据形** ✓：`\mathrm{LI}` 展开为 `Finsupp.linearCombination` 的**单射性** ✓ ⟹ 用
+`Finsupp.linearCombination_linear_comp` ✓ 得 `\mathrm{lc}(e \circ v) = e \circ \mathrm{lc}(v)` ✓，
+再用 `Function.Injective.of_comp_iff` ✓（`e` 单射 ✓）。 -/
+private theorem li_comp_linearEquiv {ι : Type*} {M M' : Type u} [AddCommGroup M] [Module K M]
+    [AddCommGroup M'] [Module K M'] (e : M ≃ₗ[K] M') {v : ι → M} :
+    LinearIndependent K (fun i => e (v i)) ↔ LinearIndependent K v := by
+  have h1 : Finsupp.linearCombination K (fun i => e (v i))
+      = (e : M →ₗ[K] M').comp (Finsupp.linearCombination K v) :=
+    Finsupp.linearCombination_linear_comp K (e : M →ₗ[K] M')
+  rw [LinearIndependent, LinearIndependent, h1]
+  exact Function.Injective.of_comp_iff e.injective (Finsupp.linearCombination K v)
+
+/-- **源 `(d)` 的**向量形判据** ✓✅**：`\det \neq 0` ⟺ `\{\sigma \bullet z\}` **在 `L` 中**线性无关 ✓ ——
+即源「`f(b_1,\dots,b_n) \neq 0` **if and only if** `z` **generates a normal basis**」✓ 的**谓词侧**（**原形** ✓）。
+**证明** ✓：§4.8 的坐标形 ✓ 经§4.9 的搬运 ✓ 两次（`Finsupp.linearEquivFunOnFinite` ✓ ＋ `b.repr` ✓）。
+**⚠ 口径** ✓：源说「**normal basis**」✓ ＝ **线性无关 ＋ 张成** ✓；本件给**线性无关** ✓ ——
+**⚠ 在 `\mathrm{card} G = \dim_K L` 的伽罗瓦档下两者等价** ✓（**本件未设该前提** ✗，**登记** ✓，**§4.8 ② 同族** ✓）。 -/
+theorem galoisMatrix_det_ne_zero_iff_vectors {L : Type u} [Field L] [Algebra K L]
+    [MulSemiringAction G L] (b : Module.Basis G K L) (z : L) :
+    (galoisMatrix K G b z).det ≠ 0 ↔ LinearIndependent K (fun σ : G => σ • z) :=
+  (galoisMatrix_det_ne_zero_iff K G b z).trans <|
+    (li_comp_linearEquiv K (Finsupp.linearEquivFunOnFinite K K G)).trans
+      (li_comp_linearEquiv K b.repr)
+
+end GaloisDetTransport
 
 /-! ## 5. 公理闸门 -/
 
@@ -633,6 +673,7 @@ end GaloisDetCriterion
 #print axioms galoisMatrix_isUnit_iff
 #print axioms galoisMatrix_det_ne_zero_iff
 #print axioms galoisMatrix_gap_registered
+#print axioms galoisMatrix_det_ne_zero_iff_vectors
 #print axioms Lemma52Statement
 #print axioms Lemma52Statement.shape
 
