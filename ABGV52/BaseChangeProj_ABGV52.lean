@@ -1450,6 +1450,45 @@ theorem injective_tmul_one_gap_registered : True := trivial
 
 end GaloisProjectiveEmbedding
 
+/-! ## 装配 **(c) 款** 的嵌入件：**下降同构下 `S \hookrightarrow L`**（第 174 轮）
+
+**⚠ 起点** ✓（§135.4 的登记 ✓）：`k`-半 的**第一步** ✓ ＝ **`S''` 落进 `L`** ✓ ——
+装配中 `L \cong S'' \otimes_{R''} L^G` ✓（**下降同构** ✓，r150 ✓）⟹ 把 §上一节的**单射**与**同构**复合即得 ✓。
+
+**⚠ 本件** ✓：`U` 为**域** ✓、`e : (S \otimes_R T) \simeq_F U` ✓ ⟹ **`s \mapsto e (s \otimes 1)` 单射** ✓
+（**取向** ✓：`S` 在左 ✓ —— 与**下降同构**的取向一致 ✓）。
+**⚠ 前提** ✓：`hRG` ✓／`hgal` ✓／**具名输入 `GaloisProjectiveHyp`** ✓（**投射 ⟹ 平坦** ✓）／
+`T` 的**结构映射单射** ✓（**显式** ✓ —— 下降的编码**未列**它 ✗，**不隐藏** ✓）。 -/
+
+section DescendedEmbedding
+
+variable {F : Type u} [Field F]
+variable {R S T : Type u} [CommRing R] [CommRing S] [CommRing T]
+variable [Algebra R S] [Algebra R T] [Algebra F R] [Algebra F S]
+variable [IsScalarTower F R S]
+variable {G : Type u} [Group G] [Fintype G] [MulSemiringAction G S]
+
+/-- **(c) 款嵌入件** ✓✅：`S/R` 为 `G`-Galois ✓ ＋ **具名输入** `GaloisProjectiveHyp` ✓ ＋ `R \to T` 单射 ✓
+＋ `e : (S \otimes_R T) \simeq_F U` ✓ ⟹ **`s \mapsto e (s \otimes 1)` 单射** ✓ ——
+取 `T := L^G` ✓、`U := L` ✓、`e` ＝ **下降同构** ✓ 即得 **`S'' \hookrightarrow L`** ✓（源「`S \subset F[x_\sigma](1/t)`」✓ 的**前置** ✓）。 -/
+theorem injective_descended_embedding {U : Type u} [Field U] [Algebra F U]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hgal : IsGaloisWithGroup R S G hRG)
+    (hProj : GaloisProjectiveHyp R S G hRG)
+    (h : Function.Injective (algebraMap R T))
+    (e : (TensorProduct R S T) ≃ₐ[F] U) :
+    Function.Injective (fun s : S => e (s ⊗ₜ[R] (1 : T))) :=
+  e.injective.comp (injective_tmul_one_of_galoisProjective (R := R) (S := S) (T := T)
+    hRG hgal hProj h)
+
+/-- **非空洞探针（L1）** ✓：本件前提类的**数据部分**可实例化 ✓ —— `R = S = T = U = \mathbb{Q}` ✓、`G = \mathrm{PUnit}` ✓
+（`\mathrm{algebraMap}\ \mathbb{Q}\ \mathbb{Q}` **单射** ✓ ＋ `\mathrm{AlgEquiv.refl}` ✓）。 -/
+theorem descendedEmbedding_data_nonempty :
+    Function.Injective (algebraMap ℚ ℚ) ∧ Nonempty (ℚ ≃ₐ[ℚ] ℚ) :=
+  ⟨fun _ _ h => h, ⟨AlgEquiv.refl⟩⟩
+
+end DescendedEmbedding
+
 /-! ## 公理闸门 -/
 
 #print axioms dual_eval_injective_of_projective
@@ -1527,5 +1566,7 @@ end GaloisProjectiveEmbedding
 #print axioms flat_injective_data_nonempty
 #print axioms injective_tmul_one_of_galoisProjective
 #print axioms injective_tmul_one_gap_registered
+#print axioms injective_descended_embedding
+#print axioms descendedEmbedding_data_nonempty
 
 end ABGV52.BTier

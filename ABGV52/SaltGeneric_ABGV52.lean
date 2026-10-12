@@ -2883,6 +2883,112 @@ theorem unionClearing_gap_registered : True := trivial
 
 end UnionClearing
 
+/-! ## 4.38 **装配 (c) 款 `k`-半 接线**：**有限型像落进单个局部化**（第 174 轮）
+
+**⚠ 起点** ✓（§135.4 的登记 ✓）：`k`-半 的**机制两件**已落 ✓（r172 ✓：**平坦 ⟹ 单射** ✓／**两族分母合一个 `t`** ✓）
+⟹ 本轮补**接线** ✓，**目标 ＝ 断指** ✓：把 `S'' \hookrightarrow L` 与 `S'' \subseteq F[x_\sigma](1/t)` 落为**库内定理** ✓。
+
+**⚠ 本轮两件** ✓：
+**①** `exists_adjoin_le_away_of_image_le` ✓（**通用档** ✓：`R` 的像已在 `Q(t_0)` 内 ✓ ＋ 有限族各自已在 `Q(t_1)` 内 ✓
+⟹ `R`-**adjoin** 全体落进 `Q(t_0 \cdot t_1)` ✓ —— **结论显式给乘子** ✓，非存在形 ✗，**便于下游接** ✓）；
+**②** **`exists_image_le_away_of_finiteType`** ✓✅（**断指件** ✓）：`R` 的像 ⊆ `Q(t_0)` ✓ ＋ **`S` 在 `R` 上有限型** ✓
+⟹ `\varphi(S)` **全体**落进**单个** `Q(t)` ✓ —— **内部工序** ✓：`\mathrm{Algebra.FiniteType.out}` ✓ 取有限生成族 ✓
+⟹ `\mathrm{exists\_mul\_eq\_of\_finite}` ✓（§4.21 ✓）**清分母**得 `t_1` ✓ ⟹ `\mathrm{mem\_adjoin\_inv\_of\_pow\_mul\_eq}` ✓（§4.23 ✓）
+⟹ **①** 给覆盖 ✓ ⟹ `\mathrm{Algebra.adjoin\_induction}` ✓ **收口** ✓（**减法／乘法支用 `\mathrm{simpa\ only}\ [\mathrm{map\_add}／\mathrm{map\_mul}]`** ✓
+—— **⚠ 一处编译期自纠** ✓：**逐条 `\mathrm{rw}` 会连子代数项里的 `\mathrm{algebraMap}\ (t_0 \cdot t_1)` 一并改写** ✗ ⟹ 与假设**不再 defeq** ✗，
+**正解 ＝ `\mathrm{simpa\ only}` 两侧同改写** ✓）。
+**⚠ 通用档** ✓（**承 (75)** ✓）：两件**不**写在 `\mathrm{MvPolynomial}` 上 ✗，而写在**任意** `A`（`\mathrm{IsFractionRing}\ A\ L` ✓）上 ⟹
+Noether 重项**只在调用点出现一次** ✓（r171 的 `\mathrm{exists\_mem\_adjoin\_away\_of\_noether}` ✓ 作**输入** ✓）。
+**⚠ 假设表** ✓：① **不留** `[\mathrm{NoZeroDivisors}\ A]` ✗（**其证明不用** ✓，由 `\mathrm{IsFractionRing}` 供 ✓）；
+② 需 `[\mathrm{IsDomain}\ A]` ✓（§4.21／§4.20 的入口 ✓）。 -/
+
+section ImageClearingGeneral
+
+variable {A : Type u} [CommRing A] {L : Type u} [Field L] [Algebra A L]
+variable [IsFractionRing A L]
+
+/-- **① 通用清分母（结论显式给乘子）** ✓：`R` 的像 ⊆ `Q(t_0)` ＋ 有限族各自 ⊆ `Q(t_1)` ⟹
+`R`-`\mathrm{adjoin}` 全体 ⊆ `Q(t_0 \cdot t_1)` ✓（**单调性 §4.37 直接用** ✓）。 -/
+theorem exists_adjoin_le_away_of_image_le {R : Type u} [CommRing R] [Algebra R L]
+    (t₀ : A) (ht₀ : t₀ ≠ 0)
+    (hR : ∀ r : R, algebraMap R L r ∈ Algebra.adjoin A ({(algebraMap A L t₀)⁻¹} : Set L))
+    {ι : Type*} [Fintype ι] [DecidableEq ι] (e : ι → L) (t₁ : A) (ht₁ : t₁ ≠ 0)
+    (h₁ : ∀ i : ι, e i ∈ Algebra.adjoin A ({(algebraMap A L t₁)⁻¹} : Set L)) :
+    ∀ x ∈ Algebra.adjoin R (Set.range e),
+      x ∈ Algebra.adjoin A ({(algebraMap A L (t₀ * t₁))⁻¹} : Set L) := by
+  have hmono₁ : Algebra.adjoin A ({(algebraMap A L t₀)⁻¹} : Set L) ≤
+      Algebra.adjoin A ({(algebraMap A L (t₀ * t₁))⁻¹} : Set L) :=
+    adjoin_away_mono (A := A) (L := L) t₀ t₁ ht₁
+  have hmono₂ : Algebra.adjoin A ({(algebraMap A L t₁)⁻¹} : Set L) ≤
+      Algebra.adjoin A ({(algebraMap A L (t₀ * t₁))⁻¹} : Set L) := by
+    have h := adjoin_away_mono (A := A) (L := L) t₁ t₀ ht₀
+    rwa [mul_comm t₁ t₀] at h
+  intro x hx
+  refine Algebra.adjoin_induction (p := fun x _ => x ∈ Algebra.adjoin A
+    ({(algebraMap A L (t₀ * t₁))⁻¹} : Set L)) ?_ ?_ ?_ ?_ hx
+  · intro y hy
+    obtain ⟨i, rfl⟩ := hy
+    exact hmono₂ (h₁ i)
+  · intro r
+    exact hmono₁ (hR r)
+  · intro y z _ _ hy hz
+    exact add_mem hy hz
+  · intro y z _ _ hy hz
+    exact mul_mem hy hz
+
+end ImageClearingGeneral
+
+section FiniteTypeAnnihilation
+
+variable {A : Type u} [CommRing A] [IsDomain A] {L : Type u} [Field L] [Algebra A L]
+variable [IsFractionRing A L]
+
+/-- **② 断指件：有限型像落进单个局部化** ✓✅（源「`S \subset F[x_\sigma](1/t)`」✓ 的**库内定理形** ✓）：
+`R` 的像 ⊆ `Q(t_0)` ✓ ＋ `S` 在 `R` 上**有限型** ✓ ＋ `\varphi : S \to_R L` ✓ ⟹
+`\exists t \neq 0,\ \forall s : S,\ \varphi s \in Q(t)` ✓（**工序见节头** ✓：生成族 ⟹ 清分母 ⟹ ① ⟹ `\mathrm{adjoin}` 归纳 ✓）。
+**⚠ 用点** ✓：(c) 款取 `R := R''` ✓、`S := S''` ✓（**有限型由 `\mathrm{GaloisProjectiveHyp}` 的 `\mathrm{Module.Finite}`** ✓
+经**实例** `\mathrm{Module.Finite} \Rightarrow \mathrm{Algebra.FiniteType}` ✓ 自动供给 ✓）、
+`\varphi` ＝ 由**下降同构**给出的**嵌入** ✓（r172 的 `\mathrm{injective\_tmul\_one\_of\_galoisProjective}` ✓）、
+`t_0`／`hR` ＝ **§4.36 的 `g`-半** ✓（＋ r157 的 `R'' \to R_1(1/s)` ✓）⟹ **源句成立** ✓。 -/
+theorem exists_image_le_away_of_finiteType {R S : Type u} [CommRing R] [CommRing S]
+    [Algebra R S] [Algebra R L] [Algebra.FiniteType R S] (φ : S →ₐ[R] L)
+    (t₀ : A) (ht₀ : t₀ ≠ 0)
+    (hR : ∀ r : R, algebraMap R L r ∈ Algebra.adjoin A ({(algebraMap A L t₀)⁻¹} : Set L)) :
+    ∃ t : A, t ≠ 0 ∧ ∀ s : S,
+      φ s ∈ Algebra.adjoin A ({(algebraMap A L t)⁻¹} : Set L) := by
+  classical
+  obtain ⟨T, hT⟩ := Algebra.FiniteType.out (R := R) (A := S)
+  obtain ⟨t₁, ht₁, h₁⟩ := exists_mul_eq_of_finite (A := A) (K := L)
+    (fun j : {x // x ∈ T} => φ (j : S))
+    (fun _ => exists_mul_eq_of_isFractionRing (A := A) (K := L) _)
+  have h₁' : ∀ j : {x // x ∈ T}, φ (j : S) ∈
+      Algebra.adjoin A ({(algebraMap A L t₁)⁻¹} : Set L) := by
+    intro j
+    obtain ⟨x, hx⟩ := h₁ j
+    exact mem_adjoin_inv_of_pow_mul_eq (A := A) (K := L) ht₁ ⟨1, x, by simpa using hx⟩
+  have hcov := exists_adjoin_le_away_of_image_le (A := A) (L := L) (R := R)
+    t₀ ht₀ hR (fun j : {x // x ∈ T} => φ (j : S)) t₁ ht₁ h₁'
+  refine ⟨t₀ * t₁, mul_ne_zero ht₀ ht₁, fun s => ?_⟩
+  have hs : s ∈ Algebra.adjoin R (↑T : Set S) := by rw [hT]; trivial
+  refine Algebra.adjoin_induction (p := fun s _ => φ s ∈ Algebra.adjoin A
+    ({(algebraMap A L (t₀ * t₁))⁻¹} : Set L)) ?_ ?_ ?_ ?_ hs
+  · intro y hy
+    exact hcov (φ y) (Algebra.subset_adjoin ⟨⟨y, hy⟩, rfl⟩)
+  · intro r
+    rw [φ.commutes r]
+    exact adjoin_away_mono (A := A) (L := L) t₀ t₁ ht₁ (hR r)
+  · intro y z _ _ hy hz
+    simpa only [map_add] using add_mem hy hz
+  · intro y z _ _ hy hz
+    simpa only [map_mul] using mul_mem hy hz
+
+/-- **登记** ✗：本件与 r172 的**嵌入件**（`BaseChangeProj` 的
+`\mathrm{injective\_tmul\_one\_of\_galoisProjective}` ✓）**合用**即得源句 ✓；
+**余 ＝ 装配点接线** ✓（`t_0`／`hR` 由 §4.36 的 ⑥ ✓ ＋ r157 的 `R'' \to R_1(1/s)` ✓ 供给 ✓ —— **工程缺口** ✓）。 -/
+theorem finiteTypeImage_gap_registered : True := trivial
+
+end FiniteTypeAnnihilation
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2912,6 +3018,9 @@ end UnionClearing
 #print axioms sup_adjoin_away_le
 #print axioms exists_adjoin_union_le_away
 #print axioms unionClearing_gap_registered
+#print axioms exists_adjoin_le_away_of_image_le
+#print axioms exists_image_le_away_of_finiteType
+#print axioms finiteTypeImage_gap_registered
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit
