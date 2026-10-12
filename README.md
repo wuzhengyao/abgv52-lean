@@ -202,6 +202,16 @@ sync.  The items added since then are:
   The finiteness of `G` enters here, through a maximum over the group; the argument needs no Galois
   hypothesis.  The conclusion is deliberately stated as a fraction rather than as membership in the
   image of `F₊[V]^G`, which would be false in general.
+- The same file closes step 10(c) in the form the source uses
+  (`exists_localized_lift_equivariant_of_galoisHyps`): from the two named inputs, a local surjection
+  and a `G`-equivariant map out of `F₊[V](1/s)` have a lift that is again `G`-equivariant, and the
+  invariant clause then covers *every* `G`-invariant element, not only the image of `F₊[V]^G`.  The
+  proof differs from the earlier, weaker assembly in one place: it uses the equivariant lifting core
+  `symLift_core_equivariant` of the step-9 file instead of an existential de-localized hypothesis, so
+  the equivariance survives to the localization.  The `G`-action on the localization is carried as an
+  instance parameter with its compatibility with the localization map; the `G`-invariance of `s`
+  itself is needed only to *construct* that action and does not appear among the hypotheses.  The use
+  point `exists_localized_lift_equivariant_of_galoisHyps_away` instantiates it for that action.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
   `SaltRatOver`, `SaltLocalProj` carry the 1984 definitions, the rational-to-retract bridge, Swan's
   lemma, the corollary/reduction pair, the 2-power condition layer, the named generic-object residual,
