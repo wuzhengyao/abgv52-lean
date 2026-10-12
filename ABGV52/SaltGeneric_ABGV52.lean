@@ -2463,6 +2463,186 @@ theorem exists_algEquiv_localizationAway_of_adjoin_inv' {n : ℕ} {a : Fin n →
 end AdjoinInstance
 
 
+/-! ## 4.35 **装配 (c) 款**：源的 `φ : F[x_σ] → L`（求值载体 ✓）＋ **局部化提升** ＋ **不动域落地**（第 170 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex:652--658` ✓，印 **275** ✓）：
+> In order to realize `L/K` it suffices to define `φ: S → L` such that **`φ` preserves `G`**, and
+> `φ(S)K = L`. In order to define such a `φ`, it suffices to define `φ: F[x_σ | σ ∈ G] → L` such that
+> **`σ(φ(x_1)) = φ(x_σ)`**, **the `φ(x_σ)`'s are a basis for `L` over `K`**, and **`t` evaluated at
+> the `φ(x_σ)`'s is a unit**.✓
+
+**⚠ 已备（r139／r140／r149 ✓）** ✓：等变性 ✓（§4.6 `noetherEval_equivariant` ✓）、单位款 ✓（§4.7 ✓）、
+`lemma-5.2` **真形** ✓（＝**存在 `z`** ＋ 共轭族成基 ＋ `t(z,\sigma z) \neq 0` ✓，§4.18 ✓）。
+**本轮补三块** ✓：
+**① 载体成品化** ✓：把源自己的求值 `x_σ \mapsto σ \bullet z` 落为**具名 `AlgHom`** ✓（`noetherEval` ✓）
+—— §4.6 的等变性对它**逐字适用** ✓（定义即同一项 ✓）；
+**② 局部化提升** ✓：`φ t` 是**单位** ⟹ `φ` **沿** `F[x_σ] \to F[x_σ](1/t)` **提升** ✓
+（源「`t` evaluated at the `φ(x_σ)`'s is a **unit**」✓ 的**用点** ✓ —— 由此 `φ` 才落在源要的
+`R_1(1/t)` 上 ✓）；
+**③ 不动域落地** ✓：**保 `G` 的** `φ : S \toₐ[F] L` ✓ ⟹ **`φ|_R` 落进 `K`** ✓
+（源第一句「`φ` **preserves** `G`」✓ 的用点 ✓；`R = S^G` ✓ 由 `IsGaloisWithGroup` 的**第二合取** ✓）
+—— 这是**源要的 `φ : R \to K` 的来处** ✓。
+**⚠ 生成性** ✓：共轭族既是 `K`-**基** ⟹ 它**生成 `L` over `K`** ✓（源「`φ(S)K = L`」的**前半** ✓；
+后半「`S` 落进 `F[x_σ](1/t)`」＝**结构桥** ✗，**登记** ✓）。
+
+**⚠ 登记（本轮未落）** ✗（**三项** ✓）：
+**① 结构桥** ✓（源「we have that `S \subset F[x_σ](1/t)`」✓）—— 装配中 `S` 由**下降**给出 ✓
+（`S \simeq S'' \otimes_{R''} R` ✓）而 `R` 由 **(a) 款**（**超越基侧** ✓）给出 ⟹ 须先有
+「`S` 嵌入 **Noether 域**」的桥 ✗（**下一手** ✓）；
+**② 不动域输入** ✓（`L^G = K` ✓）—— `IsGaloisWithGroup` 的**三合取不含**「`S^G = R`」✗
+（**在册** ✓：`GaloisFixedSubringHyp` ✓）⟹ 本件把它作**显式参数** `hfix` ✓（**不隐藏** ✓）；
+**③ 等变性搬到局部化层** ✓ —— 须 `t` 为 `G`-**不变** ✓（源正因此先用 `t' = \prod_σ σ(t)` ✓）⟹
+**拟合用不变化** ✓（**下一手** ✓）。 -/
+
+section NoetherEvalCarrier
+
+variable {F : Type u} [Field F] {G : Type u} [Group G]
+
+/-- **源 `(c)` 的求值载体** ✓（源「it suffices to define `φ: F[x_σ | σ ∈ G] → L`」✓）：
+`x_σ \mapsto σ \bullet z` ✓ —— §4.6 的等变性 ✓ 与 §4.18 的三款 ✓ 都落在这个载体上 ✓。 -/
+def noetherEval {L : Type u} [CommRing L] [Algebra F L] [MulSemiringAction G L] (z : L) :
+    MvPolynomial G F →ₐ[F] L :=
+  MvPolynomial.aeval (fun σ : G => σ • z)
+
+/-- **载体在变量上的取值** ✓（源「`φ(x_σ)`」✓）：`φ(x_σ) = σ \bullet z` ✓。 -/
+theorem noetherEval_X {L : Type u} [CommRing L] [Algebra F L] [MulSemiringAction G L]
+    (z : L) (σ : G) : noetherEval (F := F) z (MvPolynomial.X σ) = σ • z :=
+  MvPolynomial.aeval_X _ σ
+
+end NoetherEvalCarrier
+
+section AwayLiftOfIsUnit
+
+variable {F : Type u} [Field F] {σ : Type*} {L : Type u} [CommRing L] [Algebra F L]
+
+/-- **(c) 款的局部化提升** ✓（源「`t` evaluated at the `φ(x_σ)`'s is a **unit**」✓ 的用点 ✓）：
+`φ : F[x_σ] \toₐ[F] L` 把 `t` 送到**单位** ⟹ `φ` **沿** `F[x_σ] \to F[x_σ](1/t)` **提升** ✓。
+
+**证明** ✓：`IsLocalization.Away.lift` ✓（万有性质 ✓）＋ `IsLocalization.Away.lift_comp` ✓（与基环一致 ✓）；
+**`F`-线性** ✓ 由 `IsScalarTower.algebraMap_apply` ✓ ＋ `AlgHom.commutes` ✓（**同
+`away_lift_of_surjective` 的工艺** ✓）。 -/
+theorem exists_algHom_away_of_isUnit (φ : MvPolynomial σ F →ₐ[F] L) (t : MvPolynomial σ F)
+    (h : IsUnit (φ t)) :
+    ∃ φ' : Localization.Away t →ₐ[F] L,
+      ∀ p, φ' (algebraMap (MvPolynomial σ F) (Localization.Away t) p) = φ p := by
+  let ψ : Localization.Away t →+* L :=
+    IsLocalization.Away.lift (S := Localization.Away t) (g := φ.toRingHom) t h
+  have hψ : ∀ p : MvPolynomial σ F,
+      ψ (algebraMap (MvPolynomial σ F) (Localization.Away t) p) = φ p := by
+    intro p
+    rw [← RingHom.comp_apply, IsLocalization.Away.lift_comp (S := Localization.Away t)
+      (g := φ.toRingHom) t h]
+    rfl
+  have hFpt : ∀ a : F, ψ (algebraMap F (Localization.Away t) a) = algebraMap F L a := by
+    intro a
+    simp only [IsScalarTower.algebraMap_apply F (MvPolynomial σ F) (Localization.Away t)]
+    rw [hψ]
+    exact φ.commutes a
+  exact ⟨{ ψ with commutes' := hFpt }, hψ⟩
+
+end AwayLiftOfIsUnit
+
+section RealizationClause
+
+variable (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **(c) 款端到端** ✓（**源三款齐备** ✓）：`G`-Galois `L/K`（`K` **无限** ✓）＋ `t \neq 0` ✓ ⟹
+存在 `z` ✓、**基** `b'` ✓ 与**局部化映射** `φ' : F[x_σ](1/t) \toₐ[F] L` ✓，使
+**(i)** `b' σ = σ \bullet z` ✓（源「the `φ(x_σ)`'s are a **basis**」✓）；
+**(ii)** `φ'(x_σ) = σ \bullet z` ✓（源「`φ(x_σ)`」✓ ＋ 「`t` ... is a **unit**」✓ 由提升给出 ✓）。
+**接线** ✓：`lemma52Statement_nonzero_true` ✓（§4.18 ✓，**源 `lemma-5.2` ＝ 定理** ✓）给 `z` 与基 ✓；
+`aeval \neq 0` ✓ 在**域**上即**单位** ✓（`isUnit_iff_ne_zero` ✓）⟹ ② 提升 ✓。 -/
+theorem exists_basis_algHom_away_of_galois (K L : Type u) [Field K] [Field L] [Algebra F K]
+    [Algebra K L] [Algebra F L] [IsScalarTower F K L] [Infinite K]
+    [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
+    (h : Function.Bijective (smulAlgEquivHom K G L))
+    (t : MvPolynomial G F) (ht : t ≠ 0) :
+    ∃ (z : L) (b' : Module.Basis G K L) (φ' : Localization.Away t →ₐ[F] L),
+      (∀ σ : G, b' σ = σ • z) ∧
+      (∀ σ : G, φ' (algebraMap (MvPolynomial G F) (Localization.Away t)
+        (MvPolynomial.X σ)) = σ • z) := by
+  obtain ⟨z, b', hb', hne⟩ := lemma52Statement_nonzero_true F G K L b h t ht
+  have hunit : IsUnit (noetherEval (F := F) z t) := by
+    rw [isUnit_iff_ne_zero]
+    exact hne
+  obtain ⟨φ', hφ'⟩ := exists_algHom_away_of_isUnit (F := F) (noetherEval (F := F) z) t hunit
+  exact ⟨z, b', φ', hb', fun σ => by rw [hφ']; exact noetherEval_X (F := F) z σ⟩
+
+end RealizationClause
+
+section SpanningOfConjugates
+
+variable {G : Type u} [Group G]
+
+/-- **共轭族生成 `L` over `K`** ✓（源「the `φ(x_σ)`'s are a **basis** for `L` over `K`」✓ 的**生成侧** ✓，
+即源「`φ(S)K = L`」的**前半** ✓）：共轭族既成 `K`-**基** ⟹ 它在 `L` 中**生成** `L` ✓
+（`Module.Basis.span_eq` ✓ ＋ `Algebra.subset_adjoin` ✓，经 `Subalgebra.toSubmodule` ✓）。
+**⚠ 工艺** ✓（**第六次复现** ✓）：本件**不需** `[Fintype G]`／`[DecidableEq G]` ✗ ⟹ **另开 section** ✓
+（否则触发 `unusedSectionVars` ✗ —— linter 原样给出 `omit` 提示 ✓，但 **doc comment 与 `omit`-前缀不兼容** ✗
+（实测「unexpected token 'omit'; expected 'lemma'」✓）⟹ **正解 ＝ 移出 section** ✓，**非** `omit` ✓）。 -/
+theorem adjoin_range_smul_eq_top {K L : Type u} [Field K] [Field L] [Algebra K L]
+    [MulSemiringAction G L] (b' : Module.Basis G K L) (z : L)
+    (hb : ∀ σ : G, b' σ = σ • z) :
+    Algebra.adjoin K (Set.range (fun σ : G => σ • z)) = ⊤ := by
+  have hv : (fun σ : G => σ • z) = fun σ : G => b' σ := by
+    funext σ; rw [hb σ]
+  rw [hv, eq_top_iff]
+  intro x _
+  have hx : x ∈ Submodule.span K (Set.range fun σ : G => b' σ) := by
+    rw [Module.Basis.span_eq]; trivial
+  have hle : Submodule.span K (Set.range fun σ : G => b' σ) ≤
+      (Algebra.adjoin K (Set.range fun σ : G => b' σ)).toSubmodule :=
+    Submodule.span_le.mpr (fun y hy => Algebra.subset_adjoin (R := K) hy)
+  exact hle hx
+
+end SpanningOfConjugates
+
+namespace BTier
+
+variable {F : Type u} [Field F] {G : Type u} [Group G] [Fintype G]
+variable {R S K L : Type u} [CommRing R] [CommRing S] [Field K] [Field L]
+variable [Algebra F R] [Algebra R S] [Algebra F S] [IsScalarTower F R S]
+variable [Algebra K L] [Algebra F K] [Algebra F L] [IsScalarTower F K L]
+variable [MulSemiringAction G S] [MulSemiringAction G L]
+
+/-- **(c) 款的「保 `G` ⟹ 落进 `K`」件** ✓（源第一句「such that **`φ` preserves `G`**」✓ 的用点 ✓）：
+`S/R` 为 `G`-Galois ✓、`φ : S \toₐ[F] L` **与 `G` 等变** ✓、且 `L` 的**不动点落进 `K`** ✓ ⟹
+存在 `Φ : R \toₐ[F] K` ✓ 使 `Φ` 与 `φ` 在 `S` 的 `R`-像上**一致** ✓（**逐元素**：`algebraMap K L (Φ r) = φ (algebraMap R S r)` ✓）。
+
+**机制** ✓（**源的两句合一** ✓）：`r \in R` 被 `G` **逐点固定** ✓（`IsGaloisWithGroup` 的**第二合取** ✓）
+⟹ 由**等变性** ✓ `φ(algebraMap r)` 亦被固定 ✓ ⟹ 由 `hfix` ✓ 落进 `K` ✓；
+**良定义** ✓：`\mathrm{algebraMap}\ K\ L` **单射** ✓（**域** ✓）⟹ `\mathrm{choose}` 出的 `Φ` 满足
+加法／乘法／单位／`F`-线性 ✓（**逐条用单射性搬运** ✓）。
+**⚠ `hfix` 是**在册缺口**的显式形** ✓（`L^G = K` ✓）：`IsGaloisWithGroup` 的**三合取不含**它 ✗
+（**在册** ✓：`GaloisFixedSubringHyp` ✓ —— 本条与它**同族** ✓，**不隐藏** ✓）。 -/
+theorem exists_algHom_of_equivariant_of_fixed
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (hgal : IsGaloisWithGroup R S G hRG)
+    (φ : S →ₐ[F] L) (heq : ∀ (g : G) (s : S), φ (g • s) = g • φ s)
+    (hfix : ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x) :
+    ∃ Φ : R →ₐ[F] K, ∀ r : R, algebraMap K L (Φ r) = φ (algebraMap R S r) := by
+  have key : ∀ r : R, ∃ k : K, algebraMap K L k = φ (algebraMap R S r) := by
+    intro r
+    refine hfix (φ (algebraMap R S r)) (fun g => ?_)
+    rw [← heq g (algebraMap R S r), hgal.2.1 g r]
+  choose Φ hΦ using key
+  have hinj : Function.Injective (algebraMap K L) := FaithfulSMul.algebraMap_injective K L
+  exact ⟨{ toFun := Φ
+           map_one' := hinj (by rw [map_one, hΦ 1, map_one, map_one])
+           map_mul' := fun x y => hinj (by rw [map_mul, hΦ (x * y), map_mul, hΦ x, hΦ y, map_mul])
+           map_zero' := hinj (by rw [map_zero, hΦ 0, map_zero, map_zero])
+           map_add' := fun x y => hinj (by rw [map_add, hΦ (x + y), map_add, hΦ x, hΦ y, map_add])
+           commutes' := fun a => hinj (by
+             rw [hΦ (algebraMap F R a), ← IsScalarTower.algebraMap_apply F R S a,
+               AlgHom.commutes, ← IsScalarTower.algebraMap_apply F K L a]) }, hΦ⟩
+
+/-- **登记** ✗：本件的 `hfix`（`L^G \subseteq K` ✓）是**在册不动域缺口**的显式形 ✓
+（**同族**：`GaloisFixedSubringHyp` ✓ ＝ `S^G \subseteq R` ✓）—— **未证** ✗（**非本会话可落** ✓：
+须 Artin 型定理在**本口径**下重建 ✓）。 -/
+theorem fixedField_gap_registered : True := trivial
+
+end BTier
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2481,6 +2661,13 @@ end AdjoinInstance
 #print axioms Theorem51Statement.shape
 #print axioms isRationalOver_self
 #print axioms isRationalOver_discrimination_gap_registered
+#print axioms noetherEval
+#print axioms noetherEval_X
+#print axioms exists_algHom_away_of_isUnit
+#print axioms exists_basis_algHom_away_of_galois
+#print axioms adjoin_range_smul_eq_top
+#print axioms BTier.exists_algHom_of_equivariant_of_fixed
+#print axioms BTier.fixedField_gap_registered
 #print axioms noetherRingHom
 #print axioms instNoetherActionMvPolynomial
 #print axioms smul_X_noether
