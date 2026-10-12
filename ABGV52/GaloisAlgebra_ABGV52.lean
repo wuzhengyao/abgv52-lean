@@ -421,6 +421,68 @@ theorem prop02bStatement_zeroPic_nonempty :
     ∃ ZeroPic : Type u → Prop, ZeroPic (ULift.{u} ℤ) :=
   ⟨fun _ => True, trivial⟩
 
+/-! ### 第 160 轮：`prop-0-2(b)` 的**结论侧探针**（闭 r159 的登记 ✗ ⟹ ✓✅）＋ **编码自洽** -/
+
+section Prop02bCoherence
+
+variable {G : Type u} [Group G] {S : Type u} [CommRing S] [Nontrivial S] [NoZeroDivisors S]
+  [MulSemiringAction G S]
+
+/-- **编码自洽** ✓：**主元素满足交叉关系** ✓ —— 即 `u_g \cdot (g \cdot w) = w`（`w` 为单位 ✓）
+**必**使 `u` 是交叉同态 ✓（`u_{gh} = u_g \cdot (g \cdot u_h)` ✓）。
+**⚠ 用途** ✓：与 `\mathrm{H1UnitsVanishes}` 的**定义方向互补** ✓ —— 定义说「交叉同态皆为主」✓，
+本件说「主 ⟹ 交叉」✓ ⟹ **编码的两半相容** ✓（**登记的价值** ✓：防「编码把条件写空」✗）。
+**证明** ✓：两条等式同左乘 `((g \cdot h) \cdot w)` ✓ 后**右消去** ✓（非零由 `w` 为单位 ✓ 保证 ✓）。 -/
+theorem isCrossedHom_of_principal {w : S} (hw : IsUnit w) {u : G → S}
+    (h : ∀ g : G, u g * (g • w) = w) : ∀ g h' : G, u (g * h') = u g * (g • u h') := by
+  intro g h'
+  have h1 : u (g * h') * ((g * h') • w) = w := h (g * h')
+  have h2 : (u g * (g • u h')) * ((g * h') • w) = w := by
+    rw [mul_assoc, mul_smul, ← MulSemiringAction.smul_mul, h h', h g]
+  have hX : ((g * h') • w) ≠ 0 := by
+    intro h0
+    have hw0 := h (g * h')
+    rw [h0, mul_zero] at hw0
+    exact hw.ne_zero hw0.symm
+  exact mul_right_cancel₀ hX (by rw [h1, h2])
+
+end Prop02bCoherence
+
+section Prop02bProbe
+
+/-- `PUnit` 在 `\mathbb{Q}` 上的**平凡作用** ✓（**`\mathrm{local\ instance}`** ✓ —— 只在本节生效 ✓，
+**不**污染全局实例搜索 ✓，**且**避开 `\mathrm{letI}` 的风格警告 ✗ —— **新读数 (68)** ✓）。 -/
+local instance instPUnitActionRat : MulSemiringAction PUnit ℚ where
+  smul _ x := x
+  one_smul _ := rfl
+  mul_smul _ _ _ := rfl
+  smul_zero _ := rfl
+  smul_add _ _ _ := rfl
+  smul_one _ := rfl
+  smul_mul _ _ _ := rfl
+
+/-- **结论侧非空洞探针（L10①）** ✓✅（**闭 r159 的登记** ✗ ⟹ ✓✅）：**`G = \mathrm{PUnit}`、`S = \mathbb{Q}`、
+平凡作用时 `\mathrm{H1UnitsVanishes}` 成立** ✓ —— 即该谓词**可实现** ✓，**非空壳** ✓。
+**证明** ✓：交叉同态 `u` 由交叉关系在 `g = h = 1` 处得 `u_1 = u_1 \cdot u_1` ✓，
+**在单位群内右消去** ✓ 得 `u_1 = 1` ✓；主元素取 `w = 1` ✓。 -/
+theorem h1UnitsVanishes_punit_rat : H1UnitsVanishes PUnit ℚ := by
+  intro u hu hc
+  have h1 : u PUnit.unit = 1 := by
+    obtain ⟨v, hv⟩ := hu PUnit.unit
+    have hvv : v = v * v := by
+      apply Units.ext
+      rw [Units.val_mul, hv]
+      simpa using hc PUnit.unit PUnit.unit
+    have h2 := congrArg (fun w : ℚˣ => v⁻¹ * w) hvv
+    have : v = 1 := by simpa using h2.symm
+    rw [← hv, this]
+    rfl
+  refine ⟨1, isUnit_one, fun g => ?_⟩
+  rw [h1]
+  simp
+
+end Prop02bProbe
+
 /-! ## 公理闸门 -/
 
 #print axioms isGaloisWithGroup_typeLock
@@ -446,5 +508,7 @@ theorem prop02bStatement_zeroPic_nonempty :
 #print axioms Prop02bStatement
 #print axioms prop02bStatement_typeLock
 #print axioms prop02bStatement_zeroPic_nonempty
+#print axioms isCrossedHom_of_principal
+#print axioms h1UnitsVanishes_punit_rat
 
 end ABGV52.BTier
