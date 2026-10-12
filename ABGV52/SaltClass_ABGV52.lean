@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–118 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–120 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -58,18 +58,27 @@
   | `tensorPowerMapSL` ✓ ＋ `_tprod`／`_id`／`_comp` ✓ | 源「the **induced map** `M^{(r)} → N^{(r)}`」✓ 的**半线性档** ✓（mathlib **缺件** ✗ ⟹ **自建** ✓）；生成元刻画 ✓／恒等 ✓／**函子性** ✓ | 第 2 件的前置 API ✓ |
   | `Hom` ✓ ＋ `Hom.id`／`Hom.comp` ✓ ＋ **范畴律** ✓ | 源的同态 `(φ, ψ)` ✓（**按印版形** ✓：`g_i ∘ ψ^{(s_i)} = ψ^{(t_i)} ∘ f_i` ✓）＋ 源「form a category in the usual way」✓ 的**恒等** ✓／**复合** ✓／`comp_id` ✓／`id_comp` ✓／`comp_assoc` ✓ | 第 2 件 ✓ |
   | `IsIso` ✓ ＋ `toHom`／`refl`／**`symm`** ✓ | 源的同构 ✓（`S = R` ✓、`φ = id` ✓、`ψ` 可逆 ✓）＋「an invertible **morphism**」✓ 的 morphism 支 ✓／恒等档 ✓／**逆支** ✓（`IsIso.symm` ✓：逆的保持条件已证 ✓） | 第 2 件 ✓ |
+  | `tensorProductRightModule` ✓ ＋ `tensorPowerBaseChange` ✓ ＋ `_tmul` ✓ | 源的**基变换** ✓：`M ⊗_φ S` ✓（印版 169 ✓）＋ `f_i ⊗ 1` ✓（印版 170 ✓「well defined」✓）—— **保源序** ✓；**缺口处置** ✓：mathlib 无次因子取向的 `S`-模结构 ✗ ⟹ 沿 `comm` **搬运** ✓（`AddEquiv.module` ＋ `AddEquiv.linearEquiv` ✓） | 第 3 件（**部分** ✓） |
+  | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
   ① 第 3 件的**其余部分** ✗：**`FClass`**（源四条：同类型 ✓／**同构封闭** ✓／**基变换封闭** ✓／
-  **下降／有限生成** ✓）**未落** ✗ —— 其**基变换支**需先解决：mathlib **有** `Module S (S ⊗[R] M)` ✓
-  而**无** `Module S (M ⊗[R] S)` ✗（实测 ✓）⟹ 须或**证** `TensorProduct.comm` 的 `S`-**线性** ✓
-  （把 `S`-模结构搬到源的 `M ⊗_φ S` 序 ✓），或改在 `S ⊗[R] M` 载体上落（**偏离源序** ✗，须登记 ✓）；
+  **下降／有限生成** ✓）**未落** ✗。**⚠ 缺口已处置** ✓（§8 ✓）：次因子取向的 `S`-模结构**已**沿 `comm`
+  搬运 ✓（`AddEquiv.module` ＋ `AddEquiv.linearEquiv` ✓），源的 `f_i ⊗ 1` **已落** ✓（**保源序** ✓）。
+  **⚠ 仍缺一步** ✗：源的「`(M ⊗_φ S)^{(n)}` is **identified with** `M^{(n)} ⊗_φ S`」✓（印版 170 ✓）
+  ＝ `TensorPower S n (M ⊗[R] S) ≃ₗ[S] TensorPower R n M ⊗[R] S` ✓ —— mathlib **无**现成件 ✗
+  （`PiTensorProduct`／`TensorPower` 目录无 `cancelBaseChange`／`baseChange` ✓，实测 ✓）⟹
+  **`LinearStructure.baseChange` 须待此 iso** ✗；
   ② 第 **4–9** 件（`HasLiftingProperty` → `RepresentingObject`／`GenericObject`／`DenselyRepresenting` →
   `ProjectiveObjectForClass`／`LocalProjective` → `Specialization` → `cor3.10(b)` ⟹ `cor3.10(a)`
   → `prop1.1(a)` 具名残余）**均未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import Mathlib.LinearAlgebra.TensorPower.Basic
+import Mathlib.LinearAlgebra.TensorProduct.Tower
+
+open TensorProduct
+open scoped TensorProduct
 
 universe u v
 
@@ -541,8 +550,68 @@ theorem FStruct_nonempty_of (R : Type u) [CommRing R] [Algebra F R] (M : Type v)
 
 end FStruct
 
+/-! ## 8. 源 §1：基变换 `M ⊗_φ S`（印版 169--170 ✓） -/
+
+section BaseChange
+
+variable {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+variable {M : Type v} [AddCommGroup M] [Module R M]
+
+/-- **【缺口处置】`M ⊗[R] S` 的 `S`-模结构** ✓（源 §1 的 `M ⊗_φ S` ✓，印版 169 ✓ 逐字：
+`\mathcal{M} \otimes_{\phi} S = \langle S, M \otimes_{\phi} S, f_{1} \otimes 1, \dots ,f_{r} \otimes 1\rangle` ✓）。
+
+**⚠ 库内缺口登记** ✓（**实测** ✓，§82.5 ✓）：mathlib **只有首因子取向** ✓
+（`Module S (S ⊗[R] M)` ✓ 有实例 ✓）、**无次因子取向** ✗（`Module S (M ⊗[R] S)` 与
+`SMul S (M ⊗[R] S)` 皆 `synthInstanceFailed` ✗）⟹ 本件沿 `TensorProduct.comm R M S` ✓
+（`R`-线性等价 ✓）用 **`AddEquiv.module`** ✓ 把 `S`-模结构**搬运**到源的序 ✓。
+**搬运后的 `s • ·` 正是源所要的** ✓：`comm (m ⊗ₜ t) = t ⊗ₜ m` ✓ ⟹ 首因子作用 ✓ ⟹ `comm.symm` 回搬
+⟹ `s • (m ⊗ₜ t) = m ⊗ₜ (s * t)` ✓。
+
+**⚠ 作用域** ✓：`scoped instance` ✓（须 `open scoped ABGV52` ✓ 激活 ✓）—— 避免与 mathlib 在
+**首因子取向**的实例形成**菱形** ✓（`M := S` 档两者皆可适用 ✓）。 -/
+scoped instance tensorProductRightModule : Module S (M ⊗[R] S) :=
+  (TensorProduct.comm R M S).toAddEquiv.module S
+
+open scoped ABGV52
+
+/-- **源 §1 的 `f_i ⊗ 1`** ✓（印版 170 ✓ 逐字：「so `f_{i} ⊗ 1 : (M ⊗ S)^{(s_{i})} → (M ⊗ S)^{(t_{i})}`
+is **well defined**」✓）：由 `f : M^{(a)} → M^{(b)}` 给出
+`f ⊗ 1 : M^{(a)} ⊗_R S →_S M^{(b)} ⊗_R S` ✓。
+**构造** ✓：把 mathlib 的 `AlgebraTensorModule.map` ✓（**首因子 `S`-线性** ✓、**次因子 `R`-线性** ✓ ——
+正是 `id ⊗ f` 的两支 ✓）用 **`comm` 的 `S`-线性形** ✓（`AddEquiv.linearEquiv` ✓：搬运结构后
+`comm` 自动 `S`-线性 ✓）**两面夹住** ✓ ⟹ `S`-线性性**免费**得 ✓。
+**⚠ 用途** ✓：`S`-**半线性**档的 `tensorPowerMapSL`（§4 ✓）在此**不需要** ✓ —— 基变换只需 `R`-线性
+`f` ✓ 与**新底环的模结构** ✓。 -/
+noncomputable def tensorPowerBaseChange {a b : ℕ}
+    (f : TensorPower R a M →ₗ[R] TensorPower R b M) :
+    TensorPower R a M ⊗[R] S →ₗ[S] TensorPower R b M ⊗[R] S :=
+  ((TensorProduct.comm R (TensorPower R b M) S).toAddEquiv.linearEquiv S).symm.toLinearMap.comp
+    ((AlgebraTensorModule.map (LinearMap.id : S →ₗ[S] S) f).comp
+      ((TensorProduct.comm R (TensorPower R a M) S).toAddEquiv.linearEquiv S).toLinearMap)
+
+/-- **生成元刻画** ✓：`(f ⊗ 1) (x ⊗ₜ s) = (f x) ⊗ₜ s` ✓ —— 即源「`f_i ⊗ 1`」的**用点形** ✓
+（源只用它说「well defined」✓；本件把它作 **L1 探针 ＋ 计算入口** ✓）。 -/
+theorem tensorPowerBaseChange_tmul {a b : ℕ}
+    (f : TensorPower R a M →ₗ[R] TensorPower R b M) (x : TensorPower R a M) (s : S) :
+    tensorPowerBaseChange (S := S) f (x ⊗ₜ[R] s) = f x ⊗ₜ[R] s := by
+  simp [tensorPowerBaseChange, TensorProduct.comm_tmul, AlgebraTensorModule.map_tmul]
+
+/-- **L1 探针** ✓：`tensorPowerBaseChange` 在**任意** `R`-线性 `f`、任意 `S` 上**可实例化** ✓
+（上式即见证 ✓）⟹ 非空洞 ✓。 -/
+theorem tensorPowerBaseChange_nonempty (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
+    (M : Type v) [AddCommGroup M] [Module R M] (a b : ℕ)
+    (f : TensorPower R a M →ₗ[R] TensorPower R b M) :
+    Nonempty (TensorPower R a M ⊗[R] S →ₗ[S] TensorPower R b M ⊗[R] S) :=
+  ⟨tensorPowerBaseChange (S := S) f⟩
+
+end BaseChange
+
 /-! ## 8. 公理闸门 -/
 
+#print axioms tensorProductRightModule
+#print axioms tensorPowerBaseChange
+#print axioms tensorPowerBaseChange_tmul
+#print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe
 #print axioms FStruct_typeLock
 #print axioms FStruct_typeLock_str

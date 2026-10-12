@@ -286,7 +286,15 @@ sync.  The items added since then are:
   source's notion of an *`F` structure*, a linear structure over a ring containing `F`; because the
   closure properties of a class change the base ring, that notion is bundled, with the ring, the
   module and the structure travelling together, and it comes with two definitional-shape locks and
-  three non-vacuity probes, one of them at an arbitrary base ring.  Not yet formalized are
+  three non-vacuity probes, one of them at an arbitrary base ring.  The base change
+  `M (x)_phi S` of the source is also there: mathlib provides the `S`-module structure on the
+  tensor product only with the algebra in the first factor, so the structure is transported along
+  `TensorProduct.comm`, which keeps the factor order of the source; the induced map `f (x) 1` is
+  then obtained by conjugating mathlib's `AlgebraTensorModule.map` with that isomorphism, its
+  `S`-linearity coming from `AddEquiv.linearEquiv`, together with the pointwise description
+  `(f (x) 1)(x (x) s) = f x (x) s`.  One step is still missing before the base change of a linear
+  structure can be assembled: the identification `(M (x) S)^(n) = M^(n) (x) S` that the source
+  states on page 170, for which mathlib has no ready-made isomorphism.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.
