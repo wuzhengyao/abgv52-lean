@@ -7,7 +7,13 @@
   Adv. in Math. 43, 250–283：「A 交换、F 满足 2^r 条件时 generic object 存在」——
   蓝图 §1.2：**2^r 条件只在此步进入**）。~~KB 无 [23] 源件~~ **已入 KB（2026-10-10 用户供源：`raw/Saltman1982.{tex,pdf}`，
   citekey `Saltman1982`，receipt `2b3ed6f6…`；文献笔记 [[1982-Saltman-generic-galois]]）**——
-  pinpoint = [23] 印 p. 257／p. 265／pp. 274–275／p. 279 此后库内可核（**印刷页偏移已定案**：印刷页 = PDF 页 + 249 ✓，第 131 轮实测）；
+  pinpoint = [23] 印 p. 256／257／258／265／274／275／279 此后库内可核（**印刷页偏移已定案**：印刷页 = PDF 页 + 249 ✓，第 131 轮实测）；
+  **⚠ 第 134 轮普查** ✓：Saltman1984 正文对 [23] 的**带页引用共 9 处／7 页** ✓
+  —— 印 256（`:126` 论证式引用「arguing as in」）／257（`:771`）／258（`:906`）／265（`:983`）／
+  274（`:110`＋`:573`）／275（`:116`）／279（`:973`）✓；旧注**只列 4 页** ✗（257／265／274–275／279）
+  ⟹ **漏 256 与 258** ✓ **已补** ✓（`p. 283`／`p. 276` 经查属 `\cite{13}`／`\cite{21}` ✗，**非** [23] ✓）；
+  **已逐字核（读图）** ✓ ＝ 印 254／**256**／257／258／**265**／274／275／**279**／**281**／**282**
+  （＝ PDF 5／**7**／8／9／**16**／25／26／**30**／**32**／**33** ✓）；
   2^r 条件句的源 = `theorem-2-1`（F(ρ(r))/F 循环）。具名形暂维持（内容消费待复核波）。⚠ 页偏移登记：
   Saltman1984 的印刷页 = PDF 页 **+ 164**（任务书原写「+220」有误——那是
   Saltman1987 的偏移）。
@@ -180,6 +186,84 @@ theorem Theorem21Statement.shape (A : Type u) [Group A] [Fintype A] (F : Type v)
     Nonempty (GenericExtensionWitness F A) :=
   h hC
 
+/-! ## 4.2 M6 的第二条路线：**Noether 构造**（源 `theorem-5-1`，印 274--275 ✓ **本轮逐字核**） -/
+
+/-- **「`K` 在 `F` 上**有理**」** ✓（源印 274 ✓ 逐字：「**Noether's problem** is whether `L^G` is **rational
+over `F`**」✓）—— 落为「与某个有理函数域同构」✓（`F(t_1,\dots ,t_n)` ✓ ＝
+`FractionRing (MvPolynomial (Fin n) F)` ✓）。
+**⚠ 载体取 `CommRing` 而非 `Field`** ✓（**登记** ✓）：源此处谈的是**固定域** ✓，而「固定域是域」须
+Galois 理论 ✓（**本件未建** ✗）⟹ 谓词放宽到 `CommRing` ✓（对被同构的有理函数域而言，该形**更强** ✓）。 -/
+def IsRationalOver (F K : Type u) [Field F] [CommRing K] [Algebra F K] : Prop :=
+  ∃ (n : ℕ), Nonempty (K ≃ₐ[F] FractionRing (MvPolynomial (Fin n) F))
+
+/-- 源印 274 的 **Noether 构造**的**函数域** ✓：`L = F(x_\sigma \mid \sigma \in G)` ✓
+（＝多项式环 `MvPolynomial G F` 的**分式域** ✓）。
+**⚠ 登记（第 134 轮）** ✓：本 `abbrev` **当前无消费者** ✗ —— `Theorem51Statement` ✓ 量化 `L` ✓ 而**不用**本件 ✓；
+它是为**尚未落**的「`FractionRing` 上的提升自同构」✓（源作用 `\sigma(x_\tau) = x_{\sigma\tau}` ✓ 的分式域提升 ✓）**预留** ✓
+（mathlib 实测**无** `MulSemiringAction G (FractionRing (MvPolynomial G F))` ✗）⟹ **未落** ✗。 -/
+abbrev NoetherField (F G : Type u) [Field F] : Type u := FractionRing (MvPolynomial G F)
+
+/-- **L1 探针（载体非退化）** ✓：`NoetherField` 的 `CommRing` 实例可**直接合成** ✓（`inferInstance` ✓）
+⟹ 该 `abbrev` **不是**空壳 ✓。**⚠ 须 `noncomputable`** ✓（该实例经 `AddMonoidAlgebra.commRing` ✓，**非**可计算 ✓ ——
+一处编译期自纠 ✓）。 -/
+noncomputable example (F G : Type u) [Field F] : CommRing (NoetherField F G) := inferInstance
+
+/-- **源 `theorem-5-1`（印 274--275 ✓ 逐字核）的具名陈述** ✓ —— **⚠ 具名残余：本件不作证明** ✗**。
+
+源逐字 ✓：「Let `F`, `L`, and `G` be as above, with `F` **infinite**. **If `L^G` is rational over `F`, then
+there is a generic Galois extension for `G` over `F`**」✓（**印 275 上方** ✓；证明在**同页** ✓，用正规基技巧 ✓
+「`f(b_1,\dots ,b_n)\neq 0` if and only if `z` generates a **normal basis**」✓）。
+
+**⚠ 与源的**两处**偏离** ✓**（**登记** ✓；**二者皆放宽本陈述的**前提** ✓ ⟹ 数学上本陈述**强于**源 ✓；
+**⚠ 但「证本陈述 ⟹ 证源」**形式上未闭合** ✗** —— 偏离 **(i)** 把 `L` **量化** ✓，而源的**特定** `L`
+（＝`NoetherField F G` ✓）在本库**无** `MulSemiringAction` 实例 ✗ ⟹ 源陈述经本陈述的**实例化路径未通** ✓
+（**登记** ✓；见下方 `NoetherField` ✓ 的「无消费者」登记 ✓）。**⚠ 第 134 轮补注** ✓：源印 **282** ✓
+（＝ PDF 33 ✓）的 `Note added in proof` 明写「the results of **Theorem 5.3 and Corollary 5.4** should be
+limited to **infinite** fields `F`. This implies that `F` should be assumed infinite in **Section 3**」✓
+⟹ 无限性前提在源中是**承重**的 ✓（支持偏离 (ii) 的登记 ✓））：
+**(i)** 源把 `L` **固定**为 `L = F(x_\sigma \mid \sigma \in G)` ✓、作用固定为 `\sigma(x_\tau) = x_{\sigma\tau}` ✓；
+本件**量化** `L` 与作用 ✓ —— 因 mathlib **无**
+`MulSemiringAction G (FractionRing (MvPolynomial G F))` ✗（**实测**：`MvPolynomial` 上与 `FractionRing` 上
+**两处** `synthInstanceFailed` ✓），自建须先造 `FractionRing` 上的**提升自同构** ✓（**未落** ✗）；
+`NoetherField` ✓ 已就位 ✓ 供其用 ✓。
+**(ii)** 源要 `F` **无限** ✓；本件**未设**该前提 ✓（若证明需要再补 ✓，**登记** ✓）。
+**⚠ 源的另一处判别性事实** ✓（`remark` 印 275 ✓）：「The **converse** of `theorem-5-1` is **false**.
+`C_{47}` has a generic extension over `Q`, but **Swan showed Noether's Problem false** for this group」✓
+⟹ 本两条 M6 路线**互相独立** ✓（与 `theorem-2-1` ✓ 的条件不同 ✓），**登记** ✓。 -/
+def Theorem51Statement (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G] : Prop :=
+  ∀ (L : Type u) [Field L] [Algebra F L] [MulSemiringAction G L] [SMulCommClass G F L],
+    IsRationalOver F ↥(FixedPoints.subalgebra F L G) → Nonempty (GenericExtensionWitness F G)
+
+/-- **外形锁定 ①** ✓：`IsRationalOver` 的**用点形**逐字可取 ✓（有理函数域同构 ✓）。 -/
+theorem IsRationalOver.shape {F K : Type u} [Field F] [CommRing K] [Algebra F K]
+    (h : IsRationalOver F K) :
+    ∃ (n : ℕ), Nonempty (K ≃ₐ[F] FractionRing (MvPolynomial (Fin n) F)) :=
+  h
+
+/-- **外形锁定 ②** ✓：`Theorem51Statement` 的**两段**（**固定域有理** ✓／**存在见证** ✓）逐字可取 ✓ ——
+**⚠ 前提须作独立假设传入** ✓（㉝ ✓）。 -/
+theorem Theorem51Statement.shape (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+    (h : Theorem51Statement F G) (L : Type u) [Field L] [Algebra F L] [MulSemiringAction G L]
+    [SMulCommClass G F L] (hL : IsRationalOver F ↥(FixedPoints.subalgebra F L G)) :
+    Nonempty (GenericExtensionWitness F G) :=
+  h L hL
+
+/-! ## 4.3 L1 探针与判别力登记（第 134 轮） -/
+
+/-- **L1 非空洞探针** ✓（§3 工艺第 3 条 ✓）：`IsRationalOver` 的**假设类非空** ✓ —— **有理函数域自身有理** ✓
+（取 `n = 0` 得 `F` 本身 ✓；一般 `n` 取恒等同构 ✓）。
+**⚠ 判别力** ✓：本探针是**定理**（**非** `rfl` 平凡形 ✗）✓ ⟹ `IsRationalOver` 的右端被改坏即**编译失败** ✓，
+故它**同时**充当该 `def` 的**外形锁** ✓。 -/
+theorem isRationalOver_self (F : Type u) [Field F] (n : ℕ) :
+    IsRationalOver F (FractionRing (MvPolynomial (Fin n) F)) :=
+  ⟨n, ⟨AlgEquiv.refl⟩⟩
+
+/-- **⚠ 登记（L19 判别力探针未落）** ✗：`IsRationalOver` 的**否定性**判别力探针（一条**可证的**
+`¬ IsRationalOver F K` ✓）**本件未建** ✗ —— 需「有限环不能与有理函数域同构」类论证
+（`F` 无限时 `F(t_1,\dots ,t_n)` 无限 ✓；**mathlib 侧未落** ✗）⟹ 按 **L8①** ✓：
+本谓词的**阴性**读数**只用于生成、不得用于排除** ✓（L19 ✓）。 -/
+theorem isRationalOver_discrimination_gap_registered : True := trivial
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -191,5 +275,12 @@ theorem Theorem21Statement.shape (A : Type u) [Group A] [Fintype A] (F : Type v)
 #print axioms GenericExtensionWitness
 #print axioms Theorem21Statement
 #print axioms Theorem21Statement.shape
+#print axioms IsRationalOver
+#print axioms NoetherField
+#print axioms Theorem51Statement
+#print axioms IsRationalOver.shape
+#print axioms Theorem51Statement.shape
+#print axioms isRationalOver_self
+#print axioms isRationalOver_discrimination_gap_registered
 
 end ABGV52
