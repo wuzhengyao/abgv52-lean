@@ -390,7 +390,36 @@ theorem exists_mem_primeCompl_of_finset {A B : Type u} [CommRing A] [CommRing B]
   obtain ⟨m, hm⟩ := exists_mem_localization_ge_finset (M := P.primeCompl) X
   exact ⟨(m : A), m.2, hm⟩
 
-/-! ## 9. 登记 -/
+/-! ## 9. 步 ⑤ 的**接口**：把 `ψ` 核限制到单元局部化（源「`ψ(S) ⊂ F[x](1/w)`」✓） -/
+
+/-- **一般核限制引理** ✓✓✓（本工程自立的接口 ✓）：设 `ι : A[1/w] →ₐ[A] B` **单** ✓ 且
+`ψ : S →ₐ[A] B` 的像落在 `ι.range` 里 ✓，则 `ψ` **唯一地**分解为 `ι ∘ ψ'` ✓（`ψ' : S →ₐ[A] A[1/w]` ✓）。
+**证法** ✓：`ψ.codRestrict ι.range hψ` ✓ ＋ `AlgEquiv.ofInjective ι hι` ✓ 的**逆向**复合 ✓。
+**⚠ 用途** ✓：源步 ⑤ 说 `ψ(S) ⊂ F[x](1/w)` ✓ —— 本条即把该「包含」**兑现**为
+「`ψ` 穿过 `F[x](1/w)`」✓（把 `T = F[x]_P` 上的 `ψ` 换成 `F[x](1/w)` 上的 `ψ'` ✓），
+供最后组装 `φ = η ∘ ψ'` ✓ 使用 ✓。 -/
+theorem exists_factor_through_of_injective {A B S : Type u} [CommRing A] [CommRing B] [CommRing S]
+    [Algebra A B] [Algebra A S] (w : A) (ι : Localization.Away w →ₐ[A] B)
+    (hι : Function.Injective ι) (ψ : S →ₐ[A] B) (hψ : ∀ s : S, ψ s ∈ ι.range) :
+    ∃ ψ' : S →ₐ[A] Localization.Away w, ι.comp ψ' = ψ := by
+  refine ⟨(((AlgEquiv.ofInjective ι hι).symm : ι.range →ₐ[A] Localization.Away w)).comp
+    (ψ.codRestrict ι.range hψ), ?_⟩
+  ext s
+  exact congrArg Subtype.val (AlgEquiv.apply_symm_apply (AlgEquiv.ofInjective ι hι) _)
+
+/-- **非空洞探针（L1）** ✓：`S = A`、`ι = AlgHom.id`（`B = A[1/1]`）档 ✓ ——
+`ψ'` 即 `algebraMap` ✓，故本引理的假设类**非空** ✓。 -/
+theorem exists_factor_through_of_injective_probe (A : Type u) [CommRing A] :
+    ∃ ψ' : A →ₐ[A] Localization.Away (1 : A),
+      ψ' = Algebra.algHom A A (Localization.Away (1 : A)) := by
+  obtain ⟨ψ', hψ'⟩ := exists_factor_through_of_injective (A := A)
+    (B := Localization.Away (1 : A)) (S := A) 1
+    (AlgHom.id A (Localization.Away (1 : A))) Function.injective_id
+    (Algebra.algHom A A (Localization.Away (1 : A)))
+    (fun s => ⟨Algebra.algHom A A (Localization.Away (1 : A)) s, rfl⟩)
+  exact ⟨ψ', by simpa using hψ'⟩
+
+/-! ## 10. 登记 -/
 
 /-- **登记** ✗（**源陈述缺假设** ✓✓，**印版级已核** ✓；L39 家族 ✓）：源 `thm3.9` 的**陈述**
 （**印版 p.184** ✓，逐字）只说「Let `φ : S → R` be an `F` algebra map between `F` algebra
@@ -415,10 +444,13 @@ theorem thm39_affineness_finding_registered : True := trivial
 
 ① **`thm3.9` 的反方向**（(ii)⟹(i) ✓，印版 p.185 ✓）：**✅ 设置已完成** ✓✓（本件 §7 ✓：
 `η₀` ✓／`P = ker η₀` ✓／`T = F[x]_P` ✓／残差映射 ✓／**`ψ : S → T` 取自 `HasLocalLifting`** ✓）；
-**✅ 仍缺一段** ✓（第 106 轮更新 ✓）：（a）「`ψ(S) ⊆ F[x](1/w)` 对某 `w ∉ P`」✓ ——
+**✅ 仍缺一段** ✓（第 107 轮更新 ✓）：（a）「`ψ(S) ⊆ F[x](1/w)` 对某 `w ∉ P`」✓ ——
 **✅ 工具已落** ✓✓（本件 §8 ✓：`exists_mem_localization_ge_finset` ✓／
 `exists_mem_localization_ge_adjoin` ✓（**有限型子代数档** ✓）／`exists_mem_primeCompl_of_finset` ✓
-（**素理想档 `w ∉ P`** ✓））；
+（**素理想档 `w ∉ P`** ✓））＋ **✅ 接口已落** ✓✓（本件 §9 ✓：
+`exists_factor_through_of_injective` ✓ 把「包含」兑现为「穿过 `A[1/w]`」✓）；
+**⚠ 仍缺** ✗：把 §9 用到 `T = F[x]_P` 上所需的 **`A[1/w] →ₐ[F] F[x]_P` 的单性** ✗
+（`IsLocalization.liftAlgHom` ✓ ＋ `IsLocalization.Away.surj` ✓ 可证 ✓，本件**未落** ✗）；
 （b）**最后的组装** ✗：`F[x](1/w) → R(1/(r·v))`（`v = η₀ w` ✓）＋ 组装 `FactorsRationally` ✓
 （须用「局部化的局部化」识别 ✗）。
 
@@ -449,6 +481,8 @@ theorem thm39_gap_registered : True := trivial
 #print axioms exists_mem_localization_ge_finset
 #print axioms exists_mem_localization_ge_adjoin
 #print axioms exists_mem_primeCompl_of_finset
+#print axioms exists_factor_through_of_injective
+#print axioms exists_factor_through_of_injective_probe
 #print axioms thm39_affineness_finding_registered
 #print axioms thm39_gap_registered
 

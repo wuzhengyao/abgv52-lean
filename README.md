@@ -236,8 +236,10 @@ sync.  The items added since then are:
   "`ψ(S) ⊆ F[x](1/w)` for some `w ∉ P`" is in place too: finitely many elements of a localization
   share a common denominator, and consequently a finitely generated subalgebra of a localization lies
   in a one-element localization, in the prime form `w ∉ P`.  What is still missing from the converse
-  is the final assembly; the finding above was also refined: affineness of `R` does *not* give
-  affineness of `R(1/r)`, so the target must carry that hypothesis separately.  The converse and `thm3.8` are registered as gaps.
+  is the final assembly.  The containment of the refinement is also cashed out as an interface: an
+  algebra map whose image lies in the range of an injective one-element localization factors through
+  it.  The finding above was likewise refined: affineness of `R` does *not* give affineness of
+  `R(1/r)`, so the target must carry that hypothesis separately.  The converse and `thm3.8` are registered as gaps.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
