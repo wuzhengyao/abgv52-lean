@@ -2016,6 +2016,44 @@ theorem finiteType_adjoin_range (a : Fin n → K) :
 
 end PolyRingOfBasis
 
+/-! ## 4.27 **局部化到域的环同态**（源「新 `R`」的抽象载体接口）✓（第 161 轮）
+
+**⚠ 装配背景** ✓：源的新 `R = R_1(1/s)` ✓ 有两**载体**选择 ✓：**(i)** §4.23 的**子代数形** ✓
+`\mathrm{Algebra.adjoin}\ A_0\ \{(\mathrm{algebraMap}\ s)^{-1}\} \subseteq K` ✓（**已在库** ✓）；
+**(ii)** **抽象局部化形** ✓ `\mathrm{Localization.Away}\ w` ✓ —— 后者使 **`\mathrm{IsGenericExtension}`(a) 款**
+**按构造成立** ✓（**读数 (67) 的取向** ✓）。
+**⚠ 两者之间的桥** ✓（**本轮起头** ✓）：**抽象局部化可映回 `K`** ✓ —— 即由**万有性质** ✓
+（`s` 在 `K` 中可逆 ✓）得 `R_{\mathrm{loc}} \to K` 的**环同态** ✓，且**在基环上与 `\mathrm{algebraMap}` 一致** ✓。
+
+**⚠ 本轮落地** ✓：`exists_ringHom_away_to_field` ✓✅ —— **入口** ✓：`\mathrm{IsLocalization.Away.lift}` ✓
+＋ **`\mathrm{IsLocalization.Away.lift\_comp}`** ✓（给与 `\mathrm{algebraMap}` 的一致 ✓）；
+**可逆性** ✓ 由 `\mathrm{isUnit\_iff\_ne\_zero}` ✓ ＋ **`\mathrm{FaithfulSMul.algebraMap\_injective}`** ✓
+（`s \neq 0 \Rightarrow \mathrm{algebraMap}\ s \neq 0` ✓ —— **同 (63) 的嵌入假设** ✓）。
+
+**⚠ 登记（本轮未落）** ✗：**①** **像的包含** ✓（`\mathrm{adjoin}\ A\ \{(s)^{-1}\} \subseteq \psi.\mathrm{range}` ✓）——
+**思路已定** ✓：`\mathrm{Algebra.mem\_adjoin\_iff}` ✓ 化到 `\mathrm{Subring.closure}` ✓ ＋ `\mathrm{Subring.closure\_le}` ✓；
+**阻塞** ✗：**`s` 在 `R_{\mathrm{loc}}` 中的像是单位的引理名** ✗（`\mathrm{IsLocalization.Away.isUnit}` **不存在** ✗，
+**实测** ✓；`\mathrm{IsLocalization.map\_units}` ✓ 需 `\mathrm{Submonoid.powers}` 的成员证明 ✗）⟹ **次轮查名后落** ✓；
+**②** **双侧合为同构** ✓（像的包含 ＋ 单射 ✓）⟹ `A_0[s^{-1}] \simeq_F \mathrm{Localization.Away}\ w` ✓。 -/
+
+section AwayToField
+
+variable {A : Type u} [CommRing A]
+variable {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K]
+variable {Rloc : Type u} [CommRing Rloc] [Algebra A Rloc]
+
+/-- **局部化到域的环同态** ✓：`s` 在 `K` 中可逆 ⟹ **由万有性质**得 `R_{\mathrm{loc}} \to K` ✓，
+且在基环上与 `\mathrm{algebraMap}` **一致** ✓。 -/
+theorem exists_ringHom_away_to_field (s : A) [IsLocalization.Away s Rloc] (hs : s ≠ 0) :
+    ∃ ψ : Rloc →+* K, ∀ a : A, ψ (algebraMap A Rloc a) = algebraMap A K a := by
+  have hsK : IsUnit (algebraMap A K s) := by
+    rw [isUnit_iff_ne_zero]
+    exact fun h0 => hs (FaithfulSMul.algebraMap_injective A K (by rw [h0, map_zero]))
+  exact ⟨IsLocalization.Away.lift s hsK,
+    fun a => congrArg (fun f => f a) (IsLocalization.Away.lift_comp s hsK)⟩
+
+end AwayToField
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2106,5 +2144,6 @@ end PolyRingOfBasis
 #print axioms exists_factors_through_adjoin_inv_of_finiteType
 #print axioms nonempty_algEquiv_mvPolynomial_adjoin
 #print axioms finiteType_adjoin_range
+#print axioms exists_ringHom_away_to_field
 
 end ABGV52
