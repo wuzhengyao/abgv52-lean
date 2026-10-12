@@ -81,6 +81,7 @@ import ABGV52.Saltman_ABGV52
 import ABGV52.SaltCond_ABGV52
 import ABGV52.GenericExtension_ABGV52
 import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.FieldTheory.Galois.NormalBasis
 
 universe u v
 
@@ -710,6 +711,81 @@ theorem normalBasisPoly_gap_registered : True := trivial
 
 end NormalBasisPolynomial
 
+section GaloisBridge
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] (L : Type u) [Field L] [Algebra K L]
+  [MulSemiringAction G L] [SMulCommClass G K L]
+
+/-- **识别桥（一）：作用给出 `K`-代数自同构** ✓ —— 由 `[MulSemiringAction G L]` ✓ 与
+**`[SMulCommClass G K L]`** ✓（作用与 `K`-标量交换 ✓）得 `g \bullet \cdot \in L \simeq_K L` ✓。
+**⚠ 用点** ✓：它是**三处共用缺口**的入口 ✓（见 §4.11 说明 ✓）。 -/
+noncomputable def smulAlgEquiv (g : G) : L ≃ₐ[K] L where
+  toFun := fun x => g • x
+  invFun := fun x => g⁻¹ • x
+  left_inv := fun x => by show g⁻¹ • (g • x) = x; rw [← mul_smul, inv_mul_cancel, one_smul]
+  right_inv := fun x => by show g • (g⁻¹ • x) = x; rw [← mul_smul, mul_inv_cancel, one_smul]
+  map_mul' := fun x y => smul_mul' g x y
+  map_add' := fun x y => smul_add g x y
+  commutes' := fun r => smul_algebraMap g r
+
+/-- **识别桥（二）：`G \to^* (L \simeq_K L)`** ✓（源语境下它就是 `G \to \mathrm{Gal}(L/K)` ✓）。 -/
+noncomputable def smulAlgEquivHom : G →* (L ≃ₐ[K] L) where
+  toFun := smulAlgEquiv K G L
+  map_one' := by ext x; simp [smulAlgEquiv]
+  map_mul' g h := by ext x; simp [smulAlgEquiv, mul_smul]
+
+/-- **识别桥（三）：抽象版正规基定理** ✓✅ —— 若该同态**双射** ✓（＝**`G` 就是伽罗瓦群** ✓，
+源语境自动成立 ✓），则**存在** `x` 使 `\{g \bullet x\}_{g \in G}` **线性无关** ✓。
+
+**证明** ✓：mathlib **`exists_linearIndependent_algEquiv_apply`** ✓（**只需 `[FiniteDimensional K L]`** ✓，
+**不需要** `IsGalois` ✓）给出 `x` 与 `\mathrm{LI}(\varphi \mapsto \varphi x)` ✓；再由**双射** ✓ 造
+`\mathrm{Equiv.ofBijective}` ✓ 并用 **`linearIndependent_equiv`** ✓ **重指标**到 `G` ✓
+（两者**逐点相同** ✓：`(\mathrm{smulAlgEquiv}\ g) x = g \bullet x` ✓）。 -/
+theorem exists_linearIndependent_smul [FiniteDimensional K L]
+    (h : Function.Bijective (smulAlgEquivHom K G L)) :
+    ∃ x : L, LinearIndependent K (fun g : G => g • x) := by
+  obtain ⟨x, hx⟩ := exists_linearIndependent_algEquiv_apply K L
+  refine ⟨x, ?_⟩
+  have hcomp : (fun g : G => g • x)
+      = (fun φ : L ≃ₐ[K] L => φ x) ∘ (Equiv.ofBijective (smulAlgEquivHom K G L) h) := by
+    funext g; rfl
+  rw [hcomp, linearIndependent_equiv]
+  exact hx
+
+end GaloisBridge
+
+/-! ## 4.11 识别桥 ＋ **`(d)-②①` 结**：`f \neq 0` ✓（第 144 轮）
+
+**⚠ 三处共用缺口** ✓：`G \simeq \mathrm{Gal}(L/K)` 的**识别** ✓ 同时是 —— ① `(d)-②①` 的 `f \neq 0` ✓；
+② §4.5 的 `Lemma52Statement` 的**口径** ✓（源「normal basis」**含张成** ✓）；③ `theorem-5-1` 的**实例化** ✓。
+本轮把它落为**显式假设** ✓（`Function.Bijective (smulAlgEquivHom K G L)` ✓ —— **源语境下自动成立** ✓，**登记** ✓）。 -/
+
+section NormalBasisPolyNeZero
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **`(d)-②①` 结** ✓✅：**`f \neq 0`** ✓ —— 源逐字：「Since some normal basis exists, `f` is a **nonzero**
+polynomial」✓。
+
+**证明** ✓（**三件拼接** ✓）：**(i)** §4.11 的**抽象正规基** ✓ 给 `x` 与 `\mathrm{LI}(g \mapsto g \bullet x)` ✓；
+**(ii)** §4.9 的**判据** ✓ 给 `\det(\mathrm{galoisMatrix}\ b\ x) \neq 0` ✓；**(iii)** §4.10 的**对接锁** ✓
+取 `y_i = b.\mathrm{repr}\ x\ i` ✓（`Basis.sum_repr` ✓：`\sum_i y_i \bullet e_i = x` ✓）得
+`f(y) = \det(\mathrm{galoisMatrix}\ b\ x) \neq 0` ✓ ⟹ **`f \neq 0`** ✓（**若 `f = 0` 则 `f(y) = 0`** ✗ 矛盾 ✓）。
+**⚠ 用点** ✓：源「`f` 非零」正是其**避零步**（§4.10 ✓）的**前提之一** ✓。 -/
+theorem normalBasisPoly_ne_zero {L : Type u} [Field L] [Algebra K L] [FiniteDimensional K L]
+    [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
+    (h : Function.Bijective (smulAlgEquivHom K G L)) : normalBasisPoly K G b ≠ 0 := by
+  obtain ⟨x, hx⟩ := exists_linearIndependent_smul K G L h
+  have hdet : (galoisMatrix K G b x).det ≠ 0 :=
+    (galoisMatrix_det_ne_zero_iff_vectors K G b x).mpr hx
+  intro hf
+  have h1 := eval_normalBasisPoly K G b (fun i : G => b.repr x i)
+  rw [b.sum_repr x] at h1
+  rw [hf, map_zero] at h1
+  exact hdet h1.symm
+
+end NormalBasisPolyNeZero
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -752,6 +828,10 @@ end NormalBasisPolynomial
 #print axioms galoisMatrix_det_ne_zero_iff_vectors
 #print axioms exists_eval_ne_zero_of_ne_zero
 #print axioms exists_eval_mul_ne_zero
+#print axioms smulAlgEquiv
+#print axioms smulAlgEquivHom
+#print axioms exists_linearIndependent_smul
+#print axioms normalBasisPoly_ne_zero
 #print axioms normalBasisPoly
 #print axioms eval_normalBasisPoly
 #print axioms normalBasisPoly_gap_registered
