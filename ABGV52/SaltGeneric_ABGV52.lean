@@ -494,7 +494,7 @@ variable (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
 **证明** ✓：`§4.5` 的 `noether_prod_eval_isFixed` ✓ 的 `\mathrm{hev}` 前提**由 §4.6 的
 `noetherEval_equivariant` ✓ 填充** ✓ ⟹ **条件式 → 无条件式** ✓（**这是 §4.5 那条登记的意义** ✓）。
 **⚠ 用点** ✓：本式是 `lemma-5-2` **证明**的**第一步的收口** ✓ —— 源的下一句（`t' \neq 0 \Rightarrow t` 是单位 ✓）
-**未落** ✗（**登记** ✓）。 -/
+**第 140 轮已落** ✓✅（`noether_aeval_ne_zero_of_prod_ne_zero` ✓，见 **§4.7** ✓；**第 139 轮原记「未落」** ✗ —— **留痕** ✓）。 -/
 theorem noether_prod_aeval_isFixed {L : Type u} [Field L] [Algebra F L]
     [MulSemiringAction G L] [SMulCommClass G F L]
     (z : L) (t : MvPolynomial G F) (g : G) :
@@ -504,6 +504,43 @@ theorem noether_prod_aeval_isFixed {L : Type u} [Field L] [Algebra F L]
     (fun g p => noetherEval_equivariant F G z g p) t g
 
 end Lemma52UsableForm
+
+/-! ## 4.7 源 `lemma-5-2` 的**第三步 (c)**：`t' \neq 0 \Rightarrow t` 是单位 ✓（第 140 轮）
+
+**源逐字** ✓（`tex :662` ✓）：「if `t'(z,\sigma(z),\dots) \neq 0` then `t(z,\sigma(z),\dots)` is a **unit**」✓ ——
+**在一处域 `L` 上「单位」＝ 非零** ✓ ⟹ 落为 **`\mathrm{aeval}(\dots) t \neq 0`** ✓。 -/
+
+section Lemma52UnitStep
+
+variable (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+
+/-- **乘积与求值的交换** ✓：`\mathrm{ev}(\prod_\sigma \sigma \bullet t) = \prod_\sigma \sigma \bullet \mathrm{ev}(t)` ✓ ——
+即 `t'` 的求值**恰是 `\mathrm{ev}(t)` 的各共轭之积** ✓（源 `(c)` 的**代数核** ✓）。
+**证明** ✓：`map_prod` ✓（`\mathrm{aeval}` 是 `F`-代数同态 ✓）＋ 逐因子用 **§4.6 的 `noetherEval_equivariant`** ✓。 -/
+theorem noether_prod_aeval_eq {L : Type u} [Field L] [Algebra F L] [MulSemiringAction G L]
+    [SMulCommClass G F L] (z : L) (t : MvPolynomial G F) :
+    MvPolynomial.aeval (fun σ : G => σ • z) (∏ σ : G, σ • t)
+      = ∏ σ : G, σ • (MvPolynomial.aeval (fun σ : G => σ • z) t) := by
+  rw [map_prod (MvPolynomial.aeval (fun σ : G => σ • z)) (fun σ : G => σ • t) Finset.univ]
+  exact Finset.prod_congr rfl (fun σ _ => noetherEval_equivariant F G z σ t)
+
+/-- **源 `lemma-5-2` 第三步 (c)** ✓✅：「if `t'(z,\sigma(z),\dots) \neq 0` then `t(z,\sigma(z),\dots)` is a **unit**」✓
+—— 落为 **`\mathrm{ev}(t') \neq 0 \Rightarrow \mathrm{ev}(t) \neq 0`** ✓（**域上非零即单位** ✓）。
+
+**证明** ✓（**逆否** ✓）：若 `\mathrm{ev}(t) = 0` ✓，则由上条 `\mathrm{ev}(t') = \prod_\sigma \sigma \bullet 0 = 0` ✓
+（**取 `\sigma = 1` 的因子为零** ✓，`Finset.prod_eq_zero` ✓）⟹ 与 `\mathrm{ev}(t') \neq 0` 矛盾 ✓。
+**⚠ 意义** ✓：源证明**开头三段 (a)(b)(c) 至此全部形式化** ✓✅；**余** ✓ ＝ **(d)** 行列式刻画 ＋ 无限域避零 ✗
+（**登记** ✓）—— **(d) 落则 `Lemma52Statement` 的证明**结构上齐备 ✓（**仍须 (d) 的组装** ✓）。 -/
+theorem noether_aeval_ne_zero_of_prod_ne_zero {L : Type u} [Field L] [Algebra F L]
+    [MulSemiringAction G L] [SMulCommClass G F L] (z : L) (t : MvPolynomial G F)
+    (h : MvPolynomial.aeval (fun σ : G => σ • z) (∏ σ : G, σ • t) ≠ 0) :
+    MvPolynomial.aeval (fun σ : G => σ • z) t ≠ 0 := by
+  intro h0
+  apply h
+  rw [noether_prod_aeval_eq F G z t]
+  exact Finset.prod_eq_zero (Finset.mem_univ (1 : G)) (by simp [h0])
+
+end Lemma52UnitStep
 
 /-! ## 5. 公理闸门 -/
 
@@ -538,6 +575,8 @@ end Lemma52UsableForm
 #print axioms noether_prod_eval_isFixed
 #print axioms noetherEval_equivariant
 #print axioms noether_prod_aeval_isFixed
+#print axioms noether_prod_aeval_eq
+#print axioms noether_aeval_ne_zero_of_prod_ne_zero
 #print axioms Lemma52Statement
 #print axioms Lemma52Statement.shape
 
