@@ -195,8 +195,13 @@ sync.  The items added since then are:
   along it, with the base invariants `F₊[V]^G` mapped into `R`; the compatibility of the localization
   map with the action (`symLocMulSemiringAction_algebraMap`) is what links the two sides.  One
   difference from the source is registered: the invariant clause is asserted only for the image of
-  `F₊[V]^G`, not for every `G`-invariant of `F₊[V](1/s)`, which would need the identification
-  `S^G = F₊[V]^G(1/s)`; that identification is the single remaining item for step 10.
+  `F₊[V]^G`, not for every `G`-invariant of `F₊[V](1/s)`.  The identification of those invariants is
+  also proved (`exists_symInvariants_fraction_of_fixed`): for a `G`-invariant `s`, every `G`-invariant
+  element of `F₊[V](1/s)` is a fraction whose numerator *and denominator* lie in `F₊[V]^G`, with the
+  use point `exists_symInvariants_fraction_of_fixed_away` for the action of the previous paragraph.
+  The finiteness of `G` enters here, through a maximum over the group; the argument needs no Galois
+  hypothesis.  The conclusion is deliberately stated as a fraction rather than as membership in the
+  image of `F₊[V]^G`, which would be false in general.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
   `SaltRatOver`, `SaltLocalProj` carry the 1984 definitions, the rational-to-retract bridge, Swan's
   lemma, the corollary/reduction pair, the 2-power condition layer, the named generic-object residual,
