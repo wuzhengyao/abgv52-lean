@@ -178,8 +178,15 @@ sync.  The items added since then are:
   required to be a local surjection), proves that projectivity implies local projectivity, feeds it
   the two named inputs of step 9, and proves the kernel of the source's step (a): the lift of a map
   whose value at the localizing element `s` is a unit again sends `s` to a unit, because the
-  surjection is local.  The two remaining pieces of step 10 (the localization universal property and
-  the identification `S^G = F₊[V]^G(1/s)`) are registered as gaps.
+  surjection is local.  The file also proves the sentence that opens the source's proof of (a) —
+  that a map out of `M ⊗_R R(1/s)` exists exactly when it inverts `s` — in the abstract commutative
+  case: `isUnit_algebraMap_tensor_away` (the scalar `s` is a unit in `M ⊗_R R(1/s)`),
+  `exists_tensor_away_lift` (a map inverting `s` factors through the localization, by
+  `IsLocalization.liftAlgHom` and `Algebra.TensorProduct.productMap`) and the resulting equivalence
+  `exists_tensor_away_lift_iff`.  Uniqueness of that factorization is not claimed, since the source's
+  argument uses only existence.  What remains for step 10 is the descent of the `G`-action to the
+  localization (so that `S = F₊[V](1/s)` becomes an object of the slice) and the identification
+  `S^G = F₊[V]^G(1/s)`; both are registered as gaps.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
   `SaltRatOver`, `SaltLocalProj` carry the 1984 definitions, the rational-to-retract bridge, Swan's
   lemma, the corollary/reduction pair, the 2-power condition layer, the named generic-object residual,
