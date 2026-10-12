@@ -1589,6 +1589,68 @@ theorem exists_mul_eq_of_adjoin_eq_top {a : ι → K}
 
 end FractionForm
 
+/-! ## 4.21 **有限清分母**（源「product of all the `g`'s and `k`'s」）✓✅（第 153 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex:651--652` ✓）：「Then if \(t\) is the **product of all the \(g\)'s and
+\(k\)'s**, we have that \(S \subset F[x_\sigma \mid \sigma \in G](1/t)\).」✓ —— 即源把**有限多个**分母
+（`a_i = f_i/g_i` ✓ 的 `g`'s ✓ 与 `e_j = h_j/k_j` ✓ 的 `k`'s ✓）**乘成一个** `t` ✓，**一次去分母** ✓。
+
+**⚠ 定理内容** ✓：一族元素若**各自**是 `A` 中两元素之商 ✓（**正是 §4.20 的输出形** ✓），则**存在单个 `s \neq 0`** ✓
+使**全体同时**「去分母」✓（`\mathrm{algebraMap}\ s \cdot g_i` 仍是 `\mathrm{algebraMap}` 的像 ✓）——
+**⚠ 关键** ✓：**只需 `n = 1`** ✓（`s` 取**各分母之积** ✓ 时，`g_i` 的分母已是 `s` 的因子 ✓）。
+**⚠ 用途** ✓：源 `R'' \subseteq R_1(1/s)` ✓ 与 `S \subseteq F[x_\sigma](1/t)` ✓ 两处的**共同内核** ✓。
+**⚠ 前提** ✓：`[Nontrivial A] [NoZeroDivisors A]` ✓（**积非零所需** ✓ —— 在域的子代数档**自动成立** ✓，见下一条 ✓）。 -/
+
+section ClearDenominators
+
+variable {A : Type u} [CommRing A] [Nontrivial A] [NoZeroDivisors A]
+variable {K : Type u} [Field K] [Algebra A K]
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/-- **有限清分母** ✓✅：`\exists s \neq 0,\ \forall i,\ \exists a,\ \mathrm{algebraMap}\ s \cdot g_i = \mathrm{algebraMap}\ a` ✓。
+
+**证明** ✓：对每个 `i` 取一对 `(x_i, y_i)` ✓（`\mathrm{choose}` ✓）；取 `s := \prod_i y_i` ✓（**积非零** ✓ 由
+`\mathrm{Finset.prod\_ne\_zero\_iff}` ✓）；由 **`\mathrm{Finset.mul\_prod\_erase}`** ✓ 把 `s` 拆成
+`y_i \cdot \prod_{j \neq i} y_j` ✓，再用 `y_i g_i = x_i` ✓ **一次代换** ✓ ⟹ `a := (\prod_{j \neq i} y_j) \cdot x_i` ✓。
+**⚠ 一处编译期自纠** ✓：`\mathrm{Finset.mul\_prod\_erase}` 的**方向**与目标**相反** ✓ ⟹ 须取 `.symm` ✓；
+且 `\mathrm{map\_prod}` **须在两处都展开** ✓（否则 `s` 的像与逐项之积**不是同一项** ✗，`\mathrm{ring}` 收不了 ✗）。 -/
+theorem exists_mul_eq_of_finite (g : ι → K)
+    (h : ∀ i, ∃ x y : A, y ≠ 0 ∧ algebraMap A K y * g i = algebraMap A K x) :
+    ∃ s : A, s ≠ 0 ∧ ∀ i, ∃ a : A, algebraMap A K s * g i = algebraMap A K a := by
+  choose X Y hY hXY using h
+  refine ⟨∏ i, Y i, Finset.prod_ne_zero_iff.mpr (fun i _ => hY i), fun i => ?_⟩
+  refine ⟨(∏ j ∈ Finset.univ.erase i, Y j) * X i, ?_⟩
+  have h1 : algebraMap A K (∏ j, Y j)
+      = algebraMap A K (Y i) * ∏ j ∈ Finset.univ.erase i, algebraMap A K (Y j) := by
+    rw [map_prod]
+    exact (Finset.mul_prod_erase Finset.univ (fun x => algebraMap A K (Y x))
+      (Finset.mem_univ i)).symm
+  rw [h1, map_mul, map_prod, ← hXY i]
+  ring
+
+end ClearDenominators
+
+section GeneratedFieldCase
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K] {ι : Type*}
+
+/-- **域生成档的有限清分母** ✓✅（**源 step 的直接形** ✓）：把上一条用在 `A := \mathrm{Algebra.adjoin}\ F\ \{\mathrm{range}\ a\}` ✓
+（**其 `\mathrm{NoZeroDivisors}` 自动成立** ✓ —— **域的子代数** ✓）＋ **§4.20 的乘法形** ✓（每个 `g_i` 由生成域性质给出分式 ✓）。
+
+**⚠ 用途** ✓：取 `g` ＝ 源的两族生成元 ✓（`a_i` ✓ 与 `e_j` ✓）⟹ 得**单个** `s` ✓ ⟹ `R'' \subseteq R_1(1/s)` ✓。 -/
+theorem exists_mul_eq_of_finite_adjoin_eq_top {a : ι → K}
+    (h : IntermediateField.adjoin F (Set.range a) = ⊤)
+    {ι' : Type*} [Fintype ι'] [DecidableEq ι'] (g : ι' → K) :
+    ∃ s : Algebra.adjoin F (Set.range a), s ≠ 0 ∧
+      ∀ i : ι', ∃ x : Algebra.adjoin F (Set.range a),
+        algebraMap (Algebra.adjoin F (Set.range a)) K s * g i
+          = algebraMap (Algebra.adjoin F (Set.range a)) K x := by
+  have : NoZeroDivisors ↥(Algebra.adjoin F (Set.range a)) := inferInstance
+  exact exists_mul_eq_of_finite (A := ↥(Algebra.adjoin F (Set.range a))) g
+    (fun i => exists_mul_eq_of_adjoin_eq_top h (g i))
+
+end GeneratedFieldCase
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -1664,5 +1726,7 @@ end FractionForm
 #print axioms exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver
 #print axioms exists_div_eq_of_adjoin_eq_top
 #print axioms exists_mul_eq_of_adjoin_eq_top
+#print axioms exists_mul_eq_of_finite
+#print axioms exists_mul_eq_of_finite_adjoin_eq_top
 
 end ABGV52
