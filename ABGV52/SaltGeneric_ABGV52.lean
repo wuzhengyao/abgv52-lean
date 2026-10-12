@@ -1968,6 +1968,54 @@ theorem exists_factors_through_adjoin_inv_of_finiteType (φ : B →ₐ[A] K)
 
 end FactorsThrough
 
+/-! ## 4.26 **超越基生成的多项式环**（源 `R_1 = F[a_1,\dots,a_n]` 的识别 ＋ 有限型）✓✅（第 158 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex:649--650` ✓）：「Set \(R_1 = F[a_1,\dots,a_n] \subset L^G\).」✓ ——
+即源把超越基**生成的多项式子代数**记作 `R_1` ✓；而 `\mathrm{IsGenericExtension}` 的**第 (a) 款** ✓
+要求 `R` **同构于某局部化多项式环** ✓（`\exists n\ w,\ w \neq 0 \wedge R \simeq_F \mathrm{Localization.Away}\ w` ✓）
+⟹ **须先识别 `A_0 = \mathrm{Algebra.adjoin}\ F\ \{\mathrm{range}\ a\}` 本身** ✓。
+
+**⚠ 两件** ✓：
+**①** **`nonempty_algEquiv_mvPolynomial_adjoin`** ✓✅ —— **代数无关族生成的子代数 ≅ 多项式环** ✓：
+`\mathrm{AlgebraicIndependent}\ F\ a \Rightarrow \exists\, (MvPolynomial\ (Fin\ n)\ F \simeq_F \uparrow(\mathrm{Algebra.adjoin}\ F\ \{\mathrm{range}\ a\}))` ✓
+（**入口** ✓：`\mathrm{algebraicIndependent\_iff\_injective\_aeval}` ✓ 给**单射** ✓；
+**`\mathrm{MvPolynomial.aeval\_range}`** ✓ 给**值域 ＝ 该子代数** ✓；**`\mathrm{AlgEquiv.ofInjective}`** ✓ 收 ✓）；
+**②** `finiteType_adjoin_range` ✓✅ —— **有限族生成的子代数在基域上有限型** ✓
+（`\mathrm{Subalgebra.fg\_adjoin\_finset}` ✓ ＋ `\mathrm{Subalgebra.fg\_top}` ✓；
+**⚠ 这是 `\mathrm{RepresentingObject}` 的 `\mathrm{Algebra.FiniteType}\ F\ X.R` 一款** ✓）。
+
+**⚠ 两处编译期自纠** ✓（**留痕** ✓）：**①** **`\mathrm{MvPolynomial.aeval\_range}` 须显式给 `R`／`f`** ✗
+（**同 (65) 的「`\mathrm{adjoin}` 系引理隐参须显式」** ✓ —— **该模式本轮二次复现** ✓）；
+**②** **`\mathrm{Finset.image}` 需 `\mathrm{DecidableEq}`** ✗ ⟹ **证内 `\mathrm{classical}`** ✓
+（**不**加强陈述 ✓，**同 (62) 的伴生坑** ✓）。 -/
+
+section PolyRingOfBasis
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K] {n : ℕ}
+
+/-- **代数无关族生成的子代数 ≅ 多项式环** ✓✅（**源 `R_1 = F[a_1,\dots,a_n]` 的识别** ✓）。 -/
+theorem nonempty_algEquiv_mvPolynomial_adjoin {a : Fin n → K}
+    (hind : AlgebraicIndependent F a) :
+    Nonempty (MvPolynomial (Fin n) F ≃ₐ[F] ↥(Algebra.adjoin F (Set.range a))) := by
+  have hinj : Function.Injective (MvPolynomial.aeval a) :=
+    algebraicIndependent_iff_injective_aeval.mp hind
+  have hrange : (MvPolynomial.aeval a : MvPolynomial (Fin n) F →ₐ[F] K).range
+      = Algebra.adjoin F (Set.range a) := MvPolynomial.aeval_range (R := F) (f := a)
+  rw [← hrange]
+  exact ⟨AlgEquiv.ofInjective _ hinj⟩
+
+/-- **有限族生成的子代数在基域上有限型** ✓✅（**`\mathrm{RepresentingObject}` 的一款** ✓）。 -/
+theorem finiteType_adjoin_range (a : Fin n → K) :
+    Algebra.FiniteType F ↥(Algebra.adjoin F (Set.range a)) := by
+  classical
+  refine ⟨(Subalgebra.fg_top (Algebra.adjoin F (Set.range a))).mpr ?_⟩
+  have h : (↑(Finset.univ.image a) : Set K) = Set.range a := by
+    rw [Finset.coe_image, Finset.coe_univ, Set.image_univ]
+  rw [← h]
+  exact Subalgebra.fg_adjoin_finset (R := F) (Finset.univ.image a)
+
+end PolyRingOfBasis
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -2056,5 +2104,7 @@ end FactorsThrough
 #print axioms algebraMap_mem_adjoin_inv
 #print axioms finiteType_adjoin_inv
 #print axioms exists_factors_through_adjoin_inv_of_finiteType
+#print axioms nonempty_algEquiv_mvPolynomial_adjoin
+#print axioms finiteType_adjoin_range
 
 end ABGV52
