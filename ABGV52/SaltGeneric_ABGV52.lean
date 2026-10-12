@@ -542,6 +542,58 @@ theorem noether_aeval_ne_zero_of_prod_ne_zero {L : Type u} [Field L] [Algebra F 
 
 end Lemma52UnitStep
 
+/-! ## 4.8 源 `lemma-5-2` 的 **(d) 第一块：坐标矩阵的行列式判据** ✓（第 141 轮）
+
+**源逐字** ✓（`tex :659--662` ✓）：「Formally write `z = y_1e_1 + \dots + y_ne_n` … `\sigma(z)` is then of the form
+`l_1e_1 + \dots + l_ne_n` … **Taking determinants**, we have a polynomial `f(y_1,\dots,y_n)` such that
+`f(b_1,\dots,b_n) \neq 0` if and only if `z = b_1e_1 + \dots + b_ne_n` **generates a normal basis**」✓ ——
+本轮落其**谓词侧** ✓（**矩阵 ＝ 源的 `f`** ✓；**多项式化** ✗ 与**搬运** ✗ 见登记 ✓）。 -/
+
+section GaloisDetCriterion
+
+variable (K : Type u) [Field K] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+
+/-- **源 `(d)` 的**坐标矩阵** ✓**：`(\sigma,\tau)` 元 ＝ `z` 的第 `\sigma` 个共轭在基 `b` 下的第 `\tau` 个坐标 ✓
+（＝源矩阵的**转置** ✓，**行列式不变** ✓）。
+**⚠ 与 `Module.Basis.toMatrix` 的关系** ✓：`b.toMatrix (fun \sigma \Rightarrow \sigma \bullet z)` 的**列**正是这些坐标 ✓
+（`Module.Basis.toMatrix_apply` ✓：`(b.toMatrix v)\ i\ j = (b.repr (v\ j))\ i` ✓）—— 本件取其**转置**以让 `\sigma` 作行 ✓。 -/
+noncomputable def galoisMatrix {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L]
+    (b : Module.Basis G K L) (z : L) : Matrix G G K :=
+  Matrix.of (fun σ τ => b.repr (σ • z) τ)
+
+/-- **`(d)` 判据（可逆形）** ✓：`z` 各共轭的**坐标**（作为 `G \to K` 的元素 ✓）线性无关 ⟺ 坐标矩阵**可逆** ✓
+（mathlib `Matrix.linearIndependent_rows_iff_isUnit` ✓ —— **行**即坐标 ✓）。 -/
+theorem galoisMatrix_isUnit_iff {L : Type u} [Field L] [Algebra K L] [MulSemiringAction G L]
+    (b : Module.Basis G K L) (z : L) :
+    IsUnit (galoisMatrix K G b z) ↔
+      LinearIndependent K (fun σ : G => (b.repr (σ • z) : G → K)) :=
+  Matrix.linearIndependent_rows_iff_isUnit.symm
+
+/-- **`(d)` 判据（行列式形）** ✓：`\det \neq 0 \Leftrightarrow` 坐标族线性无关 ✓ —— 即源「`f(b_1,\dots,b_n) \neq 0`」✓
+的**谓词侧** ✓（`f` ＝ 该行列式 ✓）。证明 ＝ `Matrix.isUnit_iff_isUnit_det` ✓ ＋ `isUnit_iff_ne_zero` ✓
+＋ `galoisMatrix_isUnit_iff` ✓（**三件皆 mathlib** ✓）。 -/
+theorem galoisMatrix_det_ne_zero_iff {L : Type u} [Field L] [Algebra K L]
+    [MulSemiringAction G L] (b : Module.Basis G K L) (z : L) :
+    (galoisMatrix K G b z).det ≠ 0 ↔
+      LinearIndependent K (fun σ : G => (b.repr (σ • z) : G → K)) :=
+  calc (galoisMatrix K G b z).det ≠ 0 ↔ IsUnit (galoisMatrix K G b z).det :=
+        isUnit_iff_ne_zero.symm
+    _ ↔ IsUnit (galoisMatrix K G b z) := (Matrix.isUnit_iff_isUnit_det _).symm
+    _ ↔ LinearIndependent K (fun σ : G => (b.repr (σ • z) : G → K)) :=
+        galoisMatrix_isUnit_iff K G b z
+
+/-- **⚠ 登记（`(d)` 余下两块，**未落** ✗）** ✓：
+① **搬运** ✗：本判据的坐标族是 `G → K` 的元素 ✓，而源说的是 `\{\sigma \bullet z\}` **在 `L` 中**线性无关 ✓ ——
+两者经 `b.repr` ✓ 与 `Finsupp.linearEquivFunOnFinite` ✓ **线性等价** ✓，**应可搬** ✓，但本件**未落** ✗：
+**障碍逐字** ✓ ＝ `LinearIndependent.map` ✓ 要求 **`[Ring R]`** ✗，其**输出项的实例路径**与目标（`[Field K]` 路径 ✗）
+**不同** ✗ ⟹ `simpa`／`rw` 均**因实例路径不合**而失败 ✗；手证路（`linearCombination_linear_comp` ✓）**须加 mathlib import** ✓
+且 **`heartbeats` 超限** ✗ ⟹ **登记待下轮** ✓；
+② **多项式化** ✗：源要的是**多项式** `f(y_1,\dots,y_n)` ✓（`y` 为 `z` 的坐标 ✓）与**无限域避零** ✓ ——
+其零件（`Polynomial.exists_eval_ne_zero_of_natDegree_lt_card` ✓／多元版 ✓）**已在 mathlib** ✓，**未组装** ✗。 -/
+theorem galoisMatrix_gap_registered : True := trivial
+
+end GaloisDetCriterion
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -577,6 +629,10 @@ end Lemma52UnitStep
 #print axioms noether_prod_aeval_isFixed
 #print axioms noether_prod_aeval_eq
 #print axioms noether_aeval_ne_zero_of_prod_ne_zero
+#print axioms galoisMatrix
+#print axioms galoisMatrix_isUnit_iff
+#print axioms galoisMatrix_det_ne_zero_iff
+#print axioms galoisMatrix_gap_registered
 #print axioms Lemma52Statement
 #print axioms Lemma52Statement.shape
 
