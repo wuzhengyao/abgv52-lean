@@ -123,8 +123,8 @@ package.
 
 ## Coverage update (2026-10-12, appended)
 
-The table above reflects the state of 2026-10-10.  The development has since grown to **118 Lean
-files**, with the mirror, `SHA256SUMS` (118 lines) and the crosscheck gate (118-item table) all in
+The table above reflects the state of 2026-10-10.  The development has since grown to **122 Lean
+files**, with the mirror, `SHA256SUMS` (122 lines) and the crosscheck gate (122-item table) all in
 sync.  The items added since then are:
 
 - `BaseChangeProj_ABGV52.lean`: the base-change statement `hBC` (the source's `proposition-0-2(d)`)
@@ -213,7 +213,8 @@ sync.  The items added since then are:
   itself is needed only to *construct* that action and does not appear among the hypotheses.  The use
   point `exists_localized_lift_equivariant_of_galoisHyps_away` instantiates it for that action.
 - The Saltman-track layers `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`,
-  `SaltRatOver`, `SaltLocalProj`, `SaltLocalLift`, `SaltThm38` carry the 1984 definitions, the
+  `SaltRatOver`, `SaltLocalProj`, `SaltLocalLift`, `SaltThm38`, `SaltClass` carry the 1984
+  definitions, the
   rational-to-retract bridge, Swan's lemma, the corollary/reduction pair, the 2-power condition
   layer, the named generic-object residual, retract rationality along rational extensions, the
   local-projective layer of step 10, and the local-lifting layer of §3.  The last of these states
@@ -253,6 +254,23 @@ sync.  The items added since then are:
   given affine subalgebra `S` with `K` its fraction field, `K/F` is retract rational exactly when `S`
   has the lifting property and its one-element localizations are affine; the subalgebra demanded by
   the quantified form is extracted from the retract-rationality witness itself, as its image in `K`.
+- The section-1 language of the source is opened by `SaltClass_ABGV52.lean`: the structure
+  `LinearStructure` of a tuple `<R, M, f_1, ..., f_r>`, whose `i`-th entry is an `R`-linear map
+  `M^(s_i) -> M^(t_i)` between tensor powers of `M`, together with its *type*, the sequence of index
+  pairs `(s_1, t_1), ..., (s_r, t_r)`.  Two definitional-shape locks pin the constructor and the
+  type, and two probes exhibit the structure at `r = 0` and at `r = 1`, so the parameter domain is
+  not empty at either end.  Two sentences were corrected against the printed page: page 169 reads
+  `f_i : M^(s_i) -> M^(t_i)` and `g_i . psi^(s_i) = psi^(t_i) . f_i`, while the local TeX
+  transcription drops the subscript `i` (leaving `M^(i) -> M^(i)` in the definition and
+  `psi^(s) = psi^(s)` in the morphism condition, so that the right-hand superscript `t` is lost as
+  well).  A reader of the TeX alone would therefore find the type of `f_i` contradicting the type
+  sequence printed in the same sentence; the file follows the printed version.  The source's
+  `M^(0) = R` is recorded as an
+  isomorphism rather than a definitional equality, because mathlib's `TensorPower R 0 M` is the
+  tensor product over the empty index type.  The remaining pieces of the section-1 language — the
+  morphisms and isomorphisms, the classes and their closure properties, the lifting property,
+  representing and densely representing objects, projective and local projective objects, and
+  specializations — are not yet formalized.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
