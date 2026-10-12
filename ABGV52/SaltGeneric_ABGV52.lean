@@ -3266,6 +3266,169 @@ theorem awayToField_gap_registered : True := trivial
 
 end AwayToFieldSmul
 
+/-! ## 4.41 **装配 (c) 款 `R \to K`（第三块 · 收口）**：**搬运件** ＋ **端到端组装**（第 177 轮）
+
+**⚠ 起点** ✓（**仍压 ②** ✓，**不转项** ✗）：r176 已落 **① 广义不动域落地** ✓ ＋ **②c 作用相容** ✓ ⟹ 本轮补 **余两件** ✓ 并**收口** ✓。
+
+**⚠ 四件** ✓：
+**①** `awayToFieldAlg` ✓✅ —— `\mathrm{awayToField}` 的 **`\mathrm{AlgHom}` 形** ✓（`\mathrm{commutes'}` 由**标量塔** ＋ `\mathrm{awayToField\_algebraMap}` ✓）；
+**②** **`awayToField_injective`** ✓✅ —— **单射性** ✓（**搬运件的唯一缺口** ✓）：
+用 `\mathrm{IsLocalization.mk'\_surjective}` ✓ 把 `x, y` 表成 `\mathrm{mk'}\ a\ b` ／ `\mathrm{mk'}\ c\ d` ✓（`b, d \in \mathrm{powers}\ t` ✓），
+由 `\mathrm{mk'\_spec}` ✓ ＋ `\mathrm{awayToField\_algebraMap}` ✓ 在 `L` 中算得 `\mathrm{algebraMap}\ (c \cdot b) = \mathrm{algebraMap}\ (a \cdot d)` ✓，
+再用 **`\mathrm{IsFractionRing.injective}`** ✓ 得 `A` 中**等式** ✓，最后由 **`\mathrm{IsLocalization.mk'\_eq\_iff\_eq}`** ✓（↔ `\mathrm{algebraMap}\ (\uparrow d \cdot a) = \mathrm{algebraMap}\ (\uparrow b \cdot c)` ✓）收口 ✓
+（**⚠ 无需**局部化的单射性 ✗ —— 只要 `A \to L` 的单射 ✓）；
+**③** **`exists_algHom_away_of_image_le`** ✓✅ —— **搬运件** ✓：`R` 的像 ⊆ `\mathrm{awayToFieldAlg}` 的**值域** ✓ ⟹
+`\exists \iota : R \toₐ[F] \mathrm{Localization.Away}\ t`，`\mathrm{awayToFieldAlg} \circ \iota = \mathrm{algebraMap}\ R\ L` ✓
+（**入口 ＝ `\mathrm{AlgEquiv.ofInjective}`** ✓（②给出单射 ✓）＋ `\mathrm{AlgHom.codRestrict}` ✓）；
+**④** **`exists_algHom_base_of_equivariant`** ✓✅✅ —— **端到端组装（断指）** ✓：把 ③ 的 `\iota` ✓、r175④ 的 `\varphi'` **等变性** ✓、
+r176②c 的**相容** ✓、`R \subseteq L^G` ✓、r176① 的**落地** ✓ **串成一条链** ✓ ⟹
+**`\exists \Phi : R \toₐ[F] K`** ✓（结论**连同分解链一并展出** ✓：`\Phi'`（提升）／`\iota`（搬运）／`\Phi`（落进 `K`）及其三条相容等式 ✓）。
+**⚠ 新增工艺（第四次同族）** ✓：**smul 记法下的 `\mathrm{rw}` 不匹配** ✗ ⟹ **`\mathrm{change}` 先对齐** ✓（本节 **1 处** ✓）；
+**`\mathrm{let}` 代 `\mathrm{letI}`** ✓（**(55)** ✓）；**`hι`（`\mathrm{AlgHom}` 形）与 `\mathrm{awayToField}`（环同态形）须显式过渡** ✓（`\mathrm{have}` ✓）。 -/
+
+section AwayToFieldAlg
+
+variable {F : Type u} [Field F] {G : Type u}
+
+/-- **① `\mathrm{awayToField}` 的 `\mathrm{AlgHom}` 形** ✓（`F`-线性由**标量塔** ＋ ②b 推 ✓）。 -/
+noncomputable def awayToFieldAlg (t : MvPolynomial G F) (ht : t ≠ 0) :
+    Localization.Away t →ₐ[F] NoetherField F G where
+  __ := awayToField (F := F) (G := G) t ht
+  commutes' a := by
+    rw [IsScalarTower.algebraMap_apply F (MvPolynomial G F) (Localization.Away t)]
+    exact awayToField_algebraMap (F := F) (G := G) t ht (algebraMap F (MvPolynomial G F) a)
+
+/-- **② 单射性** ✓✅（**搬运件的唯一缺口** ✓）：典范映射 `\mathrm{Localization.Away}\ t \to L` **单射** ✓。
+**⚠ 关键** ✓：**只**用 `A \to L` 的单射 ✓ ＋ `\mathrm{mk'}` 表出 ✓ ＋ `\mathrm{mk'\_eq\_iff\_eq}` ✓ —— **不需**局部化的单射性 ✓。 -/
+theorem awayToField_injective (t : MvPolynomial G F) (ht : t ≠ 0) :
+    Function.Injective (awayToField (F := F) (G := G) t ht) := by
+  have hinjL : Function.Injective (algebraMap (MvPolynomial G F) (NoetherField F G)) :=
+    IsFractionRing.injective (MvPolynomial G F) (NoetherField F G)
+  intro x y hxy
+  obtain ⟨⟨a, b⟩, hx⟩ := IsLocalization.mk'_surjective (Submonoid.powers t) x
+  obtain ⟨⟨c, d⟩, hy⟩ := IsLocalization.mk'_surjective (Submonoid.powers t) y
+  rw [← hx, ← hy] at hxy ⊢
+  change awayToField (F := F) (G := G) t ht (IsLocalization.mk' (Localization.Away t) a b)
+    = awayToField (F := F) (G := G) t ht (IsLocalization.mk' (Localization.Away t) c d) at hxy
+  change IsLocalization.mk' (Localization.Away t) a b
+    = IsLocalization.mk' (Localization.Away t) c d
+  have key : ∀ (p : MvPolynomial G F) (m : ↥(Submonoid.powers t)),
+      awayToField (F := F) (G := G) t ht (IsLocalization.mk' (Localization.Away t) p m)
+        * algebraMap (MvPolynomial G F) (NoetherField F G) (m : MvPolynomial G F)
+      = algebraMap (MvPolynomial G F) (NoetherField F G) p := by
+    intro p m
+    simpa only [map_mul, awayToField_algebraMap (F := F) (G := G) t ht]
+      using congrArg (awayToField (F := F) (G := G) t ht)
+        (IsLocalization.mk'_spec (Localization.Away t) p m)
+  have h1 := key a b
+  have h2 := key c d
+  have h3 : algebraMap (MvPolynomial G F) (NoetherField F G) (c * (b : MvPolynomial G F))
+      = algebraMap (MvPolynomial G F) (NoetherField F G) (a * (d : MvPolynomial G F)) := by
+    calc algebraMap (MvPolynomial G F) (NoetherField F G) (c * (b : MvPolynomial G F))
+        = algebraMap (MvPolynomial G F) (NoetherField F G) c
+            * algebraMap (MvPolynomial G F) (NoetherField F G) (b : MvPolynomial G F) := by
+          rw [map_mul]
+      _ = (awayToField (F := F) (G := G) t ht (IsLocalization.mk' (Localization.Away t) c d)
+            * algebraMap (MvPolynomial G F) (NoetherField F G) (d : MvPolynomial G F))
+            * algebraMap (MvPolynomial G F) (NoetherField F G) (b : MvPolynomial G F) := by
+          rw [← h2]
+      _ = (awayToField (F := F) (G := G) t ht (IsLocalization.mk' (Localization.Away t) a b)
+            * algebraMap (MvPolynomial G F) (NoetherField F G) (d : MvPolynomial G F))
+            * algebraMap (MvPolynomial G F) (NoetherField F G) (b : MvPolynomial G F) := by
+          rw [← hxy]
+      _ = (awayToField (F := F) (G := G) t ht (IsLocalization.mk' (Localization.Away t) a b)
+            * algebraMap (MvPolynomial G F) (NoetherField F G) (b : MvPolynomial G F))
+            * algebraMap (MvPolynomial G F) (NoetherField F G) (d : MvPolynomial G F) := by
+          ring
+      _ = algebraMap (MvPolynomial G F) (NoetherField F G) a
+            * algebraMap (MvPolynomial G F) (NoetherField F G) (d : MvPolynomial G F) := by
+          rw [h1]
+      _ = algebraMap (MvPolynomial G F) (NoetherField F G) (a * (d : MvPolynomial G F)) := by
+          rw [map_mul]
+  have h5 : c * (b : MvPolynomial G F) = a * (d : MvPolynomial G F) := hinjL h3
+  rw [IsLocalization.mk'_eq_iff_eq]
+  rw [mul_comm (d : MvPolynomial G F) a, mul_comm (b : MvPolynomial G F) c, ← h5]
+
+end AwayToFieldAlg
+
+section AwayTransport
+
+variable {F : Type u} [Field F] {G : Type u} {t : MvPolynomial G F}
+
+/-- **③ 搬运件** ✓✅：`R` 的像落在 `\mathrm{awayToFieldAlg}` 的**值域**内 ⟹
+**`\exists \iota : R \toₐ[F] \mathrm{Localization.Away}\ t`** ✓ 且 `\mathrm{awayToFieldAlg} \circ \iota = \mathrm{algebraMap}\ R\ L` ✓
+（**入口 ＝ `\mathrm{AlgEquiv.ofInjective}`** ✓ 由 ② 的单射 ✓ ＋ `\mathrm{AlgHom.codRestrict}` ✓）。 -/
+theorem exists_algHom_away_of_image_le (t : MvPolynomial G F) (ht : t ≠ 0)
+    {R : Type u} [CommRing R] [Algebra R (NoetherField F G)] [Algebra F R]
+    [IsScalarTower F R (NoetherField F G)]
+    (hRQ : ∀ r : R,
+      algebraMap R (NoetherField F G) r ∈ (awayToFieldAlg (F := F) (G := G) t ht).range) :
+    ∃ ι : R →ₐ[F] Localization.Away t,
+      ∀ r : R, awayToFieldAlg (F := F) (G := G) t ht (ι r) = algebraMap R (NoetherField F G) r := by
+  let e := AlgEquiv.ofInjective (awayToFieldAlg (F := F) (G := G) t ht)
+    (awayToField_injective (F := F) (G := G) t ht)
+  have hsymm : ∀ v : ↥(awayToFieldAlg (F := F) (G := G) t ht).range,
+      awayToFieldAlg (F := F) (G := G) t ht (e.symm v) = (v : NoetherField F G) := by
+    intro v
+    have h := AlgEquiv.ofInjective_apply (awayToFieldAlg (F := F) (G := G) t ht)
+      (awayToField_injective (F := F) (G := G) t ht) (e.symm v)
+    rw [AlgEquiv.apply_symm_apply] at h
+    exact h.symm
+  refine ⟨e.symm.toAlgHom.comp
+    ((IsScalarTower.toAlgHom F R (NoetherField F G)).codRestrict _ hRQ), fun r => ?_⟩
+  exact hsymm ⟨algebraMap R (NoetherField F G) r, hRQ r⟩
+
+end AwayTransport
+
+section BaseMapEndToEnd
+
+variable {F : Type u} [Field F] {G : Type u} [Group G] {t : MvPolynomial G F}
+
+/-- **④ 端到端组装（② 断指）** ✓✅✅：**由 `R` 到 `K` 的 `\mathrm{AlgHom}` 落成** ✓。
+**输入** ✓：`t` **不变** 且 `\neq 0` ✓；目标侧 `L'`（含 `G`-作用 ✓）／`K'`（`L'` 的**不动域** ✓ 由 `hfix` 描述 ✓）；
+`\varphi : F[x_\sigma] \toₐ[F] L'` **等变** ✓ 且 `\varphi(t)` **可逆** ✓；`R`（`F`-代数 ✓，含 `\mathrm{algebraMap}\ R\ L` ✓）满足
+**逐点固定** ✓ 与 **像 ⊆ 局部化的值域** ✓（后者 ＝ **§4.40 的桥** ✓ 的结论形 ✓）。
+**结论** ✓：`\exists \Phi' \ \iota \ \Phi` 及其**三条相容等式** ✓ —— **链** ✓：`R \xrightarrow{\iota} \mathrm{Localization.Away}\ t \xrightarrow{\varphi'} L'` 等变 ✓ ⟹ **`\Phi : R \toₐ[F] K'`** ✓
+（**合成** ✓：③ 的 `\iota` ✓ ＋ r175④ 的 `\varphi'` 等变 ✓ ＋ `R \subseteq L^G` ✓（经 ② 的单射 ＋ r176②c ✓）＋ r176① 的落地 ✓）。 -/
+theorem exists_algHom_base_of_equivariant (ht : ∀ g : G, g • t = t) (ht0 : t ≠ 0)
+    {L' : Type u} [Field L'] [Algebra F L'] [MulSemiringAction G L']
+    {K' : Type u} [Field K'] [Algebra K' L'] [Algebra F K'] [IsScalarTower F K' L']
+    (hfix : ∀ x : L', (∀ g : G, g • x = x) → ∃ k : K', algebraMap K' L' k = x)
+    (φ : MvPolynomial G F →ₐ[F] L')
+    (heq : ∀ (g : G) (p : MvPolynomial G F), φ (g • p) = g • φ p)
+    (hunit : IsUnit (φ t))
+    {R : Type u} [CommRing R] [Algebra R (NoetherField F G)] [Algebra F R]
+    [IsScalarTower F R (NoetherField F G)]
+    (hRG : ∀ (g : G) (r : R), g • algebraMap R (NoetherField F G) r
+      = algebraMap R (NoetherField F G) r)
+    (hRQ : ∀ r : R,
+      algebraMap R (NoetherField F G) r ∈ (awayToFieldAlg (F := F) (G := G) t ht0).range) :
+    ∃ (Φ' : Localization.Away t →ₐ[F] L') (ι : R →ₐ[F] Localization.Away t) (Φ : R →ₐ[F] K'),
+      (∀ p : MvPolynomial G F,
+          Φ' (algebraMap (MvPolynomial G F) (Localization.Away t) p) = φ p) ∧
+      (∀ r : R, awayToFieldAlg (F := F) (G := G) t ht0 (ι r)
+          = algebraMap R (NoetherField F G) r) ∧
+      (∀ r : R, algebraMap K' L' (Φ r) = Φ' (ι r)) := by
+  let _ := awayMulSemiringAction (F := F) ht
+  obtain ⟨Φ', hΦ'⟩ := exists_algHom_away_of_isUnit (F := F) (σ := G) (L := L') φ t hunit
+  obtain ⟨ι, hι⟩ := exists_algHom_away_of_image_le (F := F) (G := G) t ht0 hRQ
+  have heq' : ∀ (g : G) (x : Localization.Away t), Φ' (g • x) = g • Φ' x :=
+    awayLift_equivariant (F := F) (G := G) (t := t) ht φ heq Φ' hΦ'
+  have hfixed : ∀ (g : G) (r : R), g • (ι r) = ι r := by
+    intro g r
+    refine awayToField_injective (F := F) (G := G) t ht0 ?_
+    change awayToField (F := F) (G := G) t ht0 (awayRingHom (F := F) ht g (ι r))
+      = awayToField (F := F) (G := G) t ht0 (ι r)
+    rw [awayToField_smul (F := F) (G := G) (t := t) ht ht0 g (ι r)]
+    have h1 : awayToField (F := F) (G := G) t ht0 (ι r)
+        = algebraMap R (NoetherField F G) r := hι r
+    rw [h1, hRG g r]
+  obtain ⟨Φ, hΦ⟩ := exists_algHom_of_equivariant_of_fixed_of_forall_fixed (F := F) (G := G)
+    Φ' heq' ι hfixed hfix
+  exact ⟨Φ', ι, Φ, hΦ', hι, hΦ⟩
+
+end BaseMapEndToEnd
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -3310,6 +3473,10 @@ end AwayToFieldSmul
 #print axioms awayToField_algebraMap
 #print axioms awayToField_smul
 #print axioms awayToField_gap_registered
+#print axioms awayToFieldAlg
+#print axioms awayToField_injective
+#print axioms exists_algHom_away_of_image_le
+#print axioms exists_algHom_base_of_equivariant
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit
