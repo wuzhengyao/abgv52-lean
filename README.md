@@ -320,7 +320,11 @@ sync.  The items added since then are:
   source's sense of both components being onto, and locality in the sense that the preimage of a unit
   is a unit.  On that vocabulary sit projective objects for a class -- where the source is explicit
   that the object need not lie in the class -- projective objects in a class, and local projectives,
-  which do lie in the class and lift against local surjections.  Not yet formalized are
+  which do lie in the class and lift against local surjections.  Specializations are named as the
+  source names them, and a representing object induces one for every object over a field in the
+  class.  Theorem 1.3(a) is recorded as a statement only: its proof turns on identifying a
+  Hom-set, and the three remaining parts of that theorem need the Azumaya and Galois classes, which
+  are outside this file.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.

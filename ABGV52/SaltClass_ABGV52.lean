@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–127 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–128 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -66,6 +66,7 @@
   | **`Realization`** ✓ ＋ **`RepresentingObject`** ✓ ＋ `IsSpecialization` ✓ ＋ **`GenericObject`** ✓ ＋ 三锁两探针 ✓ | 源的**表示／一般对象／特化** ✓（印版 170 ✓）：仿射 ✓（＝有限生成 `F`-代数 ✓）／对每域 `K` 上 `\mathcal{N}/K ∈ C` 存在 `F`-映射 `\phi` ✓（`Realization` ✓）／`R ≅ F[x_1,…,x_n](1/r)` ✓ | 第 5 件（**部分** ✓） |
   | **`DenselyRepresenting`** ✓ ＋ 三锁一探针 ✓ | 源的**稠密表示对象** ✓（印版 171 ✓ **本轮逐句核** ✓）：**是表示对象** ✓ ∧ **`R` 是整环** ✓ ∧ **对任意 `0 ≠ s`，`\\mathcal{M} ⊗_R R(1/s)` 仍是表示对象** ✓ | 第 5 件 ✓ |
   | **`Hom.IsFLinear`／`IsSurjective`／`IsLocal`／`IsLocalSurjection`** ✓ ＋ **`ProjectiveObjectFor`**／**`ProjectiveObjectIn`**／**`LocalProjective`** ✓ ＋ 四锁一探针 ✓ | 源的**态射性质与投射对象** ✓（印版 171--173 ✓，**本轮逐句核** ✓）：满射（`\\phi`／`\\psi` **皆满**）✓／local（单位原像仍是单位 ✓）✓／投射对象（源明写**不**要求 `\\mathcal{P}\\in\\mathcal{C}` ✓）✓／在类中的投射 ✓／局部投射（**含 `C P`** ✓ ＋ **局部**满射 ✓） | 第 6 件 ✓ |
+  | **`RepresentingObject.isSpecialization`** ✓ ＋ **`Thm13aStatement`** ✓（**具名残余** ✗）＋ 一锁 ✓ | 源的**特化收尾** ✓（印 170 ✓：表示对象 ⟹ 每域上在类中的对象是其**特化** ✓）＋ **`thm1.3(a)`** ✓（印 172 底 ✓，**只给陈述、不作证明** ✗，其识别引理未落 ✗；**(b)(c)(d) 范围外** ✗ —— 依赖 `\\mathcal{{E}}(G)`／`\\mathcal{{A}}(n)` 定义 ✓） | 第 7 件 ✓ |
   | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
@@ -82,9 +83,9 @@
   ② **第 4 件已落** ✓（`LiftingData` ✓ ＋ `HasLiftingProperty` ✓）；**第 5 件已落** ✓✅
   （`Realization` ✓／`RepresentingObject` ✓／`IsSpecialization` ✓／`GenericObject` ✓／
   **`DenselyRepresenting`** ✓ —— 其定义在**印版 171** ✓（**非 172** ✗，上轮登记已更正 ✓），**本轮已逐句核** ✓）；
-  ③ **第 6 件已落** ✓（`Surjection` ✓／`ProjectiveObjectFor` ✓／`ProjectiveObjectIn` ✓／
-  `LocalMorphism` ✓／`LocalProjective` ✓）；**第 7–9 件**（`Specialization` 收尾 → `cor3.10(b)` ⟹
-  `cor3.10(a)` → `prop1.1(a)` 具名残余）**未落** ✗ ⟹ **`cor3.10(a)` 仍未形式化** ✗。
+  ③ **第 6 件已落** ✓；**第 7 件已落** ✓（`IsSpecialization` ✓ ＋ **收尾联动** ✓ ＋
+  **`thm1.3(a)` 具名残余** ✓ —— **⚠ 其证明未落** ✗（核心识别引理见 §8.9 ✓），**(b)(c)(d) 范围外** ✗）；
+  **第 8–9 件未落** ✗（`cor3.10(b)` ⟹ `cor3.10(a)` → `prop1.1(a)` 具名残余）⟹ **`cor3.10(a)` 仍未形式化** ✗。
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import Mathlib.LinearAlgebra.TensorPower.Basic
@@ -1165,6 +1166,48 @@ theorem projectiveObjectFor_false {F : Type u} [Field F] {r : ℕ} {s t : Fin r 
   intro M N Δ Ψ _ _ hM _
   exact False.elim hM
 
+
+/-! ### 8.9 源 §1 的**特化收尾**与 `thm1.3(a)` 的**具名残余**（印版 170／172 底 ✓） -/
+
+/-- **源 §1 的特化（收尾）** ✓（印 170 ✓ 逐字：「In this circumstance we say that `\mathcal{N}/K` is a
+**specialization** of `\mathcal{M}/R` and that `\phi` **realizes** `\mathcal{N}/K`」✓）——
+「In this circumstance」✓ 指**上句的表示对象** ✓ ⟹ 落为：**表示对象 ⟹ 每个域上在类中的对象都是它的特化** ✓，
+且**实现者正是 `Realization` 里的 `\phi`** ✓（打包在实例字段中 ✓）。
+**⚠ 前提** ✓：源在 `\mathcal{N}/K\in\mathcal{C}` ✓ 与 `K` **是域** ✓ 下说话 ⟹ 两条**都在语句里** ✓。 -/
+theorem RepresentingObject.isSpecialization {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} {X : FStruct.{u, u} F r s t}
+    (h : RepresentingObject C X) (K : Type u) [Field K] [Algebra F K]
+    (N : Type u) [AddCommGroup N] [Module K N] (Y : LinearStructure K N r s t)
+    (hY : C ⟨K, N, Y⟩) : IsSpecialization X K N Y :=
+  h.2 K N Y hY
+
+/-- **源 `thm1.3(a)`（印 172 底 ✓）的具名陈述** ✓ —— **⚠ 具名残余（named residual）：本件不作证明** ✗**。
+
+源逐字 ✓：「(a) Let `\mathcal{C}` be an `F` class, and `\mathcal{P} / R\in \mathcal{C}` a local projective.
+If `0\neq s\in R`, then `\mathcal{P}\otimes_{R}R(1 / s) / R(1 / s)\in \mathcal{C}` is a local projective」✓
+（**印 172 底本轮已逐句核** ✓）。
+
+**⚠ 为何只给陈述** ✗：其**证明**（源印 172 底 ✓）用「`\Hom(\mathcal{M}\otimes_R R(1/s),\mathcal{N}/S)` **可识别为**
+`\Hom(\mathcal{M}/R,\mathcal{N}/S)` 中满足 `\phi (s)\in S` 是单位者的子集」✓ —— 该**识别**是 `thm1.3(a)` 的**实质**
+✓，本身是一阶实质定理 ✗，**本件未落** ✗ ⟹ 按 **`∅-unchecked`** ✓ 对待（L21／L44 ✓）。
+**⚠ 另三支** ✓：源 (b) `F[x_1,\dots ,x_n](1/s)` ✓／(c) `G`-Galois ✓／(d) Azumaya ✓ —— **依赖 `\mathcal{E}(G)`／
+`\mathcal{A}(n)` 两个 `F`-类的定义** ✗（源印 170 只**提及**它们 ✓，定义在 §3／§5 ✓）
+⟹ **本件不涉** ✗，**登记为范围外** ✓。
+
+**⚠ 用件** ✓：`IsFClass C` ✓（供 ② 支 `C (P\otimes_R R(1/s))` ✓）＋ `LocalProjective C P` ✓。 -/
+def Thm13aStatement {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) : Prop :=
+  IsFClass C → ∀ (P : FStruct.{u, u} F r s t), LocalProjective C P →
+    ∀ (a : P.R), a ≠ 0 → LocalProjective C (P.baseChange (Localization.Away a))
+
+/-- **外形锁定** ✓：`Thm13aStatement` **四段**（`IsFClass C` ✓／`LocalProjective C P` ✓／`a\neq 0` ✓／
+结论 `LocalProjective C (P\otimes_R R(1/s))` ✓）**一并**锁定 ✓ —— 与源 (a) 的四支**逐字对应** ✓。 -/
+theorem Thm13aStatement.shape {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : Thm13aStatement C) (hC : IsFClass C) :
+    ∀ (P : FStruct.{u, u} F r s t), LocalProjective C P →
+      ∀ (a : P.R), a ≠ 0 → LocalProjective C (P.baseChange (Localization.Away a)) :=
+  h hC
+
 end Projective
 
 end BaseChange
@@ -1219,6 +1262,9 @@ end BaseChange
 #print axioms LocalProjective.mem
 #print axioms LocalProjective.lifts
 #print axioms projectiveObjectFor_false
+#print axioms RepresentingObject.isSpecialization
+#print axioms Thm13aStatement
+#print axioms Thm13aStatement.shape
 #print axioms tensorPowerBaseChange_tmul
 #print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe
