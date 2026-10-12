@@ -1651,6 +1651,113 @@ theorem exists_mul_eq_of_finite_adjoin_eq_top {a : ι → K}
 
 end GeneratedFieldCase
 
+/-! ## 4.22 **子代数版清分母**（源「`S \subset F[x_\sigma](1/t)`」之形）✓✅（第 154 轮）
+
+**源逐字** ✓（`raw/Saltman1982.tex:651--652` ✓）：「(\(t\) ＝ the product of all the \(g\)'s and \(k\)'s)
+we have that \(S \subset F[x_\sigma \mid \sigma \in G](1/t)\).」✓ —— 与 §4.21 的**有限族**形相比 ✓，
+**本件给的是「整个子代数落进单个局部化」** ✓ 的形 ✓（源两处用法 ✓：`R'' \subseteq R_1(1/s)` ✓ 与 `S \subseteq F[x](1/t)` ✓）。
+
+**⚠ 定理内容** ✓：`B` 是 `A` 上**有限型**代数 ✓、`\varphi : B \to_A K` ✓ 且 `K` 的每个元素是 `A` 中两元素之商 ✓
+（**正是 §4.20 的输出形** ✓），则**存在单个 `s \neq 0`** ✓ 使 `B` 的像**全体落进 `s` 的局部化** ✓：
+`\forall x : B,\ \exists n\ a,\ \mathrm{algebraMap}\ s^n \cdot \varphi x = \mathrm{algebraMap}\ a` ✓
+（**谓词形** ✓：「清分母后仍是 `A` 中元素的像」✓）。
+**⚠ 证明** ✓：取 `B` 的**有限生成集** `T` ✓（**`Algebra.FiniteType.out : \top.\mathrm{FG}`** ✓ ，
+`\mathrm{Subalgebra.FG}\ S := \exists t : \mathrm{Finset}\ A,\ \mathrm{Algebra.adjoin}\ R\ \uparrow t = S` ✓）；
+对 `\mathrm{Algebra.adjoin}\ A\ \uparrow T` 作**结构归纳** ✓（**四支** ✓：生成元 ✓／基域 ✓／加法 ✓／乘法 ✓）——
+**⚠ 幂次记账** ✓：**生成元支** `n = 1` ✓（同 §4.21 ✓）／**基域支** `n = 0` ✓／**加乘两支** `n + m` ✓
+（由 `\mathrm{pow\_add}` ✓ ＋ **逆写** `\leftarrow \mathrm{map\_pow}` ✓／`\leftarrow \mathrm{map\_mul}` ✓／`\leftarrow \mathrm{map\_add}` ✓ 收口 ✓）。
+
+**⚠ 三处编译期自纠** ✓（**留痕** ✓）：
+**①** **`\mathrm{Subalgebra.FG}` 只有一层** ✗ —— 初版按「`\exists t,\ \uparrow t \subseteq S \wedge \mathrm{adjoin} = S`」✗ 解构 ✓，
+报 **dependent elimination failed** ✗（**实测** ✓）⟹ **正解** ＝ `\mathrm{obtain}\ \langle T, hT \rangle` ✓（**定义只有一层** ✓）；
+**②** **`\mathrm{DecidableEq}\ B` 不可得** ✗（`\mathrm{Finset.erase}` 需要 ✓）⟹ **正解 ＝ 证内 `\mathrm{classical}`** ✓
+（**不**加强陈述 ✓）；
+**③** **幂次记账的 `rw` 链方向** ✓：**RHS 的 `\mathrm{algebraMap}\ (\cdot + \cdot)` 须先**拆开** ✓
+（`\leftarrow \mathrm{map\_add}` ✓）**才能与 `hx'`／`hy'` 相接** ✗ ⟹ **改用 `\mathrm{calc}` 式 `hL`** ✓
+（**显式给出中间形** ✓）＋ **末步 `\mathrm{simp\ only}\ [\leftarrow \mathrm{map\_pow}, \leftarrow \mathrm{map\_mul}, \leftarrow \mathrm{map\_add}]`** ✓。 -/
+
+section SubalgebraClearDenominators
+
+variable {A : Type u} [CommRing A] [Nontrivial A] [NoZeroDivisors A]
+variable {K : Type u} [Field K] [Algebra A K]
+variable {B : Type u} [CommRing B] [Algebra A B] [Algebra.FiniteType A B]
+
+/-- **子代数版清分母** ✓✅：**有限型代数到分式域的映射，其像落在单个 `s` 的局部化内** ✓（**带幂次** ✓）。
+
+**⚠ 用途** ✓：源 `R'' \subseteq R_1(1/s)` ✓ 与 `S \subseteq F[x_\sigma](1/t)` ✓ **正是此形** ✓
+（**§4.21 的有限族形是其特例** ✓）。 -/
+theorem exists_pow_mul_eq_of_finiteType (φ : B →ₐ[A] K)
+    (hfrac : ∀ z : K, ∃ x y : A, y ≠ 0 ∧ algebraMap A K y * z = algebraMap A K x) :
+    ∃ s : A, s ≠ 0 ∧ ∀ x : B, ∃ (n : ℕ) (a : A),
+      algebraMap A K s ^ n * φ x = algebraMap A K a := by
+  classical
+  obtain ⟨T, hT⟩ := Algebra.FiniteType.out (R := A) (A := B)
+  choose X Y hY hXY using fun t : B => hfrac (φ t)
+  refine ⟨∏ t ∈ T, Y t, Finset.prod_ne_zero_iff.mpr (fun t _ => hY t), fun x => ?_⟩
+  have key : ∀ x ∈ Algebra.adjoin A (↑T : Set B), ∃ (n : ℕ) (a : A),
+      algebraMap A K (∏ t ∈ T, Y t) ^ n * φ x = algebraMap A K a := by
+    intro x hx
+    refine Algebra.adjoin_induction (p := fun x _ => ∃ (n : ℕ) (a : A),
+      algebraMap A K (∏ t ∈ T, Y t) ^ n * φ x = algebraMap A K a) ?_ ?_ ?_ ?_ hx
+    · intro t ht
+      refine ⟨1, (∏ u ∈ T.erase t, Y u) * X t, ?_⟩
+      have h1 : algebraMap A K (∏ u ∈ T, Y u)
+          = algebraMap A K (Y t) * ∏ u ∈ T.erase t, algebraMap A K (Y u) := by
+        rw [map_prod]
+        exact (Finset.mul_prod_erase T (fun x => algebraMap A K (Y x)) ht).symm
+      rw [pow_one, h1, map_mul, map_prod, ← hXY t]
+      ring
+    · intro r
+      exact ⟨0, r, by rw [pow_zero, one_mul, φ.commutes]⟩
+    · intro x y hx hy ihx ihy
+      obtain ⟨n, ax, hx'⟩ := ihx
+      obtain ⟨m, ay, hy'⟩ := ihy
+      refine ⟨n + m, (∏ t ∈ T, Y t) ^ m * ax + (∏ t ∈ T, Y t) ^ n * ay, ?_⟩
+      have hL : algebraMap A K (∏ t ∈ T, Y t) ^ (n + m) * φ (x + y)
+          = algebraMap A K (∏ t ∈ T, Y t) ^ m
+              * (algebraMap A K (∏ t ∈ T, Y t) ^ n * φ x)
+            + algebraMap A K (∏ t ∈ T, Y t) ^ n
+              * (algebraMap A K (∏ t ∈ T, Y t) ^ m * φ y) := by
+        rw [pow_add, map_add]
+        ring
+      rw [hL, hx', hy']
+      simp only [← map_pow, ← map_mul, ← map_add]
+    · intro x y hx hy ihx ihy
+      obtain ⟨n, ax, hx'⟩ := ihx
+      obtain ⟨m, ay, hy'⟩ := ihy
+      refine ⟨n + m, ax * ay, ?_⟩
+      have hL : algebraMap A K (∏ t ∈ T, Y t) ^ (n + m) * φ (x * y)
+          = (algebraMap A K (∏ t ∈ T, Y t) ^ n * φ x)
+            * (algebraMap A K (∏ t ∈ T, Y t) ^ m * φ y) := by
+        rw [pow_add, map_mul]
+        ring
+      rw [hL, hx', hy']
+      simp only [← map_mul]
+  exact key x (by rw [hT]; trivial)
+
+end SubalgebraClearDenominators
+
+section GeneratedFieldCaseSub
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K] {ι : Type*}
+
+/-- **域生成档的子代数版清分母** ✓✅（**源 step 的直接形** ✓）：`hfrac` 由 **§4.20** ✓ 供给
+（`A := \mathrm{Algebra.adjoin}\ F\ \{\mathrm{range}\ a\}` ✓，**其 `\mathrm{NoZeroDivisors}` 自动成立** ✓）。 -/
+theorem exists_pow_mul_eq_of_finiteType_adjoin_eq_top {a : ι → K}
+    (h : IntermediateField.adjoin F (Set.range a) = ⊤)
+    {B : Type u} [CommRing B] [Algebra ↥(Algebra.adjoin F (Set.range a)) B]
+    [Algebra.FiniteType ↥(Algebra.adjoin F (Set.range a)) B]
+    (φ : B →ₐ[↥(Algebra.adjoin F (Set.range a))] K) :
+    ∃ s : ↥(Algebra.adjoin F (Set.range a)), s ≠ 0 ∧
+      ∀ x : B, ∃ (n : ℕ) (c : ↥(Algebra.adjoin F (Set.range a))),
+        algebraMap (↥(Algebra.adjoin F (Set.range a))) K s ^ n * φ x
+          = algebraMap (↥(Algebra.adjoin F (Set.range a))) K c := by
+  have : NoZeroDivisors ↥(Algebra.adjoin F (Set.range a)) := inferInstance
+  exact exists_pow_mul_eq_of_finiteType (A := ↥(Algebra.adjoin F (Set.range a))) φ
+    (fun z => exists_mul_eq_of_adjoin_eq_top h z)
+
+end GeneratedFieldCaseSub
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -1728,5 +1835,7 @@ end GeneratedFieldCase
 #print axioms exists_mul_eq_of_adjoin_eq_top
 #print axioms exists_mul_eq_of_finite
 #print axioms exists_mul_eq_of_finite_adjoin_eq_top
+#print axioms exists_pow_mul_eq_of_finiteType
+#print axioms exists_pow_mul_eq_of_finiteType_adjoin_eq_top
 
 end ABGV52
