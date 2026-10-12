@@ -328,7 +328,13 @@ sync.  The items added since then are:
   theory the corollary is stated in: retract rationality, which asks for a domain with a quotient
   field and a retraction through a localized polynomial ring, and rational factoring of a map of
   domains.  Corollary 3.10 itself, both parts, is recorded as a statement only, since its proof
-  rests on the bridge between those two notions that is not built here.  Not yet formalized are
+  rests on the bridge between those two notions that is not built here.  Proposition 1.1 closes the
+  section's vocabulary: a class with a generic object has the lifting property, and a class with a
+  densely representing object and the lifting property has a generic object, both recorded as
+  statements.  The source omits the proof of the first, calling it a trivial generalization.
+  Where the source's sentences say that a class *has* an object, membership is written out at the
+  statement level rather than folded into the property predicates; the one place it is folded in is
+  local projectivity, whose statement names an object of the class.  Not yet formalized are
   the classes and their closure properties, the lifting property,
   representing and densely representing objects, projective and local projective objects, and
   specializations.

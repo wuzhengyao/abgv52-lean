@@ -1,5 +1,5 @@
 /-
-  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–129 轮；**新文件**）
+  ABGV-5.2 · B 档 · M4 —— **Saltman 1984 §1 的「线性结构」语言**（第 115–130 轮；**新文件**）
 
   **来源** ✓：Saltman 1984, *Retract rational fields and cyclic Galois extensions*,
   §1 ("General nonsense")。**载体核验** ✓（L12／L16 ＋ L39 ②）：`raw/Saltman1984.pdf`
@@ -68,6 +68,7 @@
   | **`Hom.IsFLinear`／`IsSurjective`／`IsLocal`／`IsLocalSurjection`** ✓ ＋ **`ProjectiveObjectFor`**／**`ProjectiveObjectIn`**／**`LocalProjective`** ✓ ＋ 四锁一探针 ✓ | 源的**态射性质与投射对象** ✓（印版 171--173 ✓，**本轮逐句核** ✓）：满射（`\\phi`／`\\psi` **皆满**）✓／local（单位原像仍是单位 ✓）✓／投射对象（源明写**不**要求 `\\mathcal{P}\\in\\mathcal{C}` ✓）✓／在类中的投射 ✓／局部投射（**含 `C P`** ✓ ＋ **局部**满射 ✓） | 第 6 件 ✓ |
   | **`RepresentingObject.isSpecialization`** ✓ ＋ **`Thm13aStatement`** ✓（**具名残余** ✗）＋ 一锁 ✓ | 源的**特化收尾** ✓（印 170 ✓：表示对象 ⟹ 每域上在类中的对象是其**特化** ✓）＋ **`thm1.3(a)`** ✓（印 172 底 ✓，**只给陈述、不作证明** ✗，其识别引理未落 ✗；**(b)(c)(d) 范围外** ✗ —— 依赖 `\\mathcal{{E}}(G)`／`\\mathcal{{A}}(n)` 定义 ✓） | 第 7 件 ✓ |
   | **`RelativeLiftingProperty`** ✓ ＋ **`RetractRational`**／**`FactorsRationally`**（`def3.1`／`def3.2` ✓）＋ **`Cor310aStatement`**／**`Cor310bStatement`**（**具名残余** ✗）＋ 六锁 ✓ | 源的**相对提升** ✓（印 172 底 ✓）／**有理性收缩**与**有理分解** ✓（印 180--182 ✓）／**`cor3.10` 两支** ✓（印 186 ✓ **逐支核** ✓）—— **只给陈述、不作证明** ✗ | 第 8 件（**陈述全部落** ✓） |
+  | **`HasGenericObject`**／**`HasDenselyRepresenting`**（陈述层口径 ✓）＋ **`Prop11aStatement`**／**`Prop11bStatement`**（**具名残余** ✗）＋ 四锁 ✓ | 源的 **`prop1.1`（a）（b）** ✓（印 171 ✓ **逐字核** ✓）—— (a) 有一般对象 ⟹ 有提升性质 ✓；(b) 有稠密表示 ＋ 有提升性质 ⟹ 有一般对象 ✓。**⚠ 源明写 omit the proof** ✓ | 第 9 件 ✓ |
   | `FStruct` ✓ ＋ 两把类型锁 ✓ ＋ 三个探针 ✓ | 源的 `F` 结构 ✓：「An `F` structure is a linear structure `M/R` such that **`F ⊂ R`**」✓（印版 170 ✓）—— 落为**打包**结构 ✓（`R`／`M` 及实例随 `str` 打包 ✓） | 第 3 件（**部分** ✓） |
 
   **施工单余项** ✗（本件**不**触碰 ✓，**不作声称** ✓）：
@@ -84,11 +85,15 @@
   ② **第 4 件已落** ✓（`LiftingData` ✓ ＋ `HasLiftingProperty` ✓）；**第 5 件已落** ✓✅
   （`Realization` ✓／`RepresentingObject` ✓／`IsSpecialization` ✓／`GenericObject` ✓／
   **`DenselyRepresenting`** ✓ —— 其定义在**印版 171** ✓（**非 172** ✗，上轮登记已更正 ✓），**本轮已逐句核** ✓）；
-  ③ **第 6／7 件已落** ✓；**第 8 件的陈述全部落** ✓（`RelativeLiftingProperty` ✓／
-  `RetractRational` ✓（`def3.1` ✓）／`FactorsRationally` ✓（`def3.2` ✓）／`Cor310aStatement` ✓／
-  `Cor310bStatement` ✓）—— **⚠ 全部为具名残余：只给陈述、不作证明** ✗（其证明须 `def3.1` 与 `def3.2`
-  之间的桥 ✓，即印 181--182 的 `lem3.3`／`cor3.4`／`lem3.5` ✓，**本件未落** ✗）；
-  **第 9 件未落** ✗（`prop1.1`（a）（b）＋ 具名残余）⟹ **`cor3.10(a)` 的证明未形式化** ✗。
+  ③ **第 6／7／8 件已落** ✓（第 8 件的**陈述**全部落 ✓）；**第 9 件已落** ✓
+  （`HasGenericObject` ✓／`HasDenselyRepresenting` ✓／`Prop11aStatement` ✓／`Prop11bStatement` ✓ ＋ 四锁 ✓）
+  —— **⚠ 第 8／9 件全部为具名残余：只给陈述、不作证明** ✗
+  ⟹ **M4 施工单（§77.2 第 1–9 件）的**陈述层**到此全部落** ✓✅；
+  **余项** ✗：**(i)** 六件具名残余的**证明**（`Thm13aStatement` ✓／`Cor310aStatement` ✓／
+  `Cor310bStatement` ✓／`Cor310Reduction` ✓／`Prop11aStatement` ✓／`Prop11bStatement` ✓ —— 其桥是印 181--182 的
+  `lem3.3`／`cor3.4`／`lem3.5` ✓ ＋ 印 172 底的 **Hom-集识别** ✓）；
+  **(ii)** `thm1.3`(b)(c)(d) **范围外** ✗（须 `\mathcal{E}(G)`／`\mathcal{A}(n)` ✓）；
+  **(iii)** §8.1 的 iso **生成元语义核** ✗。
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import Mathlib.LinearAlgebra.TensorPower.Basic
@@ -1395,6 +1400,66 @@ def Cor310Reduction {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
     (C : FStruct.{u, u} F r s t → Prop) : Prop :=
   Cor310aStatement C
 
+
+/-! ### 8.12 源 `prop1.1` 的**具名残余**（印 171 ✓ **逐字核**）—— M4 施工单末件 -/
+
+/-- **「`\mathcal{C}` has a generic object」的口径** ✓（**登记** ✓）：源的**定义句**把主语写成
+「a generic object `\mathcal{M}/R\in \mathcal{C}`」✓，而源的**陈述句**一律写「`\mathcal{C}` **has** a … object」✓
+（`prop1.1`（a）（b）✓、印 171 ✓）⟹ **本件的约定** ✓：**三个性质谓词（`RepresentingObject` ✓／
+`GenericObject` ✓／`DenselyRepresenting` ✓）不含 `C X`** ✓（它们是**性质** ✓），而**「类有…对象」在陈述层**
+显式写出 `\exists X, C X \wedge (\cdot)` ✓。
+**⚠ 在册的一处不一致** ✗：`LocalProjective` ✓ **含 `C P`** ✓ —— 依据是源在同一句里把它写成
+「`\mathcal{P}\in \mathcal{C}` is a **local projective**」✓（**名词** ✓），且 `thm1.3`／`cor3.10` 随后以
+「local projective **object**」**不加限定**地用 ✓（印 172 底／186 ✓）；**登记** ✓，**本轮不改** ✓。 -/
+def HasGenericObject {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) : Prop :=
+  ∃ X : FStruct.{u, u} F r s t, C X ∧ GenericObject C X
+
+/-- 「`\mathcal{C}` has a densely representing object」✓（同上口径 ✓）。 -/
+def HasDenselyRepresenting {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) : Prop :=
+  ∃ X : FStruct.{u, u} F r s t, C X ∧ DenselyRepresenting C X
+
+/-- **源 `prop1.1(a)` 的具名陈述** ✓（印 171 ✓ 逐字核：「**PROPOSITION 1.1.** Let `\mathcal{C}` be an `F`-class,
+**(a)** if `\mathcal{C}` has a **generic object**, then `\mathcal{C}` has the **lifting property**」✓）——
+**⚠ 具名残余：本件不作证明** ✗（源印 171 ✓ 明写「We will **omit the proof** because it is a trivial
+generalization of the argument of `\cite{23}`, p. 275」✓ —— **源本身不给证明** ✓，**登记** ✓）。 -/
+def Prop11aStatement {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) : Prop :=
+  HasGenericObject C → HasLiftingProperty C
+
+/-- **源 `prop1.1(b)` 的具名陈述** ✓（印 171 ✓ 逐字核：「**(b)** if `\mathcal{C}` has a **densely representing
+object**, and `\mathcal{C}` has the **lifting property**, then `\mathcal{C}` has a **generic object**」✓）——
+**⚠ 具名残余：本件不作证明** ✗（**两条前提各写** ✓：**有稠密表示对象** ✓ ＋ **有提升性质** ✓ —— L39 ✓）。 -/
+def Prop11bStatement {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    (C : FStruct.{u, u} F r s t → Prop) : Prop :=
+  HasDenselyRepresenting C → HasLiftingProperty C → HasGenericObject C
+
+/-- **外形锁定 ①** ✓：`Prop11aStatement` 的**两段**（**有**一般对象 ✓／**得**提升性质 ✓）逐字可取 ✓。 -/
+theorem Prop11aStatement.shape {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : Prop11aStatement C) :
+    HasGenericObject C → HasLiftingProperty C :=
+  h
+
+/-- **外形锁定 ②** ✓：`Prop11bStatement` 的**三段**（**有**稠密表示 ✓／**有**提升性质 ✓／
+**得**一般对象 ✓）逐字可取 ✓。 -/
+theorem Prop11bStatement.shape {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : Prop11bStatement C) :
+    HasDenselyRepresenting C → HasLiftingProperty C → HasGenericObject C :=
+  h
+
+/-- **外形锁定 ③** ✓：「has a generic object」＝ **存在类中的一般对象** ✓（`C X` **显式** ✓ —— 见 §8.12 口径 ✓）。 -/
+theorem HasGenericObject.exists {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : HasGenericObject C) :
+    ∃ X : FStruct.{u, u} F r s t, C X ∧ GenericObject C X :=
+  h
+
+/-- **外形锁定 ④** ✓：「has a densely representing object」＝ **存在类中的稠密表示对象** ✓。 -/
+theorem HasDenselyRepresenting.exists {F : Type u} [Field F] {r : ℕ} {s t : Fin r → ℕ}
+    {C : FStruct.{u, u} F r s t → Prop} (h : HasDenselyRepresenting C) :
+    ∃ X : FStruct.{u, u} F r s t, C X ∧ DenselyRepresenting C X :=
+  h
+
 end RetractRational
 
 end Projective
@@ -1467,6 +1532,14 @@ end BaseChange
 #print axioms Cor310aStatement.shape
 #print axioms Cor310bStatement.shape
 #print axioms Cor310Reduction
+#print axioms HasGenericObject
+#print axioms HasDenselyRepresenting
+#print axioms Prop11aStatement
+#print axioms Prop11bStatement
+#print axioms Prop11aStatement.shape
+#print axioms Prop11bStatement.shape
+#print axioms HasGenericObject.exists
+#print axioms HasDenselyRepresenting.exists
 #print axioms tensorPowerBaseChange_tmul
 #print axioms tensorPowerBaseChange_nonempty
 #print axioms fStructProbe
