@@ -28,8 +28,10 @@ import ABGV52.SaltDef_ABGV52
 import Mathlib.RingTheory.Localization.Away.Basic
 import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 import Mathlib.RingTheory.FiniteType
+import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 open TensorProduct MvPolynomial
 universe u
+noncomputable section
 
 namespace ABGV52
 
@@ -190,7 +192,62 @@ theorem quotient_ker_algEquiv_of_surjective {F R : Type u} [Field F] [CommRing R
     Nonempty ((MvPolynomial (Fin n) F ⧸ RingHom.ker η) ≃ₐ[F] R) :=
   ⟨Ideal.quotientKerAlgEquivOfSurjective h⟩
 
-/-! ## 5. 登记 -/
+/-! ## 5. 「域档」推论（源 `thm3.9` 反方向的**第 6 步**实体 ✓） -/
+
+/-- **工具** ✓：**域上 `residue` 单** ✓（`Algebra.algHom` 形 ✓）。
+**证法** ✓：`residue x = 0` ⟹ `x ∈ 𝔪` ✓（`IsLocalRing.residue_eq_zero_iff` ✓）
+⟹ `x ∈ ⊥` ✓（`IsLocalRing.maximalIdeal_eq_bot` ✓，域 ✓）⟹ `x = 0` ✓。 -/
+lemma residue_injective_of_field {F K : Type u} [Field F] [Field K] [Algebra F K] :
+    Function.Injective (Algebra.algHom F K (IsLocalRing.ResidueField K)) := by
+  rw [injective_iff_map_eq_zero]
+  intro x hx
+  have hx' : IsLocalRing.residue K x = 0 := hx
+  have hmem : x ∈ IsLocalRing.maximalIdeal K := (IsLocalRing.residue_eq_zero_iff x).mp hx'
+  rw [IsLocalRing.maximalIdeal_eq_bot] at hmem
+  simpa using hmem
+
+/-- **源 `thm3.9` 反方向的第 6 步** ✓✓✓（源印版 p.185 逐字：「Applying 3.9(ii) to the inclusion
+`i : R(1/r) → K`, we have an `F` algebra map `ψ : S → T` such that `η ∘ ψ = i ∘ φ`」✓）：
+**域档**形式 ✓ —— `HasLocalLifting` ⟹ 每个 `F`-代数映射 `R(1/r) → K`（`K` 是**域** ✓）
+都可**提升**为 `S → K` 且**等式成立** ✓（不只剩余域里成立 ✓）。
+**证法** ✓：域的剩余域是它自己 ✓（`IsLocalRing.maximalIdeal_eq_bot` ✓ ＋
+`residue_injective_of_field` ✓）⟹ 把 3.9(ii) 用在 `T := K` 上即可 ✓
+（**⚠ 一处实测** ✓：此处 `H` 须以**显式实例**应用 ✓ —— `@H K inferInstance …` ✓，
+否则触发 `Algebra ?m K` 僵持 ✗，见 §66.4 同类 ✓）。 -/
+theorem exists_lift_to_field_of_hasLocalLifting {F S R : Type u} [Field F]
+    [CommRing S] [Algebra F S] [CommRing R] [Algebra F R] (φ : S →ₐ[F] R)
+    (h : HasLocalLifting F S R φ) :
+    ∃ r : R, r ≠ 0 ∧ ∀ (K : Type u) [Field K] [Algebra F K]
+      (ψ : Localization.Away r →ₐ[F] K),
+      ∃ ψ' : S →ₐ[F] K, ∀ s : S, ψ' s = ψ (algebraMap R (Localization.Away r) (φ s)) := by
+  obtain ⟨r, hr, H⟩ := h
+  refine ⟨r, hr, ?_⟩
+  intro K _ _ ψ
+  obtain ⟨ψ', hψ'⟩ := @H K inferInstance inferInstance inferInstance
+    ((Algebra.algHom F K (IsLocalRing.ResidueField K)).comp ψ)
+  refine ⟨ψ', fun s => ?_⟩
+  exact residue_injective_of_field (F := F) (K := K) (by
+    have h1 := hψ' s
+    change (Algebra.algHom F K (IsLocalRing.ResidueField K)) (ψ' s)
+      = (Algebra.algHom F K (IsLocalRing.ResidueField K))
+          (ψ (algebraMap R (Localization.Away r) (φ s))) at h1
+    simpa [AlgHom.comp_apply] using h1)
+
+/-! ## 6. `F[x]_P` 及其剩余域（源印版 p.185 的两处命名 ✓） -/
+
+/-- **用点** ✓（源逐字：「form the local ring `F[x₁,…,xₙ]_P` = `T`」✓，印版 p.185 ✓）：
+源写的 `F[x₁,…,xₙ]_P` **就是** `Localization.AtPrime P` ✓，且它是**局部环** ✓。 -/
+theorem isLocalRing_localization_atPrime {A : Type u} [CommRing A] (P : Ideal A) [P.IsPrime] :
+    IsLocalRing (Localization.AtPrime P) := inferInstance
+
+/-- **用点** ✓（源逐字：「If `M` is the maximal ideal of `T`, and `K` is the quotient field of `R`,
+then `T/M = K`」✓，印版 p.185 ✓）：`T = F[x]_P` 的**剩余域** ＝ 商 `F[x]/P` 的**分式域** ✓
+（`Ideal.ResidueField P = IsLocalRing.ResidueField (Localization.AtPrime P)` ✓，
+mathlib 已给 `IsFractionRing (A ⧸ P) P.ResidueField` ✓）。 -/
+theorem isFractionRing_residueField_atPrime {A : Type u} [CommRing A] (P : Ideal A) [P.IsPrime] :
+    IsFractionRing (A ⧸ P) (Ideal.ResidueField P) := inferInstance
+
+/-! ## 7. 登记 -/
 
 /-- **登记** ✗（**源陈述缺假设** ✓✓，**印版级已核** ✓；L39 家族 ✓）：源 `thm3.9` 的**陈述**
 （**印版 p.184** ✓，逐字）只说「Let `φ : S → R` be an `F` algebra map between `F` algebra
@@ -231,6 +288,10 @@ theorem thm39_gap_registered : True := trivial
 #print axioms finiteType_of_surjective_mvPolynomial
 #print axioms exists_surjective_mvPolynomial_with_prime_ker
 #print axioms quotient_ker_algEquiv_of_surjective
+#print axioms residue_injective_of_field
+#print axioms exists_lift_to_field_of_hasLocalLifting
+#print axioms isLocalRing_localization_atPrime
+#print axioms isFractionRing_residueField_atPrime
 #print axioms thm39_affineness_finding_registered
 #print axioms thm39_gap_registered
 

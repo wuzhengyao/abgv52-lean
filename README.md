@@ -225,7 +225,11 @@ sync.  The items added since then are:
   is a quotient of a polynomial ring, with prime kernel and the quotient identified), and it registers
   a statement-completeness finding checked against the printed paper: the statement of `thm3.9` omits
   the affineness of `S` and of `R(1/r)` although its proof uses both, while `thm3.8` on the same page
-  does say "affine".  The converse and `thm3.8` are registered as gaps.
+  does say "affine".  Two further pieces of the converse are in place: the field case (over a field the
+  residue map is injective, so the lifting property gives an honest lift of every map out of `R(1/r)`
+  into a field), and the two identifications the printed proof names — `F[x]_P` is
+  `Localization.AtPrime` and its residue field is the fraction field of `F[x]/P`, which is how the
+  proof reads off `T/M = K`.  The converse and `thm3.8` are registered as gaps.
 
 The authoritative per-hypothesis status (the five-piece coverage for the thirteen named hypotheses)
 is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-status.md`.
