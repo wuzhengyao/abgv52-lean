@@ -479,7 +479,10 @@ is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-
   spanning half of "generates a normal basis" coming from the library's construction of a basis out
   of a linearly independent family of the right cardinality, and the base change of the evaluation
   along the two structure maps carrying the conclusion back to the polynomial ring over the ground
-  field.
+  field.  The realization step is also recorded in the orientation the source writes, with the
+  tensor factor on the left, by composing the packaged isomorphism with the library's commutativity
+  equivalence, whose equivariance is what carries the group actions across; the remaining
+  quantifier shape of that clause is registered as an open gap rather than claimed closed.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision

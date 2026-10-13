@@ -4378,6 +4378,89 @@ theorem exists_algEquiv_localizationAway_of_adjoin_union_inv {n : ℕ} {a : Fin 
 
 end ClauseACarrier
 
+/-! ## 4.49 **装配 (c) 款 · 源文取向收口**：**`L \cong S_0 \otimes_R K`**（源 `definition-1-1`(c) 的**逐字取向** ✓）（第 193 轮）
+
+**⚠ 起点** ✓（**承 §4.46** 的 `L \simeq_K (K \otimes_R S_0)` ✓；r182 登记的**余项 ④** ✗）：源文写
+「`L \cong S \otimes_\phi K`」（`raw/Saltman1982.tex :159` ✓，**`S` 在前** ✓），而 §4.46 产出的是 **`K \otimes_R S_0`** ✗
+—— 两取向**非 defeq** ✗（§34.6 头注 ✓）。
+
+**⚠ 本轮（断指）** ✓：以 r191 的**取向同构** ✓（`\mathrm{tensorProductComm}` ✓，`K \otimes_R S_0 \simeq_K S_0 \otimes_R K` ✓）
+**复合** ✓ §4.46 的等变同构 ✓ ⟹ **源文取向的保作用同构** ✓；**逆取向的等变性** ✓ 由 `\mathrm{tensorProductComm\_symm\_equivariant}` ✓
+**单性搬运** ✓（**不重证** ✗）。
+
+**⚠ 登记（谓词形缺口，精确化** ✗）：`\mathrm{RealizationProperty}`（`GenericExtension\_ABGV52` ✓ 的 `definition-1-1`(c) 编码 ✓）
+量词域是 **`[\mathrm{CommRing}\ L]`** ✓（源文在**交换代数**语境下写 "Galois extension" ✓），
+而本册 **装配链**（§4.41--§4.49 ✓）所需的**逐点数据**为 **`[\mathrm{Field}\ L]`** ✗ ＋ `[\mathrm{Infinite}\ K]` ✗
+＋ **正规基** `b`／`hb` ✓ ＋ `hfix` ✓（在册 `\mathrm{GaloisFixedSubringHyp}` ✓）⟹
+**谓词形 (c) 款**（`\forall K\ L` 仅由 `\mathrm{IsGaloisWithGroup}\ K\ L\ G\ hKL` 出发 ✓）**本册未落** ✗
+—— **不声称**已闭 ✗；登记为 `\mathrm{realizationProperty\_gap\_registered}` ✓。 -/
+
+section SourceOrientationCapstone
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **(c) 款 · 源文取向收口** ✓✅：**§4.46 的全部数据** ✓ ⟹ **`\exists \varphi : R \toₐ[F] K`** ＋
+**保作用的同构** `L \simeq_K (S_0 \otimes_R K)` ✓ —— **源文取向** ✓（`S` 在前 ✓，`definition-1-1`(c) ✓）。
+**⚠ 本件 ＝ 复合件** ✓（**不重证** ✗）：§4.46 的等变同构 ✓ ＋ r191 的取向同构（及其逆的等变性 ✓）。 -/
+theorem exists_algHom_and_equivariant_algEquiv_tensorProduct_sourceOrientation
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ g : G, g • t = t)
+    {R : Type} [CommRing R] [Algebra R (Localization.Away t)] [Algebra F R]
+    [IsScalarTower F R (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    [Algebra R (NoetherField F G)] [IsScalarTower F R (NoetherField F G)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : R) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup R (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp R (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : R,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap R (Localization.Away t) r)
+        = algebraMap R (NoetherField F G) r)
+    (hRQ : ∀ r : R,
+      algebraMap R (NoetherField F G) r ∈ (awayToFieldAlg (F := F) (G := G) t ht).range)
+    (hRGpoint : ∀ (g : G) (r : R),
+      g • algebraMap R (NoetherField F G) r = algebraMap R (NoetherField F G) r)
+    {K : Type} [Field K] [Algebra F K]
+    {L : Type} [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+    [MulSemiringAction G L] [SMulCommClass G K L] [SMulCommClass G F L] [Infinite K]
+    (b : Module.Basis G K L) (hb : Function.Bijective (smulAlgEquivHom K G L))
+    (hfix : ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x) :
+    ∃ φ : R →ₐ[F] K,
+      letI : Algebra R K := φ.toRingHom.toAlgebra
+      letI : Algebra R L := ((algebraMap K L).comp φ.toRingHom).toAlgebra
+      letI : Algebra K (TensorProduct R (Localization.Away t) K) :=
+        Algebra.TensorProduct.rightAlgebra
+      letI : MulSemiringAction G (TensorProduct R (Localization.Away t) K) :=
+        BTier.bcTensorMulSemiringAction (R := R) (S := Localization.Away t) (T := K) hRG
+      ∃ e : L ≃ₐ[K] (TensorProduct R (Localization.Away t) K),
+        ∀ (g : G) (y : L), e (g • y) = g • e y := by
+  obtain ⟨φ, e, he⟩ := exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
+    (F := F) (G := G) (t := t) ht htinv hact_map hRG hgal hProj hS₀R hRQ hRGpoint b hb hfix
+  refine ⟨φ, ?_⟩
+  let _ : Algebra R K := φ.toRingHom.toAlgebra
+  let _ : Algebra R L := ((algebraMap K L).comp φ.toRingHom).toAlgebra
+  let _ : Algebra K (TensorProduct R (Localization.Away t) K) :=
+    Algebra.TensorProduct.rightAlgebra (R := R) (A := Localization.Away t) (B := K)
+  let _ : MulSemiringAction G (TensorProduct R (Localization.Away t) K) :=
+    BTier.bcTensorMulSemiringAction (R := R) (S := Localization.Away t) (T := K) hRG
+  let _ : MulSemiringAction G (TensorProduct R K (Localization.Away t)) :=
+    BTier.tensorMulSemiringAction (R := R) (T := K) (S := Localization.Away t) hRG
+  refine ⟨e.trans (BTier.tensorProductComm (R := R) (S := Localization.Away t) (T := K)), ?_⟩
+  intro g y
+  show BTier.tensorProductComm (R := R) (S := Localization.Away t) (T := K) (e (g • y))
+    = g • BTier.tensorProductComm (R := R) (S := Localization.Away t) (T := K) (e y)
+  rw [he g y]
+  exact BTier.tensorProductComm_equivariant (R := R) (S := Localization.Away t) (T := K)
+    hRG g (e y)
+
+/-- **登记** ✗：**(c) 款的谓词形缺口** ✓ —— `RealizationProperty` 的量词域 `[\mathrm{CommRing}\ L]` ✓
+与装配链所需的 `[\mathrm{Field}\ L]` ✗／`[\mathrm{Infinite}\ K]` ✗／正规基 ✓／`hfix` ✓ 不匹配 ⟹
+**谓词形未落** ✗（**不声称**已闭 ✗）。 -/
+theorem realizationProperty_gap_registered : True := trivial
+
+end SourceOrientationCapstone
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -4439,6 +4522,8 @@ end ClauseACarrier
 #print axioms exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange
 #print axioms awayLift_equivariant_of_algebraMap
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
+#print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_sourceOrientation
+#print axioms realizationProperty_gap_registered
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv
