@@ -751,3 +751,16 @@ that the source's assertion is proved there for an inclusion, so the endpoint mu
 the intended setting rather than carried over as stated.  The trace-and-corestriction route
 recorded earlier keeps its value for that rebuilding, since the faithfulness clause it stumbled on
 is not an obstacle when the structure map is an inclusion.
+
+Non-vacuity is now established for the family, and it is the complement the refutations needed.
+The earlier probes had only shown that the data appearing in the conclusions can be instantiated,
+and one of them claimed that this made the hypothesis class non-empty, which it does not; the
+Galois predicate itself was never exhibited.  It is now: over the rational field with the base ring
+equal to the extension and the group trivial, the predicate holds -- the third clause because the
+one-point group makes the skew algebra one-dimensional and a rational-linear endomorphism of the
+rational field is multiplication by its value at one -- and all four refuted endpoints hold at that
+same instance.  The refutations are therefore about the stated forms being too wide, not about
+empty classes; the claim that the data layer implied non-emptiness of the hypothesis class is
+withdrawn and the probe is marked as showing only the data layer.  The instance is not, however,
+the pair the wiring uses, so the satisfiability of the wiring's own hypothesis table remains
+unverified, with a candidate instance recorded for it.

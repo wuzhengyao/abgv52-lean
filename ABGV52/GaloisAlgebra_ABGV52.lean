@@ -147,7 +147,10 @@ theorem algebraMap_fixed_of_smulCommClass {R S : Type*} [CommRing R] [CommRing S
   rw [Algebra.algebraMap_eq_smul_one (R := R) (A := S) r, hRG g r 1, smul_one]
 
 /-- **非空洞探针（L1）** ✓：判据的**前提数据可实例化** —— `R = S = ℚ` ✓、`G = PUnit` ✓、
-`hRG` 由平凡作用满足 ✓（故 `IsGaloisWithGroup` 的**假设类非空** ✓；③ 的双射性本身未证 ✗，登记于下）。 -/
+`hRG` 由平凡作用满足 ✓。
+**⚠ 本探针只证数据层** ✗（`∃ action, True` ✓，**平凡** ✓）—— **不**证 `IsGaloisWithGroup` **成立** ✗
+（**原文「故假设类非空」✗ 系过度声称** ✗，**第 236 轮更正** ✓）；**该步**由
+`galoisEndpoints_satisfiable` ✓ **落** ✓（**同件** ✓，**文末反驳节** ✓）。 -/
 theorem isGaloisWithGroup_data_nonempty :
     ∃ (_ : MulSemiringAction PUnit ℚ), True :=
   ⟨{ smul := fun _ x => x
@@ -1034,7 +1037,13 @@ end Prop02bProbe
 ⟹ **缺陷集中在「任意档」那一组** ✓（**四条一网打尽** ✓）。
 **🔴 要害** ✓：**④ 是本工程原定的「搬运源件」目标** ✗（「源 `[Sal78b]` 印 528 在 `raw/` 内 ✓，实体未搬运」✗）
 ⟹ **该计划就现形而言不可执行** ✗（**目标为假** ✗，**非材料不可得** ✗）——
-**须改在预期用例（`R → S` 单射 ✓）上重建** ✓（**下一手** ✓）。 -/
+**须改在预期用例（`R → S` 单射 ✓）上重建** ✓（**下一手** ✓）。
+
+**✅ L1 非空性（**第 236 轮** ✓）：反驳 ≠ 空** ✓ ——
+在 `R = S = ℚ` ✓、`G = PUnit` ✓ 上 **`IsGaloisWithGroup` 成立** ✓（`galoisEndpoints_satisfiable` ✓）
+**且①②③④ 四条在同一实例上全部成立** ✓ ⟹ **四条的反驳是「现形过宽」✗，不是「假设类空」** ✗。
+**⚠ 边界** ✓：**该实例不是接线的那一对** ✗（`↥S → Localization.Away T` ✗）⟹
+**接线假设表自身的非空性仍未核** ✗（**下一手** ✓）。 -/
 
 section GaloisEndpointsRefutation
 
@@ -1282,6 +1291,84 @@ theorem galoisProgeneratorHyp_refuted :
   obtain ⟨hRG, hgal, _⟩ := galoisFixedSubringHyp_refuted
   exact ⟨hRG, hgal, fun h => not_moduleFinite_int_rat (h hgal).1⟩
 
+/-- **L1 非空性：反驳 ≠ 空** ✓✅（第 236 轮 ✓；**本节结论** ✓）：
+在 **`R = S = ℚ`** ✓、**`G = PUnit`** ✓（**平凡作用** ✓）上，**`IsGaloisWithGroup` 成立** ✓
+（**③ 双射由 `ext_ring`-型论证得** ✓：`SkewMonoidAlgebra ℚ PUnit` **一维** ✓ ＋
+每个 `ℚ`-线性自同态 `f` 满足 `f t = t · f 1` ✓，**由 `map_smul`** ✓），
+**且①②③④ 四条被反驳的端点在同一个实例上全部成立** ✓（**四款结论数据均有实例** ✓）。
+**⚠ 意义** ✓（**L1 ＋ L10①** ✓）：**四条的反驳是「现形过宽」✗，不是「假设类空」** ✗ ——
+**端点在其预期用例中可满足** ✓（**本实例即证** ✓）。
+**⚠ 边界** ✓（**如实** ✓）：本实例**不是接线的那一对** ✗（`↥S → Localization.Away T` ✗）⟹
+**接线假设表自身的非空性仍未核** ✗（**下一手** ✓；**候选见证** ✓：`ℚ`／`PUnit`／`a = X`／`s₀ = X`／`T = X` ✓，
+**须 `Localization.Away X ≅ ↥S`** ✓）。
+**⚠ 在册探针更正** ✓：`isGaloisWithGroup_data_nonempty` ✓ 只证数据层 ✗（**原文「假设类非空」系过度声称** ✗，**已改** ✓）；
+**本件是它的加强** ✓。 -/
+theorem galoisEndpoints_satisfiable :
+    ∃ hRG : ∀ (g : PUnit.{1}) (r : ℚ) (s : ℚ), g • (r • s) = r • (g • s),
+      IsGaloisWithGroup ℚ ℚ PUnit.{1} hRG ∧
+        GaloisFaithfulHyp ℚ ℚ PUnit.{1} hRG ∧
+        GaloisFixedSubringHyp ℚ ℚ PUnit.{1} hRG ∧
+        GaloisProjectiveHyp ℚ ℚ PUnit.{1} hRG ∧
+        GaloisProgeneratorHyp ℚ ℚ PUnit.{1} hRG := by
+  let hRG : ∀ (g : PUnit.{1}) (r : ℚ) (s : ℚ), g • (r • s) = r • (g • s) :=
+    fun _ _ _ => rfl
+  have hact : actEnd hRG PUnit.unit = 1 := by
+    refine LinearMap.ext (fun t => ?_)
+    rfl
+  have hsingle : ∀ a : ℚ,
+      deltaToEndRingHom hRG (SkewMonoidAlgebra.single PUnit.unit a) = coeffToEnd a := by
+    intro a
+    show deltaToEndAdd hRG (SkewMonoidAlgebra.single PUnit.unit a) = coeffToEnd a
+    rw [deltaToEndAdd_single, hact, mul_one]
+  have heval : ∀ a : ℚ, (deltaToEndAdd hRG (SkewMonoidAlgebra.single PUnit.unit a)) 1 = a := by
+    intro a
+    rw [deltaToEndAdd_single, hact, mul_one]
+    show a * 1 = a
+    rw [mul_one]
+  have hsingle_eq : ∀ u : SkewMonoidAlgebra ℚ PUnit,
+      u = SkewMonoidAlgebra.single PUnit.unit (u.coeff PUnit.unit) := by
+    intro u
+    refine SkewMonoidAlgebra.ext (fun g => ?_)
+    rw [Subsingleton.elim g PUnit.unit, SkewMonoidAlgebra.coeff_single_apply]
+    simp
+  have hcoe : ∀ u : SkewMonoidAlgebra ℚ PUnit,
+      (deltaToEndAdd hRG u) 1 = u.coeff PUnit.unit := by
+    intro u
+    conv_lhs => rw [hsingle_eq u]
+    exact heval (u.coeff PUnit.unit)
+  have hrec : ∀ u : SkewMonoidAlgebra ℚ PUnit,
+      u = SkewMonoidAlgebra.single PUnit.unit ((deltaToEndAdd hRG u) 1) := by
+    intro u
+    conv_lhs => rw [hsingle_eq u]
+    rw [hcoe u]
+  have hgal : IsGaloisWithGroup ℚ ℚ PUnit.{1} hRG := by
+    refine ⟨?_, ?_, ?_⟩
+    · exact ⟨fun {a b} _ => Subsingleton.elim a b⟩
+    · intro g r
+      rfl
+    · constructor
+      · intro u v huv
+        have h1 : (deltaToEndAdd hRG u) 1 = (deltaToEndAdd hRG v) 1 :=
+          congrArg (fun f : Module.End ℚ ℚ => f 1) huv
+        calc u = SkewMonoidAlgebra.single PUnit.unit ((deltaToEndAdd hRG u) 1) := hrec u
+          _ = SkewMonoidAlgebra.single PUnit.unit ((deltaToEndAdd hRG v) 1) := by rw [h1]
+          _ = v := (hrec v).symm
+      · intro f
+        refine ⟨SkewMonoidAlgebra.single PUnit.unit (f 1), ?_⟩
+        rw [hsingle]
+        refine LinearMap.ext (fun t => ?_)
+        have h2 : f t = t * f 1 := by
+          have h := f.map_smul t (1 : ℚ)
+          simpa using h
+        show (f 1) * t = f t
+        rw [h2, mul_comm]
+  exact ⟨hRG, hgal,
+    (fun _ => inferInstance : GaloisFaithfulHyp ℚ ℚ PUnit.{1} hRG),
+    (fun _ s _ => ⟨s, rfl⟩ : GaloisFixedSubringHyp ℚ ℚ PUnit.{1} hRG),
+    (fun _ => ⟨inferInstance, inferInstance⟩ : GaloisProjectiveHyp ℚ ℚ PUnit.{1} hRG),
+    (fun _ => ⟨inferInstance, inferInstance, inferInstance⟩ :
+      GaloisProgeneratorHyp ℚ ℚ PUnit.{1} hRG)⟩
+
 end GaloisEndpointsRefutation
 
 /-! ## 公理闸门 -/
@@ -1502,6 +1589,7 @@ end GaloisTransport
 #print axioms not_moduleFinite_int_rat
 #print axioms galoisProjectiveHyp_refuted
 #print axioms galoisProgeneratorHyp_refuted
+#print axioms galoisEndpoints_satisfiable
 #print axioms faithfulSMul_of_galoisFaithfulHyp
 #print axioms coeffToEnd_smulS
 #print axioms deltaInvLinearS
