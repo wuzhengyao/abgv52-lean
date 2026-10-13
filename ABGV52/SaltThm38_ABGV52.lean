@@ -926,4 +926,65 @@ theorem range_awayToFieldAlg_eq_adjoin_pUnit_rat :
 
 #print axioms range_awayToFieldAlg_eq_adjoin_pUnit_rat
 
+set_option maxHeartbeats 1000000 in
+/-- **记账同构** ✓✅（第 243 轮 ✓）：本档下 **`Localization.Away X ≃ₐ[ℚ] ↥S`** ✓ ——
+即 **wiring 的 `S' ≅ ↥S`** ✓（`S' = Localization.Away T` ✓，`T = X` ✓）。
+**⚠ 组装** ✓（**先 `have`／`let` 定型、再 `exact`** ✓ —— **r242 教训兑现** ✓）：
+**①** `hrange` ✓ ＝ **r242 等式** ✓；**②** `hmem` ✓（像落 `↥S` ✓：`rw [← hrange]` ✓ ＋ **`AlgHom.mem_range`** ✓）；
+**③** `f` ✓ ＝ **`AlgHom.codRestrict`** ✓；**④** `hinj` ✓（**`awayToField_injective`** ✓ ＋ **`Subtype.ext_iff`** ✓）；
+**⑤** `hsurj` ✓（由 `hrange` ✓ ＋ **`z.2`** ✓ ＋ **`Subtype.ext`** ✓）；**⑥** **`AlgEquiv.ofBijective`** ✓。
+**⚠ 意义** ✓：**§199.5(i) 的「接线假设表非空」只剩两步** ✓ ——
+**`Module.Finite ∧ Projective`** ✓ 与 **`δ` 双射** ✓（**皆由本同构的秩一性** ✓，**下一手** ✓）。
+**⚠ 不声称** ✗：**`hProj`／`hδ` 本身未证** ✗（**其充分条件的载体已备** ✓）。 -/
+theorem nonempty_algEquiv_away_adjoin_pUnit_rat :
+    ∃ (T : MvPolynomial PUnit.{1} ℚ) (_hT : T ≠ 0),
+      Nonempty (Localization.Away T ≃ₐ[ℚ]
+        ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+              algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))
+            ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit),
+                (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit))⁻¹}))) := by
+  have hrange := range_awayToFieldAlg_eq_adjoin_pUnit_rat
+  have hmem : ∀ y : Localization.Away (MvPolynomial.X PUnit.unit),
+      awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+        (MvPolynomial.X_ne_zero PUnit.unit) y
+        ∈ Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+            algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit))
+          ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit),
+              (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))⁻¹}) := by
+    intro y
+    rw [← hrange]
+    exact ⟨y, rfl⟩
+  let f : Localization.Away (MvPolynomial.X PUnit.unit) →ₐ[ℚ]
+      ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+          algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))
+        ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit),
+            (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit))⁻¹})) :=
+    (awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit)).codRestrict _ hmem
+  have hinj : Function.Injective f := by
+    intro x y hxy
+    exact awayToField_injective (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit) (Subtype.ext_iff.mp hxy)
+  have hsurj : Function.Surjective f := by
+    intro z
+    have hz : (z : NoetherField ℚ PUnit.{1})
+        ∈ (awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+          (MvPolynomial.X_ne_zero PUnit.unit)).range := by
+      rw [hrange]
+      exact z.2
+    obtain ⟨y, hy⟩ := hz
+    exact ⟨y, Subtype.ext hy⟩
+  exact ⟨MvPolynomial.X PUnit.unit, MvPolynomial.X_ne_zero PUnit.unit,
+    ⟨AlgEquiv.ofBijective f ⟨hinj, hsurj⟩⟩⟩
+#print axioms nonempty_algEquiv_away_adjoin_pUnit_rat
+
 end ABGV52
