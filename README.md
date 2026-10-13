@@ -214,7 +214,12 @@ sync.  The items added since then are:
 descent isomorphism, which is the embedding of the descended algebra into the field, with its own
 data-level non-vacuity probe.  The base change of a Galois algebra to a tensor factor is also
 packaged with its three lines of wiring internal, so that a caller supplies the Galois structure,
-the single named input, and nontriviality, and nothing else.
+the single named input, and nontriviality, and nothing else.  The source writes the base change
+with the base ring on the right, while the packaging above produces the other orientation; the two
+are now compared by the library's own commutativity isomorphism, an algebra equivalence over the
+common factor, with the group action and the algebra structure on that side built here, and a
+Galois structure is transported across that isomorphism, so the statement in the source's
+orientation follows from the same three inputs.
 - `GenericExtension_ABGV52.lean`: definition 1.1, the `E(G)`-slice language (realization property,
   representing and generic objects, the lifting property).  The file carries two transcriptions of
   definition 1.1 -- the three clauses listed flat, and the `E(G)`-slice reading as a representing

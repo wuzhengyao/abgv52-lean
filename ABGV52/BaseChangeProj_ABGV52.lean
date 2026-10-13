@@ -21,6 +21,9 @@
   再经 `TensorProduct.lid`（`a ⊗ t ↦ a • t` ✓）得 `algebraMap F T (φ x) = 0` ⟹ 由
   `FaithfulSMul.algebraMap_injective` ✗ 与 `φ x ≠ 0` 矛盾 ✓。
 
+  **（第 191 轮追加）取向桥** ✓✅：`IsGaloisWithGroup` 沿**取向同构** `T ⊗_R S ≃ₐ[T] S ⊗_R T`
+  搬运（`isGaloisWithGroup_tensorProduct_comm` ✓，引擎 ＝ `GaloisAlgebra` 的等变搬运件 ✓）——
+  两取向**仍非 defeq** ✗，但**其间的搬运已在库内可用** ✓（见文末「取向桥」节 ✓）。
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import ABGV52.GenericExtension_ABGV52
 import Mathlib.Algebra.Algebra.Subalgebra.Basic
@@ -1543,6 +1546,162 @@ theorem galoisBaseChange_wiring_gap_registered : True := trivial
 
 end BCWiringComplete
 
+/-! ## **(b) 款 · 取向桥**：`G`-Galois 性沿 `T ⊗_R S ≃ₐ[T] S ⊗_R T` 搬运（第 191 轮）
+
+**⚠ 起点** ✓（承 §153.7 第 1 项 ✓；§34.6 头注的**取向非 defeq** ✗）：`galoisBaseChange_tensorLeft`（r180 ✓）
+产出 **`T ⊗_R S` 取向** ✓，而 §34.6 ②／源文（`S' = S ⊗_φ R'` ✓，`R'` 在后 ✓）的载体是 **`S ⊗_R T`** ✗ —— 两取向此前**无桥** ✗。
+
+**⚠ 读数 (70)** ✓（**先查机器** ✓，本节实测）✗→✓：**不重造** —— 既有件 `bcActAlgEquiv_one`／`_mul` ✓、
+`bcTensorActHom`／`bcTensorActHom_tmul` ✓（§34.6 ② 段 ✓）、`comm_bcTensorActHom` ✓（§① 取向搬运件 ✓）**全部复用** ✓。
+**本节新增** ✓：`S ⊗_R T` **取向**的 `MulSemiringAction` ✓（既有 `bcTensorMulSemiringActionLeft` 是**另一取向** `T ⊗_R S` ✗）
+＋ 其两条作用律 ✓ ＋ **`T`-纯量交换律** ✓ ＋ **`≃ₐ[T]` 取向同构** ✓
+（**mathlib 现成件** `Algebra.TensorProduct.commRight` ✓——**其基环即左因子 `T`** ✓，正合 `galoisBaseChange_tensorLeft` 的基环 ✓；
+靶侧 `T`-代数结构 ＝ `Algebra.TensorProduct.rightAlgebra` ✓，mathlib 作 **`abbrev` ＋ 局部实例** ✗ ⟹ 本节 `attribute [local instance]` ✓）
+＋ **主定理** ✓（引擎 ＝ r190 的 `isGaloisWithGroup_of_algEquiv` ✓）。 -/
+
+section OrientationBridge
+
+variable {R S T : Type} [CommRing R] [CommRing S] [CommRing T] [Algebra R S] [Algebra R T]
+variable {G : Type} [Group G] [Fintype G] [MulSemiringAction G S]
+
+/-- `S ⊗_R T` 取向作用律一 ✓（单位律；复用既有 `bcActAlgEquiv_one` ✓）。 -/
+lemma bcTensorActHom_one (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    bcTensorActHom (R := R) (S := S) (T := T) hRG 1 = AlgHom.id R (TensorProduct R S T) := by
+  rw [bcTensorActHom, bcActAlgEquiv_one (R := R) (S := S)]
+  exact Algebra.TensorProduct.map_id (R := R) (A := S) (B := T)
+
+/-- `S ⊗_R T` 取向作用律二 ✓（乘法律；复用既有 `bcActAlgEquiv_mul` ✓）。 -/
+lemma bcTensorActHom_mul (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (g h : G) :
+    bcTensorActHom (R := R) (S := S) (T := T) hRG (g * h)
+      = (bcTensorActHom (R := R) (S := S) (T := T) hRG g).comp
+          (bcTensorActHom (R := R) (S := S) (T := T) hRG h) := by
+  rw [bcTensorActHom, bcTensorActHom, bcTensorActHom, bcActAlgEquiv_mul (R := R) (S := S),
+    ← Algebra.TensorProduct.map_comp]
+  rfl
+
+/-- **`S ⊗_R T` 取向的 `G`-作用** ✓（沿**第一因子** `S` ✓；mathlib 与该档**均无** ✗）。
+`hRG` 作**显式参数** ✓，用法 `letI := bcTensorMulSemiringAction hRG` ✓。 -/
+@[instance_reducible]
+def bcTensorMulSemiringAction (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    MulSemiringAction G (TensorProduct R S T) where
+  smul g z := bcTensorActHom (R := R) (S := S) (T := T) hRG g z
+  one_smul z := by
+    change bcTensorActHom (R := R) (S := S) (T := T) hRG 1 z = z
+    rw [bcTensorActHom_one (R := R) (S := S) (T := T)]
+    rfl
+  mul_smul g h z := by
+    change bcTensorActHom (R := R) (S := S) (T := T) hRG (g * h) z
+      = bcTensorActHom (R := R) (S := S) (T := T) hRG g
+          (bcTensorActHom (R := R) (S := S) (T := T) hRG h z)
+    rw [bcTensorActHom_mul (R := R) (S := S) (T := T)]
+    rfl
+  smul_zero g := map_zero (bcTensorActHom (R := R) (S := S) (T := T) hRG g)
+  smul_add g x y := map_add (bcTensorActHom (R := R) (S := S) (T := T) hRG g) x y
+  smul_mul g x y := map_mul (bcTensorActHom (R := R) (S := S) (T := T) hRG g) x y
+  smul_one g := map_one (bcTensorActHom (R := R) (S := S) (T := T) hRG g)
+
+attribute [local instance] Algebra.TensorProduct.rightAlgebra
+
+/-- **`T`-纯量交换律** ✓（`S ⊗_R T` 取向 ✓）：`G` 沿**第一因子**作用于 `S` ✓、
+`T`-纯量（`rightAlgebra` ✓，即 `1 ⊗ₜ r` ✓）作用在**第二因子** ✓ ⟹ 两者交换 ✓。
+这是靶侧 `IsGaloisWithGroup` 的相容性 `hRG'` ✓ 所需输入 ✓（`bc` 侧的对应物；`T ⊗_R S` 侧见 `bcTensorActLeft_smul_comm` ✓）。 -/
+lemma bcTensorAct_smul_comm (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (g : G) (r : T) (z : TensorProduct R S T) :
+    bcTensorActHom (R := R) (S := S) (T := T) hRG g (r • z)
+      = r • bcTensorActHom (R := R) (S := S) (T := T) hRG g z := by
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul y x =>
+    simp only [Algebra.smul_def, Algebra.TensorProduct.right_algebraMap_apply,
+      Algebra.TensorProduct.tmul_mul_tmul, bcTensorActHom_tmul, one_mul]
+  | add a b ha hb => simp [smul_add, ha, hb]
+
+/-- **取向同构** ✓✅：`T ⊗_R S ≃ₐ[T] S ⊗_R T` —— mathlib `commRight` 的实例化 ✓
+（**基环 ＝ 左因子 `T`** ✓，与 `galoisBaseChange_tensorLeft` 的基环一致 ✓）。 -/
+def tensorProductComm : (TensorProduct R T S) ≃ₐ[T] (TensorProduct R S T) :=
+  Algebra.TensorProduct.commRight (R := R) (S := T) (A := S)
+
+/-- 取向同构在**简单张量**上的取值 ✓（`x ⊗ₜ y ↦ y ⊗ₜ x` ✓）。 -/
+@[simp] lemma tensorProductComm_tmul (x : T) (y : S) :
+    tensorProductComm (R := R) (S := S) (T := T) (x ⊗ₜ[R] y) = y ⊗ₜ[R] x := rfl
+
+/-- **取向同构是等变的** ✓✅：把 `T ⊗_R S` 上的作用（沿**第二因子** ✓ ＝ `tensorMulSemiringAction` ✓）
+搬到 `S ⊗_R T` 上的作用（沿**第一因子** ✓ ＝ `bcTensorMulSemiringAction` ✓）。
+（§① 的同类搬运件是 `comm_bcTensorActHom` ✓——它走**另一条取向对**（`bc` ↔ `bcLeft`）✓。） -/
+lemma tensorProductComm_equivariant
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) (g : G)
+    (z : TensorProduct R T S) :
+    letI : MulSemiringAction G (TensorProduct R T S) := tensorMulSemiringAction hRG
+    letI : MulSemiringAction G (TensorProduct R S T) := bcTensorMulSemiringAction hRG
+    tensorProductComm (R := R) (S := S) (T := T) (g • z)
+      = g • tensorProductComm (R := R) (S := S) (T := T) z := by
+  let _ : MulSemiringAction G (TensorProduct R T S) :=
+    tensorMulSemiringAction (R := R) (T := T) (S := S) hRG
+  let _ : MulSemiringAction G (TensorProduct R S T) :=
+    bcTensorMulSemiringAction (R := R) (S := S) (T := T) hRG
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x y =>
+    have h1 : g • (x ⊗ₜ[R] y) = x ⊗ₜ[R] (g • y) := by
+      change tensorActHom (T := T) hRG g (x ⊗ₜ[R] y) = x ⊗ₜ[R] (g • y)
+      rw [tensorActHom, Algebra.TensorProduct.map_tmul]
+      rfl
+    have h2 : g • (y ⊗ₜ[R] x) = (g • y) ⊗ₜ[R] x := by
+      change bcTensorActHom (R := R) (S := S) (T := T) hRG g (y ⊗ₜ[R] x)
+        = (g • y) ⊗ₜ[R] x
+      rw [bcTensorActHom_tmul]
+    rw [h1, tensorProductComm_tmul]
+    exact h2.symm
+  | add a b ha hb => simp [smul_add, ha, hb]
+
+/-- **(b) 款 · 取向桥** ✓✅：**`G`-Galois 性沿取向同构搬运** ——
+`T ⊗_R S` 在 `T` 上的 `G`-Galois 性 ⟹ `S ⊗_R T` 在 `T` 上的 `G`-Galois 性 ✓。
+**⚠ 靶侧作用实例与 `T`-代数结构全在结论内产出** ✓（调用点零手写 ✓；`letI` 入结论 ✓ —— 承 r185／r186 审计纪律 ✓）。
+**⚠ 口径** ✓：本件**不改动** `galoisBaseChange_tensorLeft` 的结论形 ✓，只在**另一取向**上补出同一结论 ✓。 -/
+theorem isGaloisWithGroup_tensorProduct_comm
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hgal : letI : MulSemiringAction G (TensorProduct R T S) := tensorMulSemiringAction hRG
+      IsGaloisWithGroup T (TensorProduct R T S) G
+        (fun g t z => tensorAct_smul_comm hRG g t z)) :
+    letI : Algebra T (TensorProduct R S T) := Algebra.TensorProduct.rightAlgebra
+    letI : MulSemiringAction G (TensorProduct R S T) := bcTensorMulSemiringAction hRG
+    IsGaloisWithGroup T (TensorProduct R S T) G
+      (fun g t z => bcTensorAct_smul_comm hRG g t z) := by
+  let _ : MulSemiringAction G (TensorProduct R T S) :=
+    tensorMulSemiringAction (R := R) (T := T) (S := S) hRG
+  let _ : Algebra T (TensorProduct R S T) :=
+    Algebra.TensorProduct.rightAlgebra (R := R) (A := S) (B := T)
+  let _ : MulSemiringAction G (TensorProduct R S T) :=
+    bcTensorMulSemiringAction (R := R) (S := S) (T := T) hRG
+  exact isGaloisWithGroup_of_algEquiv
+    (R := T) (S := TensorProduct R T S) (S' := TensorProduct R S T) (G := G)
+    (fun g t z => tensorAct_smul_comm hRG g t z)
+    (fun g t z => bcTensorAct_smul_comm hRG g t z)
+    (tensorProductComm (R := R) (S := S) (T := T))
+    (fun g z => tensorProductComm_equivariant (R := R) (S := S) (T := T) hRG g z) hgal
+
+/-- **(b) 款 · 源取向收口** ✓✅：**(b) 款在源文取向下的形** —— `S/R` 为 `G`-Galois ✓
+＋ **单一具名输入** `GaloisProjectiveHyp` ✓ ＋ `[Nontrivial (T ⊗_R S)]` ✓ ⟹ **`S ⊗_R T` 在 `T` 上为 `G`-Galois** ✓
+（**源文取向** ✓：`S' = S ⊗_φ R'` ✓，`R'` 在后 ✓）。
+**⚠ 本件 ＝ 两件复合** ✓（**不重证** ✓）：`galoisBaseChange_tensorLeft`（r180 ✓）＋ `isGaloisWithGroup_tensorProduct_comm`（本轮 ✓）。 -/
+theorem galoisBaseChange_tensorRight
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hgal : IsGaloisWithGroup R S G hRG) (hProj : GaloisProjectiveHyp R S G hRG)
+    [Nontrivial (TensorProduct R T S)] :
+    letI : Algebra T (TensorProduct R S T) := Algebra.TensorProduct.rightAlgebra
+    letI : MulSemiringAction G (TensorProduct R S T) := bcTensorMulSemiringAction hRG
+    IsGaloisWithGroup T (TensorProduct R S T) G
+      (fun g r z => bcTensorAct_smul_comm hRG g r z) := by
+  let _ : Algebra T (TensorProduct R S T) :=
+    Algebra.TensorProduct.rightAlgebra (R := R) (A := S) (B := T)
+  let _ : MulSemiringAction G (TensorProduct R S T) :=
+    bcTensorMulSemiringAction (R := R) (S := S) (T := T) hRG
+  exact isGaloisWithGroup_tensorProduct_comm (R := R) (S := S) (T := T)
+    hRG (galoisBaseChange_tensorLeft (R := R) (S := S) (T := T) hRG hgal hProj)
+
+end OrientationBridge
+
 /-! ## 公理闸门 -/
 
 #print axioms dual_eval_injective_of_projective
@@ -1578,7 +1737,7 @@ end BCWiringComplete
 #print axioms algebraMap_tensorLeft
 #print axioms bcTensorActHomLeft
 #print axioms bcTensorActHomLeft_tmul
-#print axioms bcActAlgEquiv_one
+#print axioms bcTensorActHom_one
 #print axioms bcActAlgEquiv_mul
 #print axioms bcTensorMulSemiringActionLeft
 #print axioms bcTensorActLeft_smul_comm
@@ -1625,5 +1784,14 @@ end BCWiringComplete
 #print axioms galoisBaseChange_tensorLeft
 #print axioms galoisBaseChange_tensorLeft_of_subsingletonGroup
 #print axioms galoisBaseChange_wiring_gap_registered
+#print axioms bcTensorActHom_one
+#print axioms bcTensorActHom_mul
+#print axioms bcTensorMulSemiringAction
+#print axioms bcTensorAct_smul_comm
+#print axioms tensorProductComm
+#print axioms tensorProductComm_tmul
+#print axioms tensorProductComm_equivariant
+#print axioms isGaloisWithGroup_tensorProduct_comm
+#print axioms galoisBaseChange_tensorRight
 
 end ABGV52.BTier
