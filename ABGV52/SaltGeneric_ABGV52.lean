@@ -247,12 +247,14 @@ limited to **infinite** fields `F`. This implies that `F` should be assumed infi
 但**有** `IsFractionRing.mulSemiringAction` ✓ —— 环自同构**诱导**分式域自同构 ✓ ⟹ 只需在 `MvPolynomial` 上自建 ✓
 （§4.4 ✓）再**提升** ✓ 即可（**工艺读数 ㊲** ✓：`synthInstanceFailed` ✗ **不等于**该结构不可得 ✓ —— 须另查
 **`def` 级 API** ✓）；`NoetherField` ✓ 现有消费者 ✓（见其登记 ✓）。
-**(ii)** 源要 `F` **无限** ✓；本件**未设**该前提 ✓（若证明需要再补 ✓，**登记** ✓）。
+**(ii)** 源要 `F` **无限** ✓；本件**未设**该前提 ✗（**第 134 轮登记** ✓）—— **⚠ r195 已回正** ✓✅：
+谓词体现在**含** `Infinite F →` ✓（源 `raw/Saltman1982.tex :640` ✓ **逐字** ✓），**rfl 型锁**见
+`Theorem51Statement.faithful_lock` ✓（**删去该前提即 `rfl` 失败** ✓）。
 **⚠ 源的另一处判别性事实** ✓（`remark` 印 275 ✓）：「The **converse** of `theorem-5-1` is **false**.
 `C_{47}` has a generic extension over `Q`, but **Swan showed Noether's Problem false** for this group」✓
 ⟹ 本两条 M6 路线**互相独立** ✓（与 `theorem-2-1` ✓ 的条件不同 ✓），**登记** ✓。 -/
 def Theorem51Statement (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G] : Prop :=
-  ∀ (L : Type u) [Field L] [Algebra F L] [MulSemiringAction G L] [SMulCommClass G F L],
+  Infinite F → ∀ (L : Type u) [Field L] [Algebra F L] [MulSemiringAction G L] [SMulCommClass G F L],
     IsRationalOver F ↥(FixedPoints.subalgebra F L G) → Nonempty (GenericExtensionWitness F G)
 
 /-- **外形锁定 ①** ✓：`IsRationalOver` 的**用点形**逐字可取 ✓（有理函数域同构 ✓）。 -/
@@ -264,10 +266,21 @@ theorem IsRationalOver.shape {F K : Type u} [Field F] [CommRing K] [Algebra F K]
 /-- **外形锁定 ②** ✓：`Theorem51Statement` 的**两段**（**固定域有理** ✓／**存在见证** ✓）逐字可取 ✓ ——
 **⚠ 前提须作独立假设传入** ✓（㉝ ✓）。 -/
 theorem Theorem51Statement.shape (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
-    (h : Theorem51Statement F G) (L : Type u) [Field L] [Algebra F L] [MulSemiringAction G L]
-    [SMulCommClass G F L] (hL : IsRationalOver F ↥(FixedPoints.subalgebra F L G)) :
+    (h : Theorem51Statement F G) (hinf : Infinite F) (L : Type u) [Field L] [Algebra F L]
+    [MulSemiringAction G L] [SMulCommClass G F L]
+    (hL : IsRationalOver F ↥(FixedPoints.subalgebra F L G)) :
     Nonempty (GenericExtensionWitness F G) :=
-  h L hL
+  h hinf L hL
+
+/-- **源文faithful性锁** ✓✅：源 `theorem-5-1` 的**假设**「**with `F` infinite**」✓
+（`raw/Saltman1982.tex :640` ✓ **逐字**）已进入**谓词体** ✓ —— **删去该前提即 `rfl` 失败** ✓（`rfl` 型锁 ✓；
+与 `Theorem21Statement` 把 `SaltmanCondition` 写进谓词体**同款** ✓，`Saltman_ABGV52` 侧 ✓）。 -/
+theorem Theorem51Statement.faithful_lock (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G] :
+    (Theorem51Statement F G)
+      = (Infinite F → ∀ (L : Type u) [Field L] [Algebra F L] [MulSemiringAction G L]
+          [SMulCommClass G F L],
+          IsRationalOver F ↥(FixedPoints.subalgebra F L G) → Nonempty (GenericExtensionWitness F G)) :=
+  rfl
 
 /-! ## 4.3 L1 探针与判别力登记（第 134 轮） -/
 
@@ -366,11 +379,13 @@ instance instFaithfulSMulNoetherField : FaithfulSMul G (NoetherField F G) :=
 
 /-- **§97.3 的实例化路径已闭合** ✓✅：源 `theorem-5-1` 的**特定** `L` ＝ `NoetherField F G` ✓
 现**可实例化** ✓（`MulSemiringAction` ✓ ＋ `SMulCommClass` ✓ 两件实例齐 ✓）⟹ 「证 `Theorem51Statement`
-即证源」的**形式前提**已通 ✓（**⚠ 仅形式前提** ✗ —— `Theorem51Statement` 本身**仍是具名残余** ✗）。 -/
+即证源」的**形式前提**已通 ✓（**⚠ 仅形式前提** ✗ —— `Theorem51Statement` 本身**仍是具名残余** ✗）。
+**⚠ r195** ✓：源的「`F` infinite」✓ 现**随谓词**传入 ✓（`hinf` ✓），调用点须显式给 ✓。 -/
 theorem theorem51Statement_noetherField [Fintype G] (h : Theorem51Statement F G)
+    (hinf : Infinite F)
     (hL : IsRationalOver F ↥(FixedPoints.subalgebra F (NoetherField F G) G)) :
     Nonempty (GenericExtensionWitness F G) :=
-  h (NoetherField F G) hL
+  h hinf (NoetherField F G) hL
 
 end NoetherBridge
 
@@ -437,8 +452,8 @@ variable (F : Type u) [Field F] (G : Type u) [Group G]
 ③ **正规基** ✓ 落为 **`Module.Basis G K L` ＋ `b \sigma = \sigma \bullet z`** ✓（＝「**共轭族恰成 `K`-基**」✓，
 **含张成** ✓ —— 第 138 轮**未**用「只求线性无关」✗ 的弱形 ✓）；
 ④ **⚠ 本陈述**不设**「`G` 有限」** ✓（**登记** ✓）：`[Fintype G]` **不进**签名 ✗（Lean 弃用不出现在类型中的
-auto-bound 变量 ✓）⟹ 即**强于**源 ✓（与 `Theorem51Statement` ✓ 去掉「`F` 无限」✓ 同款处置 ✓，
-故**另开 section** ✓）。 -/
+auto-bound 变量 ✓）⟹ 即**强于**源 ✓（**⚠ r195 已回正** ✓：`Theorem51Statement` ✓ 现**含**「`F` 无限」✓；
+本陈述**不设** `[Fintype G]` ✓ 仍**强于**源 ✓，故**另开 section** ✓）。 -/
 def Lemma52Statement (K L : Type u) [Field K] [Field L] [Algebra F K] [Algebra K L]
     [Algebra F L] [IsScalarTower F K L] [MulSemiringAction G L] : Prop :=
   ∀ t : MvPolynomial G F,
@@ -4468,7 +4483,7 @@ end SourceOrientationCapstone
 
 **⚠ 源文核对** ✓（**先审后落** ✓，本轮逐字）：
 **①** 源 `theorem-5-1` 的**假设**含「**with `F` infinite**」✓（`raw/Saltman1982.tex :640` ✓ 逐字）——
-而库内 `Theorem51Statement`（本件 `:254` ✓）**不含** ✗ ⟹ **口径偏离：库内陈述强于源** ✗（**登记** ✓）；
+而库内 `Theorem51Statement`（本件 `:254` ✓）**不含** ✗ ⟹ **口径偏离：库内陈述强于源** ✗（**登记** ✓；**⚠ 第 195 轮已回正** ✓✅ —— 谓词体加 `Infinite F →` ✓，锁见 `Theorem51Statement.faithful_lock` ✓）。
 **②** 源 `lemma-5-2` 的证明**显式**用「This is always possible **because `K` is infinite**」✓（`:662` ✓）——
 而 `K` 的无限性**由 `F` 无限派生** ✓（`K \supseteq F` ✓，域扩张 ✓）⟹ **`[Infinite K]` 非独立假设** ✓，**本轮落地该派生** ✓。
 
@@ -4490,7 +4505,7 @@ theorem infinite_of_algebra_of_infinite [Infinite F] : Infinite K :=
   Infinite.of_injective (algebraMap F K) (FaithfulSMul.algebraMap_injective F K)
 
 /-- **登记** ✗：**口径偏离（库内强于源）** —— 源 `theorem-5-1` 假设「`F` infinite」✓（`raw/Saltman1982.tex :640` ✓ 逐字），
-而 `Theorem51Statement`（本件 `:254` ✓）**不含** ✗；**⚠ 后果** ✓：装配 (c) 款须 `[Infinite K]` ✗
+而 `Theorem51Statement`（本件 `:254` ✓）**不含** ✗（**⚠ r195 已回正** ✓）；**⚠ 后果** ✓：装配 (c) 款须 `[Infinite K]` ✗
 （源证明显式需要 ✓；本件上方 `infinite_of_algebra_of_infinite` ✓ 给出**其派生** ✓），
 但**无**「`F` infinite」则 `[Infinite K]` **不可派生** ✗ ⟹ 谓词形 (c) 款**未落** ✗（**不声称**已闭 ✗）。 -/
 theorem theorem51Statement_infiniteField_gap_registered : True := trivial
@@ -4513,6 +4528,7 @@ end InfiniteTargetData
 #print axioms Theorem51Statement
 #print axioms IsRationalOver.shape
 #print axioms Theorem51Statement.shape
+#print axioms Theorem51Statement.faithful_lock
 #print axioms isRationalOver_self
 #print axioms isRationalOver_discrimination_gap_registered
 #print axioms inv_eq_inv_mul_of_eq_mul

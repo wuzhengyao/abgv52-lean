@@ -485,8 +485,9 @@ is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-
   quantifier shape of that clause is registered as an open gap rather than claimed closed.
   The infinitude the realization argument needs on the target side is not an extra hypothesis: the
   source's theorem asks the ground field to be infinite and the argument invokes that the extension
-  field is, which is derived here; the ground-field hypothesis itself is absent from the library's
-  statement of that theorem, and that deviation is registered rather than papered over.
+  field is, which is derived here.  That ground-field hypothesis now stands in the library's
+  statement of the theorem as the source writes it, with a definitional lock that fails if it is
+  dropped.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
