@@ -477,7 +477,9 @@ theorem Lemma52Statement.shape (K L : Type u) [Field K] [Field L] [Algebra F K] 
 **⟹ 处置** ✓：源的 `t` **本是非零多项式** ✓（源 `lemma-5.2` 的语境 ✓）⟹ 该陈述**须加 `t \neq 0`** ✓；
 **⚠ 第 149 轮已兑现** ✓✅：**修正形** `Lemma52StatementNonzero` ✓ **已证为定理** ✓（`lemma52Statement_nonzero_true` ✓，**§4.18** ✓）。
 **⚠ 影响面** ✓（**实测** ✓）：`Lemma52Statement` 的**唯一**消费者是本节的 `.shape` ✓ ⟹ **该条空真** ✗（**登记** ✓）；
-**全库其余无消费者** ✓。 -/
+**全库其余无消费者** ✓。
+**⚠ r200 状态收口** ✓：**修正形** `Lemma52StatementNonzero`（§4.18 ✓）**自本轮起无数据前提** ✓✅（§4.55 ✓）
+⟹ 本条**保留作留痕** ✓（**是「已反驳」而非「未证」** ✗⟹✓）。 -/
 theorem Lemma52Statement.false_at_zero (K L : Type u) [Field K] [Field L] [Algebra F K]
     [Algebra K L] [Algebra F L] [IsScalarTower F K L] [MulSemiringAction G L] :
     ¬ Lemma52Statement F G K L := fun h => by
@@ -1270,7 +1272,9 @@ end ConjEvalPolyNeZeroProof
 `\mathrm{ConjEvalPolyKStatement}`（§4.14 的忠实具名残余 ✓）**保留作留痕** ✓，
 但**已不在关键路径上** ✓（**第 148 轮口径修正** ✓，见 §4.15 ✓）。
 **⚠ 余下的前提** ✓：**(1)** `t \neq 0` ✓（**源语境下 `t` 是非零多项式** ✓）；**(2)** **识别桥**
-`G \to^* (L \simeq_K L)` **单射** ✓（**§4.11 的 `f \neq 0` 需其满射性** ✓，源语境下自动 ✓；**在册** ✓）。 -/
+`G \to^* (L \simeq_K L)` **单射** ✓（**§4.11 的 `f \neq 0` 需其满射性** ✓，源语境下自动 ✓；**在册** ✓）。
+**⚠ r199／r200 已清** ✓✅：该**两条数据前提**（识别桥 ✓ ＋ 基 `b` ✓）**均已由 §4.54 的 CHR 桥供给** ✓ ⟹
+**无数据前提形**见 §4.55 ✓（`lemma52Statement_nonzero_of_isGaloisWithGroup` ✓）。 -/
 
 section EndToEndUncond
 
@@ -1375,7 +1379,10 @@ variable (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G] [DecidableEq 
 **⚠ 前提账** ✓（**皆在签名的假设里** ✓，**非隐藏** ✓）：`[Fintype G]` ✓（**源语境 ✓**）、`[DecidableEq G]` ✓（**矩阵逆所需 ✓**，
 **工艺性 ✓**）、`[Infinite K]` ✓（源「**`K` is infinite**」✓）、**识别桥** ✓（**在册 ✓**）、
 `[SMulCommClass G K L]` ✓（**作用与 `K`-标量交换 ✓** —— 源语境下 `G \le \mathrm{Aut}_K(L)` ✓ 自动成立 ✓，
-**登记** ✓）。 -/
+**登记** ✓）。
+**⚠ r200 已收口** ✓✅：两条数据前提（`b` ✓／识别桥 `h` ✓）由 §4.54 的 CHR 桥**现场供给** ✓ ⟹
+**无数据前提形**见 §4.55 ✓（`lemma52Statement_nonzero_of_isGaloisWithGroup` ✓ ＋ 源文口径形 ✓ ＋ 逐字「unit」形 ✓）；
+**本条留痕** ✓（**不复写** ✗）。 -/
 theorem lemma52Statement_nonzero_true (K L : Type u) [Field K] [Field L] [Algebra F K]
     [Algebra K L] [Algebra F L] [IsScalarTower F K L] [Infinite K]
     [MulSemiringAction G L] [SMulCommClass G K L] (b : Module.Basis G K L)
@@ -5080,6 +5087,74 @@ theorem chrBridgeField_ringTier_gap_registered : True := trivial
 **正解** ✓ ＝ 把有限性**入 binder** ✓（＝ 把源 `proposition-0-2(a)` 的**有限性显式化** ✓）—— **下一手** ✓。 -/
 theorem realizationPropertyField_hdata_removal_registered : True := trivial
 
+/-! ## 4.55 **源 `lemma-5.2` 的收口**：两条**数据前提**由 §4.54 的桥清空（第 200 轮）
+
+**⚠ 起点** ✓（**承 §162.6 第 1 项** ✓）：§4.18 的 `lemma52Statement_nonzero_true` ✓✅ **已是定理** ✓，
+但**带两条数据前提** ✗ —— **`(b : \mathrm{Module.Basis}\ G\ K\ L)`** ✓（`K`-基 ✓）与**识别桥** ✓
+（`\mathrm{Function.Bijective}\ (\mathrm{smulAlgEquivHom}\ K\ G\ L)` ✓，§4.11 ✓／§4.17 ✓ 两条登记均记其为「**在册**」✗）。
+
+**🔴 本轮断指** ✓：§4.54 的 **①** ✓（`G`-指标正规基 ✓）与 **②** ✓（识别桥 ✓）**正是**这两条 ✓ ⟹
+由 **`IsGaloisWithGroup`** ✓ ＋ **`[FiniteDimensional K L]`** ✓ **现场供给** ✓ ⟹
+**源 `lemma-5.2` 成为无数据前提的定理** ✓✅（**证明体**：`exists_chrData_of_isGaloisWithGroup` ✓ ＋ §4.18 的定理 ✓）。
+
+**⚠ 源文对照** ✓（**逐字** ✓）：源 `raw/Saltman1982.tex :658` ✓（**印 275** ✓）「there is a `z \in L` such that
+`\{\sigma(z)\}` is a **normal basis** for `L` over `K` and such that `t` evaluated at the `\sigma(z)`'s is a **unit**」✓ ——
+本节 **③** ✓ 即该句的**逐字形** ✓（`\mathrm{IsUnit}` ✓；域上等价于 `\neq 0` ✓，**两形并存** ✓）。
+
+**⚠ 唯一剩余输入** ✓：**`[FiniteDimensional K L]`** ✗（**同 §4.54** ✓ —— 源 `proposition-0-2(a)` ✓／[CHR68] p. 13 ✓，
+**不在 `raw/`** ✗）；**环档仍缺** ✗（同 §4.54 登记 ✓，**不复写** ✗）。 -/
+
+section Lemma52Closure
+
+variable (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G] [DecidableEq G]
+variable (K L : Type u) [Field K] [Field L] [Algebra F K] [Algebra K L] [Algebra F L]
+  [IsScalarTower F K L] [MulSemiringAction G L]
+
+/-- **源 `lemma-5.2` 的收口（局部形）** ✓✅：**数据前提已清** ✓ —— 由 §4.54 的 **①**（正规基 ✓）与 **②**（识别桥 ✓）
+现场供给 ✓；`[Infinite K]` 与源证明所引「because `K` is infinite」✓ 同形 ✓。 -/
+theorem lemma52Statement_nonzero_of_isGaloisWithGroup [Infinite K]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup K L G hKL) [FiniteDimensional K L] :
+    Lemma52StatementNonzero F G K L := by
+  let _ : SMulCommClass G K L := ⟨fun g k x => hKL g k x⟩
+  obtain ⟨b, hb, -⟩ :=
+    exists_chrData_of_isGaloisWithGroup (K := K) (L := L) (G := G) hKL hgal
+  exact lemma52Statement_nonzero_true F G K L b hb
+
+/-- **源 `lemma-5.2` 的收口（源文口径）** ✓✅：只设 **`[Infinite F]`** ✓（＝ 源 `theorem-5-1` 的「with `F` infinite」✓），
+`[Infinite K]` 由 **§4.50 的派生件** ✓ 供给 ✓（源 `lemma-5-2` 证明正用此 ✓）。 -/
+theorem lemma52Statement_nonzero_of_isGaloisWithGroup_infF [Infinite F]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup K L G hKL) [FiniteDimensional K L] :
+    Lemma52StatementNonzero F G K L := by
+  let _ : Infinite K := infinite_of_algebra_of_infinite (F := F) (K := K)
+  exact lemma52Statement_nonzero_of_isGaloisWithGroup F G K L hKL hgal
+
+/-- **源 `lemma-5.2` 的收口（逐字「unit」形）** ✓✅：源句的**逐字形** ✓（`\mathrm{IsUnit}` ✓）——
+与 `\neq 0` 形**并存** ✓（域上二者等价 ✓，`\mathrm{isUnit\_iff\_ne\_zero}` ✓）。 -/
+theorem lemma52Statement_unit_of_isGaloisWithGroup [Infinite F]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup K L G hKL) [FiniteDimensional K L]
+    (t : MvPolynomial G F) (ht : t ≠ 0) :
+    ∃ (z : L) (b : Module.Basis G K L), (∀ σ : G, b σ = σ • z) ∧
+      IsUnit (MvPolynomial.aeval (fun σ : G => σ • z) t) := by
+  let _ : Infinite K := infinite_of_algebra_of_infinite (F := F) (K := K)
+  obtain ⟨z, b, hb, hne⟩ :=
+    (lemma52Statement_nonzero_of_isGaloisWithGroup F G K L hKL hgal) t ht
+  exact ⟨z, b, hb, isUnit_iff_ne_zero.mpr hne⟩
+
+end Lemma52Closure
+
+/-- **登记** ✗：**唯一剩余输入 ＝ `[FiniteDimensional K L]`** ✓（**同 §4.54** ✓）—— 源侧由 `proposition-0-2(a)` ✓
+（[CHR68] p. 13 ✓，**不在 `raw/`** ✗）供给；库内对应 `BTier.GaloisProjectiveHyp` ✓（**未证** ✗）。**不声称**去除它 ✗。 -/
+theorem lemma52_finiteness_gap_registered : True := trivial
+
+/-- **登记** ✓：**§4.5 具名残余的状态收口** ✓ —— `Lemma52Statement`（§4.5 ✓）的**假设类为空** ✗
+（`t = 0` 反驳 ✓，`Lemma52Statement.false_at_zero` ✓ **在库** ✓）⟹ 该条**保留作留痕** ✓，**非**「未证」✗；
+**修正形** `Lemma52StatementNonzero`（§4.18 ✓）**自本轮起无数据前提** ✓✅ ⟹ 源 `lemma-5.2` 的余项**只剩**
+**有限性** ✗ 与**环档** ✗ 两条 ✓（**不声称**源 `theorem-5-1` 整体已证 ✗ —— 那是 (c) 款**环档**的事 ✓）。 -/
+theorem lemma52_residual_closed_registered : True := trivial
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -5169,6 +5244,11 @@ theorem realizationPropertyField_hdata_removal_registered : True := trivial
 #print axioms chrBridgeField_finiteness_gap_registered
 #print axioms chrBridgeField_ringTier_gap_registered
 #print axioms realizationPropertyField_hdata_removal_registered
+#print axioms lemma52Statement_nonzero_of_isGaloisWithGroup
+#print axioms lemma52Statement_nonzero_of_isGaloisWithGroup_infF
+#print axioms lemma52Statement_unit_of_isGaloisWithGroup
+#print axioms lemma52_finiteness_gap_registered
+#print axioms lemma52_residual_closed_registered
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv

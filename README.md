@@ -165,7 +165,10 @@ predicate and the automorphism group is closed in the field case -- the action m
 group-indexed normal basis on which the action multiplies indices, the spanning element the
 source's lemma produces, and the fixed points identified with the base field -- so that the three
 clauses the assembly had assumed are supplied rather than hypothesized, the field-level
-restriction and the finite-dimensionality input being registered alongside |
+restriction and the finite-dimensionality input being registered alongside, and the source's
+lemma on the normal basis closed on top of that bridge: its two data hypotheses, a basis and the
+identification, are supplied rather than assumed, in the form the source writes, with the unit
+clause stated literally and the finiteness input registered |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
@@ -535,6 +538,18 @@ while the source states its proposition for general algebras; and the one remain
 finite-dimensionality, which the source obtains from the cited projectivity of a Galois extension
 over its base.  Removing that input at the level of the predicate is registered as the next step,
 since it requires the finiteness to enter the quantifier.
+
+The source's lemma on the normal basis now stands without its two data hypotheses.  It had been a
+theorem already, but one that assumed a basis of the extension over the base field and the
+identification of the abstract group with the automorphism group; both are exactly what the bridge
+supplies, so they are now derived rather than assumed, and the lemma holds from the Galois-algebra
+predicate together with finite-dimensionality.  It is recorded in the form the source's own
+theorem assumes, with the ground field infinite and the infinitude of the extension derived, and
+in the source's literal wording, where the evaluation of the polynomial at the conjugates is a
+unit, alongside the nonvanishing form that had been used.  The statement the library had registered
+as a named residual is thereby accounted for in corrected form, its uncorrected version being
+false as it stands and kept only as a record, and the finiteness input is registered as the one
+remaining hypothesis of the lemma.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
