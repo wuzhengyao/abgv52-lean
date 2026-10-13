@@ -662,6 +662,63 @@ noncomputable def deltaToEndLinearS (hRG : ∀ (g : G) (r : R) (s : S), g • (r
     | add x y hx hy =>
         rw [smul_add, map_add, hx, hy, map_add, smul_add]
 
+/-! ### 迹路线步骤 ②--③（第 212 轮 ✓）
+
+**⚠ 已落** ✓：`\delta` 的 **`S`-线性逆** ✓、**单位系数泛函** ✓、`\mathrm{coeffToEnd}` **恒等式** ✓、**桥** ✓。
+**⚠ 余一项** ✗：**迹的后半** ✓ —— 单位系数泛函的**取值在 `S`** ✗（`\mathrm{SkewMonoidAlgebra}` ✓ 只有
+`SMul S` ✗），而**左逆式所需的值在 `R`** ✗ ⟹ 须补一支 **`S → R` 的 `R`-线性截面** ✗
+（**⚠ 该步不是纯管线** ✗：`(\delta^{-1}(\mathrm{coeffToEnd}(\mathrm{algebraMap}\ r))).\mathrm{coeff}\ 1 = \mathrm{algebraMap}\ r` ✓
+本身即所需结论 ✓，故**不能**用它去证它 ✓ —— 详见 §174 ✓）。 -/
+
+/-- **迹路线步骤 ②** ✓：`\delta` 的 **`S`-线性逆** ✓（`LinearEquiv.ofBijective` ✓ **给全参数** ✓）。 -/
+noncomputable def deltaInvLinearS
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hgal : IsGaloisWithGroup R S G hRG) :
+    Module.End R S →ₗ[S] SkewMonoidAlgebra S G :=
+  (LinearEquiv.ofBijective (deltaToEndLinearS (G := G) hRG) hgal.2.2 :
+    SkewMonoidAlgebra S G ≃ₗ[S] Module.End R S).symm.toLinearMap
+
+/-- **迹路线步骤 ③** ✓：**单位系数泛函** ✓（**`S`-线性** ✓，因 `\mathrm{SkewMonoidAlgebra}` 只有 `SMul S` ✓）。 -/
+noncomputable def coeffOneS : SkewMonoidAlgebra S G →ₗ[S] S where
+  toFun a := a.coeff 1
+  map_add' := by intro a b; rw [SkewMonoidAlgebra.coeff_add]; rfl
+  map_smul' := by intro c a; rw [SkewMonoidAlgebra.coeff_smul]; rfl
+
+omit [Fintype G] [MulSemiringAction G S] in
+/-- **`coeffOneS` 在 `single 1 x` 上取 `x`** ✓。 -/
+lemma coeffOneS_single_one (x : S) :
+    coeffOneS (G := G) (SkewMonoidAlgebra.single (1 : G) x) = x := by
+  classical
+  show (SkewMonoidAlgebra.single (1 : G) x).coeff 1 = x
+  rw [SkewMonoidAlgebra.coeff_single_apply]
+  simp
+
+/-- **恒等式** ✓：`\mathrm{coeffToEnd}(\mathrm{algebraMap}\ r) = \mathrm{algebraMap}\ R\ (\mathrm{End}_R S)\ r` ✓。 -/
+lemma coeffToEnd_algebraMap (r : R) :
+    @coeffToEnd R S _ _ _ (algebraMap R S r) = algebraMap R (Module.End R S) r := by
+  rw [show algebraMap R S r = r • (1 : S) from Algebra.algebraMap_eq_smul_one r]
+  rw [show @coeffToEnd R S _ _ _ (r • (1 : S)) = r • @coeffToEnd R S _ _ _ (1 : S) from by
+    ext t
+    show (r • (1 : S)) * t = r • ((1 : S) * t)
+    rw [smul_mul_assoc]]
+  rw [show algebraMap R (Module.End R S) r = r • (1 : Module.End R S) from
+    Algebra.algebraMap_eq_smul_one r]
+  congr 1
+  ext t
+  simp [coeffToEnd]
+
+/-- **桥** ✓：`\delta(\mathrm{single}\ 1\ (\mathrm{algebraMap}\ r)) = \mathrm{algebraMap}\ R\ (\mathrm{End}_R S)\ r` ✓。 -/
+lemma deltaToEndLinearS_single_one_algebraMap
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) (r : R) :
+    deltaToEndLinearS (G := G) hRG
+        (SkewMonoidAlgebra.single (1 : G) (algebraMap R S r))
+      = algebraMap R (Module.End R S) r := by
+  change deltaToEndAdd hRG (SkewMonoidAlgebra.single (1 : G) (algebraMap R S r)) = _
+  rw [deltaToEndAdd_single]
+  have hact : actEnd hRG (1 : G) = 1 := by ext t; simp [actEnd]
+  rw [hact, mul_one]
+  exact coeffToEnd_algebraMap r
+
 /-- **登记** ✗：**迹路线的余项**（**逐条** ✓，供下一轮接手 ✓）——
 **(i)** `deltaToEndLinearS`：`\delta` 的 **`S`-线性**档 ✓（**待补** ✗：`single` 支的
 `coeffToEnd_smulS` ✓ ＋ `Algebra.smul_mul_assoc` ✓，**已定位** ✓）；
@@ -1027,6 +1084,11 @@ end GaloisTransport
 #print axioms deltaToEndAdd_single_one_one
 #print axioms algebraMap_fixed_of_isGaloisWithGroup
 #print axioms coeffToEnd_smulS
+#print axioms deltaInvLinearS
+#print axioms coeffOneS
+#print axioms coeffOneS_single_one
+#print axioms coeffToEnd_algebraMap
+#print axioms deltaToEndLinearS_single_one_algebraMap
 #print axioms deltaToEndLinearS
 #print axioms galoisTrace_route_gap_registered
 
