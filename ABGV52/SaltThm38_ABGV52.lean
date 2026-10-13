@@ -807,4 +807,98 @@ theorem range_le_adjoin_gap_registered : True := trivial
 
 #print axioms range_le_adjoin_gap_registered
 
+set_option maxHeartbeats 1000000 in
+/-- **`range ≤ ↥S`** ✓✅（第 241 轮 ✓；**自造件** ✓）：本档（`F = ℚ` ✓、`G = PUnit` ✓）下
+**典范映射的像落在数据生成的子代数内** ✓ —— 即 **`range = ↥S` 缺的那一向** ✗（§202.2 ✓）。
+与已落的 **r239** ✓（`↥S ≤ range` ✓）合读 ⟹ **`range = ↥S`** ✓ ⟹（**`AlgEquiv.ofInjective`** ✓ ＋
+**`awayToField_injective`** ✓）**`Localization.Away X ≅ ↥S`** ✓ —— **下一手只差记账** ✓。
+**⚠ 证明（**按 §202.2 通道** ✓）**：**①** `z ∈ range` ✓ ⟹ 取 `y` ✓（**`change`** ✓ 到 `awayToField` 形 ✓）；
+**②** **`IsLocalization.surj`** ✓ 给 `y * algebraMap ↑b = algebraMap a` ✓（`b ∈ powers (X ())` ✓）；
+**③** **`Submonoid.mem_powers_iff`** ✓ 取 `n` 使 `(X ())^n = ↑b` ✓ ⟹ **先 `rw [← hn] at hy`** ✓
+（**次序要紧** ✗ —— 若先套 `awayToField_algebraMap` ✓ 则 `b` 进入 `awayToField` 的 `t`-位 ✓，
+再 `rw` 会因 **motive 依赖 `b`** 而失败 ✗，**实测** ✓）；**④** 套 **`awayToField_algebraMap`** ✓ ＋
+**`map_pow`** ✓ ＋ **`← hxdef`** ✓ 得 **`z * x^n = algebraMap a`** ✓；
+**⑤** 乘 **`(x⁻¹)^n`** ✓ 并用 **`mul_assoc`／`← mul_pow`／`mul_inv_cancel₀`** ✓ 得
+**`z = algebraMap a · (x⁻¹)^n`** ✓；**⑥** 两因子落 **↥S** ✓（**`himage`** ✓ ＝ r238 的 **`comap` 技巧** ✓；
+**`pow_mem`** ✓ ＋ **`Algebra.subset_adjoin`** ✓）。
+**⚠ 关键** ✓：**未在 `Subalgebra` 内做除法** ✓（`↥S` **不**自动是域 ✗）—— **乘法形绕开** ✓。
+**⚠ 工艺** ✓：**`Submonoid.mem_powers_iff` 的参数序是 `(x z)`** ✓（`x ∈ powers z` ✓）
+⟹ **须写 `(b) (X ())`** ✓；**`Algebra.adjoin_mono` 的 `⊆` 用显式 λ** ✓（`Set.subset_union_right` 是**成员**引理 ✗，**实测** ✓）。
+**⚠ 不声称** ✗：**同构未落** ✗；**`hδ`／`hProj` 未证** ✗。 -/
+theorem range_awayToFieldAlg_le_adjoin_pUnit_rat :
+    (awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit)).range
+      ≤ Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+            algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit))
+          ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit),
+              (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))⁻¹}) := by
+  set x : NoetherField ℚ PUnit.{1} :=
+    algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+      (MvPolynomial.X PUnit.unit) with hxdef
+  have himage : ∀ r : MvPolynomial PUnit.{1} ℚ,
+      algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}) r
+        ∈ Algebra.adjoin ℚ ({x, x⁻¹} : Set (NoetherField ℚ PUnit.{1})) := by
+    intro r
+    have hcomap : Subalgebra.comap
+        (IsScalarTower.toAlgHom ℚ (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}))
+        (Algebra.adjoin ℚ ({x, x⁻¹} : Set (NoetherField ℚ PUnit.{1}))) = ⊤ := by
+      refine top_unique ?_
+      rw [← MvPolynomial.adjoin_range_X (R := ℚ) (σ := PUnit.{1})]
+      refine Algebra.adjoin_le ?_
+      rintro _ ⟨g, rfl⟩
+      rw [Subsingleton.elim g PUnit.unit]
+      show IsScalarTower.toAlgHom ℚ (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit)
+        ∈ Algebra.adjoin ℚ ({x, x⁻¹} : Set (NoetherField ℚ PUnit.{1}))
+      exact Algebra.subset_adjoin (Set.mem_insert_iff.mpr (Or.inl rfl))
+    exact (Subalgebra.mem_comap _ _ _).mp (by rw [hcomap]; trivial)
+  have hxne : x ≠ 0 := by
+    intro h0
+    have h1 : algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit) = 0 := by
+      rw [show algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit) = x from rfl, h0]
+    exact MvPolynomial.X_ne_zero PUnit.unit
+      (IsFractionRing.injective (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (by rw [h1, map_zero]))
+  rintro z ⟨y, rfl⟩
+  change awayToField (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+    (MvPolynomial.X_ne_zero PUnit.unit) y
+    ∈ Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 => x) ∪ {x, x⁻¹})
+  obtain ⟨⟨a, b⟩, hy⟩ :=
+    IsLocalization.surj (Submonoid.powers
+      (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) y
+  obtain ⟨n, hn⟩ := (Submonoid.mem_powers_iff
+    (b : MvPolynomial PUnit.{1} ℚ)
+    (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)).mp b.2
+  rw [← hn] at hy
+  have h3 : awayToField (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit) y * x ^ n
+      = algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}) a := by
+    have h := congrArg (awayToField (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit)) hy
+    simp only [map_mul] at h
+    rw [awayToField_algebraMap, map_pow] at h
+    rw [awayToField_algebraMap] at h
+    rw [← hxdef] at h
+    exact h
+  have h4 : awayToField (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit) y
+      = algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}) a * (x⁻¹) ^ n := by
+    have h5 : awayToField (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+        (MvPolynomial.X_ne_zero PUnit.unit) y * x ^ n * (x⁻¹) ^ n
+        = algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}) a * (x⁻¹) ^ n := by
+      rw [h3]
+    rwa [mul_assoc, ← mul_pow, mul_inv_cancel₀ hxne, one_pow, mul_one] at h5
+  rw [h4]
+  refine mul_mem ?_ ?_
+  · exact Algebra.adjoin_mono ((fun z hz => Or.inr hz)) (himage a)
+  · have hxinv : x⁻¹ ∈ Algebra.adjoin ℚ ({x, x⁻¹} : Set (NoetherField ℚ PUnit.{1})) :=
+      Algebra.subset_adjoin (Set.mem_insert_iff.mpr (Or.inr rfl))
+    exact Algebra.adjoin_mono (fun z hz => Or.inr hz) (pow_mem hxinv n)
+#print axioms range_awayToFieldAlg_le_adjoin_pUnit_rat
+
 end ABGV52
