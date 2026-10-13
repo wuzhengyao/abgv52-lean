@@ -3830,6 +3830,129 @@ theorem nonempty_algEquiv_tensorProduct_of_finrank {t : MvPolynomial G F}
 
 end TensorEquivOfFinrank
 
+/-! ## 4.44 **装配 (c) 款张量侧（第二件 · 收口）**：**等变性** ＋ **秩输入内部供给** ⟹ **等变同构**（第 184 轮）
+
+**⚠ 起点** ✓（**承 §146.6 第 1 项** ✓，**仍压 (c) 款张量侧** ✓，**不转项** ✗）：r183 把张量侧压到**两个输入** ✗ ——
+**秩** ✗（`\mathrm{finrank}_{K'}(K' \otimes_R S_0) = |G|` ✓，§146.4 ① ✓）与 **等变性** ✗（§146.4 ② ✓）。
+本轮**两件都落** ✓：**秩** ✓ 由 `GaloisAlgebra_ABGV52.lean` 的
+`\mathrm{finrank\_eq\_card\_of\_isGaloisWithGroup}` ✓（**通用档** ✓ ＝ **本册判据** ✓ 的直接推论 ✓，
+**不用外部源** ✗）**内部供给** ✓；**等变性** ✓ 由 **①** ✓ 落地 ✓。
+
+**⚠ 两件** ✓：
+**①** `realizationMap_equivariant` ✓✅ —— **实现映射等变** ✓：`G` 沿 **`S_0`-因子**作用 ✓ ＋ `\Psi` **等变** ✓
+＋ `K'`-纯量与 `G` **交换** ✓ ⟹ `f(g \bullet z) = g \bullet f z` ✓（**逐项** ✓：
+`f(g \bullet (k \otimes x)) = k \bullet \Psi(g \bullet x) = k \bullet (g \bullet \Psi x) = g \bullet (k \bullet \Psi x)` ✓）；
+**②** `exists_equivariant_algEquiv_tensorProduct_of_galois` ✓✅✅ —— **等变同构（张量侧收口 · 断指）** ✓：
+输入 ＝ r183 ①（`\Psi` ✓／`h\Psi_R` ✓／`z` ✓／基 `b'` ✓／`hX` ✓）＋ `G`-**作用** ✓（含逐项公式 `hact` ✓）
+＋ **`A := K' \otimes_R S_0` 的 `G`-Galois 性** ✓（**（b）款** ✓ 供给 ✓）＋ 有限型 ✓ ＋ 非平凡 ✓ ⟹
+`\exists e : L' \simeq_{K'} (K' \otimes_R S_0)` ✓ 且 **`e(g \bullet y) = g \bullet e y`** ✓
+（**⚠ 秩假设已消失** ✓ —— 由 `\mathrm{finrank\_eq\_card\_of\_isGaloisWithGroup}` ✓ 内部给出 ✓）。
+
+**⚠ 登记（余项）** ✗：**端到端打包** ✓（把 r182 ③ 的源侧数据 ✓ 直接接进本件 ✓ —— **并入下一轮** ✓）；
+**`\mathrm{GaloisProjectiveHyp}`** ✓ ＋ **`A` 的非平凡性** ✓ 由 (b) 款 ✓／装配点 ✓ 供给 ✓。
+
+**⚠ 工艺读数（本轮新增两条）** ✓：
+**①** **`\mathrm{change}` 对齐 `\mathrm{AlgEquiv}` 强制转换** ✓（`\mathrm{hsymm}` 一处 ✓ —— 与 §4.41／§4.43 **同族** ✓）；
+**②** **逆同构的等变性由 `f` 的单性搬运** ✓（`\mathrm{refine}\ \mathrm{hinj}\ ?_` ✓ ＋ `\mathrm{hsymm}` ✓
+—— **不必**在 `L'` 上重跑张量归纳 ✓）；**⚠ 归纳次序** ✗✓：`\mathrm{TensorProduct.induction\_on}` 的**后两槽**是
+**先 `\mathrm{tmul}` 后 `\mathrm{add}`** ✗（**实测** ✓ —— 写反则 elaboration 报 `HSMul` 缺 ✓）。 -/
+
+section RealizationMapEquivariant
+
+open TensorProduct
+
+variable {F : Type u} [Field F] {G : Type u} [Group G]
+
+/-- **① 实现映射等变** ✓✅：`\Psi` **等变** ✓ ＋ `G` 沿 **`S_0`-因子**作用 ✓（逐项公式 `hact` ✓）
+＋ `K'`-纯量与 `G` **交换** ✓ ⟹ r183 ① 的映射 `f` **等变** ✓（**源 `definition-1-1`(c) 的
+"preserving the respective `G` actions"** ✓ 的**映射侧** ✓）。 -/
+theorem realizationMap_equivariant {t : MvPolynomial G F}
+    {R : Type u} [CommRing R] [Algebra R (Localization.Away t)]
+    {K' : Type u} [Field K'] [Algebra R K']
+    {L' : Type u} [Field L'] [Algebra R L'] [Algebra K' L'] [IsScalarTower R K' L']
+    [Algebra F L'] [MulSemiringAction G L'] [SMulCommClass G K' L']
+    [MulSemiringAction G (Localization.Away t)]
+    [MulSemiringAction G (TensorProduct R K' (Localization.Away t))]
+    (hact : ∀ (g : G) (k : K') (x : Localization.Away t),
+      g • (k ⊗ₜ[R] x) = k ⊗ₜ[R] (g • x))
+    (Ψ : Localization.Away t →ₐ[F] L')
+    (f : TensorProduct R K' (Localization.Away t) →ₐ[K'] L')
+    (hf : ∀ (k : K') (x : Localization.Away t), f (k ⊗ₜ[R] x) = k • Ψ x)
+    (hΨG : ∀ (g : G) (x : Localization.Away t), Ψ (g • x) = g • Ψ x) :
+    ∀ (g : G) (z : TensorProduct R K' (Localization.Away t)), f (g • z) = g • f z := by
+  intro g z
+  exact TensorProduct.induction_on z
+    (by simp)
+    (fun k x => by
+      rw [hact g k x, hf, hf, hΨG g x]
+      exact (smul_comm g k (Ψ x)).symm)
+    (fun x y hx hy => by simp only [smul_add, map_add, hx, hy])
+
+end RealizationMapEquivariant
+
+section EquivariantTensorEquiv
+
+open TensorProduct
+
+variable {F : Type u} [Field F] {G : Type u} [Group G] [Fintype G]
+
+/-- **② 等变同构（张量侧收口 · 断指）** ✓✅✅：**由 `\Psi` 等变、`A := K' \otimes_R S_0` 为 `G`-Galois
+（（b）款 ✓）、有限型、非平凡** ✓ ⟹ `\exists e : L' \simeq_{K'} A` ✓ 且 **等变** ✓（`e(g \bullet y) = g \bullet e y` ✓）。
+**⚠ 秩假设已消失** ✓（**① 的推广** ✓：`\mathrm{finrank\_eq\_card\_of\_isGaloisWithGroup}` ✓ 内部给出
+`\mathrm{finrank}_{K'} A = |G|` ✓ ⟹ 满射 ＋ 同秩 ⟹ 单射 ✓ ⟹ `\mathrm{AlgEquiv}` ✓）。 -/
+theorem exists_equivariant_algEquiv_tensorProduct_of_galois {t : MvPolynomial G F}
+    {R : Type u} [CommRing R] [Algebra R (Localization.Away t)]
+    {K' : Type u} [Field K'] [Algebra R K']
+    {L' : Type u} [Field L'] [Algebra R L'] [Algebra K' L'] [IsScalarTower R K' L']
+    [Algebra F L'] [MulSemiringAction G L'] [SMulCommClass G K' L']
+    [MulSemiringAction G (Localization.Away t)]
+    [MulSemiringAction G (TensorProduct R K' (Localization.Away t))]
+    (hact : ∀ (g : G) (k : K') (x : Localization.Away t),
+      g • (k ⊗ₜ[R] x) = k ⊗ₜ[R] (g • x))
+    (hK'G : ∀ (g : G) (k : K') (z : TensorProduct R K' (Localization.Away t)),
+      g • (k • z) = k • (g • z))
+    (hgalK' : BTier.IsGaloisWithGroup K' (TensorProduct R K' (Localization.Away t)) G hK'G)
+    [Module.Finite K' (TensorProduct R K' (Localization.Away t))]
+    [Nontrivial (TensorProduct R K' (Localization.Away t))]
+    (Ψ : Localization.Away t →ₐ[F] L')
+    (hΨR : ∀ r : R, Ψ (algebraMap R (Localization.Away t) r) = algebraMap R L' r)
+    (hΨG : ∀ (g : G) (x : Localization.Away t), Ψ (g • x) = g • Ψ x)
+    (z : L') (b' : Module.Basis G K' L') (hb : ∀ σ : G, b' σ = σ • z)
+    (hX : ∀ σ : G, Ψ (algebraMap (MvPolynomial G F) (Localization.Away t)
+      (MvPolynomial.X σ)) = σ • z) :
+    ∃ e : L' ≃ₐ[K'] (TensorProduct R K' (Localization.Away t)),
+      ∀ (g : G) (y : L'), e (g • y) = g • e y := by
+  obtain ⟨f, hsurj, hf⟩ :=
+    exists_surjective_realizationMap (F := F) (G := G) (t := t) Ψ hΨR z b' hb hX
+  have hfG : ∀ (g : G) (w : TensorProduct R K' (Localization.Away t)), f (g • w) = g • f w :=
+    realizationMap_equivariant (F := F) (G := G) (t := t) hact Ψ f hf hΨG
+  have _ : Module.Finite K' L' := Module.Finite.of_basis b'
+  have hrank : Module.finrank K' (TensorProduct R K' (Localization.Away t))
+      = Fintype.card G :=
+    BTier.finrank_eq_card_of_isGaloisWithGroup hK'G hgalK'
+  have hfin' : Module.finrank K' (TensorProduct R K' (Localization.Away t))
+      = Module.finrank K' L' := by
+    rw [hrank, Module.finrank_eq_card_basis b']
+  have hinj : Function.Injective f := by
+    have hs : Function.Surjective f.toLinearMap := fun y => hsurj y
+    have hi : Function.Injective f.toLinearMap :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+        (f := f.toLinearMap) hfin').mpr hs
+    intro x y hxy
+    exact hi hxy
+  have hsymm : ∀ w : L',
+      f ((AlgEquiv.ofBijective f ⟨hinj, hsurj⟩).symm w) = w := by
+    intro w
+    change (AlgEquiv.ofBijective f ⟨hinj, hsurj⟩)
+      ((AlgEquiv.ofBijective f ⟨hinj, hsurj⟩).symm w) = w
+    rw [AlgEquiv.apply_symm_apply]
+  refine ⟨(AlgEquiv.ofBijective f ⟨hinj, hsurj⟩).symm, ?_⟩
+  intro g y
+  refine hinj ?_
+  rw [hsymm (g • y), hfG, hsymm y]
+
+end EquivariantTensorEquiv
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -3886,6 +4009,8 @@ end TensorEquivOfFinrank
 #print axioms exists_algHom_away_of_forall_mem_range
 #print axioms nonempty_algEquiv_tensorProduct_of_surjective
 #print axioms nonempty_algEquiv_tensorProduct_of_finrank
+#print axioms realizationMap_equivariant
+#print axioms exists_equivariant_algEquiv_tensorProduct_of_galois
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit

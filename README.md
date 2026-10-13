@@ -125,7 +125,12 @@ of the fixed field with the localization onto the field, surjective because the 
 distinguished element span the field and are the evaluations of the variables, and an equality of
 dimensions upgrades that surjection to an isomorphism, so that only the rank of the localization over
 the base remains, the source's own criterion being that a group-equivariant map whose image together
-with the field generates the extension realizes it -- and retract rationality along rational extensions |
+with the field generates the extension realizes it.  That tensor side is now complete as well: the
+map produced there is equivariant whenever the evaluation is, the group acting on the second tensor
+factor and commuting with the scalars of the fixed field, and the dimension of the base change,
+which had been the only remaining input, is supplied by the rank of a Galois algebra over a field,
+so that a surjection of equal dimensions becomes an isomorphism preserving the group actions, as the
+source's definition of realization requires -- and retract rationality along rational extensions |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
@@ -211,7 +216,11 @@ the single named input, and nontriviality, and nothing else.
   from the literature), the type lock, data-level non-vacuity probe and gap registration follow the
   same pattern, and `exists_galoisDescent` is the use-site form wanted by the proof of theorem 5.1.
   Three of the four parts of `proposition-0-2` are now in the library; part (b), on the vanishing of
-  `H^1(G, S^*)`, is not.
+  `H^1(G, S^*)`, is not.  The criterion also yields the rank of a Galois algebra over a field, with no
+  external input: the third clause makes the skew monoid algebra isomorphic to the endomorphism ring,
+  that isomorphism is linear over the field, and comparing dimensions on the two sides -- the free
+  module of rank the order of the group against the endomorphism ring of a space of dimension `n` --
+  gives `n` equal to that order, nontriviality of the algebra supplying the positivity.
 - `SaltLem12_ABGV52.lean`: the `F₊[V]` layer for the blueprint's `lem1.2` — the action of `g` on `V`
   as an `F`-linear equivalence, the induced `F`-algebra automorphism of the symmetric algebra with
   its generator compatibility `ι v ↦ ι (g • v)`, the assembled `MulSemiringAction` on `F₊[V]`, the

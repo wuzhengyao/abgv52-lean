@@ -19,6 +19,9 @@ import ABGV52.TateLayer_ABGV52
 import Mathlib.RingTheory.FiniteType
 import Mathlib.Algebra.SkewMonoidAlgebra.Single
 import Mathlib.Algebra.SkewMonoidAlgebra.Lift
+import Mathlib.LinearAlgebra.Dimension.Constructions
+import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
+import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 open CategoryTheory
 noncomputable section
 namespace ABGV52.BTier
@@ -145,6 +148,80 @@ theorem isGaloisWithGroup_data_nonempty :
 论文/蓝图侧只需**判据的形状**（作为后续 M4/M6 的接口 ✓）；逐例验证（如 `G = 1`、`S = R` 档 ✓）
 列为下一手 ✓。 -/
 theorem isGaloisWithGroup_gap_registered : True := trivial
+
+/-! ## **`G`-Galois 代数的秩** ✓：`\mathrm{finrank}_K A = |G|`（第 184 轮）
+
+**⚠ 起点** ✓（**(c) 款张量侧收口** ✓，第 184 轮 ✓）：r183 把张量侧压到**单一输入** ✓ —— **秩** ✗
+（`\mathrm{finrank}_{K'}(K' \otimes_R S_0) = |G|` ✓，状态笔记 §146.4 ① ✓）。本件把**秩**从**本册判据内部**导出 ✓
+（**不需要**外部源 ✗ —— 源 `proposition-0-2`(a) ✓ 只给**投射性** ✗，见 `GaloisProjectiveHyp` ✓）。
+
+**⚠ 机制** ✓（**三件** ✓）：
+**① `K`-线性** ✓：`\delta` 在 `\mathrm{single}`-生成元上满足
+`\delta(k \bullet (s \cdot g)) = k \bullet \delta(s \cdot g)` ✓（`\mathrm{SkewMonoidAlgebra.smul\_single}` ✓ ＋
+`\mathrm{smul\_mul\_assoc}` ✓），由 `\mathrm{induction\_on}` ✓ 升为整体 ✓；
+**② 两侧 `\mathrm{finrank}`** ✓：`\mathrm{SkewMonoidAlgebra}\ A\ G \simeq_K (G \to_0 A)` ✓（`\mathrm{coeffLinearEquiv}` ✓）
+⟹ 左 ＝ `|G| \cdot n` ✓（`\mathrm{Module.finrank\_finsupp}` ✓）；`\mathrm{End}_K A` ⟹ 右 ＝ `n^2` ✓
+（`\mathrm{Module.finrank\_linearMap}` ✓）；
+**③ 算术** ✓：`|G| \cdot n = n^2` ✓ ＋ `n \neq 0` ✓（`\mathrm{Module.finrank\_pos\_iff\_of\_free}` ✓ ＋ 非平凡 ✓）⟹ **`n = |G|`** ✓。
+
+**⚠ 用途** ✓：**(c) 款张量侧** ✓ 的**秩输入**由此**内部供给** ✓（实例化于 `A := K' \otimes_R S_0` ✓，
+其 `G`-Galois 性由 **(b) 款** ✓ 供给 ✓）—— **⟹ 秩不再是外部输入** ✓。
+**⚠ 口径** ✓：本件**不**用 `\mathrm{GaloisProjectiveHyp}` ✓（那是**投射性** ✓）；秩由**判据第三款** ✓ 给出 ✓。 -/
+
+section GaloisRank
+
+universe u
+
+variable {K A G : Type u} [Field K] [CommRing A] [Algebra K A]
+variable [Group G] [Fintype G] [MulSemiringAction G A]
+
+/-- **`G`-Galois 代数在域上的维数 ＝ `|G|`** ✓✅（**通用档** ✓）：判据第三款的双射
+`\Delta(A/K,G) \simeq \mathrm{Hom}_K(A,A)` ✓ 是 **`K`-线性** ✓ ⟹ 两侧 `\mathrm{finrank}` 相等 ✓：
+左 ＝ `|G| \cdot n` ✓（`\mathrm{coeffLinearEquiv}` ✓ ＋ `\mathrm{Module.finrank\_finsupp}` ✓），
+右 ＝ `n^2` ✓（`\mathrm{Module.finrank\_linearMap}` ✓）⟹ **`n = |G|`** ✓（`n \neq 0` ✓ 由非平凡 ✓）。 -/
+theorem finrank_eq_card_of_isGaloisWithGroup
+    (hKA : ∀ (g : G) (r : K) (a : A), g • (r • a) = r • (g • a))
+    (hgal : IsGaloisWithGroup K A G hKA)
+    [Module.Finite K A] [Nontrivial A] :
+    Module.finrank K A = Fintype.card G := by
+  obtain ⟨-, -, hbij⟩ := hgal
+  have hsmul : ∀ (k : K) (x : SkewMonoidAlgebra A G),
+      deltaToEndRingHom hKA (k • x) = k • deltaToEndRingHom hKA x := by
+    intro k x
+    induction x using SkewMonoidAlgebra.induction_on with
+    | zero => simp
+    | add x y hx hy => simp [hx, hy]
+    | single g a =>
+      rw [SkewMonoidAlgebra.smul_single]
+      change deltaToEndAdd hKA (SkewMonoidAlgebra.single g (k • a))
+        = k • deltaToEndAdd hKA (SkewMonoidAlgebra.single g a)
+      rw [deltaToEndAdd_single, deltaToEndAdd_single]
+      ext y
+      change (k • a) * (g • y) = k • (a * (g • y))
+      exact smul_mul_assoc k a (g • y)
+  let δL : SkewMonoidAlgebra A G →ₗ[K] Module.End K A :=
+    { toFun := deltaToEndRingHom hKA
+      map_add' := map_add _
+      map_smul' := hsmul }
+  have hbijL : Function.Bijective δL := hbij
+  have hfin : Module.finrank K (SkewMonoidAlgebra A G) = Module.finrank K (Module.End K A) :=
+    (LinearEquiv.ofBijective δL hbijL).finrank_eq
+  have hskew : Module.finrank K (SkewMonoidAlgebra A G)
+      = Fintype.card G * Module.finrank K A := by
+    rw [(SkewMonoidAlgebra.coeffLinearEquiv (S := K) (k := A) (G := G)).finrank_eq]
+    exact Module.finrank_finsupp (ι := G) K A
+  have hend : Module.finrank K (Module.End K A)
+      = Module.finrank K A * Module.finrank K A :=
+    Module.finrank_linearMap K K A A
+  rw [hskew, hend] at hfin
+  have hn : Module.finrank K A ≠ 0 :=
+    ((Module.finrank_pos_iff_of_free K A).mpr inferInstance).ne'
+  have h2 : Fintype.card G * Module.finrank K A
+      = Module.finrank K A * Fintype.card G := by rw [mul_comm]
+  rw [h2] at hfin
+  exact (Nat.mul_left_cancel (Nat.pos_iff_ne_zero.mpr hn) hfin).symm
+
+end GaloisRank
 
 /-- **源 `proposition-0-2(a)` 的具名外部输入** ✓（`raw/Saltman1982.tex:82`；**⚠-tex-sourced** ✗）：
 > "(a) `S` is a projective `R[G]`-module."（源引 **[CHR68] p. 13** ✓，**源中无证明** ✗ ——
@@ -488,6 +565,7 @@ end Prop02bProbe
 #print axioms isGaloisWithGroup_typeLock
 #print axioms isGaloisWithGroup_data_nonempty
 #print axioms isGaloisWithGroup_gap_registered
+#print axioms finrank_eq_card_of_isGaloisWithGroup
 #print axioms galoisProjectiveHyp_typeLock
 #print axioms galoisProjectiveHyp_data_nonempty
 #print axioms galoisProjective_gap_registered
