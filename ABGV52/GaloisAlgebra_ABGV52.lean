@@ -590,11 +590,13 @@ end Prop02bProbe
 `\delta_{S'}(\Psi x)(e y) = e(\delta_S x\ y)` ✓ —— `single` 上算 ＋ `\mathrm{induction\_on}` 归纳 ✓）；
 **⑦** `faithfulSMul_of_algEquiv` ✓（**①款**搬运 ✓）；**⑧** `algebraMap_fixed_of_algEquiv` ✓（**②款**搬运 ✓）。
 
-**🔴 ⚠ 登记（未落）** ✗：**③款（`\delta` 双射）的双向搬运** ✗ —— **证法已定** ✓（**注入**：经共轭式 ＋
-`\delta_S` 单性 ＋ `\mathrm{skewMap}` 单性 ✓；**满射**：取共轭 `f' := e^{-1} \circ f \circ e` ✓ 用 `\delta_S` 满性 ✓
-—— **卡点** ✗：`f'` 的 `R`-线性 `\mathrm{map\_smul'}` 一支出错 ✗（**非数学障碍** ✓，**纯证明步** ✗））；
-**⟹ 主定理 `\mathrm{isGaloisWithGroup\_of\_algEquiv}` 本轮未落** ✗（**次轮续压同项** ✓，**不转项** ✗）。
-**⚠ 口径** ✓：**不声称**已搬运 Galois 性 ✗；本轮只落**搬运件的全部原料** ✓。
+**✅ ③款已落（第 190 轮）** ✓✅：**主定理 `\mathrm{isGaloisWithGroup\_of\_algEquiv}`** ✓✅ ——
+**注入** ✓ ＝ 共轭式 ＋ `\delta_S` 单性 ＋ `\mathrm{skewMap}` 单性 ✓；**满射** ✓ ＝ 取共轭
+`f' := e^{-1} \circ f \circ e` ✓ 用 `\delta_S` 满性 ✓。
+**⚠ r189 卡点之解** ✓（**读数 (70)** ✓ **现成件优先** ✗→✓）：`f'` **不手搓** ✗ ——
+改用 **`\mathrm{LinearMap.comp}` 的现成共轭** ✓（`((e.\mathrm{symm} : S' \toₗ[R] S)).\mathrm{comp}
+((f : S' \toₗ[R] S').\mathrm{comp} (e : S \toₗ[R] S'))` ✓）⟹ **`R`-线性自动** ✓，
+`\mathrm{map\_smul'}` **无须手证** ✓（r189 手搓三支部即卡在此 ✗）。
 
 **⚠ 工艺读数** ✓：**①** 结构型（`\mathrm{structure}` 包装 ✓）的映射须**逐字段构造** ✓
 （`\mathrm{Finsupp.mapRange}` 无法直接 `\mathrm{codRestrict}` ✗，首版实测类型不符 ✗）；
@@ -693,11 +695,53 @@ lemma algebraMap_fixed_of_algEquiv (e : S ≃ₐ[R] S')
   intro g r
   rw [← e.commutes r, ← he g (algebraMap R S r), h g r]
 
+/-- **主定理**：**`G`-Galois 性沿等变 `R`-代数同构搬运** ✓✅ ——
+三款皆搬运 ✓：① `\mathrm{FaithfulSMul}` ✓／② `R`-不动 ✓／③ `\delta` 双射 ✓（经探针② 的共轭式 ✓）。 -/
+theorem isGaloisWithGroup_of_algEquiv
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (hRG' : ∀ (g : G) (r : R) (t : S'), g • (r • t) = r • (g • t))
+    (e : S ≃ₐ[R] S') (he : ∀ (g : G) (s : S), e (g • s) = g • e s)
+    (hgal : IsGaloisWithGroup R S G hRG) : IsGaloisWithGroup R S' G hRG' := by
+  have he' : ∀ (g : G) (t : S'), e.symm (g • t) = g • e.symm t := by
+    intro g t
+    apply e.injective
+    rw [he g (e.symm t), AlgEquiv.apply_symm_apply, AlgEquiv.apply_symm_apply]
+  have hconj := deltaToEndRingHom_skewMap_apply (G := G) hRG hRG' e he
+  have hconj' := deltaToEndRingHom_skewMap_apply (G := G) hRG' hRG e.symm he'
+  refine ⟨?_, ?_, ?_⟩
+  · refine ⟨fun {g₁ g₂} h => ?_⟩
+    refine hgal.1.eq_of_smul_eq_smul (fun s : S => ?_)
+    apply e.injective
+    rw [he g₁ s, he g₂ s, h (e s)]
+  · intro g r
+    rw [← e.commutes r, ← he g (algebraMap R S r), hgal.2.1 g r]
+  · constructor
+    · intro z z' hzz'
+      have h0 : deltaToEndRingHom hRG (skewMap (G := G) e.symm z)
+          = deltaToEndRingHom hRG (skewMap (G := G) e.symm z') := by
+        ext y
+        have h := hconj' z (e y)
+        have h' := hconj' z' (e y)
+        rw [AlgEquiv.symm_apply_apply] at h h'
+        rw [h, h', hzz']
+      exact skewMap_injective (G := G) e.symm (hgal.2.2.1 h0)
+    · intro f
+      set f' : Module.End R S :=
+        ((e.symm : S' →ₗ[R] S)).comp ((f : S' →ₗ[R] S').comp (e : S →ₗ[R] S')) with hf'
+      obtain ⟨x, hx⟩ := hgal.2.2.2 f'
+      refine ⟨skewMap (G := G) e x, ?_⟩
+      ext y
+      obtain ⟨y₀, rfl⟩ := e.surjective y
+      rw [hconj x y₀, hx]
+      show e (e.symm (f (e y₀))) = f (e y₀)
+      rw [AlgEquiv.apply_symm_apply]
+
 end Conjugation
 
 end GaloisTransport
 
 #print axioms skewMap_injective
+#print axioms isGaloisWithGroup_of_algEquiv
 #print axioms deltaToEndRingHom_skewMap_apply
 #print axioms faithfulSMul_of_algEquiv
 #print axioms GaloisDescentHyp

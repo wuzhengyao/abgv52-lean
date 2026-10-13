@@ -247,6 +247,10 @@ the single named input, and nontriviality, and nothing else.
   that isomorphism is linear over the field, and comparing dimensions on the two sides -- the free
   module of rank the order of the group against the endomorphism ring of a space of dimension `n` --
   gives `n` equal to that order, nontriviality of the algebra supplying the positivity.
+  The same file also transports a Galois structure along an equivariant algebra isomorphism:
+  faithfulness of the action, fixedness of scalars, and bijectivity of the skew-algebra map all move
+  across, the last through a pointwise conjugation identity for that map, with the conjugated
+  endomorphism taken from the library's own composition rather than built by hand.
 - `SaltLem12_ABGV52.lean`: the `F₊[V]` layer for the blueprint's `lem1.2` — the action of `g` on `V`
   as an `F`-linear equivalence, the induced `F`-algebra automorphism of the symmetric algebra with
   its generator compatibility `ι v ↦ ι (g • v)`, the assembled `MulSemiringAction` on `F₊[V]`, the
