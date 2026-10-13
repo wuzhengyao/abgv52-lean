@@ -695,3 +695,19 @@ library.  The closed form of the wiring therefore assembles the Galois clause fr
 clause, bijectivity of the crossed-product map, which is the Galois content itself, and takes that
 bijectivity together with the projectivity clause as the two remaining inputs.  Neither is proved
 here, and neither is the source's theorem.
+
+One of the endpoints the chain had carried is not merely unproved but refutable as stated.  The
+endpoint asked that a Galois extension make the base ring act faithfully, and the earlier rounds
+had recorded that its entity was unproved, with a linear-independence route named as the next
+attempt.  The stated form is false: taking the base ring to be a product of two copies of the
+rational field, mapping it onto the rational field by the first projection, and letting the group
+be trivial, the three clauses of the Galois predicate all hold -- faithfulness of the trivial
+group, fixedness of scalars, and bijectivity of the crossed-product map, the last because the
+one-point group makes the skew algebra one-dimensional and every linear endomorphism of the
+rational field is multiplication by its value at one -- while the base ring acts unfaithfully,
+the second factor being nonzero and acting as zero.  The counterexample is machine-checked and
+uses only the standard axioms.  The correction recorded with it is that the endpoint is not a
+separate assumption in the intended use, where the base ring and the extension are subrings of a
+common field and the structure map is an inclusion; the stated form is kept in place as a trace
+rather than deleted, and the linear-independence route is withdrawn, the target being false rather
+than the route blocked.

@@ -397,7 +397,13 @@ section GaloisFaithfulEndpoint
 variable {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
 variable {G : Type u} [Group G] [Fintype G] [MulSemiringAction G S]
 
-/-- **具名端点** ✓：`G`-Galois ⟹ `FaithfulSMul R S` ✓（**源侧路线 ＝ 迹** ✓，**实体未证** ✗）。 -/
+/-- **具名端点** ✓：`G`-Galois ⟹ `FaithfulSMul R S` ✓（**源侧路线 ＝ 迹** ✓）。
+**🔴 现形不可证** ✗（**第 232 轮机器反驳** ✓ —— 取代原「实体未证」✗）：
+一般档**假** ✓，反例见 `galoisFaithfulHyp_refuted` ✓（`R = ℚ × ℚ` 经 `fst` 作用于 `S = ℚ`、`G = PUnit`：
+三款**全中** ✓ 而 `FaithfulSMul R S` **不成立** ✗）。
+**⚠ 修正口径** ✓（**判据下调** ✓）：本端点在**预期用例**（`R`、`S` 同为一个域的子环 ✓，如
+`↥S ⊆ Localization.Away T ⊆ L` ✓）中**自动成立** ✓（包含映射单射 ✓）⟹ **不作为独立假设存在** ✗；
+**现形照原样保存** ✓（**留痕** ✓，**不删** ✓）。 -/
 def GaloisFaithfulHyp (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
     (G : Type u) [Group G] [Fintype G] [MulSemiringAction G S]
     (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) : Prop :=
@@ -413,9 +419,12 @@ theorem galoisFaithfulHyp_typeLock (R S : Type u) [CommRing R] [CommRing S] [Alg
 `IsGaloisWithGroup` 侧的非空性复用 `isGaloisWithGroup_data_nonempty` ✓）。 -/
 theorem galoisFaithfulHyp_data_nonempty : Nonempty (FaithfulSMul ℚ ℚ) := ⟨inferInstance⟩
 
-/-- **登记** ✗：本件的**实体**（`FaithfulSMul R S` 的证明）**未落** ✗ ——
-源侧路线 ＝ **迹／特征线性无关** ✓；**已试路线** ✗：`\delta^{-1}` ＋ 单位系数 ✓
-（第 212 轮 ✓ —— **取值在 `S`** ✗，须补 `S → R` 截面 ✗）。 -/
+/-- **登记** ✗：本件的**实体**（`FaithfulSMul R S` 的证明）**不可落** ✗ ——
+**🔴 第 232 轮机器反驳** ✓：现形**一般档为假** ✗（`galoisFaithfulHyp_refuted` ✓）⟹
+**任何路线都不可能证它** ✗（**原「下一手 ＝ 特征线性无关不经 `S^G`」✗ 作废** ✓ ——
+**目标为假** ✗，**非路线受阻** ✗）。**源侧路线** ✓：迹／特征线性无关 ✓（第 212 轮 ✓ ——
+**取值在 `S`** ✗，须补一支 `S → R` 的 `R`-线性截面 ✗）；**该额外输入在预期用例中不存在** ✓
+（域内包含 ⟹ 自动 ✓，见端点头注 ✓）。 -/
 theorem galoisFaithful_gap_registered : True := trivial
 
 /-- **本端点的用点** ✓：一行得 `FaithfulSMul R S` ✓。 -/
@@ -949,6 +958,107 @@ theorem h1UnitsVanishes_punit_rat : H1UnitsVanishes PUnit ℚ := by
 
 end Prop02bProbe
 
+/-! ## `GaloisFaithfulHyp` **现形的机器反驳**（第 232 轮 ✓）
+
+**⚠ 判据** ✓（**L19** ✓）：**不是**「路线受阻」✗，而是**现形为假** ✗ —— 反例一个即足 ✓。
+**反例** ✓：`R = \mathbb{Q} \times \mathbb{Q}` ✓（**经 `\mathrm{fst}` 作用于 `S = \mathbb{Q}`** ✓，
+故 `(0,1) \neq 0` 而 `(0,1) \bullet x = 0` ✓ ⟹ `FaithfulSMul R S` **假** ✗）、`G = \mathrm{PUnit}` ✓
+（**平凡作用** ✓）。
+**三款全中** ✓：**①** `FaithfulSMul PUnit ℚ` ✓（**单点群** ✓）；
+**②** `g \bullet algebraMap R S r = algebraMap R S r` ✓（**平凡作用** ✓）；
+**③** `\delta` **双射** ✓ —— 由 **`\delta(\mathrm{single}\ () a) = \mathrm{coeffToEnd}\ a`** ✓
+（`actEnd () = 1` ✓）＋ `R \to S` **满射** ✓（每 `t = \mathrm{fst}(t,0)` ✓ ⟹
+每个 `R`-线性自同态 `f` 满足 `f t = t \cdot f 1` ✓）＋ **单点群** ✓（`u = \mathrm{single}\ ()\ (u.\mathrm{coeff}\ ())` ✓）三者得 ✓。 -/
+
+section GaloisFaithfulRefutation
+
+/-- 平凡作用 `PUnit ↷ ℚ`（**本节的局部件** ✓；`PUnit` **无** mathlib 实例 ✗）。 -/
+@[instance_reducible]
+private def pUnitTrivMSA : MulSemiringAction PUnit ℚ where
+  smul _ x := x
+  one_smul _ := rfl
+  mul_smul _ _ _ := rfl
+  smul_zero _ := rfl
+  smul_add _ _ _ := rfl
+  smul_mul _ _ _ := rfl
+  smul_one _ := rfl
+
+local instance pUnitAlgQ : Algebra (ℚ × ℚ) ℚ := (RingHom.fst ℚ ℚ).toAlgebra
+local instance pUnitMSAQ : MulSemiringAction PUnit ℚ := pUnitTrivMSA
+
+/-- **`GaloisFaithfulHyp` 现形的反驳** ✓✅（第 232 轮 ✓；**非空洞** ✓）：
+存在 `R`／`S`／`G`／`hRG` 使 **`IsGaloisWithGroup R S G hRG` 成立** ✓ 而 **`FaithfulSMul R S` 不成立** ✗
+⟹ `GaloisFaithfulHyp R S G hRG` **为假** ✗ ⟹ **其「实体」不可证** ✗。
+**⚠ 口径** ✓：`R = ℚ × ℚ`（**经 `fst`** ✓）、`S = ℚ`、`G = PUnit`（**平凡作用** ✓）。
+**⚠ 不声称** ✗：**不**声称 `FaithfulSMul R S` 在**预期用例**中不成立 ✓（**相反** ✓，见端点头注 ✓）。 -/
+theorem galoisFaithfulHyp_refuted :
+    ∃ hRG : ∀ (g : PUnit) (r : ℚ × ℚ) (s : ℚ), g • (r • s) = r • (g • s),
+      IsGaloisWithGroup (ℚ × ℚ) ℚ PUnit hRG ∧ ¬ FaithfulSMul (ℚ × ℚ) ℚ := by
+  let hRG : ∀ (g : PUnit) (r : ℚ × ℚ) (s : ℚ), g • (r • s) = r • (g • s) :=
+    fun _ _ _ => rfl
+  have halg : ∀ t : ℚ, (algebraMap (ℚ × ℚ) ℚ) (t, 0) = t := fun _ => rfl
+  have hact : actEnd hRG PUnit.unit = 1 := by
+    ext t; rfl
+  have hsingle : ∀ a : ℚ,
+      deltaToEndRingHom hRG (SkewMonoidAlgebra.single PUnit.unit a) = coeffToEnd a := by
+    intro a
+    show deltaToEndAdd hRG (SkewMonoidAlgebra.single PUnit.unit a) = coeffToEnd a
+    rw [deltaToEndAdd_single, hact, mul_one]
+  have heval : ∀ a : ℚ, (deltaToEndAdd hRG (SkewMonoidAlgebra.single PUnit.unit a)) 1 = a := by
+    intro a
+    rw [deltaToEndAdd_single, hact, mul_one]
+    show a * 1 = a
+    rw [mul_one]
+  have hsingle_eq : ∀ u : SkewMonoidAlgebra ℚ PUnit,
+      u = SkewMonoidAlgebra.single PUnit.unit (u.coeff PUnit.unit) := by
+    intro u
+    refine SkewMonoidAlgebra.ext (fun g => ?_)
+    rw [Subsingleton.elim g PUnit.unit, SkewMonoidAlgebra.coeff_single_apply]
+    simp
+  have hcoe : ∀ u : SkewMonoidAlgebra ℚ PUnit,
+      (deltaToEndAdd hRG u) 1 = u.coeff PUnit.unit := by
+    intro u
+    conv_lhs => rw [hsingle_eq u]
+    exact heval (u.coeff PUnit.unit)
+  have hrec : ∀ u : SkewMonoidAlgebra ℚ PUnit,
+      u = SkewMonoidAlgebra.single PUnit.unit ((deltaToEndAdd hRG u) 1) := by
+    intro u
+    conv_lhs => rw [hsingle_eq u]
+    rw [hcoe u]
+  have hgal : IsGaloisWithGroup (ℚ × ℚ) ℚ PUnit hRG := by
+    refine ⟨?_, ?_, ?_⟩
+    · exact ⟨fun {a b} _ => Subsingleton.elim a b⟩
+    · intro g r
+      rfl
+    · constructor
+      · intro u v huv
+        have h1 : (deltaToEndAdd hRG u) 1 = (deltaToEndAdd hRG v) 1 :=
+          congrArg (fun f : Module.End (ℚ × ℚ) ℚ => f 1) huv
+        calc u = SkewMonoidAlgebra.single PUnit.unit ((deltaToEndAdd hRG u) 1) := hrec u
+          _ = SkewMonoidAlgebra.single PUnit.unit ((deltaToEndAdd hRG v) 1) := by rw [h1]
+          _ = v := (hrec v).symm
+      · intro f
+        refine ⟨SkewMonoidAlgebra.single PUnit.unit (f 1), ?_⟩
+        rw [hsingle]
+        ext t
+        have h2 : f (((t, 0) : ℚ × ℚ) • (1 : ℚ)) = ((t, 0) : ℚ × ℚ) • f 1 :=
+          f.map_smul (t, 0) 1
+        have h3 : ((t, 0) : ℚ × ℚ) • (1 : ℚ) = t := by
+          rw [Algebra.smul_def, halg t, mul_one]
+        rw [h3] at h2
+        rw [h2, Algebra.smul_def, halg t]
+        show (f 1) * t = t * f 1
+        rw [mul_comm]
+  have hnf : ¬ FaithfulSMul (ℚ × ℚ) ℚ := by
+    intro h
+    have h1 : ((0, 1) : ℚ × ℚ) = 0 :=
+      @FaithfulSMul.eq_of_smul_eq_smul (ℚ × ℚ) ℚ _ h (0, 1) 0 (fun x => by
+        rw [Algebra.smul_def, Algebra.smul_def]; rfl)
+    exact one_ne_zero (α := ℚ) (by simpa using congrArg Prod.snd h1)
+  exact ⟨hRG, hgal, hnf⟩
+
+end GaloisFaithfulRefutation
+
 /-! ## 公理闸门 -/
 
 #print axioms isGaloisWithGroup_typeLock
@@ -1162,6 +1272,7 @@ end GaloisTransport
 #print axioms galoisFaithfulHyp_typeLock
 #print axioms galoisFaithfulHyp_data_nonempty
 #print axioms galoisFaithful_gap_registered
+#print axioms galoisFaithfulHyp_refuted
 #print axioms faithfulSMul_of_galoisFaithfulHyp
 #print axioms coeffToEnd_smulS
 #print axioms deltaInvLinearS

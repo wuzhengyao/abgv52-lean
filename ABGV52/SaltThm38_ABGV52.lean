@@ -532,4 +532,32 @@ theorem nonempty_genericExtensionWitnessFieldFinite_of_noetherGaloisDelta
 
 #print axioms nonempty_genericExtensionWitnessFieldFinite_of_noetherGaloisDelta
 
+/-- **预期用例中 `FaithfulSMul ↥S (Localization.Away T)` 自动** ✓✅（第 232 轮 ✓）：
+`ι` **单射** ✓ ⟹ `algebraMap ↥S (Localization.Away T)` 单射 ✓ ⟹ **忠实** ✓。
+**证明** ✓：设 `ι r = ι s` ✓ ⟹ 两侧经 **`awayToFieldAlg`** ✓ 得
+`algebraMap ↥S (NoetherField F G) r = algebraMap ↥S (NoetherField F G) s` ✓ ⟹ 由 **`Subtype.ext`** ✓ 得 `r = s` ✓。
+**⚠ 用途** ✓（**判据下调之执行** ✓）：`GaloisFaithfulHyp` ✓ 的**现形已被机器反驳** ✗
+（`galoisFaithfulHyp_refuted` ✓，第 232 轮 ✓），但**其结论在接线实际对上直接可得** ✓ ⟹
+**§171.1 认的「`GaloisProgeneratorHyp` 的唯一瓶颈」✗ 在本用例中不存在** ✓（**不必证端点** ✗）。 -/
+theorem faithfulSMul_subalgebra_away_of_noetherAdjoin {F : Type} [Field F] {G : Type} [Group G]
+    [Fintype G] [DecidableEq G] {n : ℕ} {a : Fin n → NoetherField F G}
+    {s₀ : NoetherField F G} (T : MvPolynomial G F) (hT : T ≠ 0)
+    (ι : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) →ₐ[F] Localization.Away T)
+    (hι : ∀ r, awayToFieldAlg (F := F) (G := G) T hT (ι r)
+      = algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (NoetherField F G) r) :
+    letI : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T) :=
+        ι.toRingHom.toAlgebra
+    FaithfulSMul ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T) := by
+  let _instA : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T) :=
+    ι.toRingHom.toAlgebra
+  rw [faithfulSMul_iff_algebraMap_injective]
+  intro r s hrs
+  have h2 : awayToFieldAlg (F := F) (G := G) T hT (ι r)
+      = awayToFieldAlg (F := F) (G := G) T hT (ι s) := by
+    rw [show ι r = ι s from hrs]
+  rw [hι r, hι s] at h2
+  exact Subtype.ext h2
+
+#print axioms faithfulSMul_subalgebra_away_of_noetherAdjoin
+
 end ABGV52
