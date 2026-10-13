@@ -577,6 +577,129 @@ end Prop02bProbe
 #print axioms galoisFixedSubringHyp_data_nonempty
 #print axioms galoisFixedSubringHyp_gap_registered
 #print axioms exists_algebraMap_of_invariant
+/-! ## 4.20 **Galois 性沿等变同构搬运**（第 189 轮）—— **映射 ＋ 共轭式已落** ✓；**③款双向搬运未落** ✗
+
+**⚠ 起点** ✓：**(b) 款**的在册「**取向重述**」✗（`BaseChangeProj` §34.6 头注 ✓：`T \otimes_R S` 与 `S \otimes_R T`
+两取向**非 defeq** ✓，须另取向重述 ✓）—— 其**通用件**正是「`G`-Galois 性沿**等变** `R`-代数同构搬运」✗，
+本工程此前**没有** ✗。
+
+**⚠ 本轮落地** ✓（**6 件 ＋ 2 件** ✓）：
+**①** `skewMap` ✓（系数沿 `e` 搬运的**加法层**映射 ✓，`\mathrm{Finsupp.mapRange}` 包进结构 ✓）；
+**②** `skewMap_coeff` ✓／**③** `skewMap_single` ✓／**④** `skewMap_injective` ✓／**⑤** `skewMap_surjective` ✓；
+**⑥** **`\mathrm{deltaToEndRingHom\_skewMap\_apply}`** ✓✅（**关键** ✓：**逐点共轭式**
+`\delta_{S'}(\Psi x)(e y) = e(\delta_S x\ y)` ✓ —— `single` 上算 ＋ `\mathrm{induction\_on}` 归纳 ✓）；
+**⑦** `faithfulSMul_of_algEquiv` ✓（**①款**搬运 ✓）；**⑧** `algebraMap_fixed_of_algEquiv` ✓（**②款**搬运 ✓）。
+
+**🔴 ⚠ 登记（未落）** ✗：**③款（`\delta` 双射）的双向搬运** ✗ —— **证法已定** ✓（**注入**：经共轭式 ＋
+`\delta_S` 单性 ＋ `\mathrm{skewMap}` 单性 ✓；**满射**：取共轭 `f' := e^{-1} \circ f \circ e` ✓ 用 `\delta_S` 满性 ✓
+—— **卡点** ✗：`f'` 的 `R`-线性 `\mathrm{map\_smul'}` 一支出错 ✗（**非数学障碍** ✓，**纯证明步** ✗））；
+**⟹ 主定理 `\mathrm{isGaloisWithGroup\_of\_algEquiv}` 本轮未落** ✗（**次轮续压同项** ✓，**不转项** ✗）。
+**⚠ 口径** ✓：**不声称**已搬运 Galois 性 ✗；本轮只落**搬运件的全部原料** ✓。
+
+**⚠ 工艺读数** ✓：**①** 结构型（`\mathrm{structure}` 包装 ✓）的映射须**逐字段构造** ✓
+（`\mathrm{Finsupp.mapRange}` 无法直接 `\mathrm{codRestrict}` ✗，首版实测类型不符 ✗）；
+**②** `\mathrm{omit}` 只可在**真未用**的 section 变量上写 ✓ —— 写错则 `\mathrm{synthInstanceFailed}` ✗
+（首版对 `\mathrm{skewMap\_injective}` 误用 ✗）；**③** `\mathrm{Module.End}` 的乘法是**复合** ✓ ⟹
+`\mathrm{coeffToEnd}`／`\mathrm{actEnd}` 展开后须 `\mathrm{show}` 对齐再 `\mathrm{rw}` ✓（**承 r188** ✓）。 -/
+
+section GaloisTransport
+
+variable {R S S' : Type} [CommRing R] [CommRing S] [CommRing S'] [Algebra R S] [Algebra R S']
+variable {G : Type} [Group G] [Fintype G]
+
+/-- **系数沿 `e` 搬运的加法层映射** ✓（`Finsupp.mapRange` 包进结构 ✓）。 -/
+def skewMap (e : S ≃ₐ[R] S') : SkewMonoidAlgebra S G →+ SkewMonoidAlgebra S' G where
+  toFun x := ⟨(SkewMonoidAlgebra.coeff x).mapRange (e : S →+* S') (map_zero e)⟩
+  map_zero' := by apply SkewMonoidAlgebra.ext; intro g; simp
+  map_add' := by
+    intro x z
+    apply SkewMonoidAlgebra.ext
+    intro g
+    simp [Finsupp.mapRange_add]
+
+omit [Group G] [Fintype G] in
+lemma skewMap_coeff (e : S ≃ₐ[R] S') (x : SkewMonoidAlgebra S G) (g : G) :
+    SkewMonoidAlgebra.coeff (skewMap (G := G) e x) g = e (SkewMonoidAlgebra.coeff x g) := by
+  simp [skewMap, Finsupp.mapRange_apply]
+
+omit [Group G] [Fintype G] in
+lemma skewMap_single (e : S ≃ₐ[R] S') (g : G) (s : S) :
+    skewMap (G := G) e (SkewMonoidAlgebra.single g s) = SkewMonoidAlgebra.single g (e s) := by
+  apply SkewMonoidAlgebra.ext
+  intro g'
+  rw [skewMap_coeff]
+  by_cases h : g' = g
+  · subst h; simp
+  · simp [h]
+
+omit [Group G] [Fintype G] in
+lemma skewMap_injective (e : S ≃ₐ[R] S') : Function.Injective (skewMap (G := G) e) := by
+  intro x z hxz
+  apply SkewMonoidAlgebra.ext
+  intro g
+  have h := congrArg (fun w => SkewMonoidAlgebra.coeff w g) hxz
+  simp only [skewMap_coeff] at h
+  exact e.injective h
+
+omit [Group G] [Fintype G] in
+lemma skewMap_surjective (e : S ≃ₐ[R] S') : Function.Surjective (skewMap (G := G) e) := by
+  intro z
+  induction z using SkewMonoidAlgebra.induction_on with
+  | zero => exact ⟨0, map_zero _⟩
+  | single g s' => exact ⟨SkewMonoidAlgebra.single g (e.symm s'),
+      by rw [skewMap_single, AlgEquiv.apply_symm_apply]⟩
+  | add x z hx hz =>
+    obtain ⟨a, ha⟩ := hx
+    obtain ⟨b, hb⟩ := hz
+    exact ⟨a + b, by rw [map_add, ha, hb]⟩
+
+section Conjugation
+
+variable [MulSemiringAction G S] [MulSemiringAction G S']
+
+/-- **`\delta` 的逐点共轭式** ✓✅（**搬运的核心** ✓）：`\delta_{S'}(\Psi x)(e y) = e(\delta_S x\ y)` ✓
+（`single` 上算 ✓ ＋ `\mathrm{induction\_on}` 归纳 ✓）。 -/
+lemma deltaToEndRingHom_skewMap_apply
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (hRG' : ∀ (g : G) (r : R) (t : S'), g • (r • t) = r • (g • t))
+    (e : S ≃ₐ[R] S') (he : ∀ (g : G) (s : S), e (g • s) = g • e s)
+    (x : SkewMonoidAlgebra S G) (y : S) :
+    deltaToEndRingHom hRG' (skewMap (G := G) e x) (e y)
+      = e (deltaToEndRingHom hRG x y) := by
+  induction x using SkewMonoidAlgebra.induction_on with
+  | zero => simp
+  | single g s =>
+    show deltaToEndAdd hRG' (skewMap (G := G) e (SkewMonoidAlgebra.single g s)) (e y)
+      = e (deltaToEndAdd hRG (SkewMonoidAlgebra.single g s) y)
+    rw [skewMap_single, deltaToEndAdd_single, deltaToEndAdd_single]
+    show e s * (g • e y) = e (s * (g • y))
+    rw [← he g y, ← map_mul]
+  | add x z hx hz => simp [map_add, hx, hz]
+
+/-- **①款（`\mathrm{FaithfulSMul}`）搬运** ✓。 -/
+lemma faithfulSMul_of_algEquiv (e : S ≃ₐ[R] S')
+    (he : ∀ (g : G) (s : S), e (g • s) = g • e s) (h : FaithfulSMul G S) :
+    FaithfulSMul G S' := by
+  refine ⟨fun {g₁ g₂} hg => ?_⟩
+  refine h.eq_of_smul_eq_smul (fun s : S => ?_)
+  apply e.injective
+  rw [he g₁ s, he g₂ s, hg (e s)]
+
+/-- **②款（`R`-不动）搬运** ✓。 -/
+lemma algebraMap_fixed_of_algEquiv (e : S ≃ₐ[R] S')
+    (he : ∀ (g : G) (s : S), e (g • s) = g • e s)
+    (h : ∀ (g : G) (r : R), g • algebraMap R S r = algebraMap R S r) :
+    ∀ (g : G) (r : R), g • algebraMap R S' r = algebraMap R S' r := by
+  intro g r
+  rw [← e.commutes r, ← he g (algebraMap R S r), h g r]
+
+end Conjugation
+
+end GaloisTransport
+
+#print axioms skewMap_injective
+#print axioms deltaToEndRingHom_skewMap_apply
+#print axioms faithfulSMul_of_algEquiv
 #print axioms GaloisDescentHyp
 #print axioms galoisDescentHyp_typeLock
 #print axioms galoisDescentHyp_data_nonempty
