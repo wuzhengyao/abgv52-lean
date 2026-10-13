@@ -173,7 +173,8 @@ with finite-dimensionality inside its quantifier and proved outright in that for
 data hypothesis the assembly had carried -- a separate name from the faithful clause, since the
 source's clause does not carry finiteness, with a definitional lock whose discriminating power is
 checked against a mutant that drops that binder, the faithful clause implying the restated one and
-the converse registered as the finiteness gap, and the witness reached at that level: the three
+the converse registered as the finiteness gap, and the page citations of the 1982 source audited and
+corrected, and the witness reached at that level: the three
 clauses there are packaged into a witness of their own, and from the source-side data alone -- with
 no data hypothesis, the realization clause being supplied on the spot -- such a witness is obtained,
 the first witness in the library that needs nothing beyond that data, with the three levels of
@@ -590,6 +591,14 @@ modulo those two named inputs, the statement of that form is fixed with a defini
 discriminating power is checked against a mutant that swaps the witness level, the source-level
 statement is shown to imply it, and the two inputs are recorded as being of the same kind as the
 other named residuals.
+
+The page citations of the 1982 source have been audited.  Every reference to its printed pages was
+counted, the load-bearing three were read again on the rendered pages and match what the library
+quotes of them verbatim, and the single wrong page has been corrected: the basis line of the
+cross-vocabulary lock had given the page that carries the proposition and the emphasis sentence of
+section 0 rather than the page that carries the definition, and the two are now distinguished, with
+the pages not read one by one recorded as a residual.  A registration in the other file back-links a
+residual that an earlier round superseded.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision

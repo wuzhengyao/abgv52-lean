@@ -68,7 +68,10 @@ def IsGenericObjectEG (F : Type*) [Field F] (G : Type*) [Group G] [Fintype G]
 「（`𝓔(G)` 切片）representing object ＋ `R` 为局部化多项式环」✓）**在此对齐** ✓ ⟹
 下游无论走哪一条都是**同一命题** ✓；**锁形** ✓：任一侧的合取内容或次序漂移 ✗ 本 `iff` 立即失败 ✓
 （`IsGenericExtension` 的 `A`／`B`／`C` 与 `IsGenericObjectEG` 的 `B∧C`／`A` 一一对应 ✓）。
-**⚠ 依据** ✓：`Saltman1982` 印 **254** ✓（**PDF 页 + 249** ✓，本轮**实测定案** ✓）。 -/
+**⚠ 依据** ✓：`Saltman1982` 印 **255** ✓（**PDF 第 6 页** ✓，**偏移 ＝ PDF ＋ 249** ✓）——
+**⚠ r204 回填** ✓（**原注「印 254」差一页** ✗；本轮**回印目视** ✓：`definition-1-1` 与 §1 标题
+「1. THE DEFINITION」**同在印 255** ✓，而**印 254** 是 §0 的 `proposition-0-5` 与**强调句**所在页 ✓，
+**两者不可混用** ✗）。 -/
 theorem isGenericExtension_iff_isGenericObjectEG (F : Type*) [Field F] (G : Type*) [Group G]
     [Fintype G] (R S : Type*) [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
     [IsScalarTower F R S] [MulSemiringAction G S]

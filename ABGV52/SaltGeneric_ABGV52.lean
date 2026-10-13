@@ -4504,7 +4504,10 @@ end SourceOrientationCapstone
 mathlib **有**该定理 ✓（`Mathlib/FieldTheory/Galois/NormalBasis.lean` ✓，`IsGalois.normalBasis` ✓），
 但其指标是 **`L \simeqₐ[K] L`** ✗（**不是**抽象 `G` ✗）⟹ 要与本册的 `b : Module.Basis G K L` 对接，
 **须先有 `G \simeq \mathrm{Gal}(L/K)`** ✗（＝ `hfix` 的**缺失半** ✓，在册 `GaloisFixedSubringHyp` ✗）
-⟹ **登记为外部经典** ✗（**不声称**已落 ✗）。 -/
+⟹ **登记为外部经典** ✗（**不声称**已落 ✗）。
+**⚠ r199 已回收此条** ✓✅：源 `proposition-0-5(c)` ✓ **正是**该条（**证在 §0** ✓）⟹ **源侧不缺** ✓、
+缺口在**库内桥** ✗ —— 已由 §4.54 ✓（**CHR 桥（域档）** ✓）**落地** ✓（`exists_normalBasis_of_isGaloisWithGroup` ✓）；
+**本条留痕** ✓（**不复写** ✗）。 -/
 
 section InfiniteTargetData
 
@@ -5493,6 +5496,38 @@ theorem theorem51StatementFieldFinite_of_theorem51Statement
 （**与 M5／M4 具名残余同类** ✓）；**⚠ 不声称**源 `theorem-5-1` 已证 ✗。 -/
 theorem theorem51_endToEnd_reachability_audited : True := trivial
 
+/-! ## 4.59 **Saltman1982 页号普查 ＋ 回印核**（第 204 轮）—— **修正 1 处** ✗→✓ ＋ **§4.50 散文回链** ✓
+
+**⚠ 起点** ✓（**承 §4.53 的页号回填登记** ✓ ＋ **§166.6 的次期** ✓）：r198 发现 `GenericExtension_ABGV52` 头注
+把 `definition-1-1` 的页写成「印 **254**」✗（实在 **印 255** ✓）⟹ 本轮**回填** ✓。
+
+**🔴 普查（全库** ✓**）** ✓：`grep` 全库「印 NNN」引用 **82 处** ✓ —— **Saltman1982 系**（印 253--257／265／274--275／279／281--282 ✓）
+＋ **Saltman1984 系**（印 169--215 ✓ —— **r178／r179 已全篇回印核** ✓，**偏移 ＝ PDF ＋ 164** ✓）。
+**⚠ 回印核（PDF 目视** ✓**，`pdftoppm -r 150` ✓）** ✓：**载重三页** ✓ ——
+**印 257**（＝ **PDF 8** ✓）逐字「**THEOREM 2.1.** Suppose `F(\rho(r))/F` is a **cyclic** extension. Then there is a
+**generic Galois extension for `A` over `F`**」✓（`\mathrm{Theorem21Statement}` 的源 ✓）；
+**印 274**（＝ **PDF 25** ✓）逐字「**THEOREM 5.1.** Let `F`, `L`, and `G` be as above, **with `F` infinite**. If `L^G` is
+rational over `F`, then there is a generic Galois extension for `G` over `F`」✓ ＋ **Remark**「The converse of 5.1 is
+false. `C_{47}` …」✓ ＋ 证明首句「By **0.2(c)**, there is an `s \in R_1` and an algebra `S \supseteq R = R_1(1/s)`
+such that `S/R` is Galois with group `G`」✓（**r203 审计的 `hgal` 出处在此** ✓）；
+**印 275**（＝ **PDF 26** ✓）逐字「**Since some normal basis exists**, `f` is a nonzero polynomial」✓ ＋
+「By the **algebraic independence of the `\sigma`'s**, `f'` is nonzero」✓ ＋「because `K` is **infinite**」✓ ＋
+「**Lemma 5.2 and Theorem 5.1 have been proven.**」✓ —— **三页均与库内引用逐字相符** ✓。
+
+**🔴 修正（1 处** ✗→✓**）** ✓：`GenericExtension_ABGV52` 的 `\mathrm{isGenericExtension\_iff\_isGenericObjectEG}` ✓ 的
+**依据行** ✓：**印 254** ✗ ⟹ **印 255** ✓（`definition-1-1` 与 §1 标题同在 **印 255** ＝ **PDF 6** ✓；
+**印 254** 是 §0 的 `proposition-0-5` ＋ **强调句**所在页 ✓，**两者不可混用** ✗）。
+**加注** ✓：库内**其余**「印 254」引用 ✓ **均指 §0 的 `proposition-0-5`／强调句** ✓ ⟹ **正确** ✓（**不改** ✓）。
+
+**⚠ 登记** ✓：**残余** ＝ **未逐一目视**的 Saltman1982 页（印 253／256／258／265／279／281／282 ✓ 等）✗ ——
+**本节只核载重三页** ✓（**L19 口径** ✓：**未命中不得用于排除** ✗）；**下一轮回核** ✓ 如需 ✓。 -/
+
+/-- **登记** ✓：**Saltman1982 页号普查（r204）** ✓ —— 全库 **82 处**「印 NNN」✓；**载重三页回印目视** ✓
+（印 257 ＝ PDF 8 ✓／印 274 ＝ PDF 25 ✓／印 275 ＝ PDF 26 ✓，**均逐字相符** ✓）；**修正 1 处** ✗→✓
+（`GenericExtension_ABGV52` 依据行 **254 → 255** ✓）；**其余「印 254」引用均指 §0** ✓（**正确** ✓）。
+**⚠ 未逐一目视者为残余** ✗（**L19**：**未命中不得用于排除** ✓）。 -/
+theorem saltman1982_page_citations_audited : True := trivial
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -5604,6 +5639,7 @@ theorem theorem51_endToEnd_reachability_audited : True := trivial
 #print axioms Theorem51StatementFieldFinite.shape
 #print axioms theorem51StatementFieldFinite_of_theorem51Statement
 #print axioms theorem51_endToEnd_reachability_audited
+#print axioms saltman1982_page_citations_audited
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv
