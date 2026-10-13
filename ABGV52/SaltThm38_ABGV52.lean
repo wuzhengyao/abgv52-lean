@@ -737,4 +737,54 @@ theorem adjoin_away_eq_adjoin_union_inv_pUnit_rat :
         from by simp)
 #print axioms adjoin_away_eq_adjoin_union_inv_pUnit_rat
 
+set_option maxHeartbeats 1000000 in
+/-- **`↥S ≤ range(awayToFieldAlg X)`** ✓✅（第 239 轮 ✓；**自造件** ✓）：本档（`F = ℚ` ✓、`G = PUnit` ✓）下
+**数据生成的子代数落在典范映射的像内** ✓ —— 即 **`range = ↥S` 的上半** ✓（**下半** ✓
+＝ 库内 **`adjoin_inv_mem_range_awayToFieldAlg`** ✓，r208 已落 ✓）。
+**⚠ 证明** ✓（**不需局部化元素分析** ✓）：`ℚ[x, x⁻¹] = Algebra.adjoin ℚ (range a ∪ {x, x⁻¹})` ✓ 由
+**`Algebra.adjoin_le`** ✓ 化到两个生成元 ✓：**`x`** ✓ 由 **`awayToField_algebraMap`** ✓
+（**典范映射与 `algebraMap` 相容** ✓）给出 ✓；**`x⁻¹`** ✓ 由 **库内 `adjoin_inv_mem_range_awayToFieldAlg`** ✓
+（`Q(X) ⊆ range` ✓）＋ **`Algebra.subset_adjoin`** ✓ 给出 ✓。
+**⚠ 意义** ✓：与 **r238 的等式** ✓ 合读 ⟹ **`range = ↥S`** ✓ ⟹（**`AlgEquiv.ofInjective`** ✓ ＋
+**`awayToField_injective`** ✓）得 **`Localization.Away X ≅ ↥S`** ✓（**下一手** ✓，**只差记账** ✓）。
+**⚠ 工艺** ✓：**`awayToFieldAlg` 的应用与 `awayToField` 不 defeq** ✗ ⟹ 须 **`change`** ✓（**实测** ✓）。
+**⚠ 不声称** ✗：**同构未落** ✗；**`hδ`／`hProj` 未证** ✗。 -/
+theorem adjoin_union_inv_le_range_awayToFieldAlg_pUnit_rat :
+    Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+          algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))
+        ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit),
+            (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit))⁻¹})
+      ≤ (awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+          (MvPolynomial.X_ne_zero PUnit.unit)).range := by
+  set x : NoetherField ℚ PUnit.{1} :=
+    algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+      (MvPolynomial.X PUnit.unit) with hxdef
+  have hxmem : x ∈ (awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit)).range :=
+    ⟨algebraMap (MvPolynomial PUnit.{1} ℚ)
+        (Localization.Away (MvPolynomial.X PUnit.unit)) (MvPolynomial.X PUnit.unit),
+      (by
+        change awayToField (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+          (MvPolynomial.X_ne_zero PUnit.unit)
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (Localization.Away (MvPolynomial.X PUnit.unit))
+            (MvPolynomial.X PUnit.unit)) = x
+        rw [hxdef]
+        exact awayToField_algebraMap (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+          (MvPolynomial.X_ne_zero PUnit.unit) (MvPolynomial.X PUnit.unit))⟩
+  refine Algebra.adjoin_le ?_
+  rintro z (hz | hz)
+  · obtain ⟨i, rfl⟩ := hz
+    exact hxmem
+  · rcases Set.mem_insert_iff.mp hz with rfl | hz
+    · exact hxmem
+    · have hzx : z = x⁻¹ := Set.mem_singleton_iff.mp hz
+      rw [hzx]
+      exact adjoin_inv_mem_range_awayToFieldAlg (F := ℚ) (G := PUnit.{1})
+        (MvPolynomial.X PUnit.unit) (MvPolynomial.X_ne_zero PUnit.unit) x⁻¹
+        (Algebra.subset_adjoin (Set.mem_singleton x⁻¹))
+#print axioms adjoin_union_inv_le_range_awayToFieldAlg_pUnit_rat
+
 end ABGV52
