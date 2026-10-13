@@ -1137,4 +1137,78 @@ theorem finite_projective_away_adjoin_pUnit_rat :
   module_finite_projective_of_ringEquiv_self (awayAlgEquivAdjoin_pUnit_rat).toRingEquiv
 #print axioms finite_projective_away_adjoin_pUnit_rat
 
+set_option maxHeartbeats 1000000 in
+/-- **通用件** ✓✅（第 247 轮 ✓；**自造件** ✓；**一般档** ✓）：若 **`algebraMap R S` 满射** ✓ 且 **`G` 单点** ✓，
+则 **`IsGaloisWithGroup R S G hRG` 成立** ✓（**任意 `hRG`** ✓）—— 即 **(B) `δ` 双射的充分条件** ✓。
+**⚠ 证明（**三步** ✓）**：**①** `FaithfulSMul G S` ✓（**单点** ✓）；**②** `g • algebraMap r = algebraMap r` ✓
+（`g = 1` ✓ ＋ **`one_smul`** ✓）；**③** **`δ` 双射** ✓ —— **`δ(single 1 a) = coeffToEnd a`** ✓
+（`actEnd 1 = 1` ✓）；**单** ✓ 由 **`u = single 1 (u.coeff 1)`** ✓（**单点群** ✓）；
+**满** ✓ 由 **`f ↦ f 1`** ✓ 且 **`f t = t · f 1`** ✓ —— **`t = algebraMap r`** ✓（**满射** ✓）⟹
+**`f (algebraMap r) = r • f 1`** ✓（**`map_smul`** ✓）**`= algebraMap r · f 1`** ✓（**`Algebra.smul_def`** ✓）✓。
+**⚠ 意义** ✓（**L1** ✓）：**接线实际对上 `hδ` 的充分条件齐** ✓ —— 由于 **`S' ≅ ↥S`** ✓（r243／r246 ✓），
+**`algebraMap ↥S S'` 满射** ✓ ⟹ **`hδ`（`G = PUnit` 档）可满足** ✓。
+**⚠ 工艺（**须入纪律** ✓）**：**`PUnit` 有全局 `SMul` 实例** ✗ ⟹ **其 `hRG` 的 smul 档与
+`IsGaloisWithGroup` 期望的档冲突** ✗（**实测** ✓）⟹ **改用泛型 `G` ＋ `[Subsingleton G]`** ✓
+（**更一般** ✓ 且**无全局实例竞争** ✓）。
+**⚠ 不声称** ✗：**接线对上的 `hδ` 实例化未落** ✗（**充分条件已备** ✓）。 -/
+theorem isGaloisWithGroup_of_subsingleton_of_surjective_algebraMap
+    {G R S : Type*} [Group G] [Subsingleton G] [Fintype G]
+    [CommRing R] [CommRing S] [Algebra R S] [MulSemiringAction G S]
+    (hsurj : Function.Surjective (algebraMap R S))
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    BTier.IsGaloisWithGroup R S G hRG := by
+  have hact : BTier.actEnd hRG 1 = 1 := by
+    refine LinearMap.ext (fun t => ?_)
+    show (1 : G) • t = t
+    rw [one_smul]
+  have hsingle : ∀ a : S,
+      BTier.deltaToEndRingHom hRG (SkewMonoidAlgebra.single (1 : G) a) = BTier.coeffToEnd a := by
+    intro a
+    show BTier.deltaToEndAdd hRG (SkewMonoidAlgebra.single (1 : G) a) = BTier.coeffToEnd a
+    rw [BTier.deltaToEndAdd_single, hact, mul_one]
+  have heval : ∀ a : S,
+      (BTier.deltaToEndAdd hRG (SkewMonoidAlgebra.single (1 : G) a)) 1 = a := by
+    intro a
+    rw [BTier.deltaToEndAdd_single, hact, mul_one]
+    show a * 1 = a
+    rw [mul_one]
+  have hsingle_eq : ∀ u : SkewMonoidAlgebra S G,
+      u = SkewMonoidAlgebra.single (1 : G) (u.coeff (1 : G)) := by
+    intro u
+    refine SkewMonoidAlgebra.ext (fun g => ?_)
+    rw [Subsingleton.elim g 1, SkewMonoidAlgebra.coeff_single_apply]
+    simp
+  have hcoe : ∀ u : SkewMonoidAlgebra S G,
+      (BTier.deltaToEndAdd hRG u) 1 = u.coeff (1 : G) := by
+    intro u
+    conv_lhs => rw [hsingle_eq u]
+    exact heval (u.coeff (1 : G))
+  have hrec : ∀ u : SkewMonoidAlgebra S G,
+      u = SkewMonoidAlgebra.single (1 : G) ((BTier.deltaToEndAdd hRG u) 1) := by
+    intro u
+    conv_lhs => rw [hsingle_eq u]
+    rw [hcoe u]
+  refine ⟨?_, ?_, ?_⟩
+  · exact ⟨fun {a b} _ => Subsingleton.elim a b⟩
+  · intro g r
+    rw [Subsingleton.elim g 1, one_smul]
+  · constructor
+    · intro u v huv
+      have h1 : (BTier.deltaToEndAdd hRG u) 1 = (BTier.deltaToEndAdd hRG v) 1 :=
+        congrArg (fun f : Module.End R S => f 1) huv
+      calc u = SkewMonoidAlgebra.single (1 : G) ((BTier.deltaToEndAdd hRG u) 1) := hrec u
+        _ = SkewMonoidAlgebra.single (1 : G) ((BTier.deltaToEndAdd hRG v) 1) := by rw [h1]
+        _ = v := (hrec v).symm
+    · intro f
+      refine ⟨SkewMonoidAlgebra.single (1 : G) (f 1), ?_⟩
+      rw [hsingle]
+      refine LinearMap.ext (fun t => ?_)
+      have h2 : f t = t * f 1 := by
+        obtain ⟨r, rfl⟩ := hsurj t
+        conv_lhs => rw [Algebra.algebraMap_eq_smul_one (R := R) (A := S) r]
+        rw [map_smul, Algebra.smul_def]
+      show (f 1) * t = f t
+      rw [h2, mul_comm]
+#print axioms isGaloisWithGroup_of_subsingleton_of_surjective_algebraMap
+
 end ABGV52

@@ -884,3 +884,17 @@ for on the wiring's pair.
 What remains for non-emptiness of the wiring's hypothesis table is bijectivity of the
 crossed-product map, and then the recording of the table itself.
 
+
+The sufficient condition for the last input is now available in general form: if the structure map
+from the base ring to the algebra is surjective, then for a one-point group the Galois predicate
+holds, for any compatibility clause.  The faithfulness clause is automatic for a one-point group, as
+is the invariance of the base ring; the crossed-product map is bijective because on the one hand the
+skew algebra is one-dimensional over the algebra, and on the other every linear endomorphism is
+multiplication by its value at one, since each element is a scalar multiple of the identity by
+surjectivity of the structure map.  The statement is phrased for a generic one-point group rather
+than the one-point type, since that type carries a global scalar-action instance whose resolution
+clashes with the one the Galois predicate expects.
+
+Applied to the wiring's pair this gives the crossed-product input, the structure map onto the
+localization being surjective because the localization is isomorphic to the subalgebra.
+
