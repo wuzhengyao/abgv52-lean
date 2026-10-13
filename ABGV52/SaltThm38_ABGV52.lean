@@ -663,4 +663,78 @@ theorem exists_noetherWiringData_pUnit_rat :
           (Set.mem_singleton _))
 #print axioms exists_noetherWiringData_pUnit_rat
 
+set_option maxHeartbeats 1000000 in
+/-- **`Q(X) = ↥S`** ✓✅（第 238 轮 ✓；**自造件** ✓）：本档（`F = ℚ` ✓、`G = PUnit` ✓、`T = X` ✓）下
+**`A[T⁻¹]` 与 `ℚ[a, s₀, s₀⁻¹]` 是同一个子代数** ✓ —— 即 wiring 的 `hle` 之**反向**亦真 ✓ ⟹
+配合已落的 **`awayToFieldAlg`** ✓（`Localization.Away T ≃ₐ[F] Q(T)` ✓）得 **`S' ≅ ↥S`** ✓。
+**⚠ 证明结构（**两向皆不需归纳** ✓）**：
+**⟸** ✓ `A[x⁻¹] ≤ ℚ[x, x⁻¹]` —— 对 `A`-生成元用 **`Algebra.adjoin_induction`** ✓，
+其中「**系数情形**」用 **`comap` 技巧** ✓（`Subalgebra.comap` ＋ **`MvPolynomial.adjoin_range_X`** ✓
+而不展开 `MvPolynomial.aeval_C` ✗ —— **该展开的实例档歧义实测卡住** ✗）；
+**⟹** ✓ `ℚ[x, x⁻¹] ≤ A[x⁻¹]` —— 由 **`Subalgebra.algebraMap_mem`** ✓（`x` ✓）与 **`Algebra.subset_adjoin`** ✓（`x⁻¹` ✓）得 ✓。
+**⚠ 意义** ✓：**`Localization.Away T ≅ ↥S`** ✓ 的关键一步已落 ✓ ⟹ **`Module.Finite ∧ Projective`** ✓
+与 **`δ` 双射** ✓（**秩一性** ✓）**两件俱将可得** ✓（**下一手** ✓）。
+**⚠ 不声称** ✗：**同构本身未落** ✗（**只落等式** ✓）；**`hδ`／`hProj` 未证** ✗。 -/
+theorem adjoin_away_eq_adjoin_union_inv_pUnit_rat :
+    Subalgebra.restrictScalars ℚ (Algebra.adjoin (MvPolynomial PUnit.{1} ℚ)
+        ({algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit)}⁻¹ : Set (NoetherField ℚ PUnit.{1})))
+      = Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+            algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit))
+          ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit),
+              (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))⁻¹}) := by
+  set x : NoetherField ℚ PUnit.{1} :=
+    algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+      (MvPolynomial.X PUnit.unit) with hxdef
+  have hset : Set.range (fun _ : Fin 1 => x) ∪ {x, x⁻¹} = {x, x⁻¹} := by
+    refine Set.Subset.antisymm ?_ (fun z hz => Or.inr hz)
+    rintro _ (⟨i, rfl⟩ | h)
+    · exact Set.mem_insert_iff.mpr (Or.inl rfl)
+    · exact h
+  rw [hset]
+  refine le_antisymm ?_ ?_
+  · -- `A[x⁻¹] ≤ ℚ[x, x⁻¹]`：像用 `comap` 收（不需归纳）✓
+    have himage : ∀ r : MvPolynomial PUnit.{1} ℚ,
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}) r
+          ∈ Algebra.adjoin ℚ ({x, x⁻¹} : Set (NoetherField ℚ PUnit.{1})) := by
+      intro r
+      have hcomap : Subalgebra.comap
+          (IsScalarTower.toAlgHom ℚ (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}))
+          (Algebra.adjoin ℚ ({x, x⁻¹} : Set (NoetherField ℚ PUnit.{1}))) = ⊤ := by
+        refine top_unique ?_
+        rw [← MvPolynomial.adjoin_range_X (R := ℚ) (σ := PUnit.{1})]
+        refine Algebra.adjoin_le ?_
+        rintro _ ⟨g, rfl⟩
+        rw [Subsingleton.elim g PUnit.unit]
+        show IsScalarTower.toAlgHom ℚ (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit)
+          ∈ Algebra.adjoin ℚ ({x, x⁻¹} : Set (NoetherField ℚ PUnit.{1}))
+        exact Algebra.subset_adjoin (Set.mem_insert_iff.mpr (Or.inl rfl))
+      exact (Subalgebra.mem_comap _ _ _).mp (by rw [hcomap]; trivial)
+    intro y hy
+    exact Algebra.adjoin_induction
+      (p := fun z _ => z ∈ Algebra.adjoin ℚ ({x, x⁻¹} : Set (NoetherField ℚ PUnit.{1})))
+      (fun z hz => by
+        have hzx : z = x⁻¹ := Set.mem_singleton_iff.mp hz
+        rw [hzx]
+        exact Algebra.subset_adjoin (show x⁻¹ ∈ ({x, x⁻¹} : Set (NoetherField ℚ PUnit.{1}))
+          from Set.mem_insert_iff.mpr (Or.inr rfl)))
+      himage
+      (fun a b _ _ ha hb => add_mem ha hb)
+      (fun a b _ _ ha hb => mul_mem ha hb)
+      (by simpa using hy)
+  · -- `ℚ[x, x⁻¹] ≤ A[x⁻¹]` ✓
+    refine Algebra.adjoin_le ?_
+    intro z hz
+    rcases Set.mem_insert_iff.mp hz with rfl | hz
+    · exact Subalgebra.algebraMap_mem _ (MvPolynomial.X PUnit.unit)
+    · have hzx : z = x⁻¹ := Set.mem_singleton_iff.mp hz
+      rw [hzx]
+      exact Algebra.subset_adjoin (show x⁻¹ ∈ ({x}⁻¹ : Set (NoetherField ℚ PUnit.{1}))
+        from by simp)
+#print axioms adjoin_away_eq_adjoin_union_inv_pUnit_rat
+
 end ABGV52
