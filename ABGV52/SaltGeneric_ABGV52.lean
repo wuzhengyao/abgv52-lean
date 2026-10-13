@@ -5833,6 +5833,25 @@ theorem nonempty_genericExtensionWitnessFieldFinite_of_noetherAdjoin
 **⚠ 不声称** ✗：接线**未落** ✗；源 `theorem-5-1` 未证 ✗。 -/
 theorem noetherAdjoin_wiring_gap_registered : True := trivial
 
+/-- **登记（第 227 轮更正** ✓**）**：**r206 目标的三实例**的**现状** ✓ ——
+**(①)** `Algebra ↥S (Localization.Away T)` ✓✅ **已落** ✓（`exists_algebra_structure_away_of_noetherAdjoin` ✓，第 226 轮 ✓）；
+**(②)** `IsScalarTower F ↥S (Localization.Away T)` ✓✅ **已落** ✓（同上 ✓，**由 `inferInstance`** ✓）；
+**(③)** ⚠ **`MulSemiringAction G (Localization.Away T)`** ✗ **未落** ✗ —— **但可造** ✓：
+**库内已有一般件** ✓ **`locMulSemiringAction`** ✓（`SaltLocalProj_ABGV52.lean:340` ✓）——
+签名为 `(s : A) (hs : ∀ g, g • s = s) : MulSemiringAction G (Localization.Away s)` ✓，
+**section 假设** ✓ ＝ `[CommRing A] [Algebra F A] [MulSemiringAction G A] [SMulCommClass G F A]` ✓。
+**⚠ 本题的 A ＝ `MvPolynomial G F`** ✓ 满足全部四条 ✓（**实测** ✓：`MulSemiringAction G (MvPolynomial G F)` **可合成** ✓，
+**出自本件 §4.4** ✓）；`hs` ✓ ＝ **`hTinv`** ✓（**`T` 不变化** ✓）。
+**🔴 唯一障碍 ＝ 文件级** ✓：**本件（`SaltGeneric`）看不见 `SaltLocalProj`** ✗
+（**实测** ✓：`SaltLocalProj` ✓ **只** import `SaltLem12` ✗，**无人** import 它 ✗ ⟹ 它是**叶件** ✗）；
+**而**在 `SaltLocalProj` 内 **`MvPolynomial G F` 的作用不可得** ✗（**实测** ✓：`HSMul G (MvPolynomial G F)` **合成失败** ✗，
+**因该实例在本件 §4.4** ✓）⟹ **两侧各缺一件** ✗。
+**⚠ 下一手（三式** ✓**）**：**(甲)** 把 **`locMulSemiringAction` 一族** ✓（`LocAction` 节 ✓）**上移** ✗
+到**双方共见的祖先件** ✗；**(乙)** 或把 **§4.4 的作用实例** ✗ 上移到 `SaltLem12` ✓ 一类；
+**(丙)** 或把 **r206 目标** ✗ **改写**在能同时看见两者之处 ✗。
+**⚠ 不声称** ✗：**接线未落** ✗；源 `theorem-5-1` 未证 ✗。 -/
+theorem noetherAdjoin_instances_status_registered : True := trivial
+
 end NoetherAdjoinEndToEnd
 
 /-- **登记** ✗：**数据构造链的余项账**（本节 ＋ §4.60 ✓／§4.48 ✓ 合读）——
@@ -5878,6 +5897,7 @@ theorem theorem51_dataChain_gap_registered : True := trivial
 #print axioms adjoin_away_prod_smul
 #print axioms exists_invariant_t_of_noether
 #print axioms noetherAdjoin_wiring_gap_registered
+#print axioms noetherAdjoin_instances_status_registered
 #print axioms sup_adjoin_away_le
 #print axioms exists_adjoin_union_le_away
 #print axioms unionClearing_gap_registered
