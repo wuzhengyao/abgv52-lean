@@ -668,3 +668,18 @@ clause, all stated inside the binders of the existential, since each of them men
 multiplier or one of the instances.  The local instances are introduced with the plain `let` and
 `have` forms, which register local instances in Lean 4, rather than with the `letI` and `haveI`
 forms, whose only further effect is inlining, so the round adds no warning to the build.
+
+The commutativity of the group action with the scalars is produced rather than assumed as well, so
+the closed form of the wiring asks only for the Galois clause and the projectivity clause.  The
+derivation reads that commutativity as the statement that the image of the carrier map is
+pointwise fixed, and obtains the latter from the injectivity of the map into the Noether field, the
+equivariance of that map with respect to the two actions, and the fixedness of the generators of
+the subalgebra.  All three were already in the library, and the same three are used, in the same
+order, by the earlier equivariant assembly in the generic file, so this step is retrieval rather
+than construction.  The closed form takes the group action that the generic file itself constructs
+on the localization, rather than the general-carrier construction of the local-projective file
+that the preceding round used, because the equivariance lemma is stated for the former.  A
+registration of the preceding round recorded the last of the three instances as blocked by file
+order and placeable only after both source files.  That is true of the general-carrier
+construction, but the generic file's own construction was available at the target all along: the
+block was one of instance synthesis, not of availability.
