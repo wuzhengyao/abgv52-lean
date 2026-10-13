@@ -3663,6 +3663,173 @@ theorem exists_algHom_base_of_source_data_with_image_le
 
 end SourceDataEndToEnd
 
+/-! ## 4.43 **装配 (c) 款张量侧（第一件）**：**实现映射 ＋ 满射性** ＋ **`\mathrm{finrank}` 收口**（第 183 轮）
+
+**⚠ 起点** ✓（**承 §145.6 第 1 项** ✓，**仍压 (c) 款张量侧** ✓，**不转项** ✗）：r182 已把 (c) 款装配点的 **`R`-侧**接成端到端 ✓
+（源侧桥 ✓ ＋ 载体步 ✓ ＋ `hRQ` ✓ ＋ §4.41 链 ✓）；**余** ✓ ＝ **张量侧** ✓（`L' \simeq S \otimes_R K'` ✗，§145.4 ④ ✓）。
+本轮把张量侧**压到单一输入** ✓（**秩 `|G|`** ✗）—— 其余全部落为库内定理 ✓。
+
+**⚠ 源判据** ✓（`raw/Saltman1982.tex:652--658` ✓，印 **275** ✓）：「it suffices to define `\phi: S \to L` such that
+`\phi` **preserves** `G`, and **`\phi(S)K = L`**」✓ —— 本轮落其**库内形式** ✓（**① 的满射性** ✓；
+**⚠ 源判据的"preserves `G`"一款** ✗ 仍需 `S \otimes_R K` 上的 `G`-作用 ✓ —— 在本册 ✓（`RealizationProperty` 的在册项 ① ✓）。
+
+**⚠ 四件** ✓：
+**①** `exists_surjective_realizationMap` ✓✅ —— **实现映射 ＋ 满射性** ✓：`\Psi : S_0 \toₐ[F] L'`（`S_0 = \mathrm{Localization.Away}\ t` ✓）
+**`R`-线性** ✓ ＋ 共轭族**成基** ✓ ＋ **变量 `x_\sigma` 的取值** ✓ ⟹ 存在 `f : K' \otimes_R S_0 \toₐ[K'] L'` ✓，
+**满射** ✓ 且 `f(k \otimes x) = k \bullet \Psi x` ✓（**＝ `\phi(S)K = L`** ✓ 的库内形式 ✓）。
+**②** `exists_algHom_away_of_forall_mem_range` ✓✅ —— **搬运件的 `\mathrm{AlgHom}` 形输入版** ✓（**S-版** ✓）：
+调用点**不必再手搭** `\mathrm{Algebra}\ S\ L` 与 `\mathrm{IsScalarTower}` 实例 ✗（**§4.41 ③ 的 `R`-版已落** ✓）。
+**③** `nonempty_algEquiv_tensorProduct_of_surjective` ✓✅ —— **满射 ＋ `\mathrm{finrank}` 等式 ⟹ 同构** ✓：
+`\mathrm{LinearMap.injective\_iff\_surjective\_of\_finrank\_eq\_finrank}` ✓ ＋ `\mathrm{AlgEquiv.ofBijective}` ✓ 收口 ✓
+（**无需**手算 `\mathrm{ker}` ✗）；秩等式经 `G`-**基** ✓ 换算为 `\mathrm{finrank}\ L' = |G|` ✓（`\mathrm{Module.finrank\_eq\_card\_basis}` ✓）。
+**④** `nonempty_algEquiv_tensorProduct_of_finrank` ✓✅ —— **① ＋ ③ 的合成** ✓：⟹ **张量侧的唯一余 ＝ 秩输入** ✗
+（`\mathrm{finrank}_{K'}(K' \otimes_R S_0) = |G|` ✓，＋ 有限型 ✓）。
+
+**⚠ 工艺读数（本轮新增两条）** ✓：
+**①** **基变换伴随** ✓：`\mathrm{AlgHom.liftEquiv}` ✓（`(A \toₐ[R] B) \simeq (S \otimes_R A \toₐ[S] B)` ✓）
+—— 张量侧映射**不必手搓** ✓；其 `\mathrm{liftEquiv\_tmul}` ✓ 给**逐项公式** ✓
+（**⚠ 与 §4.41 同族** ✗✓：目标里出现 `\mathrm{toRingHom}` 强制转换 ⟹ `\mathrm{rw}` 不匹配 ✗ ⟹ **先 `\mathrm{change}` 对齐** ✓，
+本节 **2 处** ✓）。
+**②** **维数收口** ✓：**满射 ＋ 秩相等 ⟹ 单射** ✓ 走 `\mathrm{LinearMap.injective\_iff\_surjective\_of\_finrank\_eq\_finrank}` ✓
+（**⚠ 需 `[\mathrm{FiniteDimensional}]` 两侧** ✓ —— 域侧由 `G`-**基**供给 ✓，张量侧作**显式假设** ✓）。
+**⚠ 登记（余项）** ✗：**①** **秩输入** ✓（`\mathrm{finrank}_{K'}(K' \otimes_R S_0) = |G|` ✓ ＝ `S_0` 在 `R` 上**秩 `|G|`** ✓
+—— **⚠ 源 `proposition-0-2`(a)** ✓ **只给投射性** ✗（引 [CHR68] p.13 ✓，**该页不在 `raw/`** ✗）
+⟹ **秩款登记为「待回源核」** ✗，**不声称已回源** ✗）；**②** **等变性** ✓（同构须保 `G`-作用 ✓，在册 ✓）。 -/
+
+section RealizationMapTensorSide
+
+open TensorProduct
+
+variable {F : Type u} [Field F] {G : Type u} [Group G]
+
+/-- **① 实现映射 ＋ 满射性** ✓✅（源「`\phi(S)K = L`」✓ 的**库内形式** ✓）：
+`\Psi` **`R`-线性** ✓ ＋ 共轭族 `\sigma \bullet z` **成 `K'`-基** ✓ ＋ `x_\sigma` 的取值 ✓ ⟹
+`\exists f : K' \otimes_R S_0 \toₐ[K'] L'` ✓，**满射** ✓ 且 `f(k \otimes x) = k \bullet \Psi x` ✓
+（**入口 ＝ `\mathrm{AlgHom.liftEquiv}`** ✓ —— 基变换伴随 ✓）。 -/
+theorem exists_surjective_realizationMap {t : MvPolynomial G F}
+    {R : Type u} [CommRing R] [Algebra R (Localization.Away t)]
+    {K' : Type u} [Field K'] [Algebra R K']
+    {L' : Type u} [Field L'] [Algebra R L'] [Algebra K' L'] [IsScalarTower R K' L']
+    [Algebra F L'] [MulSemiringAction G L']
+    (Ψ : Localization.Away t →ₐ[F] L')
+    (hΨR : ∀ r : R, Ψ (algebraMap R (Localization.Away t) r) = algebraMap R L' r)
+    (z : L') (b' : Module.Basis G K' L') (hb : ∀ σ : G, b' σ = σ • z)
+    (hX : ∀ σ : G, Ψ (algebraMap (MvPolynomial G F) (Localization.Away t)
+      (MvPolynomial.X σ)) = σ • z) :
+    ∃ f : TensorProduct R K' (Localization.Away t) →ₐ[K'] L',
+      Function.Surjective f ∧
+        ∀ (k : K') (x : Localization.Away t), f (k ⊗ₜ x) = k • Ψ x := by
+  let ΨR : Localization.Away t →ₐ[R] L' := { Ψ.toRingHom with commutes' := hΨR }
+  let f : TensorProduct R K' (Localization.Away t) →ₐ[K'] L' :=
+    ΨR.liftEquiv R K' (Localization.Away t) L'
+  have hf : ∀ (k : K') (x : Localization.Away t), f (k ⊗ₜ x) = k • Ψ x := by
+    intro k x
+    change (ΨR.liftEquiv R K' (Localization.Away t) L') (k ⊗ₜ x) = k • Ψ x
+    rw [AlgHom.liftEquiv_tmul]
+    rfl
+  refine ⟨f, ?_, hf⟩
+  have htop : Algebra.adjoin K' (Set.range (fun σ : G => σ • z)) = ⊤ :=
+    adjoin_range_smul_eq_top b' z hb
+  have hle : (⊤ : Subalgebra K' L') ≤ f.range := by
+    rw [← htop]
+    refine Algebra.adjoin_le_iff.mpr ?_
+    rintro y ⟨σ, rfl⟩
+    refine ⟨1 ⊗ₜ[R] algebraMap (MvPolynomial G F) (Localization.Away t) (MvPolynomial.X σ), ?_⟩
+    change f (1 ⊗ₜ[R] algebraMap (MvPolynomial G F) (Localization.Away t) (MvPolynomial.X σ))
+      = σ • z
+    rw [hf, one_smul, hX σ]
+  intro y
+  obtain ⟨x, hx⟩ := hle trivial
+  exact ⟨x, hx⟩
+
+end RealizationMapTensorSide
+
+section AwayTransportAlgHomForm
+
+variable {F : Type u} [Field F] {G : Type u}
+
+/-- **② 搬运件的 `\mathrm{AlgHom}` 形输入版** ✓✅（**S-版** ✓）：`S \toₐ[F] L` 的像 ⊆
+`\mathrm{awayToFieldAlg}` 的值域 ✓ ⟹ `\exists \iota_S : S \toₐ[F] \mathrm{Localization.Away}\ t` ✓ 且
+`\mathrm{awayToFieldAlg} \circ \iota_S = \varphi_S` ✓。
+**⚠ 用点** ✓：调用点**不必再手搭** `\mathrm{Algebra}\ S\ L` 与 `\mathrm{IsScalarTower}\ F\ S\ L` 实例 ✗
+（由本件用 `\mathrm{AlgHom}` 自造 ✓ —— **§4.41 ③ 的 `R`-版** ✓ 的 `\mathrm{AlgHom}` 形包装 ✓）。 -/
+theorem exists_algHom_away_of_forall_mem_range {t : MvPolynomial G F} (ht : t ≠ 0)
+    {S : Type u} [CommRing S] [Algebra F S]
+    (φS : S →ₐ[F] NoetherField F G)
+    (hRQ : ∀ s : S, φS s ∈ (awayToFieldAlg (F := F) (G := G) t ht).range) :
+    ∃ ιS : S →ₐ[F] Localization.Away t,
+      ∀ s : S, awayToFieldAlg (F := F) (G := G) t ht (ιS s) = φS s := by
+  let _ : Algebra S (NoetherField F G) := φS.toRingHom.toAlgebra
+  have _ : IsScalarTower F S (NoetherField F G) :=
+    IsScalarTower.of_algebraMap_eq (fun a => (φS.commutes a).symm)
+  exact exists_algHom_away_of_image_le (F := F) (G := G) t ht (R := S) hRQ
+
+end AwayTransportAlgHomForm
+
+section FinrankTensorEquiv
+
+open TensorProduct
+
+variable {F : Type u} [Field F] {G : Type u} [Fintype G]
+
+/-- **③ 满射 ＋ `\mathrm{finrank}` 等式 ⟹ 同构** ✓✅：**维数收口** ✓ —— 由
+`G`-**基** ✓ 给 `\mathrm{finrank}\ L' = |G|` ✓，秩等式 ⟹ 与 `K' \otimes_R S_0` 同秩 ✓ ⟹
+满射的 `K'`-代数映射**单** ✓（`\mathrm{LinearMap.injective\_iff\_surjective\_of\_finrank\_eq\_finrank}` ✓）
+⟹ `\mathrm{AlgEquiv.ofBijective}` ✓ 收口 ✓。 -/
+theorem nonempty_algEquiv_tensorProduct_of_surjective {t : MvPolynomial G F}
+    {R : Type u} [CommRing R] [Algebra R (Localization.Away t)]
+    {K' : Type u} [Field K'] [Algebra R K']
+    {L' : Type u} [Field L'] [Algebra R L'] [Algebra K' L'] [IsScalarTower R K' L']
+    [Module.Finite K' (TensorProduct R K' (Localization.Away t))]
+    (b' : Module.Basis G K' L')
+    (f : TensorProduct R K' (Localization.Away t) →ₐ[K'] L')
+    (hsurj : Function.Surjective f)
+    (hfin : Module.finrank K' (TensorProduct R K' (Localization.Away t)) = Fintype.card G) :
+    Nonempty (L' ≃ₐ[K'] (TensorProduct R K' (Localization.Away t))) := by
+  have _ : Module.Finite K' L' := Module.Finite.of_basis b'
+  have hfin' : Module.finrank K' (TensorProduct R K' (Localization.Away t))
+      = Module.finrank K' L' := by
+    rw [hfin, Module.finrank_eq_card_basis b']
+  have hinj : Function.Injective f := by
+    have hs : Function.Surjective f.toLinearMap := fun y => hsurj y
+    have hi : Function.Injective f.toLinearMap :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+        (f := f.toLinearMap) hfin').mpr hs
+    intro x y hxy
+    exact hi hxy
+  exact ⟨(AlgEquiv.ofBijective f ⟨hinj, hsurj⟩).symm⟩
+
+end FinrankTensorEquiv
+
+section TensorEquivOfFinrank
+
+open TensorProduct
+
+variable {F : Type u} [Field F] {G : Type u} [Group G] [Fintype G]
+
+/-- **④ ① ＋ ③ 的合成** ✓✅（**张量侧的唯一余 ＝ 秩输入** ✗）：把 ① 的满射性与 ③ 的维数收口串起来 ⟹
+`L' \simeq K' \otimes_R S_0` ✓ **只差** `\mathrm{finrank}_{K'}(K' \otimes_R S_0) = |G|` ✓（＋ 有限型 ✓）。
+**⚠ 登记** ✗：**秩款**（`S_0` 在 `R` 上秩 `|G|` ✓）—— **待回源核** ✗（源 `proposition-0-2`(a) 只给投射性 ✓）。 -/
+theorem nonempty_algEquiv_tensorProduct_of_finrank {t : MvPolynomial G F}
+    {R : Type u} [CommRing R] [Algebra R (Localization.Away t)]
+    {K' : Type u} [Field K'] [Algebra R K']
+    {L' : Type u} [Field L'] [Algebra R L'] [Algebra K' L'] [IsScalarTower R K' L']
+    [Algebra F L'] [MulSemiringAction G L']
+    [Module.Finite K' (TensorProduct R K' (Localization.Away t))]
+    (Ψ : Localization.Away t →ₐ[F] L')
+    (hΨR : ∀ r : R, Ψ (algebraMap R (Localization.Away t) r) = algebraMap R L' r)
+    (z : L') (b' : Module.Basis G K' L') (hb : ∀ σ : G, b' σ = σ • z)
+    (hX : ∀ σ : G, Ψ (algebraMap (MvPolynomial G F) (Localization.Away t)
+      (MvPolynomial.X σ)) = σ • z)
+    (hrank : Module.finrank K' (TensorProduct R K' (Localization.Away t))
+      = Fintype.card G) :
+    Nonempty (L' ≃ₐ[K'] (TensorProduct R K' (Localization.Away t))) := by
+  obtain ⟨f, hsurj, -⟩ :=
+    exists_surjective_realizationMap (F := F) (G := G) (t := t) Ψ hΨR z b' hb hX
+  exact nonempty_algEquiv_tensorProduct_of_surjective b' f hsurj hrank
+
+end TensorEquivOfFinrank
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -3715,6 +3882,10 @@ end SourceDataEndToEnd
 #print axioms exists_invariant_range_awayToFieldAlg
 #print axioms exists_algHom_base_of_source_data
 #print axioms exists_algHom_base_of_source_data_with_image_le
+#print axioms exists_surjective_realizationMap
+#print axioms exists_algHom_away_of_forall_mem_range
+#print axioms nonempty_algEquiv_tensorProduct_of_surjective
+#print axioms nonempty_algEquiv_tensorProduct_of_finrank
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit

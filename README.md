@@ -119,7 +119,13 @@ an end-to-end theorem that, from that presentation, an equivariant evaluation ma
 step, produces the map of the base into the fixed field of a Galois extension together with its
 compatibility equations, and a strengthened form in which a further finitely generated algebra over
 the base is placed inside one and the same invariant localization, so that the base and the descended
-algebra share a single multiplier -- and retract rationality along rational extensions |
+algebra share a single multiplier -- and the tensor side of that realization is reduced to one input: the
+base change of the equivariant evaluation along the algebra adjunction is a map from the tensor product
+of the fixed field with the localization onto the field, surjective because the conjugates of the
+distinguished element span the field and are the evaluations of the variables, and an equality of
+dimensions upgrades that surjection to an isomorphism, so that only the rank of the localization over
+the base remains, the source's own criterion being that a group-equivariant map whose image together
+with the field generates the extension realizes it -- and retract rationality along rational extensions |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
