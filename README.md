@@ -213,8 +213,11 @@ sync.  The items added since then are:
   available, with a data-level non-vacuity probe and an application lock, and now also the composite with a
 descent isomorphism, which is the embedding of the descended algebra into the field, with its own
 data-level non-vacuity probe.  The base change of a Galois algebra to a tensor factor is also
-packaged with its three lines of wiring internal, so that a caller supplies the Galois structure,
-the single named input, and nontriviality, and nothing else.  The source writes the base change
+packaged with its three lines of wiring internal, so that a caller supplies the Galois structure
+and the single named input, and nothing else: the nontriviality the statement asks for is
+produced inside, from the algebra map into the field through the base-change adjunction, which is
+the same route the descent isomorphism takes and needs only a map rather than an isomorphism.  The
+source writes the base change
 with the base ring on the right, while the packaging above produces the other orientation; the two
 are now compared by the library's own commutativity isomorphism, an algebra equivalence over the
 common factor, with the group action and the algebra structure on that side built here, and a

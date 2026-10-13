@@ -184,6 +184,29 @@ theorem tensorProduct_nontrivial_of_projective {M : Type*} [AddCommGroup M] [Mod
 
 end algebra
 
+section NontrivialSupply
+
+variable {R S K L : Type*} [CommRing R] [CommRing S] [CommRing K] [CommRing L]
+variable [Algebra R S] [Algebra R K] [Algebra R L] [Algebra K L] [IsScalarTower R K L]
+
+/-- **非平凡性供给（一般形 · 基变换伴随路线）** ✓✅：`S →ₐ[R] L`（`L` 非平凡 ✓）⟹ **`K ⊗_R S` 非平凡** ✓。
+**证法** ✓（**读数 (70)** ✓：**现成件** `AlgHom.liftEquiv` ✓）：基变换伴随给
+`\tilde ψ := ψ.\mathrm{liftEquiv}\ R\ K\ S\ L : K \otimes_R S \toₐ[K] L` ✓，且 `\tilde ψ(1) = 1` ✓
+（`\mathrm{liftEquiv\_tmul}` ✓）⟹ 若 `K \otimes_R S` 平凡则 `1 = 0` 落在 `L` ✗ 矛盾 ✓。
+**⚠ 关系** ✓：本件是**下降同构路线** ✓ 的**弱化数据版** ✓ —— 只需**一个** `R`-代数同态 ✓（**不必同构** ✗）；
+源侧路线用 `S'' \otimes_{R''} L^G \cong L` ✓（**同构于域** ✓）⟹ 本件**覆盖**它 ✓（同构当然是同态 ✓）。 -/
+theorem nontrivial_tensorProduct_of_algHom
+    {R S K L : Type*} [CommRing R] [CommRing S] [CommRing K] [CommRing L]
+    [Algebra R S] [Algebra R K] [Algebra R L] [Algebra K L] [IsScalarTower R K L]
+    [Nontrivial L] (ψ : S →ₐ[R] L) : Nontrivial (TensorProduct R K S) :=
+  ⟨⟨1, 0, fun h => by
+    have h' : (1 : L) = 0 := by
+      have h2 := congrArg (fun x => (ψ.liftEquiv R K S L) x) h
+      simp at h2
+    exact one_ne_zero h'⟩⟩
+
+end NontrivialSupply
+
 section fixedSubring
 
 variable {F : Type*} [Field F]
@@ -1771,6 +1794,7 @@ end OrientationBridge
 #print axioms liftingPropertyEG_of_isGenericObjectEG_of_galoisProjective_typeLock
 #print axioms nontrivial_of_ringHom
 #print axioms nontrivial_tensorProduct_of_nontrivial_tensorProduct
+#print axioms nontrivial_tensorProduct_of_algHom
 #print axioms isGaloisWithGroup_tensorLeft_of_galoisProjective
 #print axioms galoisBaseChangeHyp_of_galoisProjective
 #print axioms isGaloisWithGroup_tensorLeft_of_galoisProjective_of_subsingletonGroup

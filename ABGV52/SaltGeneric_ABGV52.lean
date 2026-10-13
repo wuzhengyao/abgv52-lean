@@ -3995,7 +3995,10 @@ variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G]
 ＋ `\Psi`（`R`-**线性** ✓ ＋ **等变** ✓）＋ 共轭族数据 ✓ ⟹ **等变同构** `L' \simeq_{K'} (K' \otimes_R S_0)` ✓
 —— **（b）款的 `A`-Galois 性 ＋ `G`-作用 ＋ 相容项 ＋ 有限型全在证明内** ✓
 （**⚠ 口径** ✓：`[\mathrm{Algebra}\ R\ K']` 为**输入** ✓，`R`-线性以 `\mathrm{algebraMap}` 形给出 ✓ ——
-**实例同一性障碍** ✗ 使"全内部化"不可陈述 ✗，配方见 §4.45 节头 ✓）。 -/
+**实例同一性障碍** ✗ 使"全内部化"不可陈述 ✗，配方见 §4.45 节头 ✓）。
+**（r192 追加）** ✓：`[\mathrm{Nontrivial}\ (K' \otimes_R S_0)]` **亦已内部产出** ✓
+（由 `\Psi` 的 `R`-代数同态形 ✓ 经 `\mathrm{nontrivial\_tensorProduct\_of\_algHom}` ✓，基变换伴随路线 ✓）
+⟹ 本件**调用点零手写** ✓（旧配方中手搭 `\mathrm{liftEquiv}` 块 ✗→✓）。 -/
 theorem exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange
     {t : MvPolynomial G F}
     {R : Type} [CommRing R] [Algebra R (Localization.Away t)] [Algebra F R]
@@ -4008,7 +4011,6 @@ theorem exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange
     {L' : Type} [Field L'] [Algebra K' L'] [Algebra F L'] [Algebra R L']
     [IsScalarTower R K' L'] [IsScalarTower F K' L']
     [MulSemiringAction G L'] [SMulCommClass G K' L']
-    [Nontrivial (TensorProduct R K' (Localization.Away t))]
     (Ψ : Localization.Away t →ₐ[F] L')
     (hΨR : ∀ r : R, Ψ (algebraMap R (Localization.Away t) r) = algebraMap R L' r)
     (hΨG : ∀ (g : G) (x : Localization.Away t), Ψ (g • x) = g • Ψ x)
@@ -4019,6 +4021,10 @@ theorem exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange
       letI := BTier.tensorMulSemiringAction (R := R) (T := K') (S := Localization.Away t) hRG
       ∀ (g : G) (y : L'), e (g • y) = g • e y := by
   let _ := BTier.tensorMulSemiringAction (R := R) (T := K') (S := Localization.Away t) hRG
+  -- **非平凡性内部导出** ✓（r192：调用点零手写 ✓；来源 ＝ `Ψ` 的 `R`-代数同态形 ✓）
+  let _ : Nontrivial (TensorProduct R K' (Localization.Away t)) :=
+    BTier.nontrivial_tensorProduct_of_algHom (R := R) (S := Localization.Away t) (K := K') (L := L')
+      { Ψ.toRingHom with commutes' := hΨR }
   have hact : ∀ (g : G) (k : K') (x : Localization.Away t),
       g • (k ⊗ₜ[R] x) = k ⊗ₜ[R] (g • x) := by
     intro g k x
@@ -4172,14 +4178,7 @@ theorem exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
     intro r
     rw [← hι r, ← h3 r]
     rfl
-  -- ⑤ `Nontrivial` 内部导出（由 `A →ₐ[K] L` 的单位性）
-  let ΨR : Localization.Away t →ₐ[R] L := { Φ'.toRingHom with commutes' := hΨR }
-  have _ : Nontrivial (TensorProduct R K (Localization.Away t)) :=
-    ⟨⟨1, 0, fun h => by
-      have h' : (1 : L) = 0 := by
-        have h2 := congrArg (fun x => (ΨR.liftEquiv R K (Localization.Away t) L) x) h
-        simp at h2
-      exact one_ne_zero h'⟩⟩
+  -- ⑤ `Nontrivial`：**已由 §4.45 打包内部产出** ✓（r192 起**调用点零手写** ✓ —— 不再手搭 `liftEquiv` 块 ✗→✓）
   -- ⑥ §4.45 收口
   obtain ⟨e, he⟩ := exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange (F := F) (G := G)
     (t := t) hRG hgal hProj Φ' hΨR hΨG hb' hX
