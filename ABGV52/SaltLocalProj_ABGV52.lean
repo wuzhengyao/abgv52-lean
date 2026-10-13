@@ -353,6 +353,20 @@ noncomputable def locMulSemiringAction (s : A) (hs : ∀ g : G, g • s = s) :
   smul_mul g x y := map_mul (locActAlgHom (F := F) (G := G) s hs g) x y
   smul_one g := map_one (locActAlgHom (F := F) (G := G) s hs g)
 
+/-- **作用在 `algebraMap` 的像上的取值** ✓（＝`locActAlgHom_comp` ✓ 的**成员形** ✓）：
+`g \bullet (a/1) = (g \bullet a)/1` ✓。
+**⚠ 一般 `A` 档** ✓（`symLocMulSemiringAction_algebraMap` ✓ 是 `A = \mathrm{SymmetricAlgebra}\ F\ V` ✓ 的特例 ✓）；
+**用途** ✓：源侧 `hact_map` ✓（「局部化上的作用与 `algebraMap` 相容」✗）**由此导出** ✗ ⟹ **不必作假设** ✗。 -/
+lemma locMulSemiringAction_algebraMap (s : A) (hs : ∀ g : G, g • s = s) (g : G) (a : A) :
+    (locMulSemiringAction (F := F) (A := A) (G := G) s hs).smul g
+        (algebraMap A (Localization.Away s) a)
+      = algebraMap A (Localization.Away s) (g • a) := by
+  change locActAlgHom (F := F) (G := G) (A := A) (s := s) hs g
+      (algebraMap A (Localization.Away s) a)
+    = algebraMap A (Localization.Away s) (g • a)
+  rw [locActAlgHom, IsLocalization.coe_liftAlgHom, IsLocalization.lift_eq]
+  exact locActBase_apply (F := F) (G := G) (A := A) (s := s) g a
+
 end LocAction
 
 /-- **用点** ✓（源 `thm1.3(c)` 的源对象 ✓）：`S = F₊[V](1/s)`（`s` 为 `G`-**不动** ✓，本工程惯例＝
@@ -825,6 +839,7 @@ theorem thm13c_gap_registered : True := trivial
 #print axioms locActAlgHom_one
 #print axioms locActAlgHom_mul
 #print axioms locMulSemiringAction
+#print axioms locMulSemiringAction_algebraMap
 #print axioms symLocMulSemiringAction
 #print axioms symLocMulSemiringAction_algebraMap
 #print axioms exists_localized_lift_of_isLocalProjectiveSymmetricLocalized

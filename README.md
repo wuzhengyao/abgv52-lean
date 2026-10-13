@@ -651,3 +651,20 @@ than the earlier assembly's fixed subalgebra form, so the two cannot be used int
 discriminating power of both locks is checked against mutants, one swapping the faithful-flatness
 clause for freeness and one dropping the tensor product from the descent conclusion, and both
 mutants fail the lock as intended.
+
+The construction data of the end-to-end statement is now produced rather than assumed.  A single
+existential produces the invariant multiplier together with its nonvanishing, its invariance and
+the containment, and the three instances that statement had carried as parameters are produced as
+well: the algebra structure on the localization from the carrier step, its scalar tower from
+instance resolution, and the group action from the general construction in the local-projective
+file.  Two of the statement's hypotheses disappear in the same step.  The compatibility of the
+localization map with the group action is the member form of the compatibility lemma that file
+already carried for its algebra homomorphism, recorded there now at the general carrier level, of
+which the symmetric-algebra instance was a special case; and the identification of the algebra
+structure with the carrier map is the conclusion of the carrier step read at the algebra structure
+that map induces, so it is supplied rather than assumed.  What remains in the hypothesis table is
+the commutativity of the group action with the scalars, the Galois clause and the projectivity
+clause, all stated inside the binders of the existential, since each of them mentions the
+multiplier or one of the instances.  The local instances are introduced with the plain `let` and
+`have` forms, which register local instances in Lean 4, rather than with the `letI` and `haveI`
+forms, whose only further effect is inlining, so the round adds no warning to the build.
