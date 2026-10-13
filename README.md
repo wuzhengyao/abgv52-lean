@@ -858,3 +858,16 @@ sufficient condition its role in the hypothesis table needs; what remains for th
 the isomorphism of the preceding round from algebras over the rational field to algebras over the
 subalgebra, which is where finiteness and projectivity are asked for.
 
+
+The tool needed to raise the isomorphism to the level at which finiteness and projectivity are
+asked for is now available: if an algebra is isomorphic to its base ring as a ring, then with the
+algebra structure that the isomorphism itself induces, the algebra is a finitely generated
+projective module.  The linear equivalence is the isomorphism itself, its compatibility with the
+scalars following from multiplicativity and the inverse law, and finiteness with projectivity are
+transported along it as before.  The instance is registered by a plain local definition rather than
+an instance binding, since the latter trips a style linter that is a false positive for instance
+registration but still counts as a warning.
+
+What remains is to apply this to the wiring's pair, using the isomorphism of two rounds ago, and to
+derive bijectivity of the crossed-product map there.
+

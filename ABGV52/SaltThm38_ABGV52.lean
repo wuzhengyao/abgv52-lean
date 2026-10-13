@@ -1014,4 +1014,33 @@ theorem galoisProjectiveHyp_of_algEquiv_self
 #print axioms module_finite_projective_of_algEquiv_self
 #print axioms galoisProjectiveHyp_of_algEquiv_self
 
+set_option maxHeartbeats 1000000 in
+/-- **升档通用件** ✓✅（第 245 轮 ✓；**自造件** ✓；**一般档** ✓）：
+若 **`S ≅ R`（环同构** ✓**）**，则**取其诱导的 `R`-代数结构**（**`e.symm.toRingHom.toAlgebra`** ✓）时
+**`S` 是有限投射 `R`-模** ✓ —— 即 **r244 的秩一件在「结构由同构给出」档的形态** ✓。
+**⚠ 用途** ✓：**wiring 的 (A) 件** ✓ —— 把 **r243 的同构** ✓（**`ℚ`-档** ✓）**升到 `↥S`-档** ✓
+（**`Finite`／`Projective` 正是在该档提问** ✓）⟹ **`hProj` 的实体** ✓（**下一手** ✓）。
+**⚠ 构造** ✓：线性等价 **`φ : S ≃ₗ[R] R`** ✓（`toFun := e` ✓；**`map_smul'`** ✓ 由
+**`map_mul`** ✓ ＋ **`RingEquiv.apply_symm_apply`** ✓）⟹ **`Module.Finite.equiv φ.symm`** ✓
+＋ **`Module.Projective.of_equiv φ.symm`** ✓。
+**⚠ 工艺** ✓：**证明内用 `let`（非 `letI`）注册该实例** ✓ —— **`letI` 触发 `linter.style.haveILetI`** ✗
+（**该 linter 对实例注册是假阳性** ✓，**但仍是警告** ✗）⟹ **`let _inst := …`** ✓（**零新警告** ✓，**实测** ✓）。
+**⚠ 不声称** ✗：**wiring 实际对上的实例化未落** ✗（**下一手** ✓）。 -/
+theorem module_finite_projective_of_ringEquiv_self
+    {R S : Type*} [CommRing R] [CommRing S] (e : S ≃+* R) :
+    letI : Algebra R S := e.symm.toRingHom.toAlgebra
+    Module.Finite R S ∧ Module.Projective R S := by
+  let _inst : Algebra R S := e.symm.toRingHom.toAlgebra
+  let φ : S ≃ₗ[R] R :=
+    { toFun := e
+      invFun := e.symm
+      map_add' := fun x y => e.map_add x y
+      map_smul' := fun r s => by
+        show e (e.symm r * s) = r * e s
+        rw [map_mul, RingEquiv.apply_symm_apply]
+      left_inv := fun x => e.symm_apply_apply x
+      right_inv := fun x => e.apply_symm_apply x }
+  exact ⟨Module.Finite.equiv φ.symm, Module.Projective.of_equiv φ.symm⟩
+#print axioms module_finite_projective_of_ringEquiv_self
+
 end ABGV52
