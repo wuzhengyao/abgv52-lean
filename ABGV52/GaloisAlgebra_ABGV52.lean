@@ -627,6 +627,41 @@ lemma algebraMap_fixed_of_isGaloisWithGroup
     g • algebraMap R S r = algebraMap R S r :=
   hgal.2.1 g r
 
+/-! ### 迹路线步骤 ①：`\delta` 的 **`S`-线性档**（第 209 轮 ✓）
+
+**⚠ 更正留痕** ✓（**第 209 轮** ✓）：状态笔记 §172 与死胡同笔记
+`deadend-ABGV52-trace-route-S-linearity` ✓ 曾判「`\mathrm{coeffToEnd}` **只是 `R`-线性** ✗、
+迹路线**在一般档不可落**」✗ —— **该判断为误** ✓，**本轮（第 209 轮）已形式化推翻** ✓。
+**正解** ✓：`\mathrm{coeffToEnd}(x)` ✓ ＝ 「**乘 `x`**」✓（`:\mathrm{End}_R S` ✓），
+而 `c • \mathrm{coeffToEnd}(b) = \mathrm{coeffToEnd}(c \cdot b)` ✓ **由 `mul_smul` 给出** ✓
+（**不**需 `R = S` ✗）⟹ `\mathrm{coeffToEnd}` ✓ **是 `S`-线性** ✓。 -/
+
+/-- **`coeffToEnd` 的 `S`-线性** ✓（逐点 `mul_assoc` ✓）。 -/
+lemma coeffToEnd_smulS (c b : S) :
+    @coeffToEnd R S _ _ _ (c * b) = c • @coeffToEnd R S _ _ _ b := by
+  ext t
+  show (c * b) * t = c • (b * t)
+  rw [mul_assoc]
+  rfl
+
+/-- **`\delta` 的 `S`-线性档** ✓（**迹路线步骤 ①** ✓ —— **已落** ✓）。 -/
+noncomputable def deltaToEndLinearS (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    SkewMonoidAlgebra S G →ₗ[S] Module.End R S where
+  toFun := deltaToEndAdd hRG
+  map_add' := (deltaToEndAdd hRG).map_add
+  map_smul' := by
+    classical
+    intro c u
+    induction u using SkewMonoidAlgebra.induction_on with
+    | zero => simp
+    | single a b =>
+        rw [SkewMonoidAlgebra.smul_single, deltaToEndAdd_single, deltaToEndAdd_single]
+        show @coeffToEnd R S _ _ _ (c • b) * actEnd hRG a
+            = c • (@coeffToEnd R S _ _ _ b * actEnd hRG a)
+        rw [show (c • b : S) = c * b from rfl, coeffToEnd_smulS, smul_mul_assoc]
+    | add x y hx hy =>
+        rw [smul_add, map_add, hx, hy, map_add, smul_add]
+
 /-- **登记** ✗：**迹路线的余项**（**逐条** ✓，供下一轮接手 ✓）——
 **(i)** `deltaToEndLinearS`：`\delta` 的 **`S`-线性**档 ✓（**待补** ✗：`single` 支的
 `coeffToEnd_smulS` ✓ ＋ `Algebra.smul_mul_assoc` ✓，**已定位** ✓）；
@@ -991,6 +1026,8 @@ end GaloisTransport
 #print axioms coeffOne_single_one
 #print axioms deltaToEndAdd_single_one_one
 #print axioms algebraMap_fixed_of_isGaloisWithGroup
+#print axioms coeffToEnd_smulS
+#print axioms deltaToEndLinearS
 #print axioms galoisTrace_route_gap_registered
 
 end ABGV52.BTier
