@@ -847,3 +847,14 @@ What now remains for non-emptiness of the wiring's hypothesis table is to derive
 projectivity and bijectivity of the crossed-product map from this isomorphism, both being rank-one
 considerations, and then to record the hypothesis table itself.
 
+
+The first of the two remaining corollaries is now available in general form: if an algebra is
+isomorphic to its base ring as an algebra over it, then it is a finitely generated projective
+module, by transporting finiteness and projectivity along the isomorphism, the base ring being free
+of rank one over itself.  A corollary records what this gives for the wiring: the projectivity
+endpoint holds whenever the extension is isomorphic to the base ring, for any group and any
+compatibility clause.  Since that endpoint is refutable as stated, this is the satisfiable
+sufficient condition its role in the hypothesis table needs; what remains for the wiring is to raise
+the isomorphism of the preceding round from algebras over the rational field to algebras over the
+subalgebra, which is where finiteness and projectivity are asked for.
+

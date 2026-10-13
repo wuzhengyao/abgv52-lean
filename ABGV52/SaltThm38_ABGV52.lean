@@ -987,4 +987,31 @@ theorem nonempty_algEquiv_away_adjoin_pUnit_rat :
     ⟨AlgEquiv.ofBijective f ⟨hinj, hsurj⟩⟩⟩
 #print axioms nonempty_algEquiv_away_adjoin_pUnit_rat
 
+set_option maxHeartbeats 1000000 in
+/-- **通用秩一件** ✓✅（第 244 轮 ✓；**自造件** ✓；**一般档** ✓）：若 `S ≅ R`（**`R`-代数同构** ✓）
+则 **`S` 是有限投射 `R`-模** ✓ —— **`Module.Finite.equiv`** ✓ ＋ **`Module.Projective.of_equiv`** ✓
+沿 **`e.toLinearEquiv.symm`** ✓ 搬运 ✓（**`R` 自身秩一自由** ✓）。
+**⚠ 用途** ✓：**wiring 的 (A) 件** ✓（**`Module.Finite ∧ Projective`** ✓）的**通用工具** ✓ ——
+**接线实际对**上只差把 **r243 的同构** ✓ 从 **`ℚ`-档升到 `↥S`-档** ✓（**下一手** ✓）。 -/
+theorem module_finite_projective_of_algEquiv_self
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (e : S ≃ₐ[R] R) : Module.Finite R S ∧ Module.Projective R S :=
+  ⟨Module.Finite.equiv e.toLinearEquiv.symm,
+    Module.Projective.of_equiv e.toLinearEquiv.symm⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **推论** ✓✅（第 244 轮 ✓）：**`S ≅ R` ⟹ `GaloisProjectiveHyp` 成立** ✓（**任意 `G`／`hRG`** ✓）——
+即 **`hProj` 在「自同构档」上可满足** ✓（**其充分条件** ✓）。
+**⚠ 意义** ✓（**L1** ✓）：**`hProj` 的现形虽在任意档为假** ✗（r234 ✓），**但在自同构档自动成立** ✓
+⟹ **接线假设表的 `hProj` 一件有了可满足的充分条件** ✓。
+**⚠ 不声称** ✗：**接线实际对上 `S' ≅ ↥S` 是 `ℚ`-档** ✓（r243 ✓），**升到 `↥S`-档未落** ✗（**下一手** ✓）。 -/
+theorem galoisProjectiveHyp_of_algEquiv_self
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (e : S ≃ₐ[R] R) : BTier.GaloisProjectiveHyp R S G hRG :=
+  fun _ => module_finite_projective_of_algEquiv_self e
+#print axioms module_finite_projective_of_algEquiv_self
+#print axioms galoisProjectiveHyp_of_algEquiv_self
+
 end ABGV52
