@@ -711,3 +711,17 @@ separate assumption in the intended use, where the base ring and the extension a
 common field and the structure map is an inclusion; the stated form is kept in place as a trace
 rather than deleted, and the linear-independence route is withdrawn, the target being false rather
 than the route blocked.
+
+A second endpoint fails in the same way, and the defect is now recorded as systematic rather than
+accidental: both endpoints of the Galois criterion were stated for an arbitrary algebra map, while
+the intended use has the base ring included in the extension.  Taking the base ring to be the
+integers, the extension the rational field and the group trivial, the three clauses again hold --
+the crossed-product map being bijective because every linear endomorphism of the rational field is
+multiplication by its value at one, this time via the library's fact that an additive map of the
+rational field is rational-linear -- while the fixed element one half is not in the image of the
+integers.  The two endpoints are therefore recorded as refuted in their stated form and as
+available in the intended one: the first directly, the second only through the progenerator
+statement, whose entity is still unproved.  The projectivity endpoint is flagged as a candidate of
+the same kind, its refutation awaiting the fact that the rational field is not a finitely generated
+module over the integers, a fact the library does not supply; the candidate is registered as such
+and not claimed.

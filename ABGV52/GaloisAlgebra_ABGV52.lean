@@ -351,7 +351,16 @@ theorem exists_galoisProjectiveSection
 **经典为定理**（CHR 理论：`G`-Galois ⟹ `R = S^G`），本工程**未证** —— 登记为具名输入（口径同 §47／§52）。
 
 **⚠ 已排除的路线（§56.2 实测）**：**共轭不变性路线无效** —— 对 `s ∈ S^G`，`δ⁻¹(lsmul s) = single 1 s`
-恒成立，而 `single 1 s` 对**共轭**作用自动不变 ⟹ 不给任何新约束。**下一手** = 迹／特征线性无关路线。 -/
+恒成立，而 `single 1 s` 对**共轭**作用自动不变 ⟹ 不给任何新约束。
+
+**🔴 现形不可证** ✗（**第 233 轮机器反驳** ✓ —— 取代原「本工程未证」✗）：
+**任意 `Algebra R S` 档为假** ✗，反例见 `galoisFixedSubringHyp_refuted` ✓
+（`R = ℤ`、`S = ℚ`、`G = PUnit`：三款**全中** ✓ 而 `1/2` **不动** ✓ 却**不在 `algebraMap` 的像内** ✗）。
+**⚠ 修正口径** ✓（**判据下调** ✓）：本端点在**预期用例**（`R \to S` **单射** ✓，即域内包含 ✓）中
+**才是经典定理** ✓（CHR：`G`-Galois ⟹ `R = S^G` ✓）—— **其证明须 progenerator 输入** ✗（**未落** ✗）；
+**现形照原样保存** ✓（**留痕** ✓，**不删** ✓）。
+**⚠ 同族** ✓（**第 233 轮定性** ✓）：`GaloisFaithfulHyp` ✓ **同病** ✗ —— **两个端点皆「任意档过宽」** ✗
+（**见文末反驳节** ✓）。 -/
 def GaloisFixedSubringHyp (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
     (G : Type u) [Group G] [Fintype G] [MulSemiringAction G S]
     (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) : Prop :=
@@ -369,7 +378,10 @@ theorem galoisFixedSubringHyp_data_nonempty :
     Nonempty (∃ r : ℚ, (0 : ℚ) = algebraMap ℚ ℚ r) :=
   ⟨⟨0, rfl⟩⟩
 
-/-- **登记**：本件的**实体**（`R = S^G` 的证明）**未落** —— 经典路线见定义处头注（迹／特征线性无关）。 -/
+/-- **登记** ✗：本件的**实体**（`R = S^G` 的证明）**不可落** ✗ ——
+**🔴 第 233 轮机器反驳** ✓：现形**一般档为假** ✗（`galoisFixedSubringHyp_refuted` ✓）⟹
+**任何路线都不可能证它** ✗。**经典路线** ✓（CHR：`G`-Galois ⟹ `R = S^G` ✓）**在预期用例（`R \to S` 单射 ✓）
+中为真** ✓，但其证明**须 progenerator 输入** ✗（§171.1 ✓／`GaloisProgeneratorHyp` ✓，**未落** ✗）。 -/
 theorem galoisFixedSubringHyp_gap_registered : True := trivial
 
 /-- **用点** ✓：由 `GaloisFixedSubringHyp` 直接得「`G`-不变元必属 `R`」✓
@@ -958,19 +970,29 @@ theorem h1UnitsVanishes_punit_rat : H1UnitsVanishes PUnit ℚ := by
 
 end Prop02bProbe
 
-/-! ## `GaloisFaithfulHyp` **现形的机器反驳**（第 232 轮 ✓）
+/-! ## §0 判据**两个端点**现形的机器反驳（第 232／233 轮 ✓）
 
-**⚠ 判据** ✓（**L19** ✓）：**不是**「路线受阻」✗，而是**现形为假** ✗ —— 反例一个即足 ✓。
-**反例** ✓：`R = \mathbb{Q} \times \mathbb{Q}` ✓（**经 `\mathrm{fst}` 作用于 `S = \mathbb{Q}`** ✓，
-故 `(0,1) \neq 0` 而 `(0,1) \bullet x = 0` ✓ ⟹ `FaithfulSMul R S` **假** ✗）、`G = \mathrm{PUnit}` ✓
-（**平凡作用** ✓）。
-**三款全中** ✓：**①** `FaithfulSMul PUnit ℚ` ✓（**单点群** ✓）；
-**②** `g \bullet algebraMap R S r = algebraMap R S r` ✓（**平凡作用** ✓）；
-**③** `\delta` **双射** ✓ —— 由 **`\delta(\mathrm{single}\ () a) = \mathrm{coeffToEnd}\ a`** ✓
-（`actEnd () = 1` ✓）＋ `R \to S` **满射** ✓（每 `t = \mathrm{fst}(t,0)` ✓ ⟹
-每个 `R`-线性自同态 `f` 满足 `f t = t \cdot f 1` ✓）＋ **单点群** ✓（`u = \mathrm{single}\ ()\ (u.\mathrm{coeff}\ ())` ✓）三者得 ✓。 -/
+**🔴 系统性缺陷（第 233 轮定性** ✓**）**：`GaloisFaithfulHyp` ✓ 与 `GaloisFixedSubringHyp` ✓
+**现形同病** ✗ —— 二者都写成**任意 `Algebra R S`** 档 ✓（源 `§0` 判据的**自然读法** ✓），
+**而源的实际用例里 `R \to S` 是域内的包含** ✓（**单射** ✓）。**放宽到任意档 ⟹ 二者皆为假** ✗
+—— **不是「路线受阻」✗，是「现形为假」** ✗（**反例一个即足** ✓，判据见 L19 ✓）。
 
-section GaloisFaithfulRefutation
+**⚠ 两个反例** ✓：
+**(甲)** `R = \mathbb{Q} \times \mathbb{Q}` ✓（**经 `\mathrm{fst}` 作用于 `S = \mathbb{Q}`** ✓）、`G = \mathrm{PUnit}` ✓
+⟹ `IsGaloisWithGroup` ✓ 而 `FaithfulSMul R S` **假** ✗（`(0,1) \neq 0` ✓ 而 `(0,1) \bullet x = 0` ✓）。
+**(乙)** `R = \mathbb{Z}` ✓、`S = \mathbb{Q}` ✓、`G = \mathrm{PUnit}` ✓ ⟹ `IsGaloisWithGroup` ✓
+而 `GaloisFixedSubringHyp` **假** ✗（`1/2` **不动** ✓ 而 `1/2 \notin \mathrm{algebraMap}\ \mathbb{Z}\ \mathbb{Q}` ✓）。
+**共同的 `\delta` 双射** ✓（③）：由 **`\delta(\mathrm{single}\ () a) = \mathrm{coeffToEnd}\ a`** ✓
+（`actEnd () = 1` ✓）＋ **`u = \mathrm{single}\ ()\ (u.\mathrm{coeff}\ ())`** ✓（**单点群** ✓）
+＋ **每个 `R`-线性自同态 `f` 满足 `f t = t \cdot f 1`** ✓ 三者得 ✓
+（**甲档** ✓ 用 **`R \to S` 满射** ✓；**乙档** ✓ 用 **`map_ratCast_smul`** ✓：**加法 ⟹ `\mathbb{Q}`-线性** ✓）。
+
+**⚠ 第三件：候选（**未机器核** ✗，**只登记** ✓）**：`GaloisProjectiveHyp` ✓ **同族** ⚠ ——
+取 **乙档**（`R = ℤ`、`S = ℚ`、`G = PUnit` ✓，**其前件已在本节机器核成立** ✓）则后件含
+**`Module.Finite ℤ ℚ`** ✗ —— **须证其假** ✗（**库内无件** ✗，**实测** ✓；**下一手** ✓）；
+**该步未落** ✗ ⟹ **不声称已反驳** ✗。 -/
+
+section GaloisEndpointsRefutation
 
 /-- 平凡作用 `PUnit ↷ ℚ`（**本节的局部件** ✓；`PUnit` **无** mathlib 实例 ✗）。 -/
 @[instance_reducible]
@@ -1057,7 +1079,81 @@ theorem galoisFaithfulHyp_refuted :
     exact one_ne_zero (α := ℚ) (by simpa using congrArg Prod.snd h1)
   exact ⟨hRG, hgal, hnf⟩
 
-end GaloisFaithfulRefutation
+/-- **`GaloisFixedSubringHyp` 现形的反驳** ✓✅（第 233 轮 ✓；**非空洞** ✓）：
+存在 `R`／`S`／`G`／`hRG` 使 **`IsGaloisWithGroup R S G hRG` 成立** ✓ 而
+**`GaloisFixedSubringHyp R S G hRG` 不成立** ✗ ⟹ **其「实体」不可证** ✗。
+**⚠ 口径** ✓：`R = ℤ` ✓、`S = ℚ` ✓、`G = PUnit` ✓（**平凡作用** ✓）——
+**不动元 `1/2`** ✓（**平凡作用** ⟹ 一切元不动 ✓）**不在 `algebraMap ℤ ℚ` 的像内** ✗
+（像 ＝ `ℤ` ✓；`1/2` 导出 `2 r = 1`（`r : ℤ` ✓）⟹ 矛盾 ✓，`omega` ✓）。
+**⚠ ③ 的依据** ✓：**与 232 轮同一骨架** ✓，但 **`R \to S` 不满射** ✗ ⟹ 改用
+**`map_ratCast_smul`** ✓（**库内** ✓：**加法 ⟹ `\mathbb{Q}`-线性** ✓）。
+**⚠ 不声称** ✗：**不**声称 `S^G = \mathrm{image}(R)` 在**预期用例**中不成立 ✓（**相反** ✓ ——
+那是**经典定理** ✓，**须 progenerator 输入** ✗，**未落** ✗）。 -/
+theorem galoisFixedSubringHyp_refuted :
+    ∃ hRG : ∀ (g : PUnit) (r : ℤ) (s : ℚ), g • (r • s) = r • (g • s),
+      IsGaloisWithGroup ℤ ℚ PUnit hRG ∧ ¬ GaloisFixedSubringHyp ℤ ℚ PUnit hRG := by
+  let hRG : ∀ (g : PUnit) (r : ℤ) (s : ℚ), g • (r • s) = r • (g • s) := fun _ _ _ => rfl
+  have hact : actEnd hRG PUnit.unit = 1 := by ext t; rfl
+  have hsingle : ∀ a : ℚ,
+      deltaToEndRingHom hRG (SkewMonoidAlgebra.single PUnit.unit a) = coeffToEnd a := by
+    intro a
+    show deltaToEndAdd hRG (SkewMonoidAlgebra.single PUnit.unit a) = coeffToEnd a
+    rw [deltaToEndAdd_single, hact, mul_one]
+  have heval : ∀ a : ℚ, (deltaToEndAdd hRG (SkewMonoidAlgebra.single PUnit.unit a)) 1 = a := by
+    intro a
+    rw [deltaToEndAdd_single, hact, mul_one]
+    show a * 1 = a
+    rw [mul_one]
+  have hsingle_eq : ∀ u : SkewMonoidAlgebra ℚ PUnit,
+      u = SkewMonoidAlgebra.single PUnit.unit (u.coeff PUnit.unit) := by
+    intro u
+    refine SkewMonoidAlgebra.ext (fun g => ?_)
+    rw [Subsingleton.elim g PUnit.unit, SkewMonoidAlgebra.coeff_single_apply]
+    simp
+  have hcoe : ∀ u : SkewMonoidAlgebra ℚ PUnit,
+      (deltaToEndAdd hRG u) 1 = u.coeff PUnit.unit := by
+    intro u
+    conv_lhs => rw [hsingle_eq u]
+    exact heval (u.coeff PUnit.unit)
+  have hrec : ∀ u : SkewMonoidAlgebra ℚ PUnit,
+      u = SkewMonoidAlgebra.single PUnit.unit ((deltaToEndAdd hRG u) 1) := by
+    intro u
+    conv_lhs => rw [hsingle_eq u]
+    rw [hcoe u]
+  have hgal : IsGaloisWithGroup ℤ ℚ PUnit hRG := by
+    refine ⟨?_, ?_, ?_⟩
+    · exact ⟨fun {a b} _ => Subsingleton.elim a b⟩
+    · intro g r
+      rfl
+    · constructor
+      · intro u v huv
+        have h1 : (deltaToEndAdd hRG u) 1 = (deltaToEndAdd hRG v) 1 :=
+          congrArg (fun f : Module.End ℤ ℚ => f 1) huv
+        calc u = SkewMonoidAlgebra.single PUnit.unit ((deltaToEndAdd hRG u) 1) := hrec u
+          _ = SkewMonoidAlgebra.single PUnit.unit ((deltaToEndAdd hRG v) 1) := by rw [h1]
+          _ = v := (hrec v).symm
+      · intro f
+        refine ⟨SkewMonoidAlgebra.single PUnit.unit (f 1), ?_⟩
+        rw [hsingle]
+        ext t
+        have h2 : f t = t * f 1 := by
+          have h := map_ratCast_smul f ℚ ℚ t (1 : ℚ)
+          simpa [Algebra.smul_def] using h
+        show (f 1) * t = f t
+        rw [h2, mul_comm]
+  have hnf : ¬ GaloisFixedSubringHyp ℤ ℚ PUnit hRG := by
+    intro h
+    obtain ⟨r, hr⟩ := h hgal (1 / 2) (fun _ => rfl)
+    have hr' : ((2 * r : ℤ) : ℚ) = 1 := by
+      have h4 : (r : ℚ) = 1 / 2 := hr.symm
+      push_cast
+      rw [h4]
+      norm_num
+    have h5 : (2 * r : ℤ) = 1 := by exact_mod_cast hr'
+    omega
+  exact ⟨hRG, hgal, hnf⟩
+
+end GaloisEndpointsRefutation
 
 /-! ## 公理闸门 -/
 
@@ -1273,6 +1369,7 @@ end GaloisTransport
 #print axioms galoisFaithfulHyp_data_nonempty
 #print axioms galoisFaithful_gap_registered
 #print axioms galoisFaithfulHyp_refuted
+#print axioms galoisFixedSubringHyp_refuted
 #print axioms faithfulSMul_of_galoisFaithfulHyp
 #print axioms coeffToEnd_smulS
 #print axioms deltaInvLinearS
