@@ -3429,6 +3429,240 @@ theorem exists_algHom_base_of_equivariant (ht : ∀ g : G, g • t = t) (ht0 : t
 
 end BaseMapEndToEnd
 
+/-! ## 4.42 **装配 (c) 款装配点接线**：**载体步** ＋ **源侧桥 ⟹ `hRQ`** ＋ **端到端**（第 182 轮）
+
+**⚠ 起点** ✓（**仍压 (c) 款装配点** ✓，**不转项** ✗）：r181 已把靶点细化到**载体步** ✓
+（`Q(t) \subseteq \mathrm{range}(\mathrm{awayToFieldAlg}\ t)` ✓）并**精确记录三处障碍与正解方向** ✓（§144.2 ✓）
+⟹ 本轮按该方向落地 ✓，并把**源侧桥** ✓（r171 ✓）、**载体步** ✓、**`hRQ`** ✓ 与 **§4.41 的端到端链** ✓
+（`\iota` ✓ ＋ `\varphi'` **等变** ✓ ＋ `hfix` **落地** ✓）**接成一条端到端定理** ✓（**断指** ✓）。
+
+**⚠ 四件** ✓：
+**①** `adjoin_inv_mem_range_awayToFieldAlg` ✓✅ —— **载体步（集合式）** ✓：
+`\forall x \in Q(t),\ x \in \mathrm{range}(\mathrm{awayToFieldAlg}\ t)` ✓。
+**⚠ 不可写成 `\subseteq`** ✗（**基准环不可比** ✗：`\mathrm{range}` 是 `\mathrm{Subalgebra}\ F\ \cdot` ✓，
+而 `\mathrm{Algebra.adjoin}\ (MvPolynomial\ G\ F)\ \cdot` 给出 `\mathrm{Subalgebra}\ (MvPolynomial\ G\ F)\ \cdot` ✗
+—— **r181 实测** ✓）。**四支** ✓：生成元支 ✓（`y = (\mathrm{algebraMap}\ t)^{-1}` ✓）／
+`\mathrm{algebraMap}` 支 ✓（由 `awayToField_algebraMap` ✓）／加 ＋ 乘 ✓（子代数封闭 ✓）。
+**⚠ 生成元支的 API 墙与正解** ✓（**r181 停止点 ⟹ 本轮落地** ✓）：`\mathrm{Localization.Away}\ t` 是 **`CommRing`**
+（**非域** ✗）⟹ **无 `Inv` 实例** ✗ ⟹ 改用 **`Ring.inverse`** ✓（`CommRing` 层 ✓）：
+取 `u := \mathrm{algebraMap}\ t` ✓、`hu : \mathrm{IsUnit}\ u` ✓（`IsLocalization.Away.algebraMap_isUnit` ✓）
+⟹ `\mathrm{awayToField}\ (\mathrm{Ring.inverse}\ u) \cdot \mathrm{algebraMap}\ t = 1` ✓
+（`\mathrm{Ring.inverse\_mul\_cancel}` ✓ ＋ `\leftarrow \mathrm{map\_mul}` ✓ ＋ `awayToField_algebraMap` ✓）
+⟹ **`\mathrm{eq\_inv\_of\_mul\_eq\_one\_left}`** ✓ 收口 ✓（**无需**局部化的 `Inv` ✗、**无需**域结构的
+`\mathrm{IsUnit.mul\_inv\_cancel}` ✗）。
+**②** `exists_invariant_range_awayToFieldAlg` ✓✅ —— **第 2 步** ✓：`R` 的像落在 `F[a](1/s_0)` 内 ✓
+⟹ **存在不变 `t \neq 0`** ✓ 使 `R` 的像**整体**落进 `\mathrm{range}(\mathrm{awayToFieldAlg}\ t)` ✓
+（**接线** ✓：r171 的 `exists_adjoin_inv_le_away_of_noether` ✓ 给 `t_0` ✓ 与包含 ✓ ⟹ **①** ✓ 给 `\mathrm{range}` 包含 ✓；
+**不变性** ✓ 由 r175 的 `exists_invariant_mul` ✓（`Q(t_0) \subseteq Q(t)` ✓）—— **⚠ 源正因此先把 `t` 换成
+`\prod_\sigma \sigma(t)`** ✓）。
+**③** `exists_algHom_base_of_source_data` ✓✅✅ —— **端到端（断指）** ✓：源侧数据（`hRA` ✓ ＋ `hRG` ✓）
+＋ 目标侧 `G`-Galois `L'/K'` ✓ ＋ `hfix` ✓ ⟹ **`\exists z\ b'\ t\ \Phi'\ \iota\ \Phi`** ✓ 及**三条相容等式** ✓
+（**链** ✓：**②** ✓ 给 `hRQ` ✓ ⟹ §4.41 的 `exists_algHom_base_of_equivariant` ✓ 收口 ✓；
+`z` 与基 `b'` 由 **`lemma52Statement_nonzero_true`** ✓（§4.18 ✓）供给 ✓ ⟹ `\mathrm{noetherEval}\ z` ✓
+**等变** ✓（§4.6 ✓）＋ 把 `t` 送到 **单位** ✓）。
+**④** `exists_algHom_base_of_source_data_with_image_le` ✓✅ —— **含 `k`-半的单 `t` 版** ✓（**承 §4.41 判据的 `hk` 项** ✓）：
+源侧数据 ＋ `S` 在 `R` 上**有限型** ✓ ＋ `S` 到 Noether 域的 `R`-代数映射 ✓ ⟹ 存在**同一个不变 `t`** ✓ 使
+**(i)** `R` 落进局部化值域 ✓（⟹ `\Phi : R \toₐ[F] K'` ✓ 与三条相容等式 ✓）**且 (ii)** `S \subset F[x_\sigma](1/t)` ✓
+（源「we have that `S \subset F[x_\sigma](1/t)`」✓ 的**库内形式** ✓ —— **⚠ 用点** ✓：`t` ＝ 源「the product of all
+the `g`'s and `k`'s」✓；**工序** ✓：`t_0`（r171 ✓）⟹ **`k`-半** ✓（r174 的
+`exists_image_le_away_of_finiteType` ✓，得 `t_1` ✓）⟹ **不变化** ✓（r175 ✓）在 `t_0 \cdot t_1` 上 ✓
+⟹ `Q(t_0)` 与 `Q(t_1)` **一并**落进 `Q(t)` ✓（`adjoin_away_mono` ✓ 两次 ✓））。
+
+**⚠ 工艺读数（本轮新增一条，已固化）** ✓：**`\mathrm{Ring.inverse}` 替代 `Inv`** ✓ —— `CommRing` 层局部化 ✓ 无 `Inv` ✗，
+逆元一律走 `\mathrm{Ring.inverse}` ＋ `IsUnit` 系引理 ✓（`\mathrm{eq\_inv\_of\_mul\_eq\_one\_left}` ✓ 收口 ✓）；
+与 r181 记录的**正解方向**逐字一致 ✓，**探针两次内落地** ✓（**未撞第四次墙** ✓）。
+**⚠ 登记（余项）** ✗：**①** `hRA` 的**来源** ✓（`R` 的像 ＝ `F[a](1/s_0)` 的**识别** ✓ —— (a) 款侧 ✓）；
+**②** `hfix`（`L'^G = K'` ✓，在册 `GaloisFixedSubringHyp` ✓）；**③** `S` 到 Noether 域的**嵌入** ✓
+（在册 `noetherEmbedding_gap_registered` ✓）；**④** **张量同构** `L' \simeq S \otimes_R K'` ✓
+（(c) 款 `RealizationProperty` 的**余下部分** ✗ —— **下一手** ✓）。 -/
+
+section AdjoinRangeCarrier
+
+variable {F : Type u} [Field F] {G : Type u}
+
+/-- **① 载体步** ✓✅：`Q(t) \subseteq \mathrm{range}(\mathrm{awayToFieldAlg}\ t)`（**集合式** ✓）——
+r177 搬运件的输入 `hRQ` 的**供给源** ✓。**⚠ 生成元支无 `Inv` 可用** ✗（局部化是 `CommRing` ✓）
+⟹ 用 **`Ring.inverse`** ✓ ＋ **`\mathrm{eq\_inv\_of\_mul\_eq\_one\_left}`** ✓ 收口 ✓。 -/
+theorem adjoin_inv_mem_range_awayToFieldAlg (t : MvPolynomial G F) (ht : t ≠ 0) :
+    ∀ x ∈ Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G)),
+      x ∈ (awayToFieldAlg (F := F) (G := G) t ht).range := by
+  intro x hx
+  refine Algebra.adjoin_induction (p := fun x _ =>
+    x ∈ (awayToFieldAlg (F := F) (G := G) t ht).range) ?_ ?_ ?_ ?_ hx
+  · intro y hy
+    rw [Set.mem_singleton_iff] at hy
+    subst hy
+    refine ⟨Ring.inverse (algebraMap (MvPolynomial G F) (Localization.Away t) t), ?_⟩
+    have hu : IsUnit (algebraMap (MvPolynomial G F) (Localization.Away t) t) :=
+      IsLocalization.Away.algebraMap_isUnit (x := t) (S := Localization.Away t)
+    have hmap : awayToField (F := F) (G := G) t ht
+        (algebraMap (MvPolynomial G F) (Localization.Away t) t)
+        = algebraMap (MvPolynomial G F) (NoetherField F G) t :=
+      awayToField_algebraMap (F := F) (G := G) t ht t
+    have hmul : awayToField (F := F) (G := G) t ht
+          (Ring.inverse (algebraMap (MvPolynomial G F) (Localization.Away t) t))
+        * algebraMap (MvPolynomial G F) (NoetherField F G) t = 1 := by
+      rw [← hmap, ← map_mul, Ring.inverse_mul_cancel _ hu, map_one]
+    exact eq_inv_of_mul_eq_one_left hmul
+  · intro a
+    exact ⟨algebraMap (MvPolynomial G F) (Localization.Away t) a,
+      awayToField_algebraMap (F := F) (G := G) t ht a⟩
+  · intro y z _ _ hy hz
+    exact add_mem hy hz
+  · intro y z _ _ hy hz
+    exact mul_mem hy hz
+
+end AdjoinRangeCarrier
+
+section SourceDataRange
+
+variable {F : Type u} [Field F] {G : Type u} [Group G] [Fintype G]
+
+/-- **② 装配点接线（第 2 步）** ✓✅：`R` 的像落在 `F[a](1/s_0)` 内 ⟹ 存在**不变** `t \neq 0`
+使 `R` 的像整体落进 `\mathrm{range}(\mathrm{awayToFieldAlg}\ t)` ✓ —— **即 r177 搬运件的输入 `hRQ`** ✓。
+**⚠ 不变性不可省** ✗（§4.41 的端到端链要求 `t` **逐点固定** ✓ —— 源「先换成 `\prod_\sigma \sigma(t)`」✓）。 -/
+theorem exists_invariant_range_awayToFieldAlg
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (a : ι → NoetherField F G) (s₀ : NoetherField F G) (hs₀ : s₀ ≠ 0)
+    {R : Type u} [CommRing R] [Algebra R (NoetherField F G)]
+    (hRA : ∀ r : R, algebraMap R (NoetherField F G) r ∈
+      Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) :
+    ∃ (t : MvPolynomial G F) (ht : t ≠ 0), (∀ g : G, g • t = t) ∧
+      ∀ r : R, algebraMap R (NoetherField F G) r ∈
+        (awayToFieldAlg (F := F) (G := G) t ht).range := by
+  classical
+  obtain ⟨t₀, ht₀, hle⟩ := exists_adjoin_inv_le_away_of_noether (F := F) (G := G)
+    (L := NoetherField F G) a s₀ hs₀
+  obtain ⟨t, ht, htinv, hmono⟩ := exists_invariant_mul (F := F) (G := G) t₀ ht₀
+  refine ⟨t, ht, htinv, fun r => ?_⟩
+  exact adjoin_inv_mem_range_awayToFieldAlg (F := F) (G := G) t ht _
+    (hmono (hle (hRA r)))
+
+end SourceDataRange
+
+section SourceDataEndToEnd
+
+variable {F : Type u} [Field F] {G : Type u} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **③ 端到端（装配点 · 断指）** ✓✅✅：源侧数据（`R` 的像落在 `F[a](1/s_0)` 内 ✓ ＋ 像**逐点固定** ✓）
+＋ 目标侧 `G`-Galois `L'/K'` ✓ ＋ 不动域输入 `hfix` ✓ ⟹ 存在 `z`（`lemma-5.2` ✓）、**不变** `t \neq 0` ✓、
+`\Phi'`（局部化提升 ✓）／`\iota`（搬运 ✓）／`\Phi : R \toₐ[F] K'`（**落进不动域** ✓）及**三条相容等式** ✓。
+**机制** ✓：② ✓ 给 `hRQ` ✓ ⟹ §4.41 ✓ 收口；`z`／`b'` 由 §4.18 ✓ 供给 ⟹ `\mathrm{noetherEval}\ z` **等变** ✓（§4.6 ✓）。 -/
+theorem exists_algHom_base_of_source_data
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (a : ι → NoetherField F G) (s₀ : NoetherField F G) (hs₀ : s₀ ≠ 0)
+    {R : Type u} [CommRing R] [Algebra R (NoetherField F G)] [Algebra F R]
+    [IsScalarTower F R (NoetherField F G)]
+    (hRA : ∀ r : R, algebraMap R (NoetherField F G) r ∈
+      Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+    (hRG : ∀ (g : G) (r : R), g • algebraMap R (NoetherField F G) r
+      = algebraMap R (NoetherField F G) r)
+    (K' L' : Type u) [Field K'] [Field L'] [Algebra F K'] [Algebra K' L'] [Algebra F L']
+    [IsScalarTower F K' L'] [MulSemiringAction G L'] [SMulCommClass G K' L']
+    [SMulCommClass G F L'] [Infinite K']
+    (b : Module.Basis G K' L') (hb : Function.Bijective (smulAlgEquivHom K' G L'))
+    (hfix : ∀ x : L', (∀ g : G, g • x = x) → ∃ k : K', algebraMap K' L' k = x) :
+    ∃ (z : L') (b' : Module.Basis G K' L') (t : MvPolynomial G F) (ht : t ≠ 0),
+      (∀ g : G, g • t = t) ∧ (∀ σ : G, b' σ = σ • z) ∧
+      ∃ (Φ' : Localization.Away t →ₐ[F] L') (ι : R →ₐ[F] Localization.Away t)
+        (Φ : R →ₐ[F] K'),
+        (∀ p : MvPolynomial G F,
+            Φ' (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+              = MvPolynomial.aeval (fun σ : G => σ • z) p) ∧
+        (∀ r : R, awayToFieldAlg (F := F) (G := G) t ht (ι r)
+            = algebraMap R (NoetherField F G) r) ∧
+        (∀ r : R, algebraMap K' L' (Φ r) = Φ' (ι r)) := by
+  classical
+  obtain ⟨t, ht, htinv, hRQ⟩ := exists_invariant_range_awayToFieldAlg (F := F) (G := G)
+    a s₀ hs₀ hRA
+  obtain ⟨z, b', hb', hne⟩ := lemma52Statement_nonzero_true (F := F) (G := G) K' L' b hb t ht
+  have hunit : IsUnit (noetherEval (F := F) z t) := by
+    rw [isUnit_iff_ne_zero]
+    exact hne
+  have heq : ∀ (g : G) (p : MvPolynomial G F),
+      noetherEval (F := F) z (g • p) = g • noetherEval (F := F) z p :=
+    fun g p => noetherEval_equivariant (F := F) (G := G) z g p
+  obtain ⟨Φ', ι, Φ, h1, h2, h3⟩ := exists_algHom_base_of_equivariant (F := F) (G := G)
+    (t := t) htinv ht hfix (noetherEval (F := F) z) heq hunit hRG hRQ
+  exact ⟨z, b', t, ht, htinv, hb', Φ', ι, Φ, h1, h2, h3⟩
+
+/-- **④ 端到端（含 `k`-半 · 单 `t` 版）** ✓✅：源侧数据 ＋ `S` 在 `R` 上**有限型** ✓ ＋
+`S` 到 Noether 域的 `R`-代数映射 ✓ ⟹ 存在**同一个不变** `t \neq 0` 使 **(i)** `R` 的像落进
+`\mathrm{range}(\mathrm{awayToFieldAlg}\ t)` ✓（⟹ `\Phi : R \toₐ[F] K'` ✓ 与三条相容等式 ✓）
+**且 (ii)** `S` 的像落进 `F[x_\sigma](1/t)` ✓（源「`S \subset F[x_\sigma](1/t)`」✓）。
+**⚠ 用点** ✓：`t` ＝ 源「**the product of all the `g`'s and `k`'s**」✓ —— `g`-半（r171 ✓）与
+`k`-半（r174 ✓）的分母经 `t_0 \cdot t_1` **并成**一个 `t` ✓（§4.37 ✓）后再**不变化** ✓（§4.39 ✓）。 -/
+theorem exists_algHom_base_of_source_data_with_image_le
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (a : ι → NoetherField F G) (s₀ : NoetherField F G) (hs₀ : s₀ ≠ 0)
+    {R : Type u} [CommRing R] [Algebra R (NoetherField F G)] [Algebra F R]
+    [IsScalarTower F R (NoetherField F G)]
+    (hRA : ∀ r : R, algebraMap R (NoetherField F G) r ∈
+      Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+    (hRG : ∀ (g : G) (r : R), g • algebraMap R (NoetherField F G) r
+      = algebraMap R (NoetherField F G) r)
+    {S : Type u} [CommRing S] [Algebra R S] [Algebra.FiniteType R S]
+    (φS : S →ₐ[R] NoetherField F G)
+    (K' L' : Type u) [Field K'] [Field L'] [Algebra F K'] [Algebra K' L'] [Algebra F L']
+    [IsScalarTower F K' L'] [MulSemiringAction G L'] [SMulCommClass G K' L']
+    [SMulCommClass G F L'] [Infinite K']
+    (b : Module.Basis G K' L') (hb : Function.Bijective (smulAlgEquivHom K' G L'))
+    (hfix : ∀ x : L', (∀ g : G, g • x = x) → ∃ k : K', algebraMap K' L' k = x) :
+    ∃ (z : L') (b' : Module.Basis G K' L') (t : MvPolynomial G F) (ht : t ≠ 0),
+      (∀ g : G, g • t = t) ∧ (∀ σ : G, b' σ = σ • z) ∧
+      (∀ s : S, φS s ∈ Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G))) ∧
+      ∃ (Φ' : Localization.Away t →ₐ[F] L') (ι : R →ₐ[F] Localization.Away t)
+        (Φ : R →ₐ[F] K'),
+        (∀ p : MvPolynomial G F,
+            Φ' (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+              = MvPolynomial.aeval (fun σ : G => σ • z) p) ∧
+        (∀ r : R, awayToFieldAlg (F := F) (G := G) t ht (ι r)
+            = algebraMap R (NoetherField F G) r) ∧
+        (∀ r : R, algebraMap K' L' (Φ r) = Φ' (ι r)) := by
+  classical
+  obtain ⟨t₀, ht₀, hle⟩ := exists_adjoin_inv_le_away_of_noether (F := F) (G := G)
+    (L := NoetherField F G) a s₀ hs₀
+  have hR₀ : ∀ r : R, algebraMap R (NoetherField F G) r ∈ Algebra.adjoin (MvPolynomial G F)
+      ({(algebraMap (MvPolynomial G F) (NoetherField F G) t₀)⁻¹} : Set (NoetherField F G)) :=
+    fun r => hle (hRA r)
+  obtain ⟨t₁, ht₁, hS₁⟩ := exists_image_le_away_of_finiteType (A := MvPolynomial G F)
+    (L := NoetherField F G) (R := R) (S := S) φS t₀ ht₀ hR₀
+  obtain ⟨t, ht, htinv, hmono⟩ := exists_invariant_mul (F := F) (G := G) (t₀ * t₁)
+    (mul_ne_zero ht₀ ht₁)
+  have hmono₀ : Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) t₀)⁻¹} : Set (NoetherField F G)) ≤
+      Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G)) :=
+    le_trans (adjoin_away_mono (A := MvPolynomial G F) (L := NoetherField F G) t₀ t₁ ht₁) hmono
+  have hmono₁ : Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) t₁)⁻¹} : Set (NoetherField F G)) ≤
+      Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G)) := by
+    refine le_trans ?_ hmono
+    have h := adjoin_away_mono (A := MvPolynomial G F) (L := NoetherField F G) t₁ t₀ ht₀
+    rwa [mul_comm t₁ t₀] at h
+  have hRQ : ∀ r : R, algebraMap R (NoetherField F G) r ∈
+      (awayToFieldAlg (F := F) (G := G) t ht).range :=
+    fun r => adjoin_inv_mem_range_awayToFieldAlg (F := F) (G := G) t ht _
+      (hmono₀ (hR₀ r))
+  have hS : ∀ s : S, φS s ∈ Algebra.adjoin (MvPolynomial G F)
+      ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G)) :=
+    fun s => hmono₁ (hS₁ s)
+  obtain ⟨z, b', hb', hne⟩ := lemma52Statement_nonzero_true (F := F) (G := G) K' L' b hb t ht
+  have hunit : IsUnit (noetherEval (F := F) z t) := by
+    rw [isUnit_iff_ne_zero]
+    exact hne
+  have heq : ∀ (g : G) (p : MvPolynomial G F),
+      noetherEval (F := F) z (g • p) = g • noetherEval (F := F) z p :=
+    fun g p => noetherEval_equivariant (F := F) (G := G) z g p
+  obtain ⟨Φ', ι, Φ, h1, h2, h3⟩ := exists_algHom_base_of_equivariant (F := F) (G := G)
+    (t := t) htinv ht hfix (noetherEval (F := F) z) heq hunit hRG hRQ
+  exact ⟨z, b', t, ht, htinv, hb', hS, Φ', ι, Φ, h1, h2, h3⟩
+
+end SourceDataEndToEnd
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -3477,6 +3711,10 @@ end BaseMapEndToEnd
 #print axioms awayToField_injective
 #print axioms exists_algHom_away_of_image_le
 #print axioms exists_algHom_base_of_equivariant
+#print axioms adjoin_inv_mem_range_awayToFieldAlg
+#print axioms exists_invariant_range_awayToFieldAlg
+#print axioms exists_algHom_base_of_source_data
+#print axioms exists_algHom_base_of_source_data_with_image_le
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit

@@ -109,7 +109,17 @@ compatibility of the action on the localization with the canonical map into the 
 what makes the preimages of the base elements fixed.  The two are then put together: the
 canonical map out of the localization is injective, so the base can be transported into the
 localization and its preimages are fixed there, and the fixed-field step produces the map of the
-base into the fixed field, so the whole chain from the base to the fixed field is a theorem -- and retract rationality along rational extensions |
+base into the fixed field, so the whole chain from the base to the fixed field is a theorem -- supplied
+from the source side with the missing input of that chain: the localization at a nonzero polynomial
+sits inside the range of the canonical map into the field, the inverse of the polynomial being reached
+through the ring inverse rather than through a field inverse, since a localization is only a
+commutative ring, so that the image of a base ring presented by a family together with the inverse of
+one element lies in that range once the multiplier is replaced by an invariant multiple; the result is
+an end-to-end theorem that, from that presentation, an equivariant evaluation map, and the fixed-field
+step, produces the map of the base into the fixed field of a Galois extension together with its
+compatibility equations, and a strengthened form in which a further finitely generated algebra over
+the base is placed inside one and the same invariant localization, so that the base and the descended
+algebra share a single multiplier -- and retract rationality along rational extensions |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
