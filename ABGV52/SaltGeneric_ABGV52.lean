@@ -5599,6 +5599,80 @@ end CarrierEndToEnd
 **⚠ 不声称** ✗：源 `theorem-5-1` 已证 ✗。 -/
 theorem theorem51_endToEnd_wired_registered : True := trivial
 
+/-! ## 4.61 **数据构造链 · 接线**：`(a)` 款与逐点不动**由定理导出**（第 206 轮）
+
+**⚠ 起点** ✓（**承 §168.6 第 1 项** ✓）：§168 的下一手 ＝ **数据构造链** ✓ —— 由 `\mathrm{IsRationalOver}` ✓
+**生成** `S` ✓／`t` ✓／`hle` ✓／`hS_{\rm fix}` ✓，与 §4.60 ① ✓（**载体具体化的端到端** ✓）相接 ✓。
+
+**🔴 可达性审计（判据先审可达性** ✓**，r196 纪律** ✓**）** ✓：该链**分解为四段** ✓ ——
+**①** **`t` 的构造（不变化** ✓**）** ✓ **可落** ✓（§4.23 ✓ 给非零 `t` ＋ 包含 ✓，再取 `t' := \prod_{\sigma} \sigma \bullet t` ✓
+（§4.6 ✓ **不变** ✓）并用 `\mathrm{adjoin\_away\_mono}` ✓ **搬包含** ✓）—— **本轮**未落在库 ✗（**下一手** ✓）；
+**②** **`(a)` 款**（`S \simeq_F \mathrm{Localization.Away}\ w` ✓）✓ **可落** ✓ —— **r188** ✓
+（`exists_algEquiv_localizationAway_of_adjoin_union_inv` ✓：**代数无关** ✓ ＋ **域生成** ✓ ＋ `s_0 \neq 0` ✓ ＋ `s_0 \in F[a]` ✓）；
+**③** **逐点不动** ✓ **可落** ✓ —— **§4.47** ✓（`smul_eq_self_of_mem_adjoin_of_fixed` ✓：`a` 与 `s_0` 均**不变** ✓）；
+**④** **`S \to \mathrm{Localization.Away}\ t` 的代数结构** ✗（＝ **§4.35 登记的 `hRA`** ✓，**在册** ✗ ——
+须由**载体步** `\mathrm{adjoin\_inv\_mem\_range\_awayToFieldAlg}` ✓ ＋ `\mathrm{awayToFieldAlg}` **单射** ✓ 造**截面** ✗）
+⟹ **判据下调** ✓：「数据构造链」⟹「**②③ 接线（本轮** ✓**）＋ ①（下一手** ✓**）＋ ④（在册** ✗**）**」✓。
+
+**🔴 本轮断指** ✓（**探针** ✓ `probe-r206a.lean` ✓ **rc=0** ✓、**零警告** ✓）：**一条**定理 ✓ ——
+**载体取指定子代数** `S := \mathrm{Algebra.adjoin}\ F\ (\mathrm{range}\ a \cup \{s_0, s_0^{-1}\})` ✓ ⟹
+**`(a)` 款** ✓ 与 **逐点不动** ✓ **由定理导出** ✓（**两项假设被消** ✓）。
+**⚠ 相对 §4.60 ① 的**弱化** ✓**：`ha` ✓ 与 `hS_{\rm fix}` ✓ **两项假设被消掉** ✓；载体从**任意子代数** ✓ 变为
+**指定的 `\mathrm{adjoin}`** ✓；**代价** ✓ ＝ 须给 `a`／`s_0` 的**源侧数据** ✓（代数无关 ✓／域生成 ✓／`s_0` 的两条 ✓／
+两者的**不变性** ✓）。 -/
+
+section NoetherAdjoinEndToEnd
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **数据构造链接线** ✓✅：**源侧数据**（`a` ✓／`s_0` ✓ 及其四条性质 ✓）＋ `t`（不变 ✓，非零 ✓）＋ **包含** ✓
+＋ 实例 ✓ ＋ **两项外部输入** ✓ ⟹ **有限档见证** ✓ —— **`(a)` 款** ✓ 与 **逐点不动** ✓ **已导出** ✓（r188 ✓／§4.47 ✓）。
+**⚠ 断言强度 ≤ 证据层级** ✓：**不声称**源 `theorem-5-1` 已证 ✗（假设表**仍含两项外部输入** ✓ ＋ **`hRA` 侧实例** ✓）。 -/
+theorem nonempty_genericExtensionWitnessFieldFinite_of_noetherAdjoin
+    {n : ℕ} {a : Fin n → NoetherField F G} {s₀ : NoetherField F G}
+    (hind : AlgebraicIndependent F a)
+    (hgen : IntermediateField.adjoin F (Set.range a) = ⊤)
+    (hs₀ : s₀ ≠ 0) (hs₀_mem : s₀ ∈ Algebra.adjoin F (Set.range a))
+    (ha_fix : ∀ (g : G) (i : Fin n), g • a i = a i)
+    (hs₀_fix : ∀ (g : G), g • s₀ = s₀)
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ g : G, g • t = t)
+    (hle : Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}) ≤ Subalgebra.restrictScalars F
+      (Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G))))
+    [Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away t)]
+    [IsScalarTower F ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})))
+      (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+      (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+      (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})),
+      awayToFieldAlg (F := F) (G := G) t ht
+          (algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away t) r)
+        = algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (NoetherField F G) r)
+    (hinf : Infinite F) :
+    Nonempty (GenericExtensionWitnessFieldFinite F G) :=
+  nonempty_genericExtensionWitnessFieldFinite_of_subalgebra
+    (F := F) (G := G) (S := Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (t := t)
+    ht htinv hle (smul_eq_self_of_mem_adjoin_of_fixed ha_fix hs₀_fix)
+    hact_map hRG hgal hProj hS₀R hinf
+    ⟨n, exists_algEquiv_localizationAway_of_adjoin_union_inv (F := F) (K := NoetherField F G)
+      hind hgen hs₀ hs₀_mem⟩
+
+end NoetherAdjoinEndToEnd
+
+/-- **登记** ✗：**数据构造链的余项账**（本节 ＋ §4.60 ✓／§4.48 ✓ 合读）——
+**已接线** ✓✅：**`(a)` 款** ✓（r188 ✓）＋ **逐点不动** ✓（§4.47 ✓）＋ **端到端** ✓（§4.60 ① ✓）；
+**余** ✗：**(i)** **`t` 的构造（不变化** ✓**）** ✓ **可落** ✓（§4.23 ✓ ＋ §4.6 ✓ ＋ `\mathrm{adjoin\_away\_mono}` ✓ —— **下一手** ✓）；
+**(ii)** **`S \to \mathrm{Localization.Away}\ t` 的代数结构** ✗（＝ **§4.35 的 `hRA`** ✓，**在册** ✗）；**(iii)** **两项外部输入** ✗
+（`hgal`／`hProj` ✓，**非本会话可落** ✗，§166.3 ✓）。**⚠ 不声称**源 `theorem-5-1` 已证 ✗。 -/
+theorem theorem51_dataChain_gap_registered : True := trivial
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -5713,6 +5787,8 @@ theorem theorem51_endToEnd_wired_registered : True := trivial
 #print axioms saltman1982_page_citations_audited
 #print axioms nonempty_genericExtensionWitnessFieldFinite_of_subalgebra
 #print axioms theorem51_endToEnd_wired_registered
+#print axioms nonempty_genericExtensionWitnessFieldFinite_of_noetherAdjoin
+#print axioms theorem51_dataChain_gap_registered
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv
