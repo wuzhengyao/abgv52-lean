@@ -130,7 +130,15 @@ map produced there is equivariant whenever the evaluation is, the group acting o
 factor and commuting with the scalars of the fixed field, and the dimension of the base change,
 which had been the only remaining input, is supplied by the rank of a Galois algebra over a field,
 so that a surjection of equal dimensions becomes an isomorphism preserving the group actions, as the
-source's definition of realization requires -- and retract rationality along rational extensions |
+source's definition of realization requires -- and now packaged end to end: the
+Galois structure of the base change, the action on the tensor product with its formula on pure
+tensors, and the finiteness of that tensor product are all supplied inside one statement, so that a
+caller brings the Galois structure of the localization, the projectivity input, and a linear
+equivariant evaluation, and receives the isomorphism preserving the group actions.  The packaging
+cannot be pushed further, and the reason is recorded in the file: the tensor product and the facts
+assumed of it mention the algebra structure on the fixed field, which the assembly point produces,
+so an identity between that structure and the produced map is the price of stating the result, and
+it is registered rather than claimed away -- and retract rationality along rational extensions |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |

@@ -83,6 +83,8 @@ import ABGV52.GenericExtension_ABGV52
 import Mathlib.Algebra.MvPolynomial.Funext
 import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 import Mathlib.FieldTheory.Galois.NormalBasis
+import ABGV52.BaseChangeProj_ABGV52
+import Mathlib.RingTheory.TensorProduct.Finite
 
 universe u v
 
@@ -3953,6 +3955,86 @@ theorem exists_equivariant_algEquiv_tensorProduct_of_galois {t : MvPolynomial G 
 
 end EquivariantTensorEquiv
 
+/-! ## 4.45 **装配 (c) 款张量侧 · 端到端打包**：**(b) 款 ＋ 秩 ＋ 作用全内部** ⟹ **等变同构**（第 185 轮）
+
+**⚠ 起点** ✓（**承 §147.6 第 1 项** ✓，**仍压 (c) 款张量侧** ✓，**不转项** ✗）：r184 已把张量同构落为库内定理 ✓，
+但其**输入**仍要调用点自备：`A := K' \otimes_R S_0` 的 `G`-Galois 性 ✗、`G`-作用与其逐项公式 ✗
+（有限型 ✓／非平凡 ✓ 亦须自备 ✓）。本轮把这些**全部内部化** ✓。
+
+**⚠ 一件** ✓：`exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange` ✓✅✅ ——
+**输入** ✓ ＝ `S_0/R` 的 `G`-Galois 性 ✓ ＋ `\mathrm{GaloisProjectiveHyp}` ✓ ＋ `\Psi`（`R`-**线性** ✓ ＋ **等变** ✓）
+＋ 共轭族数据 ✓；**内部** ✓ ＝ r180 的 `\mathrm{galoisBaseChange\_tensorLeft}` ✓（**(b) 款** ✓：`A`-Galois 性 ✓
+＋ 作用 ✓ ＋ 相容项 ✓ —— **三行全内部** ✓）＋ `\mathrm{tensorActHom}` 的**逐项公式** ✓ ＋
+`\mathrm{Module.Finite.base\_change}` ✓（有限型由 `\mathrm{GaloisProjectiveHyp}` ✓ 供 ✓）＋ r184 ② ✓
+⟹ `\exists e : L' \simeq_{K'} A` ✓ 且 **等变** ✓。
+
+**🔴 ⚠ 审计结论（**先审后落** ✓，**本轮实测** ✗）**：**为何不能把 `t` 与 `\Phi` 全内部化** ✗
+（**实例同一性障碍** ✗）：张量侧的事实（`G`-作用 ✗／`A` 的 Galois 性 ✗／`[\mathrm{Nontrivial}\ A]` ✗）
+**必须在陈述处**就 `[\mathrm{Algebra}\ R\ K']` **成立** ✓，而该结构由 §4.41 链**产出** ✗ ⟹
+**同一语句内**既产出该结构、又对**产出后**的结构加前提 ✗ **不可写** ✗（`\mathrm{TensorProduct}` 的**类型项**
+随实例变 ✗，前提的真值也随之变 ✗）。**⟹ 正解 ＝ 本件** ✓（`[\mathrm{Algebra}\ R\ K']` 作**输入** ✓，
+`R`-线性以 `\mathrm{algebraMap}` **形**给出 ✓）：**调用点配方** ✓（**两行** ✓）——
+**①** §4.41 链给 `\Phi` ✓；**②** `letI := \Phi.\mathrm{toRingHom.toAlgebra}` ✓；**③** `h\Psi_R` 由链的**第三式**
+（`\mathrm{algebraMap}\ K'\ L' \circ \Phi = \Phi' \circ \iota` ✓）＋ `\mathrm{IsScalarTower}\ R\ K'\ L'` ✓ 得 ✓。
+**⚠ 口径** ✓：**"同一性方程"** ✓（而非"零手写" ✗）是本件**可陈述性**的**代价** ✓ —— **如实登记** ✗，
+**不声称**已达成"调用点零手写" ✗。
+
+**⚠ 工艺读数（本轮新增两条）** ✓：
+**① 档位再现** ✗✓：`\mathrm{tensorMulSemiringAction}`／`\mathrm{tensorActHom}`／`\mathrm{tensorAct\_smul\_comm}`
+为 **`Type` 档** ✗（**承 r180** ✓）⟹ **本节写 `Type`** ✓（`\mathrm{Type}\ u` 档**实测报宇宙不匹配** ✗）；
+**② `\mathrm{galoisBaseChange\_tensorLeft}` 的结论自带 `letI`** ✓ ⟹ 调用点**先 `letI` 同一项** ✓ 即可对接 ✓
+（**无需**重演三行 ✗）。 -/
+
+section TensorEndToEnd
+
+open TensorProduct
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G]
+
+/-- **(c) 款张量侧 · 端到端打包** ✓✅✅：`S_0/R` 的 `G`-Galois 性 ✓ ＋ `\mathrm{GaloisProjectiveHyp}` ✓
+＋ `\Psi`（`R`-**线性** ✓ ＋ **等变** ✓）＋ 共轭族数据 ✓ ⟹ **等变同构** `L' \simeq_{K'} (K' \otimes_R S_0)` ✓
+—— **（b）款的 `A`-Galois 性 ＋ `G`-作用 ＋ 相容项 ＋ 有限型全在证明内** ✓
+（**⚠ 口径** ✓：`[\mathrm{Algebra}\ R\ K']` 为**输入** ✓，`R`-线性以 `\mathrm{algebraMap}` 形给出 ✓ ——
+**实例同一性障碍** ✗ 使"全内部化"不可陈述 ✗，配方见 §4.45 节头 ✓）。 -/
+theorem exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange
+    {t : MvPolynomial G F}
+    {R : Type} [CommRing R] [Algebra R (Localization.Away t)] [Algebra F R]
+    [IsScalarTower F R (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    (hRG : ∀ (g : G) (r : R) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup R (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp R (Localization.Away t) G hRG)
+    {K' : Type} [Field K'] [Algebra R K'] [Algebra F K'] [IsScalarTower F R K']
+    {L' : Type} [Field L'] [Algebra K' L'] [Algebra F L'] [Algebra R L']
+    [IsScalarTower R K' L'] [IsScalarTower F K' L']
+    [MulSemiringAction G L'] [SMulCommClass G K' L']
+    [Nontrivial (TensorProduct R K' (Localization.Away t))]
+    (Ψ : Localization.Away t →ₐ[F] L')
+    (hΨR : ∀ r : R, Ψ (algebraMap R (Localization.Away t) r) = algebraMap R L' r)
+    (hΨG : ∀ (g : G) (x : Localization.Away t), Ψ (g • x) = g • Ψ x)
+    {z : L'} {b' : Module.Basis G K' L'} (hb : ∀ σ : G, b' σ = σ • z)
+    (hX : ∀ σ : G, Ψ (algebraMap (MvPolynomial G F) (Localization.Away t)
+      (MvPolynomial.X σ)) = σ • z) :
+    ∃ e : L' ≃ₐ[K'] (TensorProduct R K' (Localization.Away t)),
+      letI := BTier.tensorMulSemiringAction (R := R) (T := K') (S := Localization.Away t) hRG
+      ∀ (g : G) (y : L'), e (g • y) = g • e y := by
+  let _ := BTier.tensorMulSemiringAction (R := R) (T := K') (S := Localization.Away t) hRG
+  have hact : ∀ (g : G) (k : K') (x : Localization.Away t),
+      g • (k ⊗ₜ[R] x) = k ⊗ₜ[R] (g • x) := by
+    intro g k x
+    change BTier.tensorActHom (T := K') hRG g (k ⊗ₜ[R] x) = k ⊗ₜ[R] (g • x)
+    rw [BTier.tensorActHom, Algebra.TensorProduct.map_tmul]
+    rfl
+  have hK'G : ∀ (g : G) (k : K') (w : TensorProduct R K' (Localization.Away t)),
+      g • (k • w) = k • (g • w) := fun g k w => BTier.tensorAct_smul_comm hRG g k w
+  have hgalK' : BTier.IsGaloisWithGroup K' (TensorProduct R K' (Localization.Away t)) G hK'G :=
+    BTier.galoisBaseChange_tensorLeft hRG hgal hProj
+  have _ : Module.Finite R (Localization.Away t) := (hProj hgal).1
+  exact exists_equivariant_algEquiv_tensorProduct_of_galois (F := F) (G := G) (t := t)
+    hact hK'G hgalK' Ψ hΨR hΨG z b' hb hX
+
+end TensorEndToEnd
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -4011,6 +4093,7 @@ end EquivariantTensorEquiv
 #print axioms nonempty_algEquiv_tensorProduct_of_finrank
 #print axioms realizationMap_equivariant
 #print axioms exists_equivariant_algEquiv_tensorProduct_of_galois
+#print axioms exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit
