@@ -165,7 +165,9 @@ sync.  The items added since then are:
   tensor product with the big ring once the registered projectivity input is
   available, with a data-level non-vacuity probe and an application lock, and now also the composite with a
 descent isomorphism, which is the embedding of the descended algebra into the field, with its own
-data-level non-vacuity probe.
+data-level non-vacuity probe.  The base change of a Galois algebra to a tensor factor is also
+packaged with its three lines of wiring internal, so that a caller supplies the Galois structure,
+the single named input, and nontriviality, and nothing else.
 - `GenericExtension_ABGV52.lean`: definition 1.1, the `E(G)`-slice language (realization property,
   representing and generic objects, the lifting property).  The file carries two transcriptions of
   definition 1.1 -- the three clauses listed flat, and the `E(G)`-slice reading as a representing

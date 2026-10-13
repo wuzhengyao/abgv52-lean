@@ -1489,6 +1489,60 @@ theorem descendedEmbedding_data_nonempty :
 
 end DescendedEmbedding
 
+/-! ## **(b) 款 接线完成形**：**三行接线内部化**（第 180 轮）
+
+**⚠ 起点** ✓（KB §132.3「**余（接线三行，装配点）**」✓）：`(b)` 款核心 ✓（`isGaloisWithGroup_tensorLeft_of_galoisProjective` ✓）
+**要求调用点手写三行** ✗：**①** `letI := tensorMulSemiringAction hRG` ✓；**②** `hcanon`（由 `Algebra.TensorProduct.map_tmul` ✓）；
+**③** `hR'G := fun g r z => tensorAct_smul_comm hRG g r z` ✓ —— 与 `…_strongest` 第 8 步**同款** ✓（**该三行已在库内实测** ✓）。
+
+**⚠ 本轮（断指）** ✓：把三行**收进一条库内定理** ✓ ⟹ 调用点**只需** `hRG`／`hgal`／`hProj` ＋ `[Nontrivial]` ✓。
+**⚠ 关键实现细节** ✓：`tensorMulSemiringAction`／`tensorAct_smul_comm`（`GenericExtension_ABGV52.lean` ✓）为 **`Type` 档** ✗
+（**非全域多态** ✗）⟹ 本节的变量写作 **`Type`** ✓（**不在 `Type u` 段内** ✓ —— **实测：`Type u` 档报 universe mismatch** ✗）。
+**⚠ 作用即 `tensorActHom hRG g`** ✓ ⟹ `hcanon` 由 `tensorActHom` 展开 ＋ **`Algebra.TensorProduct.map_tmul`** ✓ 收口 ✓。 -/
+
+section BCWiringComplete
+
+variable {R S T : Type} [CommRing R] [CommRing S] [CommRing T] [Algebra R S] [Algebra R T]
+variable {G : Type} [Group G] [Fintype G] [MulSemiringAction G S]
+
+/-- **(b) 款 接线完成形（正档）** ✓✅：`S/R` 为 `G`-Galois ✓ ＋ **单一具名输入** `GaloisProjectiveHyp` ✓ ＋ `[Nontrivial (T \otimes_R S)]` ✓ ⟹
+**`T \otimes_R S` 在 `T` 上为 `G`-Galois** ✓ —— **作用与两条相容性由本件内部供给** ✓（**调用点不再手写三行** ✓）。 -/
+theorem galoisBaseChange_tensorLeft
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hgal : IsGaloisWithGroup R S G hRG) (hProj : GaloisProjectiveHyp R S G hRG)
+    [Nontrivial (TensorProduct R T S)] :
+    letI : MulSemiringAction G (TensorProduct R T S) := tensorMulSemiringAction hRG
+    IsGaloisWithGroup T (TensorProduct R T S) G
+      (fun g r z => tensorAct_smul_comm hRG g r z) := by
+  let _ := tensorMulSemiringAction (R := R) (T := T) (S := S) hRG
+  refine isGaloisWithGroup_tensorLeft_of_galoisProjective (R := R) (S := S) (T := T)
+    hRG ?_ (fun g r z => tensorAct_smul_comm hRG g r z) hgal hProj
+  intro g x
+  show tensorActHom hRG g ((1 : T) ⊗ₜ[R] x) = (1 : T) ⊗ₜ[R] (g • x)
+  rw [tensorActHom, Algebra.TensorProduct.map_tmul]
+  rfl
+
+/-- **(b) 款 接线完成形（`Subsingleton G` 档）** ✓：该档 ① 款**免费** ✓ ⟹ **不需** `[Nontrivial (T \otimes_R S)]` ✓。 -/
+theorem galoisBaseChange_tensorLeft_of_subsingletonGroup [Subsingleton G]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hgal : IsGaloisWithGroup R S G hRG) (hProj : GaloisProjectiveHyp R S G hRG) :
+    letI : MulSemiringAction G (TensorProduct R T S) := tensorMulSemiringAction hRG
+    IsGaloisWithGroup T (TensorProduct R T S) G
+      (fun g r z => tensorAct_smul_comm hRG g r z) := by
+  let _ := tensorMulSemiringAction (R := R) (T := T) (S := S) hRG
+  refine isGaloisWithGroup_tensorLeft_of_galoisProjective_of_subsingletonGroup
+    (R := R) (S := S) (T := T) hRG ?_ (fun g r z => tensorAct_smul_comm hRG g r z) hgal hProj
+  intro g x
+  show tensorActHom hRG g ((1 : T) ⊗ₜ[R] x) = (1 : T) ⊗ₜ[R] (g • x)
+  rw [tensorActHom, Algebra.TensorProduct.map_tmul]
+  rfl
+
+/-- **登记** ✗：**非平凡性的供给** ✓ —— 装配中由**下降同构** `S'' \otimes_{R''} L^G \cong L` ✓ 经
+`nontrivial_tensorProduct_of_nontrivial_tensorProduct` ✓ 给出 ✓（**与三行接线分离** ✓ —— 本件**不隐藏**它 ✗）。 -/
+theorem galoisBaseChange_wiring_gap_registered : True := trivial
+
+end BCWiringComplete
+
 /-! ## 公理闸门 -/
 
 #print axioms dual_eval_injective_of_projective
@@ -1568,5 +1622,8 @@ end DescendedEmbedding
 #print axioms injective_tmul_one_gap_registered
 #print axioms injective_descended_embedding
 #print axioms descendedEmbedding_data_nonempty
+#print axioms galoisBaseChange_tensorLeft
+#print axioms galoisBaseChange_tensorLeft_of_subsingletonGroup
+#print axioms galoisBaseChange_wiring_gap_registered
 
 end ABGV52.BTier
