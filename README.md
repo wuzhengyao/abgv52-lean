@@ -168,7 +168,12 @@ clauses the assembly had assumed are supplied rather than hypothesized, the fiel
 restriction and the finite-dimensionality input being registered alongside, and the source's
 lemma on the normal basis closed on top of that bridge: its two data hypotheses, a basis and the
 identification, are supplied rather than assumed, in the form the source writes, with the unit
-clause stated literally and the finiteness input registered |
+clause stated literally and the finiteness input registered, and the realization clause restated
+with finite-dimensionality inside its quantifier and proved outright in that form, without the
+data hypothesis the assembly had carried -- a separate name from the faithful clause, since the
+source's clause does not carry finiteness, with a definitional lock whose discriminating power is
+checked against a mutant that drops that binder, the faithful clause implying the restated one and
+the converse registered as the finiteness gap |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
@@ -550,6 +555,19 @@ unit, alongside the nonvanishing form that had been used.  The statement the lib
 as a named residual is thereby accounted for in corrected form, its uncorrected version being
 false as it stands and kept only as a record, and the finiteness input is registered as the one
 remaining hypothesis of the lemma.
+
+The realization clause is now available at a level where finite-dimensionality need not be assumed
+as a hypothesis of the statement.  The field-level clause has been restated with that finiteness
+inside its quantifier, and in that form it is proved outright from the source-side data alone: the
+data hypothesis the assembly had carried is discharged by the bridge, so the clause follows without
+it.  The restatement is a separate name rather than an edit of the faithful clause, because the
+source's clause does not carry finiteness -- it is a consequence of the cited projectivity of a
+Galois extension over its base -- and writing that assumption into the faithful statement would be a
+deviation from it.  A definitional shape lock keeps the two apart, and its discriminating power is
+checked against a mutant with the finiteness binder removed; the faithful clause implies the
+restated one, while the converse is exactly the finiteness gap, which is registered rather than
+claimed.  The witness at that level, and the conjunction of the three clauses there, are recorded as
+the next steps.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision

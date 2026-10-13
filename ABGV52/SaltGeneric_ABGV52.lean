@@ -5155,6 +5155,120 @@ theorem lemma52_finiteness_gap_registered : True := trivial
 **有限性** ✗ 与**环档** ✗ 两条 ✓（**不声称**源 `theorem-5-1` 整体已证 ✗ —— 那是 (c) 款**环档**的事 ✓）。 -/
 theorem lemma52_residual_closed_registered : True := trivial
 
+/-! ## 4.56 **域档 (c) 款的有限档**：「**有限性入 binder**」＋ **`hdata` 已删的装配**（第 201 轮）
+
+**⚠ 起点** ✓（**承 §4.54 ⑨／§4.55 ④ 的两条待办** ✗）：`RealizationPropertyField`（§4.51 ✓）的 **∀-形未含**
+`[FiniteDimensional K L]` ✗ ⟹ §4.54 ⑤ 的供给**不能**直接填入该 binder ✗。
+
+**🔴 本轮断指** ✓：落**有限档变体谓词** ✓（**`[FiniteDimensional K L]` 入 ∀-binder** ✓，＝ 源 `proposition-0-2(a)` 的
+**有限性显式化** ✓）＋ 其 **`rfl` 型外形锁** ✓（**判别力已证** ✓：变异件**删去该 binder** ⟹ `rfl` 失败 ✓，
+`probe-r201b.lean` ✓ 读数 ＝ `Not a definitional equality` ✓）＋ **强度序** ✓（**源忠实 ⟹ 有限档** ✓，
+即有限档为**弱化档** ✓ —— 与 r198 的「环 ⟹ 域」**同款单向** ✓）＋ **装配件** ✓✅（**`hdata` 已删** ✗⟹✓：
+由 §4.54 ⑤ ✓ 现场供给 ✓）。
+
+**⚠ 口径（不越界** ✗**）** ✓：**源忠实谓词 `RealizationPropertyField` 一字不动** ✓ —— 把有限性写进**它**的 binder
+即**口径偏离** ✗（源 `definition-1-1`(c) ✓ 的量词**不含**有限性 ✓，它是 CHR 理论的**推论** ✓）
+⟹ **另立名** ✓（`\mathrm{RealizationPropertyFieldFinite}` ✓），**两档并存** ✓、**强度序**明示 ✓。
+**⚠ 断言强度 ≤ 证据层级** ✓：本节**不声称**源 (c) 款已证 ✗ —— 有限档**弱于**源忠实档 ✓，
+且源忠实档的**唯一缺口**仍是**有限性** ✗（源 `proposition-0-2(a)` ✓／[CHR68] p. 13 ✓，**不在 `raw/`** ✗）。 -/
+
+/-- **有限档 (c) 款谓词** ✓：`RealizationPropertyField`（§4.51 ✓）的**同一形** ✓，唯 **`[FiniteDimensional K L]` 入 ∀-binder** ✓
+（＝ 源 `proposition-0-2(a)` 的**有限性显式化** ✓）。
+**⚠ 档位** ✓：本谓词**弱于**源忠实谓词 ✓（`realizationPropertyFieldFinite_of_realizationPropertyField` ✓ 单向 ✓）；
+**⚠ 非**源形 ✗（源 (c) 的量词不含有限性 ✓）—— **两档并存** ✓，**勿混用** ✗。 -/
+def RealizationPropertyFieldFinite (F : Type*) [Field F] (G : Type*) [Group G] [Fintype G]
+    (R S : Type*) [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] : Prop :=
+  ∀ (K : Type) [Field K] [Algebra F K]
+    (L : Type) [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+    [MulSemiringAction G L] [FiniteDimensional K L]
+    (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+    BTier.IsGaloisWithGroup K L G hKL →
+      ∃ (φ : R →ₐ[F] K),
+        letI : Algebra R K := φ.toRingHom.toAlgebra
+        Nonempty (L ≃ₐ[K] (TensorProduct R K S))
+
+/-- **外形锁** ✓（`rfl` 型 ✓）：有限档谓词与**含 `[FiniteDimensional K L]` 的展开体逐字相同** ✓ ——
+**binder 被删／被移** ✗ 即编译失败 ✓。
+**⚠ 判别力（L43／r198 五件套** ✓**）** ✓：**变异件负例已实跑** ✓（`probe-r201b.lean` ✓）——
+**变异件 ＝ 删去 `[FiniteDimensional K L]`** ✗（＝ 源忠实形 ✓）**使本 `rfl` 失败** ✓
+（读数 ＝ `Not a definitional equality` ✓，`rc=1` ✓）⟹ 本锁**能**分辨两档 ✓。 -/
+theorem RealizationPropertyFieldFinite.shape {F : Type*} [Field F] {G : Type*} [Group G] [Fintype G]
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] :
+    (RealizationPropertyFieldFinite F G R S)
+      = (∀ (K : Type) [Field K] [Algebra F K]
+          (L : Type) [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+          [MulSemiringAction G L] [FiniteDimensional K L]
+          (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+          BTier.IsGaloisWithGroup K L G hKL →
+            ∃ (φ : R →ₐ[F] K),
+              letI : Algebra R K := φ.toRingHom.toAlgebra
+              Nonempty (L ≃ₐ[K] (TensorProduct R K S))) :=
+  rfl
+
+/-- **强度序（可证方向）** ✓：**源忠实 ⟹ 有限档** ✓ —— 把有限档的量词实例（含 `[FiniteDimensional K L]` ✓）
+喂给源忠实形即可 ✓；**反向未证** ✗（那正是**有限性缺口** ✓，**登记** ✓）。
+**⚠ 意义** ✓：本条把「有限档是**弱化档**」形式化 ✓（**不声称**严格性 ✗，承 r198 ✓）。 -/
+theorem realizationPropertyFieldFinite_of_realizationPropertyField
+    {F : Type*} [Field F] {G : Type*} [Group G] [Fintype G]
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] (h : RealizationPropertyField F G R S) :
+    RealizationPropertyFieldFinite F G R S := by
+  intro K _ _ L _ _ _ _ _ _ hKL hgal
+  exact h K L hKL hgal
+
+section RealizationFieldFinite
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **有限档 (c) 款 · 源侧总装（`hdata` 已删）** ✓✅：**§4.51 的全部源侧数据** ✓ ＋ **`F` 无限** ✓
+⟹ **`RealizationPropertyFieldFinite F G R S_0`** ✓ —— **不再**以 `hdata`（r196 ✓）为假设 ✓
+（由 §4.54 ⑤ ✓ **现场供给** ✓）。
+**⚠ 与 §4.51 之别** ✓：**仅**少了 `hdata` ✓（其余假设**逐条相同** ✓）⟹ 本件的**假设表严格短于** §4.51 ✓；
+**代价** ✓：结论**弱化**为有限档 ✓（**如实登记** ✓，**不声称**源 (c) ✓）。 -/
+theorem realizationPropertyFieldFinite_of_sourceData
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ g : G, g • t = t)
+    {R : Type} [CommRing R] [Algebra R (Localization.Away t)] [Algebra F R]
+    [IsScalarTower F R (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    [Algebra R (NoetherField F G)] [IsScalarTower F R (NoetherField F G)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : R) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup R (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp R (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : R,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap R (Localization.Away t) r)
+        = algebraMap R (NoetherField F G) r)
+    (hRQ : ∀ r : R,
+      algebraMap R (NoetherField F G) r ∈ (awayToFieldAlg (F := F) (G := G) t ht).range)
+    (hRGpoint : ∀ (g : G) (r : R),
+      g • algebraMap R (NoetherField F G) r = algebraMap R (NoetherField F G) r)
+    (hinf : Infinite F) :
+    RealizationPropertyFieldFinite F G R (Localization.Away t) := by
+  intro K _ _ L _ _ _ _ _ _ hKL hgalKL
+  let _ : SMulCommClass G K L := ⟨fun g k x => hKL g k x⟩
+  let _ : SMulCommClass G F L := ⟨fun g f x => by
+    rw [← IsScalarTower.algebraMap_smul K f x, ← IsScalarTower.algebraMap_smul K f (g • x),
+      hKL g (algebraMap F K f) x]⟩
+  obtain ⟨b, hb, hfix⟩ := exists_chrData_of_isGaloisWithGroup hKL hgalKL
+  let _ : Infinite K := infinite_of_algebra_of_infinite (F := F) (K := K)
+  obtain ⟨φ, e, _he⟩ := exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
+    (F := F) (G := G) (t := t) ht htinv hact_map hRG hgal hProj hS₀R hRQ hRGpoint b hb hfix
+  refine ⟨φ, ?_⟩
+  let _ : Algebra R K := φ.toRingHom.toAlgebra
+  exact ⟨e⟩
+
+end RealizationFieldFinite
+
+/-- **登记** ✗：**有限档已「除源侧数据外无条件」** ✓✅（**`hdata` 已删** ✓）；**源忠实档仍待有限性** ✗ ——
+其唯一缺口 ＝ `[FiniteDimensional K L]` ✓（源 `proposition-0-2(a)` ✓／[CHR68] p. 13 ✓，**不在 `raw/`** ✗；
+库内 `BTier.GaloisProjectiveHyp` ✓ **未证** ✗）。
+**⚠ 不声称** ✗：源 `definition-1-1`(c) ✓（**无有限性 binder** 的形 ✓）**未证** ✗；**两档并存** ✓，**勿混用** ✗。 -/
+theorem realizationPropertyFieldFinite_gap_registered : True := trivial
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -5249,6 +5363,11 @@ theorem lemma52_residual_closed_registered : True := trivial
 #print axioms lemma52Statement_unit_of_isGaloisWithGroup
 #print axioms lemma52_finiteness_gap_registered
 #print axioms lemma52_residual_closed_registered
+#print axioms RealizationPropertyFieldFinite
+#print axioms RealizationPropertyFieldFinite.shape
+#print axioms realizationPropertyFieldFinite_of_realizationPropertyField
+#print axioms realizationPropertyFieldFinite_of_sourceData
+#print axioms realizationPropertyFieldFinite_gap_registered
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv
