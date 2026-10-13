@@ -173,7 +173,11 @@ with finite-dimensionality inside its quantifier and proved outright in that for
 data hypothesis the assembly had carried -- a separate name from the faithful clause, since the
 source's clause does not carry finiteness, with a definitional lock whose discriminating power is
 checked against a mutant that drops that binder, the faithful clause implying the restated one and
-the converse registered as the finiteness gap |
+the converse registered as the finiteness gap, and the witness reached at that level: the three
+clauses there are packaged into a witness of their own, and from the source-side data alone -- with
+no data hypothesis, the realization clause being supplied on the spot -- such a witness is obtained,
+the first witness in the library that needs nothing beyond that data, with the three levels of
+witness recorded side by side |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
@@ -566,8 +570,13 @@ Galois extension over its base -- and writing that assumption into the faithful 
 deviation from it.  A definitional shape lock keeps the two apart, and its discriminating power is
 checked against a mutant with the finiteness binder removed; the faithful clause implies the
 restated one, while the converse is exactly the finiteness gap, which is registered rather than
-claimed.  The witness at that level, and the conjunction of the three clauses there, are recorded as
-the next steps.
+claimed.  The witness at that level, and the conjunction of the three clauses there, are now in
+place: the three clauses are packaged into a witness of their own, and from the source-side data
+alone -- no data hypothesis being needed, since the realization clause is supplied on the spot --
+such a witness is obtained.  It is the first witness in the library that asks for nothing beyond
+that data, and it is a witness of the finite-level, field-level form rather than of the source's
+clause, so the three levels of witness now stand side by side, each with its own hypothesis table,
+and the source-level one is registered as still open.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
