@@ -764,3 +764,15 @@ empty classes; the claim that the data layer implied non-emptiness of the hypoth
 withdrawn and the probe is marked as showing only the data layer.  The instance is not, however,
 the pair the wiring uses, so the satisfiability of the wiring's own hypothesis table remains
 unverified, with a candidate instance recorded for it.
+
+The source side of that table is now exhibited, over the rational field with the trivial group: a
+transcendence basis of the Noether field, an element generating it, the two invariance conditions,
+the infinite base field, and a multiplier with its nonvanishing, its invariance and the containment.
+The algebraic independence is the library's for the polynomial variables, transported into the
+fraction field and reindexed; the generation clause reduces to the fact that every element of the
+field is a quotient of polynomial values; and the invariance conditions hold because the group is a
+singleton, independently of the shape of the action.  The wiring's hypothesis table is therefore not
+empty on the source side.  What remains outside this witness is the three instances with the
+commutativity clause and the two inputs; their sufficient condition is that the localization at the
+multiplier be isomorphic to the algebra itself, which holds in the exhibited instance and is
+registered as the next step.

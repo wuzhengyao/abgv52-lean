@@ -560,4 +560,107 @@ theorem faithfulSMul_subalgebra_away_of_noetherAdjoin {F : Type} [Field F] {G : 
 
 #print axioms faithfulSMul_subalgebra_away_of_noetherAdjoin
 
+/-- **接线假设表的源侧整表（L1 非空性）** ✓✅（第 237 轮 ✓；**自造件** ✓）：
+**九项源侧条件同时可满足** ✓ —— 见证 = **`F = ℚ`** ✓、**`G = PUnit`** ✓、**`a = X`** ✓（**单点族的唯一元** ✓）、
+**`s₀ = X`** ✓、**`T = X`** ✓。
+**⚠ 各项来历** ✓：**`hind`** ✓ 由 **`MvPolynomial.algebraicIndependent_X`** ✓（**库内** ✓）
+经 **`AlgebraicIndependent.comp`** ✓ 重标号 ＋ **`aeval_algebraMap_apply`** ✓ ＋ **`IsFractionRing.injective`** ✓
+搬到分式域 ✓；**`hgen`** ✓ 由 **`comap` ＋ `MvPolynomial.adjoin_range_X`** ✓ ＋
+**`IsFractionRing.div_surjective`** ✓（**每个元都是多项式之商** ✓）得 ✓；
+**`hle`** ✓ 由 `x = algebraMap (X ())` ✓（**`Subalgebra.algebraMap_mem`** ✓）与 `x⁻¹` ✓（**生成元** ✓）得 ✓；
+**`ha_fix`／`hs₀_fix`／`hTinv`** ✓ 由 **`PUnit` 单点** ✓（`Subsingleton.elim` ＋ `one_smul` ✓）—— **与作用的具体形无关** ✓。
+**⚠ 意义** ✓（**L1** ✓）：**接线假设表的源侧不再是「空类」** ✓ —— 与 §198（**端点侧非空** ✓）合读 ⟹
+**r229--r231 的接线定理的假设表在源侧可满足** ✓。
+**⚠ 余项** ✓（**如实** ✓）：**三实例 ＋ `hRG` ＋ `hδ` ＋ `hProj`** ✗ **未在本见证内** ✗ ——
+**其充分条件 ＝ `Localization.Away T ≅ ↥S`** ✓（**下一手** ✓：本档下 `Localization.Away X ≅ ℚ[X, X⁻¹] ≅ ↥S` ✓）。
+**⚠ 不声称** ✗：**接线假设表的整体非空性未核** ✗（**只核到源侧** ✓）。 -/
+theorem exists_noetherWiringData_pUnit_rat :
+    ∃ (a : Fin 1 → NoetherField ℚ PUnit.{1}) (s₀ : NoetherField ℚ PUnit.{1})
+      (T : MvPolynomial PUnit.{1} ℚ),
+      AlgebraicIndependent ℚ a ∧ IntermediateField.adjoin ℚ (Set.range a) = ⊤ ∧
+      s₀ ≠ 0 ∧ s₀ ∈ Algebra.adjoin ℚ (Set.range a) ∧
+      (∀ (g : PUnit.{1}) (i : Fin 1), g • a i = a i) ∧
+      (∀ g : PUnit.{1}, g • s₀ = s₀) ∧ Infinite ℚ ∧
+      T ≠ 0 ∧ (∀ g : PUnit.{1}, g • T = T) ∧
+      Algebra.adjoin ℚ (Set.range a ∪ {s₀, s₀⁻¹}) ≤ Subalgebra.restrictScalars ℚ
+        (Algebra.adjoin (MvPolynomial PUnit.{1} ℚ)
+          ({(algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}) T)⁻¹}
+            : Set (NoetherField ℚ PUnit.{1}))) := by
+  let x : NoetherField ℚ PUnit.{1} :=
+    algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+      (MvPolynomial.X PUnit.unit)
+  have hX : AlgebraicIndependent ℚ (fun _ : PUnit.{1} => x) := by
+    rw [algebraicIndependent_iff]
+    intro p hp
+    have h1 : (MvPolynomial.aeval (fun _ : PUnit.{1} => x)) p
+        = algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          ((MvPolynomial.aeval MvPolynomial.X) p) :=
+      MvPolynomial.aeval_algebraMap_apply (NoetherField ℚ PUnit.{1}) MvPolynomial.X p
+    rw [MvPolynomial.aeval_X_left_apply] at h1
+    rw [h1] at hp
+    exact IsFractionRing.injective _ _ (by rw [hp, map_zero])
+  have hind : AlgebraicIndependent ℚ (fun _ : Fin 1 => x) :=
+    hX.comp (fun _ : Fin 1 => PUnit.unit) (fun a b _ => Subsingleton.elim a b)
+  have hset : Set.range (fun _ : Fin 1 => x) = {x} := by
+    ext y
+    constructor
+    · rintro ⟨i, rfl⟩
+      exact Set.mem_singleton x
+    · intro hy
+      exact ⟨0, (Set.mem_singleton_iff.mp hy).symm⟩
+  have hgen : IntermediateField.adjoin ℚ (Set.range (fun _ : Fin 1 => x)) = ⊤ := by
+    rw [hset]
+    refine le_antisymm le_top ?_
+    have hcomap : Subalgebra.comap
+        (IsScalarTower.toAlgHom ℚ (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}))
+        (IntermediateField.adjoin ℚ {x}).toSubalgebra = ⊤ := by
+      refine top_unique ?_
+      rw [← MvPolynomial.adjoin_range_X (R := ℚ) (σ := PUnit.{1})]
+      refine Algebra.adjoin_le ?_
+      rintro _ ⟨g, rfl⟩
+      rw [Subsingleton.elim g PUnit.unit]
+      show IsScalarTower.toAlgHom ℚ (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit) ∈ (IntermediateField.adjoin ℚ {x}).toSubalgebra
+      exact (IntermediateField.subset_adjoin ℚ ({x} : Set (NoetherField ℚ PUnit.{1})))
+        (Set.mem_singleton x)
+    intro y _
+    obtain ⟨p, q, _hq, heq⟩ := IsFractionRing.div_surjective (MvPolynomial PUnit.{1} ℚ) y
+    have hmem : ∀ r : MvPolynomial PUnit.{1} ℚ,
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}) r
+          ∈ IntermediateField.adjoin ℚ ({x} : Set (NoetherField ℚ PUnit.{1})) := by
+      intro r
+      exact (Subalgebra.mem_comap _ _ _).mp (by rw [hcomap]; trivial)
+    rw [← heq]
+    exact div_mem (hmem p) (hmem q)
+  have hxne : x ≠ 0 := by
+    intro h0
+    have h1 : algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit) = 0 := by
+      rw [show algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit) = x from rfl, h0]
+    have h2 : (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ) = 0 :=
+      IsFractionRing.injective (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (by rw [h1, map_zero])
+    exact MvPolynomial.X_ne_zero PUnit.unit h2
+  refine ⟨fun _ => x, x, MvPolynomial.X PUnit.unit, hind, hgen, hxne, ?_, ?_, ?_,
+    inferInstance, MvPolynomial.X_ne_zero PUnit.unit, ?_, ?_⟩
+  · rw [hset]
+    exact (Algebra.subset_adjoin (R := ℚ) (Set.mem_singleton x))
+  · intro g i
+    rw [Subsingleton.elim g 1, one_smul]
+  · intro g
+    rw [Subsingleton.elim g 1, one_smul]
+  · intro g
+    rw [Subsingleton.elim g 1, one_smul]
+  · rw [hset]
+    refine Algebra.adjoin_le ?_
+    rintro y (hy | hy)
+    · rw [Set.mem_singleton_iff.mp hy]
+      exact Subalgebra.algebraMap_mem _ (MvPolynomial.X PUnit.unit)
+    · rcases hy with rfl | rfl
+      · exact Subalgebra.algebraMap_mem _ (MvPolynomial.X PUnit.unit)
+      · exact (Algebra.subset_adjoin (R := MvPolynomial PUnit.{1} ℚ)
+          (Set.mem_singleton _))
+#print axioms exists_noetherWiringData_pUnit_rat
+
 end ABGV52
