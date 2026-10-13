@@ -3778,6 +3778,53 @@ theorem exists_algHom_base_of_source_data_with_image_le
     (t := t) htinv ht hfix (noetherEval (F := F) z) heq hunit hRG hRQ
   exact ⟨z, b', t, ht, htinv, hb', hS, Φ', ι, Φ, h1, h2, h3⟩
 
+section NoetherAdjoinHA
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+omit [Group G] [Fintype G] [DecidableEq G] in
+/-- **攻击顺序 ② `hRA` 的载体步收口** ✓✅（第 226 轮 ✓）：`\iota : \\u29S \to_A[F] \mathrm{Localization.Away}\ T` ✓ ——
+**由载体步 `adjoin_inv_mem_range_awayToFieldAlg`** ✓ ＋ **`hle`** ✓ **内部导出 `hRQ`** ✓，
+再喂 **`exists_algHom_away_of_image_le`** ✓。
+**⚠ 意义** ✓：**源侧 `hRA`** ✓（`S \to \mathrm{Localization.Away}\ t` 的**代数结构** ✓）的**第一步** ✓
+—— **不再**是「照抄一段」✗**也****不是**「须造一座桥」✗，而是**库内两件直接复合** ✓。
+**⚠ 方向** ✓：**证法取自库内同族用法** ✓（`SaltGeneric:4411--4416` ✓ 的 `hRQ` ✓ 逐字同形 ✓）。 -/
+theorem exists_algHom_away_of_noetherAdjoin {n : ℕ} {a : Fin n → NoetherField F G}
+    {s₀ : NoetherField F G}
+    (T : MvPolynomial G F) (hT : T ≠ 0)
+    (hTle : Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}) ≤ Subalgebra.restrictScalars F
+      (Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) T)⁻¹} : Set (NoetherField F G)))) :
+    ∃ ι : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) →ₐ[F] Localization.Away T,
+      ∀ r, awayToFieldAlg (F := F) (G := G) T hT (ι r)
+        = algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (NoetherField F G) r := by
+  classical
+  refine exists_algHom_away_of_image_le (F := F) (G := G) T hT
+    (R := ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))) ?_
+  intro r
+  exact adjoin_inv_mem_range_awayToFieldAlg (F := F) (G := G) T hT (r : NoetherField F G)
+    (hTle r.property)
+
+omit [Group G] [Fintype G] [DecidableEq G] in
+/-- **`hRA` 的第二、三步** ✓✅：由 `\iota` **自产两个实例** ✓ ——
+`Algebra ↥S (\mathrm{Localization.Away}\ T) := \iota.\mathrm{toRingHom.toAlgebra}` ✓
+（**照 `SaltGeneric:4549` 之例** ✓）⟹ **`IsScalarTower F ↥S (\mathrm{Localization.Away}\ T)`** ✓
+**由 `\mathrm{inferInstance}` 得** ✓（**实测** ✓）。 -/
+theorem exists_algebra_structure_away_of_noetherAdjoin {n : ℕ} {a : Fin n → NoetherField F G}
+    {s₀ : NoetherField F G}
+    (T : MvPolynomial G F) (hT : T ≠ 0)
+    (hTle : Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}) ≤ Subalgebra.restrictScalars F
+      (Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) T)⁻¹} : Set (NoetherField F G)))) :
+    ∃ (inst : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T)),
+      letI := inst
+      Nonempty (IsScalarTower F ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T)) := by
+  classical
+  obtain ⟨ι, _hι⟩ := exists_algHom_away_of_noetherAdjoin (F := F) (G := G) T hT hTle
+  exact ⟨ι.toRingHom.toAlgebra, ⟨inferInstance⟩⟩
+
+end NoetherAdjoinHA
+
 end SourceDataEndToEnd
 
 /-! ## 4.43 **装配 (c) 款张量侧（第一件）**：**实现映射 ＋ 满射性** ＋ **`\mathrm{finrank}` 收口**（第 183 轮）
@@ -5854,6 +5901,8 @@ theorem theorem51_dataChain_gap_registered : True := trivial
 #print axioms exists_algHom_away_of_image_le
 #print axioms exists_algHom_base_of_equivariant
 #print axioms adjoin_inv_mem_range_awayToFieldAlg
+#print axioms exists_algHom_away_of_noetherAdjoin
+#print axioms exists_algebra_structure_away_of_noetherAdjoin
 #print axioms exists_invariant_range_awayToFieldAlg
 #print axioms exists_algHom_base_of_source_data
 #print axioms exists_algHom_base_of_source_data_with_image_le
