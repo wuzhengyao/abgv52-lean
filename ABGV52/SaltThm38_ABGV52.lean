@@ -1043,4 +1043,98 @@ theorem module_finite_projective_of_ringEquiv_self
   exact ⟨Module.Finite.equiv φ.symm, Module.Projective.of_equiv φ.symm⟩
 #print axioms module_finite_projective_of_ringEquiv_self
 
+set_option maxHeartbeats 1000000 in
+/-- **具体同构** ✓✅（第 246 轮 ✓）：本档下 **`Localization.Away X ≃ₐ[ℚ] ↥S`** ✓ 的**命名件** ✓ ——
+即 **r243** ✓ 的 `∃`-形的**无 `∃` 版** ✓（**见证 `T = X` 内建** ✓，**供下游直接取用** ✓）。
+**⚠ 证明** ✓：与 **r243 同体** ✓（`hrange` ✓ ＋ `hmem` ✓ ＋ **`codRestrict`** ✓ ＋
+**`Function.Bijective`** ✓ ＋ **`AlgEquiv.ofBijective`** ✓），**仅去掉 `∃` 包装** ✓。
+**⚠ 工艺** ✓：**类型里的 `Localization.Away (MvPolynomial.X …)` 须钉系数环** ✗
+（否则 **`CommSemiring ?m` stuck** ✗，**实测** ✓）⟹ 写 **`(MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)`** ✓。 -/
+noncomputable def awayAlgEquivAdjoin_pUnit_rat :
+    Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ) ≃ₐ[ℚ]
+      ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+              algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))
+            ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit),
+                (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit))⁻¹})) := by
+
+  have hrange := range_awayToFieldAlg_eq_adjoin_pUnit_rat
+  have hmem : ∀ y : Localization.Away (MvPolynomial.X PUnit.unit),
+      awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+        (MvPolynomial.X_ne_zero PUnit.unit) y
+        ∈ Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+            algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit))
+          ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit),
+              (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))⁻¹}) := by
+    intro y
+    rw [← hrange]
+    exact ⟨y, rfl⟩
+  let f : Localization.Away (MvPolynomial.X PUnit.unit) →ₐ[ℚ]
+      ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+          algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))
+        ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit),
+            (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit))⁻¹})) :=
+    (awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit)).codRestrict _ hmem
+  have hinj : Function.Injective f := by
+    intro x y hxy
+    exact awayToField_injective (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit) (Subtype.ext_iff.mp hxy)
+  have hsurj : Function.Surjective f := by
+    intro z
+    have hz : (z : NoetherField ℚ PUnit.{1})
+        ∈ (awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+          (MvPolynomial.X_ne_zero PUnit.unit)).range := by
+      rw [hrange]
+      exact z.2
+    obtain ⟨y, hy⟩ := hz
+    exact ⟨y, Subtype.ext hy⟩
+  exact AlgEquiv.ofBijective f ⟨hinj, hsurj⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **(A) 件实例化** ✓✅（第 246 轮 ✓）：本档下，**取 `awayAlgEquivAdjoin_pUnit_rat` 诱导的 `↥S`-代数结构**，
+**`S'` 是有限投射 `↥S`-模** ✓ —— 即 **`hProj` 的实体** ✓（**`GaloisProjectiveHyp ↥S S' G hRG`** 的
+`Finite ∧ Projective` 一款 ✓，**对任意 `G`／`hRG`** ✓）。
+**⚠ 证明** ✓：**一行** ✓ —— **r245 的升档件** ✓ 喂 **`(awayAlgEquivAdjoin_pUnit_rat).toRingEquiv`** ✓。
+**⚠ 意义** ✓（**L1** ✓）：**接线实际对上 `hProj` 一件有了实体** ✓ ⟹
+**(B) `δ` 双射** ✗ 是**接线假设表非空（§199.5(i)）的最后一件** ✓（**下一手** ✓）。
+**⚠ 不声称** ✗：**`GaloisProjectiveHyp ↥S S' G hRG` 整条未组装** ✗（**`Finite ∧ Projective` 两款已备** ✓）；
+**`hδ` 未证** ✗。 -/
+theorem finite_projective_away_adjoin_pUnit_rat :
+    letI : Algebra ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+              algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))
+            ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit),
+                (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit))⁻¹}))
+        (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) :=
+      (awayAlgEquivAdjoin_pUnit_rat).symm.toRingHom.toAlgebra
+    Module.Finite ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+              algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))
+            ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit),
+                (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit))⁻¹}))
+        (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) ∧
+      Module.Projective ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+              algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))
+            ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit),
+                (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit))⁻¹}))
+        (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) :=
+  module_finite_projective_of_ringEquiv_self (awayAlgEquivAdjoin_pUnit_rat).toRingEquiv
+#print axioms finite_projective_away_adjoin_pUnit_rat
+
 end ABGV52
