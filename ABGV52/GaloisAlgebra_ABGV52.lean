@@ -133,6 +133,19 @@ theorem isGaloisWithGroup_typeLock (R S : Type*) [CommRing R] [CommRing S] [Alge
           (∀ (g : G) (r : R), g • algebraMap R S r = algebraMap R S r) ∧
           Function.Bijective (deltaToEndRingHom hRG)) := rfl
 
+/-- **判据第 ② 款由 `hRG` 自动成立** ✓✅（第 231 轮 ✓）：`g • algebraMap R S r = algebraMap R S r` ✓
+**不必作假设** ✗ —— 用 `hRG` 取第三变元 `t := 1` ✓：`g • (r • 1) = r • (g • 1)` ✓，
+左右分别化归 `g • algebraMap R S r` ✓（`Algebra.algebraMap_eq_smul_one` ✓）与 `algebraMap R S r` ✓（`smul_one` ✓）。
+**⚠ 意义** ✓：`IsGaloisWithGroup` ✓ 的三款中 **② 是冗余款** ✓ —— 真正的假设只有 **① 忠实性** ✓ 与
+**③ `\delta` 双射** ✓（**③ ＝ Galois 内容** ✓）。
+**⚠ 与 `algebraMap_fixed_of_isGaloisWithGroup`** ✓（自 `hgal` **取出** ② ✓）**方向相反** ✓：
+本条**不必先有 `hgal`** ✓。 -/
+theorem algebraMap_fixed_of_smulCommClass {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    {G : Type*} [Group G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) (g : G) (r : R) :
+    g • algebraMap R S r = algebraMap R S r := by
+  rw [Algebra.algebraMap_eq_smul_one (R := R) (A := S) r, hRG g r 1, smul_one]
+
 /-- **非空洞探针（L1）** ✓：判据的**前提数据可实例化** —— `R = S = ℚ` ✓、`G = PUnit` ✓、
 `hRG` 由平凡作用满足 ✓（故 `IsGaloisWithGroup` 的**假设类非空** ✓；③ 的双射性本身未证 ✗，登记于下）。 -/
 theorem isGaloisWithGroup_data_nonempty :
@@ -939,6 +952,7 @@ end Prop02bProbe
 /-! ## 公理闸门 -/
 
 #print axioms isGaloisWithGroup_typeLock
+#print axioms algebraMap_fixed_of_smulCommClass
 #print axioms isGaloisWithGroup_data_nonempty
 #print axioms isGaloisWithGroup_gap_registered
 #print axioms finrank_eq_card_of_isGaloisWithGroup

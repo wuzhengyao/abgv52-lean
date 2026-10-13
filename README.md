@@ -683,3 +683,15 @@ registration of the preceding round recorded the last of the three instances as 
 order and placeable only after both source files.  That is true of the general-carrier
 construction, but the generic file's own construction was available at the target all along: the
 block was one of instance synthesis, not of availability.
+
+The Galois clause of the wiring has been reduced to its crossed-product content.  Of the three
+clauses the Galois predicate carries, the second -- that the base ring's image is pointwise fixed
+-- is automatic from the commutativity hypothesis alone, by applying that hypothesis to the unit;
+this is recorded as a general fact next to the predicate, and it makes that clause redundant.  The
+first clause, faithfulness of the group action on the localization, is proved from the
+compatibility of the action with the localization map, the injectivity of that map into the
+Noether field, and faithfulness of the action on the polynomial ring, all of them already in the
+library.  The closed form of the wiring therefore assembles the Galois clause from its third
+clause, bijectivity of the crossed-product map, which is the Galois content itself, and takes that
+bijectivity together with the projectivity clause as the two remaining inputs.  Neither is proved
+here, and neither is the source's theorem.

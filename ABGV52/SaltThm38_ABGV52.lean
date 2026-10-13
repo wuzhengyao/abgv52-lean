@@ -395,4 +395,141 @@ theorem nonempty_genericExtensionWitnessFieldFinite_of_noetherGaloisProjective
 
 #print axioms nonempty_genericExtensionWitnessFieldFinite_of_noetherGaloisProjective
 
+/-- **`hgal` 第 ① 款由构造供给** ✓✅（第 231 轮 ✓）：`FaithfulSMul G (Localization.Away T)` ✓ ——
+**用 `awayMulSemiringAction`** ✓（`SaltGeneric:3201` ✓）。
+**证明** ✓：设 `a • x = b • x` 对一切 `x` ✓ ⟹ 取 `x = algebraMap p` ✓ 并用 **`awayRingHom_algebraMap`** ✓
+得 `algebraMap (a • p) = algebraMap (b • p)` ✓ ⟹ 由 **`algebraMap (MvPolynomial G F) (Localization.Away T)` 单射** ✓
+（**经 `awayToField_algebraMap`** ✓ ＋ **`awayToField_injective`** ✓ ＋ **`IsFractionRing.injective`** ✓ 三步）
+得 `a • p = b • p` ✓ ⟹ 由 **`FaithfulSMul G (MvPolynomial G F)`** ✓（`SaltGeneric:339` ✓ 的实例 ✓）得 `a = b` ✓。
+**⚠ 检索优先** ✓（**第七次兑现** ✓）：**两件皆已在库** ✓（`awayRingHom_algebraMap` ✓／`FaithfulSMul` 实例 ✓）。 -/
+theorem faithfulSMul_away_of_noetherAdjoin {F : Type} [Field F] {G : Type} [Group G]
+    {T : MvPolynomial G F} (hT : T ≠ 0) (hTinv : ∀ g : G, g • T = T) :
+    letI : MulSemiringAction G (Localization.Away T) :=
+      awayMulSemiringAction (F := F) (G := G) (t := T) hTinv
+    FaithfulSMul G (Localization.Away T) := by
+  let _instM : MulSemiringAction G (Localization.Away T) :=
+    awayMulSemiringAction (F := F) (G := G) (t := T) hTinv
+  have hAlgInj : Function.Injective
+      (algebraMap (MvPolynomial G F) (Localization.Away T)) := by
+    intro x y hxy
+    have h2 : awayToField (F := F) (G := G) T hT
+          (algebraMap (MvPolynomial G F) (Localization.Away T) x)
+        = awayToField (F := F) (G := G) T hT
+          (algebraMap (MvPolynomial G F) (Localization.Away T) y) := by rw [hxy]
+    rw [awayToField_algebraMap, awayToField_algebraMap] at h2
+    exact IsFractionRing.injective (MvPolynomial G F) (NoetherField F G) h2
+  refine ⟨fun {a b} h => ?_⟩
+  have hmap : ∀ p : MvPolynomial G F, a • p = b • p := by
+    intro p
+    have h1 := h (algebraMap (MvPolynomial G F) (Localization.Away T) p)
+    change awayRingHom (F := F) hTinv a
+        (algebraMap (MvPolynomial G F) (Localization.Away T) p)
+      = awayRingHom (F := F) hTinv b
+        (algebraMap (MvPolynomial G F) (Localization.Away T) p) at h1
+    rw [awayRingHom_algebraMap (F := F) (G := G) (t := T) hTinv a p,
+      awayRingHom_algebraMap (F := F) (G := G) (t := T) hTinv b p] at h1
+    exact hAlgInj h1
+  exact FaithfulSMul.eq_of_smul_eq_smul (α := MvPolynomial G F) (fun p => hmap p)
+
+#print axioms faithfulSMul_away_of_noetherAdjoin
+
+/-- **`hgal` 归约为 `δ` 双射** ✓✅（第 231 轮 ✓）：给定 `hRG` ✓ 与
+**`Function.Bijective (deltaToEndRingHom hRG)`** ✓，则 **`IsGaloisWithGroup ↥S (Localization.Away T) G hRG`** ✓
+—— **①② 由构造供给** ✓：**①** ＝ `faithfulSMul_away_of_noetherAdjoin` ✓；
+**②** ＝ `algebraMap_fixed_of_smulCommClass` ✓（**一般事实** ✓：② **由 `hRG` 自动** ✓，**不必作假设** ✗）；
+**③** ＝ **输入** ✓（**＝ Galois 内容** ✓）。
+**⚠ 意义** ✓：`hgal` ✓（第 230 轮的输入项 ✓）**不是原语** ✗ —— 其**唯一实质内容 ＝ ③** ✓（**交叉相积同构** ✓）。 -/
+theorem isGaloisWithGroup_away_of_bijectiveDelta {F : Type} [Field F] {G : Type} [Group G]
+    [Fintype G] [DecidableEq G] {n : ℕ} {a : Fin n → NoetherField F G}
+    {s₀ : NoetherField F G} (T : MvPolynomial G F) (hT : T ≠ 0)
+    (hTinv : ∀ g : G, g • T = T)
+    (ι : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) →ₐ[F] Localization.Away T) :
+    letI : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T) :=
+        ι.toRingHom.toAlgebra
+    letI : MulSemiringAction G (Localization.Away T) :=
+        awayMulSemiringAction (F := F) (G := G) (t := T) hTinv
+    ∀ (hRG : ∀ (g : G) (r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})))
+        (x : Localization.Away T), g • (r • x) = r • (g • x)),
+      Function.Bijective (BTier.deltaToEndRingHom hRG) →
+      BTier.IsGaloisWithGroup ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+        (Localization.Away T) G hRG := by
+  let _instA : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T) :=
+    ι.toRingHom.toAlgebra
+  let _instM : MulSemiringAction G (Localization.Away T) :=
+    awayMulSemiringAction (F := F) (G := G) (t := T) hTinv
+  intro hRG hδ
+  exact ⟨faithfulSMul_away_of_noetherAdjoin (F := F) (G := G) hT hTinv,
+    fun g r => BTier.algebraMap_fixed_of_smulCommClass hRG g r, hδ⟩
+
+#print axioms isGaloisWithGroup_away_of_bijectiveDelta
+
+/-- **归约形（收口）** ✓✅（第 231 轮 ✓）：**`T` 三项** ✓ ＋ **三实例** ✓ ＋ **`hRG`** ✓ **全部由构造供给** ✓，
+**`hgal` 亦由构造供给** ✓（**①② 自动 ＋ ③ 作输入** ✓）⟹ **余下输入只有两件** ✓：
+**`δ` 双射** ✓（**＝ Galois 内容** ✓）与 **`hProj`** ✓。
+**⚠ 比 `nonempty_genericExtensionWitnessFieldFinite_of_noetherGaloisProjective`** ✓（第 230 轮 ✓）**更强** ✓：
+那条把 `IsGaloisWithGroup` **整条**列在输入 ✓，本条只取其**第 ③ 款** ✓
+（**② 为冗余款** ✓，见 `GaloisAlgebra_ABGV52` ✓ 的 `algebraMap_fixed_of_smulCommClass` ✓；
+**① 由 `faithfulSMul_away_of_noetherAdjoin`** ✓ 供给 ✓）。
+**⚠ 不声称** ✗：**`δ` 双射**与 **`hProj`** **均未证** ✗；源 `theorem-5-1` **未证** ✗（**断言强度 ≤ 证据层级** ✓）。 -/
+theorem nonempty_genericExtensionWitnessFieldFinite_of_noetherGaloisDelta
+    {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+    {n : ℕ} {a : Fin n → NoetherField F G} {s₀ : NoetherField F G}
+    (hind : AlgebraicIndependent F a)
+    (hgen : IntermediateField.adjoin F (Set.range a) = ⊤)
+    (hs₀ : s₀ ≠ 0) (hs₀_mem : s₀ ∈ Algebra.adjoin F (Set.range a))
+    (ha_fix : ∀ (g : G) (i : Fin n), g • a i = a i)
+    (hs₀_fix : ∀ (g : G), g • s₀ = s₀)
+    (hinf : Infinite F) :
+    ∃ (T : MvPolynomial G F) (_hT : T ≠ 0) (_hTinv : ∀ g : G, g • T = T)
+      (_hle : Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}) ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) T)⁻¹} : Set (NoetherField F G))))
+      (instA : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T))
+      (instT : letI := instA;
+        IsScalarTower F ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T))
+      (instM : MulSemiringAction G (Localization.Away T)),
+      letI := instA
+      letI := instT
+      letI := instM
+      ∃ (_hRG : ∀ (g : G) (r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})))
+          (x : Localization.Away T), g • (r • x) = r • (g • x)),
+        Function.Bijective (BTier.deltaToEndRingHom _hRG) →
+        BTier.GaloisProjectiveHyp ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+          (Localization.Away T) G _hRG →
+        Nonempty (GenericExtensionWitnessFieldFinite F G) := by
+  classical
+  obtain ⟨T, hTne, hTinv, hTle⟩ := exists_invariant_t_of_noether (F := F) (G := G) a s₀ hs₀
+  obtain ⟨ι, hι⟩ := exists_algHom_away_of_noetherAdjoin (F := F) (G := G) T hTne hTle
+  let instA : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T) :=
+    ι.toRingHom.toAlgebra
+  have hST : IsScalarTower F ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+      (Localization.Away T) := inferInstance
+  let instM : MulSemiringAction G (Localization.Away T) :=
+    awayMulSemiringAction (F := F) (G := G) (t := T) hTinv
+  have hact : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away T) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away T) (g • p) := by
+    intro g p
+    exact awayRingHom_algebraMap (F := F) (G := G) (t := T) hTinv g p
+  have hS0R : ∀ r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})),
+      awayToFieldAlg (F := F) (G := G) T hTne
+          (algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away T) r)
+        = algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (NoetherField F G) r :=
+    fun r => hι r
+  have hRG : ∀ (g : G) (r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})))
+      (x : Localization.Away T), g • (r • x) = r • (g • x) :=
+    smulCommClass_away_of_algHom (F := F) (G := G) (a := a) (s₀ := s₀)
+      ha_fix hs₀_fix T hTne hTinv ι hι
+  refine ⟨T, hTne, hTinv, hTle, instA, hST, instM, hRG, ?_⟩
+  intro hδ hProj
+  have hgal : BTier.IsGaloisWithGroup ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+      (Localization.Away T) G hRG :=
+    isGaloisWithGroup_away_of_bijectiveDelta (F := F) (G := G) (a := a) (s₀ := s₀)
+      T hTne hTinv ι hRG hδ
+  exact nonempty_genericExtensionWitnessFieldFinite_of_noetherAdjoin
+    (F := F) (G := G) (t := T) hind hgen hs₀ hs₀_mem ha_fix hs₀_fix
+    hTne hTinv hTle hact hRG hgal hProj hS0R hinf
+
+#print axioms nonempty_genericExtensionWitnessFieldFinite_of_noetherGaloisDelta
+
 end ABGV52
