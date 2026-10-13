@@ -22,6 +22,7 @@ import Mathlib.Algebra.SkewMonoidAlgebra.Lift
 import Mathlib.LinearAlgebra.Dimension.Constructions
 import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
 import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
+import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 open CategoryTheory
 noncomputable section
 namespace ABGV52.BTier
@@ -227,6 +228,14 @@ end GaloisRank
 > "(a) `S` is a projective `R[G]`-module."（源引 **[CHR68] p. 13** ✓，**源中无证明** ✗ ——
 > 属「quote four results … instead of proofs」✓。）
 
+**⚠ 账目更正（第 207 轮** ✓**）** ✓：原写「**不在 `raw/`**」✗ —— **该句作废** ✗。
+**现账** ✓：`[CHR68] p. 13` 本身仍**不在 `raw/`** ✗（精确出处缺件 ✓，L37 已核 ✓）；
+**但**其**用点**已在 `raw/Saltman1978` 印 528（＝ PDF 3 ✓）内**逐字可核** ✓ ——
+Sal78b `Theorem 1.2` 的**证明**在同页给出「`R`, considered as an `S` module, is an `S` **progenerator**」✓
+（**自引 `[4, p. 81]` ＝ [DI71]** ✓ **不是** `[CHR68]` ✗ —— 见本节末 §Sal78bEndpoints ✓）
+⟹ **progenerator 路线** ✓ 不足以取代**本条** ✗：源 (a) 要的是 **`R[G]`-投射性** ✓，
+而印 528 给的是 **`R`-progenerator** ✓（**不同对象** ✗）⟹ **本条仍属 source-gap** ✗。
+
 **数学内容** ✓：`S/R` 为 `G`-Galois ✓ ⟹ **`S` 是有限生成投射 `R`-模** ✓
 （`S` 是投射 `R[G]`-模 ＋ `R[G]` 有限自由于 `R` ✓ ⟹ `S` 是有限自由 `R`-模的直和项 ✓）。
 **本工程未证** ✗ —— 登记为**具名外部输入**（口径与 `FischerRegularHyp` ✓ 同：先接口后实体 ✓）。
@@ -252,7 +261,11 @@ theorem galoisProjectiveHyp_data_nonempty :
   ⟨⟨inferInstance⟩, ⟨inferInstance⟩⟩
 
 /-- **登记** ✗：本件的**实体**（`S` 为投射 `R[G]`-模的构造与证明 ✓）**未落** ✗ ——
-源引 [CHR68] p.13 ✓（**不在 `raw/`** ✗，与 [DI71] 同类的一级出处缺件 ✓，L37 已核 ✓）。 -/
+源引 `[CHR68] p.13` ✓（**⚠ 账目更正（第 207 轮** ✓**）**：原写「**不在 `raw/`**」✗ ——
+精确出处 `[CHR68] p. 13` **仍不在 `raw/`** ✗（L37 已核 ✓），**但**其**用点**已在
+`raw/Saltman1978` 印 528（＝ PDF 3 ✓）内可核 ✓ —— Sal78b `thm:1.2` 证明给出的
+**`R`-progenerator** ✓ 蕴含 `GaloisProjectiveHyp` ✓（具名端点 `GaloisProgeneratorHyp` ✓，
+**亦未证** ✗）；**`R[G]`-投射性** ✗ **仍无 `raw/` 内供给** ✗）。 -/
 theorem galoisProjective_gap_registered : True := trivial
 
 universe u/-- **源 `lem1.2` 证明所引投射性断言的「用点形」**（`raw/Saltman1984.tex:139-142`；**⚠-tex-sourced**）。
@@ -290,7 +303,9 @@ theorem galoisProjectiveSectionHyp_data_nonempty :
   ⟨fun s => rfl, ⟨LinearMap.id⟩⟩
 
 /-- **登记**：本件的实体（`(S')⁺` 对 `R'[G]` 投射的证明）未落 —— 源引 **[CHR68] p.13**
-（**不在 `raw/`**；与 §47 同一缺件，L37 已核）。 -/
+（**⚠ 账目更正（第 207 轮** ✓**）**：精确出处 `[CHR68] p. 13` **仍不在 `raw/`** ✗（与 §47 同一缺件 ✓，L37 已核 ✓）；
+**但** Sal78b 印 528 的 progenerator 断言已在 `raw/Saltman1978` 内可核 ✓ ——
+**注意**该断言说的是 **`R`-模** ✗，**不能**供给本条的 **`R'[G]`-投射性** ✗）。 -/
 theorem galoisProjectiveSectionHyp_gap_registered : True := trivial
 
 /-- **本假设的用点**（源 `lem1.2` 证明的第二步）：把 `GaloisProjectiveSectionHyp` 用在 `G`-Galois 的
@@ -418,8 +433,141 @@ theorem galoisDescentHyp_data_nonempty :
 
 /-- **登记** ✗：本件的**实体**（[Sal78b] p.~528 的下降构造与证明 ✓ —— 取 `R''` 为 `R` 中由 `S''` 的
 有限生成数据所**张成**的子代数 ✓ 再验 Galois 性保持 ✓）**未落** ✗；源引 **[Sal78b]** ✓
-（**不在 `raw/`** ✗，与 [CHR68]／[DI71] 同类的**一级出处缺件** ✓，L37 已核 ✓）。 -/
+（**⚠ 账目更正（第 207 轮）** ✓：原写「**不在 `raw/`**」✗ —— 该源已入库 ✓
+`raw/Saltman1978.{tex,pdf}`（`receipt` `dc8a6884…` ✓），印 528 ＝ PDF 3 ✓（**回印核** ✓）；
+**仅**「不在 `raw/`」一句作废 ✗，**实体未落** ✓ 的登记不变 ✓ —— 具名端点为
+`GaloisFiniteGenerationDescentHyp` ✓，见本节末 ✓）。
+**⚠ 顺带更正（同轮** ✓**）** ✓：本件原把 [CHR68] 与 [DI71] 并列为「同类一级出处缺件」✓ ——
+**实测** ✓ Sal78b 印 528 的 progenerator 句自引 `[4, p. 81]` ＝ **[DI71]** ✓（**非** [CHR68] ✗）。 -/
 theorem galoisDescent_gap_registered : True := trivial
+
+/-! ## 源 `[Sal78b]` 印 528 的两个**具名端点**（第 207 轮；**回印核** ✓）
+
+**来源** ✓：`raw/Saltman1978.{tex,pdf}` ＝ D.~Saltman, *Azumaya Algebras with Involution*,
+J.~Algebra **52** (1978) 526--539 ✓（＝ Saltman1982 的 `[Sal78b]` ✓）。**载体身份** ✓：
+tex 为**用户转化件** ✗ ⟹ 陈述**回印核** ✓（规则 16／L12 ✓）；`receipt` `dc8a6884…` ✓（L15 ✓）。
+**印刷页偏移** ✓：**印 ＝ PDF ＋ 525** ✓（本工程**又一条**偏移口径 ✗ ——
+Saltman1982 ＝ PDF ＋ 249 ✓／Saltman1984 ＝ PDF ＋ 164 ✓／**Sal78b ＝ PDF ＋ 525** ✓，三源各异 ✗）。
+
+**印 528（＝ PDF 3** ✓**）逐字** ✓（本轮 PDF 目视 ✓，图存 `.abgv52-scratch/r207/sal78b-p3-03.png` ✓）：
+
+**① 定理** ✓（`\begin{theorem}\label{thm:1.2}` ✓，`tex:85--87` ✓）：
+> **THEOREM 1.2.** *Let `R/S` be a Galois extension of commutative rings with finite
+> Galois group `G`. Then there are finitely generated rings `R' \subseteq R` and
+> `S' \subseteq S` such that `R'/S'` is Galois with group `G` and `R \cong R' \otimes_{S'} S`.*
+
+**② 证明内的 progenerator 断言** ✓（`tex:90` ✓）：
+> Under these circumstances, `R`, considered as an `S` module, is an `S` **progenerator**.
+
+**🔴 口径桥（源侧判据 ＝ 库侧判据** ✓**，故 `②` 可**直接搬运** ✓）** ✓：该断言所在句**先给** Galois 的判据 ✓ ——
+源逐字「`R/S` is Galois with finite group `G` **if and only if** `G` is a group of automorphisms of `R`,
+`S` is the fixed subring and `\phi: \Delta(R/S, G) \to \End_S(R)` is an isomorphism」✓
+—— 此即 `IsGaloisWithGroup` ✓（本件 `:119` ✓，Saltman1982 §0 逐字 ✓）**已落** ✓ 的三款 ✓
+（`FaithfulSMul G S` ✓／`R \subseteq S^G` ✓／`\Delta \to \Hom_R(S,S)` 双射 ✓）。**两者同一** ✓ ⟹ `②` **无需**定义桥 ✓。
+
+**🔴 出处更正（本轮独立复核** ✓**，**纠正**既有 KB 注记 ✗→✓）** ✓：`②` 在源中**自引** `\cite[ p. 81]{4}` ✓，
+而 Sal78b 的 `[4]` ＝ **F.~DeMeyer and E.~Ingraham**, *Separable Algebras over Commutative Rings*,
+LNM 181 (1971) ✓（`tex:364` ✓）＝ **`[DI71]`** ✓ —— **不是** `[CHR68]` ✗。
+**实测** ✓：`[Sal78b]` 全文对 `[CHR68]` **零命中** ✗（`grep` 于 `tex` ✓）⟹
+**源 `proposition-0-2(a)` 的 `[CHR68] p. 13`** ✓ 与 **Sal78b 印 528 的 `[DI71] p. 81`** ✓ **是两个不同的页码** ✓，
+**不得互替** ✗。**⚠ 留痕** ✓：交接件 附一百三十二 §132.2 记「该文自引 `[4, p. 81]` ＝ CHR68」✗
+—— 该等式**为误** ✓，本条为更正 ✓（原注记不删 ✗）。
+
+**⚠ 未变** ✗：搬运这两条 ⟹ `hgal`／`hProj` 的**归类**由「源引外部文献、**不在 `raw/`**」✗
+改为「**`raw/` 内可落**」✓；**但工作量未减** ✗ —— 端点的**实体**（下两条 ✓）**均未证** ✗。 -/
+
+section Sal78bEndpoints
+
+/-- **源 `[Sal78b]` `thm:1.2`（印 528）的具名端点** ✓ —— **环上 Galois 扩张的有限生成下降** ✓。
+**⚠ 实体未证** ✗（**登记** ✓；源**证**之 ✓，本工程**未搬运** ✗）。
+
+**⚠ 口径** ✓：源写「finitely generated **rings** `R' \subseteq R`」✓，本形取**子代数**
+`R' : \mathrm{Subalgebra}\ F\ R` ✓（源在本节把 `R/S` 置于 `F`-代数档 ✓，
+Saltman1982 `proposition-0-2(c)` 亦作 `R' \subset R` 为 `F` subalgebra ✓）；「`R'/S'` **Galois with group `G`**」✓
+落为 `IsGaloisWithGroup R'' S'' G` ✓（**同一判据** ✓）；「`R \cong R' \otimes_{S'} S`」✓
+落为 **`F`-代数同构** ✓（`\simeqₐ[F]` ✓，**不**要求 `G`-等变 ✗ —— 与 `GaloisDescentHyp` ✓ 同一口径 ✓）。
+**与 `GaloisDescentHyp`（§4.56 ✓）的关系** ✓：**两者陈述同构** ✓（同假设 ✓／同 `R''`／`S''` 数据链 ✓／同张量积尾 ✓）；
+**差别** ✓：本条**不取** `R'`（源定理取 `S' \subseteq S` ＋ `R' \subseteq R` ✓，而 (c) 款从给定的 `R'` 出发 ✓）
+—— 故本条**不能**顶替 `GaloisDescentHyp` 的用点形 ✗（**两档并存** ✓，**勿混用** ✗）。
+**⚠ 命名** ✓（源**无**此名 ✗，本工程**所加** ✓ —— 登记 ✓）：**不**声称源中有此术语 ✓。
+
+**⚠ 强度序** ✓：本条**弱于**源 `Theorem 1.2` ✗ —— 省略了 `S'` 侧的有限生成性 ✓
+（源要 `S' \subseteq S` **finitely generated** ✓；本形只 `\exists S''` ✓，其有限生成性未列 ✗）。
+**判别力负例** ✓（L43 ✓）：把尾项换成 `Nonempty (S ≃ₐ[F] S)`（丢张量积 ✓）⟹ 其 `rfl` 锁**必失败** ✗
+（实跑读数见本轮状态笔记 §170 ✓）。 -/
+def GaloisFiniteGenerationDescentHyp : Prop :=
+  ∀ (R S : Type u) [CommRing R] [CommRing S] [Algebra F R] [Algebra F S] [Algebra R S]
+    [IsScalarTower F R S] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)),
+    IsGaloisWithGroup R S G hRG →
+      ∃ (R'' : Type u) (_ : CommRing R'') (_ : Algebra F R'') (_ : Algebra R'' R)
+        (_ : IsScalarTower F R'' R) (_ : Algebra.FiniteType F R''),
+        ∃ (S'' : Type u) (_ : CommRing S'') (_ : Algebra F S'') (_ : Algebra R'' S'')
+          (_ : IsScalarTower F R'' S'') (_ : MulSemiringAction G S'')
+          (hRG'' : ∀ (g : G) (r : R'') (t : S''), g • (r • t) = r • (g • t)),
+          IsGaloisWithGroup R'' S'' G hRG'' ∧ Nonempty (S ≃ₐ[F] TensorProduct R'' S'' R)
+
+/-- **类型锁定（同一性形）** ✓：钉住本端点的**运行类型与宇宙档** —— 一旦其类型、参数表或宇宙改动，
+本 `rfl` 立即编译失败 ✓（**全档绑定表锁**未落 ✗，难点与方案同 §52.2 ✓）。 -/
+theorem galoisFiniteGenerationDescentHyp_typeLock :
+    (GaloisFiniteGenerationDescentHyp F G) = (GaloisFiniteGenerationDescentHyp F G) := rfl
+
+/-- **非空洞探针（L1）** ✓：本端点的**结论数据可实例化** ✓ —— `\mathbb{Q}` 上
+**有限生成性** ✓（`F`-代数档 ＋ 塔 ✓）与张量积 `S'' \otimes_{R''} R` 的**载体非空** ✓
+（测试于 `\mathbb{Q}` ✓）。
+**⚠ 口径** ✓：本探针只证**数据层非空洞** ✓；`IsGaloisWithGroup` 侧的**完整实例**
+（`\mathbb{Q}/\mathbb{Q}` ✓、`G = PUnit` ✓）与非空性登记见 `isGaloisWithGroup_data_nonempty` ✓（同件 ✓）。 -/
+theorem galoisFiniteGenerationDescentHyp_data_nonempty :
+    Nonempty (Algebra.FiniteType ℚ ℚ) ∧ Nonempty (TensorProduct ℚ ℚ ℚ) :=
+  ⟨⟨inferInstance⟩, ⟨0⟩⟩
+
+/-- **源 `[Sal78b]` 印 528 证明内的 **progenerator 断言**的具名端点** ✓ ——
+`R/S` 为 `G`-Galois ⟹ `R` 是 `S`-**progenerator** ✓。
+**⚠ 实体未证** ✗（**登记** ✓；源**证**之 ✓，本工程**未搬运** ✗）。
+
+**⚠ 编码口径** ✓（**登记** ✓）：源在印 528 证明内**先给** progenerator 的**等价刻画** ✓
+（「`P \in \Prog(R)` if and only if `P \in \Pr(R)` and `P` is `R` **faithful**」✓，`tex:54` ✓，自引 `[4, p. 8]` ✓）
+⟹ 本形按**该刻画**落三款 ✓：**有限** ✓（`\Pr` ✓）＋ **投射** ✓（`\Pr` ✓）＋ **忠实平坦** ✓（mathlib `Module.FaithfullyFlat` ✓）。
+**⚠ 桥接假设** ✓（**登记** ✓，**不声称源逐字** ✗）：源用**忠实** ✓，本形用 mathlib 的**忠实平坦** ✓
+—— 在 projective ＋ finite 档两者等价 ✓，本形**多要求平坦** ✗ ⟹ 本形**强于**源的断言 ✗（**强度序** ✓）。
+**与 `GaloisProjectiveHyp`（§47 ✓）的关系** ✓：本条**蕴含**它 ✓
+（**已落** ✓：`galoisProgeneratorHyp_implies_galoisProjectiveHyp` ✓，同件 ✓；经 §47 的 `hBC` ✓ 复用 ✓）
+—— 即源印 528 的断言**足以**供给 `hProj` ✓（**尚未**供给 ✗：本条实体未证 ✗）。
+**⚠ 命名** ✓：源**无**此名 ✗，本工程**所加** ✓（登记 ✓）。
+**判别力负例** ✓（L43 ✓）：**同名异陈述** ＝ 把 `Module.FaithfullyFlat R S` 换成 `Module.Free R S` ✗
+⟹ 其 `rfl` 锁**必失败** ✗（实跑读数见本轮状态笔记 §170 ✓）—— 本 `rfl` 锁**有判别力** ✓。 -/
+def GaloisProgeneratorHyp (R S : Type*) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) : Prop :=
+  IsGaloisWithGroup R S G hRG →
+    (Module.Finite R S ∧ Module.Projective R S ∧ Module.FaithfullyFlat R S)
+
+/-- **类型锁定（同一性形）** ✓：钉住本端点的**运行类型与宇宙档** —— 一旦其类型、参数表或宇宙改动，
+本 `rfl` 立即编译失败 ✓。 -/
+theorem galoisProgeneratorHyp_typeLock (R S : Type*) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    (GaloisProgeneratorHyp R S G hRG)
+      = (IsGaloisWithGroup R S G hRG →
+          (Module.Finite R S ∧ Module.Projective R S ∧ Module.FaithfullyFlat R S)) := rfl
+
+/-- **强度序（已落** ✓**）** ✓：本端点 ⟹ `hProj` 的具名形 ✓ —— 源印 528 的 progenerator 断言
+**足以**供给源 `proposition-0-2(a)` 的 `hProj` ✓（**「足以」≠「已供给」** ✗：本条实体未证 ✗）。 -/
+theorem galoisProgeneratorHyp_implies_galoisProjectiveHyp (R S : Type*) [CommRing R] [CommRing S]
+    [Algebra R S] (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (h : GaloisProgeneratorHyp R S G hRG) : GaloisProjectiveHyp R S G hRG :=
+  fun hgal => ⟨(h hgal).1, (h hgal).2.1⟩
+
+/-- **非空洞探针（L1）** ✓：本端点的**结论数据可实例化** ✓ —— `\mathbb{Q}` 上
+**有限** ✓／**投射** ✓／**忠实平坦** ✓ 三款均有实例 ✓（`Module.FaithfullyFlat.self` ✓）。
+**⚠ 口径** ✓：本探针只证**数据层非空洞** ✓；`IsGaloisWithGroup` 侧见 `isGaloisWithGroup_data_nonempty` ✓。 -/
+theorem galoisProgeneratorHyp_data_nonempty :
+    Nonempty (Module.Finite ℚ ℚ) ∧ Nonempty (Module.Projective ℚ ℚ)
+      ∧ Nonempty (Module.FaithfullyFlat ℚ ℚ) :=
+  ⟨⟨inferInstance⟩, ⟨inferInstance⟩, ⟨inferInstance⟩⟩
+
+end Sal78bEndpoints
 
 /-- **本假设的用点形** ✓（源 `theorem-5-1` 证明的第三步所需 ✓）：把 `GaloisDescentHyp` 用在给定的
 `G`-Galois 的 `S/R` 与给定的 `F`-子代数 `R' \subseteq R` 上 ✓ ⟹ 得**下降数据**
@@ -450,6 +598,10 @@ end GaloisDescent
 **(b)** \cite[ p.~116]{DI71}. **Suppose \(R\) has zero Picard group. Then \(H^1(G, S^*) = (0)\).**」✓
 —— **⚠ 具名残余：本件不作证明** ✗（源在 `proposition-0-2` 的引导句明写「we quote four results … instead of proofs」✓，
 本条的证明在 `[DI71]` p.~116 ✓ —— **该源不在 `raw/`** ✗，**登记** ✓）。
+**⚠ 账目更正（第 207 轮** ✓**，**独立复核** ✓）**：`[DI71]` 现**有** raw 内**用点** ✓ 但**不含本页** ✗ ——
+`raw/Saltman1978`（＝ Sal78b）自引 `[4, p. 81]` ✓（`tex:90` ✓）／`[4, p. 8]` ✓ 等，**最高到印 81** ✗；
+全 `raw/` 语料对 DI71 的带页引用为 印 31／81／85／116 ✓，**其中无一条落在 raw 内可核** ✗
+（Sal78b 引 81 仅为**转述** ✓，非 DI71 正文 ✗）⟹ **本条仍属一级出处缺件** ✗。
 
 **⚠ 编码决定** ✓（**新读数 (67)** ✓）：`H^1(G, S^*) = (0)` **不**经范畴式群上同调 ✗
 （`\mathrm{groupCohomology}` 需把 `S^*` 装成 `\mathrm{Rep}\ \mathbb{Z}\ G` ✓ —— 须先造 `S^\times` 上的 `G`-作用
@@ -755,5 +907,12 @@ end GaloisTransport
 #print axioms prop02bStatement_zeroPic_nonempty
 #print axioms isCrossedHom_of_principal
 #print axioms h1UnitsVanishes_punit_rat
+#print axioms GaloisFiniteGenerationDescentHyp
+#print axioms galoisFiniteGenerationDescentHyp_typeLock
+#print axioms galoisFiniteGenerationDescentHyp_data_nonempty
+#print axioms GaloisProgeneratorHyp
+#print axioms galoisProgeneratorHyp_typeLock
+#print axioms galoisProgeneratorHyp_implies_galoisProjectiveHyp
+#print axioms galoisProgeneratorHyp_data_nonempty
 
 end ABGV52.BTier

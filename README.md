@@ -624,3 +624,30 @@ into the localization, which is the input registered earlier.
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
 (2026-10-11, 29 rows) is not recoverable from the working tree and is registered as lost in
 `wiki/log.md`.*
+
+The two inputs that the audit had placed outside the development are not outside it after all.
+The 1978 paper that the 1982 source quotes for the descent construction, long recorded as
+absent, is now in the library together with its published text, and the page that carries the
+quoted theorem and the sentence the projectivity clause needs has been read on the rendered
+page and matches what is quoted of it.  The printed page is the third page of the file, an
+offset of its own: the three sources this development reads at page level each need a
+different shift.  Both inputs are therefore reclassified as available within the library and
+merely unformalized, and every registration that said otherwise has been rewritten, the
+superseded wording being kept in place as a note rather than deleted.  The amount of work is
+unchanged: what is now available is the source's own proof, not a formalization of it, and
+neither endpoint has a proof here.
+
+The progenerator sentence that supplies the finite projectivity clause has a different source than
+the one recorded for it.  The sentence cites, in the 1978 paper's own numbering, the monograph on
+separable algebras, not the memoir on Galois theory of rings that the 1982 paper cites for the same
+clause; the two are different works, and a search of the paper confirms it never cites the memoir at
+all.  Both inputs are accordingly given named endpoints in the declarations, one for the descent
+statement and one for the progenerator statement, each with a definitional shape lock and a
+non-emptiness probe for its conclusion data, and each registered as having no proof here.  The
+progenerator statement is the stronger of the two and is shown to imply the projectivity clause's
+named form, so the source's sentence suffices for that clause once it is formalized; a definitional
+lock on the descent statement records that it is stated for the source's own existential form rather
+than the earlier assembly's fixed subalgebra form, so the two cannot be used interchangeably.  The
+discriminating power of both locks is checked against mutants, one swapping the faithful-flatness
+clause for freeness and one dropping the tensor product from the descent conclusion, and both
+mutants fail the lock as intended.

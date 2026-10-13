@@ -3723,7 +3723,10 @@ end SourceDataEndToEnd
 **②** **维数收口** ✓：**满射 ＋ 秩相等 ⟹ 单射** ✓ 走 `\mathrm{LinearMap.injective\_iff\_surjective\_of\_finrank\_eq\_finrank}` ✓
 （**⚠ 需 `[\mathrm{FiniteDimensional}]` 两侧** ✓ —— 域侧由 `G`-**基**供给 ✓，张量侧作**显式假设** ✓）。
 **⚠ 登记（余项）** ✗：**①** **秩输入** ✓（`\mathrm{finrank}_{K'}(K' \otimes_R S_0) = |G|` ✓ ＝ `S_0` 在 `R` 上**秩 `|G|`** ✓
-—— **⚠ 源 `proposition-0-2`(a)** ✓ **只给投射性** ✗（引 [CHR68] p.13 ✓，**该页不在 `raw/`** ✗）
+—— **⚠ 源 `proposition-0-2`(a)** ✓ **只给投射性** ✗（引 [CHR68] p.13 ✓ —— **⚠ 账目更正（第 207 轮** ✓**）**：
+精确出处 `[CHR68] p. 13` **仍不在 `raw/`** ✗（L37 已核 ✓），**但**其**用点**已在
+`raw/Saltman1978` 印 528（＝ PDF 3 ✓）内**逐字可核** ✓ —— 同页 `thm:1.2` 证明内的 **progenerator** 断言 ✓，
+**自引 `[4, p. 81]` ＝ [DI71]** ✓（**非** [CHR68] ✗）；端点 `GaloisProgeneratorHyp` ✓ **实体未证** ✗）
 ⟹ **秩款登记为「待回源核」** ✗，**不声称已回源** ✗）；**②** **等变性** ✓（同构须保 `G`-作用 ✓，在册 ✓）。 -/
 
 section RealizationMapTensorSide
@@ -4922,7 +4925,9 @@ theorem genericExtensionWitnessField_gap_registered : True := trivial
 **⚠ 环档仍缺** ✗（mathlib 的 `FixedPoints` 与 Artin 界**均只域档** ✗，**登记** ✓）。
 
 **⚠ 唯一剩余输入（登记** ✗**）** ✓：**`[FiniteDimensional K L]`** ✗ —— 源侧由 **`proposition-0-2(a)`** ✓
-（[CHR68] p. 13 ✓，**不在 `raw/`** ✗）供给：`S/R` `G`-Galois ⟹ **有限生成投射** ✓；
+（[CHR68] p. 13 ✓ —— **⚠ 账目更正（第 207 轮** ✓**）**：该精确出处**仍不在 `raw/`** ✗（L37 已核 ✓），
+**但**其**用点**（progenerator ✓）已在 `raw/Saltman1978` 印 528（＝ PDF 3 ✓）内**逐字可核** ✓，
+端点 ＝ `GaloisProgeneratorHyp` ✓，**实体未证** ✗）供给：`S/R` `G`-Galois ⟹ **有限生成投射** ✓；
 库内对应 **`GaloisProjectiveHyp`** ✓（`GaloisAlgebra_ABGV52 :235` ✓，**未证** ✗）。
 **⚠ 后果** ✓✅：**`hdata` 不再是独立输入** ✓ —— 本节 **⑤** ✓ 内部供给之 ✓（**有限性除外** ✗），
 **⑥** ✓ 展示「源侧数据 ＋ `IsGaloisWithGroup` ＋ 有限性 ⟹ `∃φ` ＋ 保作用同构」**无需 `hdata`** ✓。 -/
@@ -5075,7 +5080,9 @@ theorem exists_realization_of_isGaloisWithGroup
 end ChrRealizationPointwise
 
 /-- **登记** ✗：**唯一剩余输入 ＝ `[FiniteDimensional K L]`** ✓ —— 源侧由 `proposition-0-2(a)` ✓
-（「`S` is a **projective** `R[G]`-module」✓，源引 **[CHR68] p. 13** ✓，**不在 `raw/`** ✗）供给：
+（「`S` is a **projective** `R[G]`-module」✓，源引 **[CHR68] p. 13** ✓，**⚠ 账目更正（第 207 轮** ✓**）**：
+该精确出处**仍不在 `raw/`** ✗（L37 已核 ✓），**但**其**用点**已在 `raw/Saltman1978` 印 528（＝ PDF 3 ✓）内可核 ✓
+—— 同页证明给 **progenerator** ✓，端点 `GaloisProgeneratorHyp` ✓ **实体未证** ✗）供给：
 `S/R` `G`-Galois ⟹ **有限生成投射** ✓ ⟹ 域上**有限维** ✓；库内对应 `GaloisProjectiveHyp` ✓（**未证** ✗）。
 **⚠ 后果** ✓：本节三件的**陈述**均以 `[FiniteDimensional K L]` 为前提 ✓ —— **不声称**去除它 ✗。 -/
 theorem chrBridgeField_finiteness_gap_registered : True := trivial
@@ -5105,7 +5112,9 @@ theorem realizationPropertyField_hdata_removal_registered : True := trivial
 本节 **③** ✓ 即该句的**逐字形** ✓（`\mathrm{IsUnit}` ✓；域上等价于 `\neq 0` ✓，**两形并存** ✓）。
 
 **⚠ 唯一剩余输入** ✓：**`[FiniteDimensional K L]`** ✗（**同 §4.54** ✓ —— 源 `proposition-0-2(a)` ✓／[CHR68] p. 13 ✓，
-**不在 `raw/`** ✗）；**环档仍缺** ✗（同 §4.54 登记 ✓，**不复写** ✗）。 -/
+**⚠ 账目更正（第 207 轮** ✓**）**：该精确出处**仍不在 `raw/`** ✗，**但**其**用点**已在
+`raw/Saltman1978` 印 528（＝ PDF 3 ✓）内可核 ✓ —— 同页证明给 **progenerator** ✓，
+端点 `GaloisProgeneratorHyp` ✓ **实体未证** ✗）；**环档仍缺** ✗（同 §4.54 登记 ✓，**不复写** ✗）。 -/
 
 section Lemma52Closure
 
@@ -5149,7 +5158,9 @@ theorem lemma52Statement_unit_of_isGaloisWithGroup [Infinite F]
 end Lemma52Closure
 
 /-- **登记** ✗：**唯一剩余输入 ＝ `[FiniteDimensional K L]`** ✓（**同 §4.54** ✓）—— 源侧由 `proposition-0-2(a)` ✓
-（[CHR68] p. 13 ✓，**不在 `raw/`** ✗）供给；库内对应 `BTier.GaloisProjectiveHyp` ✓（**未证** ✗）。**不声称**去除它 ✗。 -/
+（[CHR68] p. 13 ✓ —— **⚠ 账目更正（第 207 轮** ✓**）**：该精确出处**仍不在 `raw/`** ✗（L37 已核 ✓），
+**但**其**用点**已在 `raw/Saltman1978` 印 528（＝ PDF 3 ✓）内可核 ✓ —— 同页证明给 **progenerator** ✓，
+端点 ＝ `GaloisProgeneratorHyp` ✓，**实体未证** ✗）供给；库内对应 `BTier.GaloisProjectiveHyp` ✓（**未证** ✗）。**不声称**去除它 ✗。 -/
 theorem lemma52_finiteness_gap_registered : True := trivial
 
 /-- **登记** ✓：**§4.5 具名残余的状态收口** ✓ —— `Lemma52Statement`（§4.5 ✓）的**假设类为空** ✗
@@ -5173,7 +5184,9 @@ theorem lemma52_residual_closed_registered : True := trivial
 即**口径偏离** ✗（源 `definition-1-1`(c) ✓ 的量词**不含**有限性 ✓，它是 CHR 理论的**推论** ✓）
 ⟹ **另立名** ✓（`\mathrm{RealizationPropertyFieldFinite}` ✓），**两档并存** ✓、**强度序**明示 ✓。
 **⚠ 断言强度 ≤ 证据层级** ✓：本节**不声称**源 (c) 款已证 ✗ —— 有限档**弱于**源忠实档 ✓，
-且源忠实档的**唯一缺口**仍是**有限性** ✗（源 `proposition-0-2(a)` ✓／[CHR68] p. 13 ✓，**不在 `raw/`** ✗）。 -/
+且源忠实档的**唯一缺口**仍是**有限性** ✗（源 `proposition-0-2(a)` ✓／[CHR68] p. 13 ✓ ——
+**⚠ 账目更正（第 207 轮** ✓**）**：精确出处**仍不在 `raw/`** ✗，**但**其**用点**已在 `raw/Saltman1978` 印 528 ✓ 内可核 ✓，
+端点 `GaloisProgeneratorHyp` ✓ **实体未证** ✗）。 -/
 
 /-- **有限档 (c) 款谓词** ✓：`RealizationPropertyField`（§4.51 ✓）的**同一形** ✓，唯 **`[FiniteDimensional K L]` 入 ∀-binder** ✓
 （＝ 源 `proposition-0-2(a)` 的**有限性显式化** ✓）。
@@ -5267,8 +5280,9 @@ theorem realizationPropertyFieldFinite_of_sourceData
 end RealizationFieldFinite
 
 /-- **登记** ✗：**有限档已「除源侧数据外无条件」** ✓✅（**`hdata` 已删** ✓）；**源忠实档仍待有限性** ✗ ——
-其唯一缺口 ＝ `[FiniteDimensional K L]` ✓（源 `proposition-0-2(a)` ✓／[CHR68] p. 13 ✓，**不在 `raw/`** ✗；
-库内 `BTier.GaloisProjectiveHyp` ✓ **未证** ✗）。
+其唯一缺口 ＝ `[FiniteDimensional K L]` ✓（源 `proposition-0-2(a)` ✓／[CHR68] p. 13 ✓ ——
+**⚠ 账目更正（第 207 轮** ✓**）**：精确出处**仍不在 `raw/`** ✗，**但**其**用点**已在 `raw/Saltman1978` 印 528 ✓ 内可核 ✓；
+库内 `BTier.GaloisProjectiveHyp` ✓ **未证** ✗；端点 `GaloisProgeneratorHyp` ✓ **实体未证** ✗）。
 **⚠ 不声称** ✗：源 `definition-1-1`(c) ✓（**无有限性 binder** 的形 ✓）**未证** ✗；**两档并存** ✓，**勿混用** ✗。 -/
 theorem realizationPropertyFieldFinite_gap_registered : True := trivial
 
@@ -5482,18 +5496,23 @@ theorem theorem51StatementFieldFinite_of_theorem51Statement
       (isGenericExtensionField_of_isGenericExtension hisg)⟩
 
 /-- **登记** ✗：**域档端到端的可达性审计**（**判据先审可达性** ✓，r196 纪律 ✓）——
-**结论** ✓：§165.6 登记的「**域档端到端**」**不可达** ✗（**本会话** ✗），**唯一**结构性缺口 ＝ 源侧数据的两项**外部输入**：
+**结论** ✓：§165.6 登记的「**域档端到端**」**不可达** ✗（**本会话** ✗），**唯一**结构性缺口 ＝ 源侧数据的两项输入：
 **(i)** **`hgal`** ✓（构造出的 `S/R` 的 **`G`-Galois 性** ✓）—— 源引 `proposition-0-2(c)` ✓
 （「there are `F` algebras `R'' \subset S''` … `S''/R''` is Galois with group `G`」✓，源引 **[Sal78b] p. 528** ✓，
-**不在 `raw/`** ✗）；
+**⚠ 账目更正（第 207 轮** ✓**）**：该源**已在 `raw/Saltman1978`** ✓（印 528 ＝ PDF 3 ✓，**回印核** ✓）⟹
+原「**不在 `raw/`**」✗ **作废** ✓，**具名端点** ＝ `GaloisFiniteGenerationDescentHyp` ✓，**实体未证** ✗）；
 **(ii)** **`hProj`** ✓（`\mathrm{GaloisProjectiveHyp}` ✓ ＝ **有限生成投射性** ✓）—— 源 `proposition-0-2(a)` ✓
-（源引 **[CHR68] p. 13** ✓，**不在 `raw/`** ✗）。
+（源引 **[CHR68] p. 13** ✓，**⚠ 同上更正** ✓：精确出处 `[CHR68] p. 13` **仍不在 `raw/`** ✗（L37 已核 ✓），
+**但** Sal78b 印 528 证明内的 progenerator 断言**已可核** ✓ ⟹ **具名端点** ＝ `GaloisProgeneratorHyp` ✓，
+**实体未证** ✗）。
 **⚠ 其余全部在库内可供给** ✓：`(a)` 款 ✓（r188 ✓）／`hact_map` ✓ 与 `hS_0R` ✓（§4.48 ✓ 的**一行** ✓）／
 `hRQ`／`hRGpoint`／`hRA` ✓（§4.47 ✓ **载体具体化**后**内部导出** ✓）／**`hfix`** ✓（**r199 已清** ✓）／
 `t` 与超越基 ✓（§4.19--§4.26 ✓）。
-⟹ **判据下调** ✓：「**域档端到端**」⟹「**模两项具名外部输入**的端到端」✓；
-**⚠ 残余分类账归类** ✓：两项**均属**「**源同状态**（源引外部文献、**不在 `raw/`**）」✗ ⟹ 按账**非本会话可落** ✓
-（**与 M5／M4 具名残余同类** ✓）；**⚠ 不声称**源 `theorem-5-1` 已证 ✗。 -/
+⟹ **判据下调** ✓：「**域档端到端**」⟹「**模两项具名端点**的端到端」✓；
+**⚠ 残余分类账归类（第 207 轮更正** ✓**）** ✓：两项原属「**源同状态**（源引外部文献、**不在 `raw/`**）」✗
+⟹ 按账**非本会话可落** ✓；**现账** ✓ 改为「**源在 `raw/` 内、实体未落**」✓ ⟹
+**「非本会话可落」✗ 作废** ✓、改为「**可落而未落**」✓（**工作量未减** ✗ —— 两具名端点均无证明 ✗）。
+**⚠ 不声称**源 `theorem-5-1` 已证 ✗。 -/
 theorem theorem51_endToEnd_reachability_audited : True := trivial
 
 /-! ## 4.59 **Saltman1982 页号普查 ＋ 回印核**（第 204 轮）—— **修正 1 处** ✗→✓ ＋ **§4.50 散文回链** ✓
@@ -5541,9 +5560,12 @@ theorem saltman1982_page_citations_audited : True := trivial
 **⚠ 相对 r202 ⑦ 的**弱化** ✓**：`hRQ` ✓ 与 `hRGpoint` ✓ **两项被消掉** ✓（**载体具体化**后**内部导出** ✓
 —— §4.48 ✓ 的 `hRQ` ✓ 由 `hle` ＋ 载体步 ✓／`hRGpoint` ✓ 由 `hS_{\rm fix}` ✓）。
 
-**⚠ 口径（不越界** ✗**）** ✓：**不声称**源 `theorem-5-1` 已证 ✗ —— 本件的假设表**仍含两项外部输入** ✓
-（`hgal` ⟸ 源 `proposition-0-2(c)` ✓／**[Sal78b] p. 528** ✗；`hProj` ⟸ 源 `proposition-0-2(a)` ✓／**[CHR68] p. 13** ✗，
-**均不在 `raw/`** ✗，**r203 已审** ✓）；本件**只**证明「**接线已通**」✓。
+**⚠ 口径（不越界** ✗**）** ✓：**不声称**源 `theorem-5-1` 已证 ✗ —— 本件的假设表**仍含两项具名端点** ✓
+（`hgal` ⟸ 源 `proposition-0-2(c)` ✓／**[Sal78b] p. 528** ✓；`hProj` ⟸ 源 `proposition-0-2(a)` ✓／**[CHR68] p. 13** ✓，
+**⚠ 账目更正（第 207 轮** ✓**）**：Sal78b **已在 `raw/Saltman1978`** ✓（印 528 ＝ PDF 3 ✓，**回印核** ✓）⟹
+原「**均不在 `raw/`**」✗ **作废** ✓；**现账** ✓ ＝ 「源在 `raw/` 内、**实体未落**」✗
+（端点 ＝ `GaloisFiniteGenerationDescentHyp` ✓／`GaloisProgeneratorHyp` ✓，**均无证明** ✗）；
+**⚠** [CHR68] p. 13 本身**仍不在 `raw/`** ✗）；本件**只**证明「**接线已通**」✓。
 **⚠ 一处实例教训** ✓（**探针期自纠** ✗→✓）：`hS_0R` ✓ 须用**规范** `S.\mathrm{toAlgebra}` ✓ ⟹
 **不得**再引入 `[Algebra ↥S (\mathrm{NoetherField}\ F\ G)]` ✗（**重复实例** ⟹ 类型错配 ✗）。 -/
 
@@ -5594,7 +5616,9 @@ end CarrierEndToEnd
 /-- **登记** ✓：**端到端的接线账**（本节与 §4.48 ✓／§4.56 ✓／§4.57 ✓ 合读）——
 **已接线** ✓✅：**源侧数据**（`S` ✓／`t` ✓／`hle` ✓／`hS_{\rm fix}` ✓／`ha` ✓／`hinf` ✓）＋ **判据桥** ✓（r199 ⑤ ✓）
 ⟹ **有限档见证** ✓（**`hRQ`／`hRGpoint` 已消** ✓；**`hact_{\rm map}`／`hS_0R` 仍显式** ✓ —— **规范作用**下各**一行** ✓，**登记** ✓）。
-**⚠ 剩余** ✗：**(i)** 两项**外部输入** ✓（`hgal`／`hProj` ✓，**非本会话可落** ✗，§166.3 ✓）；
+**⚠ 剩余** ✗：**(i)** 两项**具名端点** ✓（`hgal`／`hProj` ✓ —— **⚠ 账目更正（第 207 轮** ✓**）**：
+原写「**非本会话可落**」✗ **作废** ✓；**现账** ✓ ＝ 「源**在 `raw/` 内**（`raw/Saltman1978` 印 528 ＝ PDF 3 ✓）、
+**实体未落**」✗，端点 ＝ `GaloisFiniteGenerationDescentHyp` ✓／`GaloisProgeneratorHyp` ✓，**均无证明** ✗，§166.3 ✓）；
 **(ii)** **数据构造链** ✓（`S`／`t` 由 `\mathrm{IsRationalOver}` 生成 ✓ —— **§4.19--§4.26 的接线** ✗，**下一手** ✓）。
 **⚠ 不声称** ✗：源 `theorem-5-1` 已证 ✗。 -/
 theorem theorem51_endToEnd_wired_registered : True := trivial
@@ -5669,8 +5693,9 @@ end NoetherAdjoinEndToEnd
 /-- **登记** ✗：**数据构造链的余项账**（本节 ＋ §4.60 ✓／§4.48 ✓ 合读）——
 **已接线** ✓✅：**`(a)` 款** ✓（r188 ✓）＋ **逐点不动** ✓（§4.47 ✓）＋ **端到端** ✓（§4.60 ① ✓）；
 **余** ✗：**(i)** **`t` 的构造（不变化** ✓**）** ✓ **可落** ✓（§4.23 ✓ ＋ §4.6 ✓ ＋ `\mathrm{adjoin\_away\_mono}` ✓ —— **下一手** ✓）；
-**(ii)** **`S \to \mathrm{Localization.Away}\ t` 的代数结构** ✗（＝ **§4.35 的 `hRA`** ✓，**在册** ✗）；**(iii)** **两项外部输入** ✗
-（`hgal`／`hProj` ✓，**非本会话可落** ✗，§166.3 ✓）。**⚠ 不声称**源 `theorem-5-1` 已证 ✗。 -/
+**(ii)** **`S \to \mathrm{Localization.Away}\ t` 的代数结构** ✗（＝ **§4.35 的 `hRA`** ✓，**在册** ✗）；**(iii)** **两项具名端点** ✗
+（`hgal`／`hProj` ✓ —— **⚠ 账目更正（第 207 轮** ✓**）**：原写「**非本会话可落**」✗ **作废** ✓；
+**现账** ✓ ＝ 「源**在 `raw/` 内** ✓、**实体未落**」✗，§166.3 ✓）。**⚠ 不声称**源 `theorem-5-1` 已证 ✗。 -/
 theorem theorem51_dataChain_gap_registered : True := trivial
 
 /-! ## 5. 公理闸门 -/

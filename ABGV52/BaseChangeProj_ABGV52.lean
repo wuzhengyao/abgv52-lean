@@ -1389,8 +1389,11 @@ example (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
   isGaloisWithGroup_tensorLeft_of_galoisProjective hRG hcanon hR'G hgal hProj
 
 /-- **登记** ✗：本件把 (b) 款接到**单一具名外部输入** `GaloisProjectiveHyp` ✓（＝源
-`proposition-0-2(a)` ✓，引 **[CHR68] p. 13** ✓，**不在 `raw/`** ✗ —— 与 [DI71]／[Sal78b] 同类的
-一级出处缺件 ✓，L37 已核 ✓）⟹ **该假设的实体（`S` 为投射 `R[G]`-模 ⟹ 有限投射 `R`-模 ✓）仍未落** ✗
+`proposition-0-2(a)` ✓，引 **[CHR68] p. 13** ✓ —— **⚠ 账目更正（第 207 轮** ✓**）**：该**精确出处**
+**仍不在 `raw/`** ✗（与 [DI71] 同类的**一级出处缺件** ✓，L37 已核 ✓），**但**其**用点**已在
+`raw/Saltman1978` 印 528（＝ PDF 3 ✓，**回印核** ✓）内**逐字可核** ✓ —— Sal78b `thm:1.2` 证明内的
+**progenerator 断言** ✓（自引 `[4, p. 81]` ＝ **[DI71]** ✓，**非** [CHR68] ✗）；具名端点
+`GaloisProgeneratorHyp` ✓ **实体未证** ✗）⟹ **该假设的实体（`S` 为投射 `R[G]`-模 ⟹ 有限投射 `R`-模 ✓）仍未落** ✗
 （`galoisProjective_gap_registered` ✓）。 -/
 theorem galoisProjective_baseChange_gap_registered : True := trivial
 
