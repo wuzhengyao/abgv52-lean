@@ -578,6 +578,19 @@ that data, and it is a witness of the finite-level, field-level form rather than
 clause, so the three levels of witness now stand side by side, each with its own hypothesis table,
 and the source-level one is registered as still open.
 
+The end-to-end form of the source's theorem 5.1 -- rationality of the fixed field implying a
+witness, with no data supplied by hand -- has now been audited for reachability before being
+attempted, and the audit's answer is that it is out of reach here: exactly two structural inputs
+remain outside the development.  One is the Galois property of the algebra the source constructs,
+which the paper quotes from its own earlier work, and the other is the finite projectivity of a
+Galois extension over its base, quoted from the literature on Galois theory of rings; neither
+reference is in the library.  Every other input is available here, including the fixed-point
+condition that an earlier round supplied.  The target is therefore restated as the end-to-end form
+modulo those two named inputs, the statement of that form is fixed with a definitional lock whose
+discriminating power is checked against a mutant that swaps the witness level, the source-level
+statement is shown to imply it, and the two inputs are recorded as being of the same kind as the
+other named residuals.
+
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
 (2026-10-11, 29 rows) is not recoverable from the working tree and is registered as lost in

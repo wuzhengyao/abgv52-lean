@@ -5425,6 +5425,74 @@ end FiniteWitnessEndpoint
 **⚠ 三档并存** ✓、**勿混用** ✗；**不声称**源 `theorem-5-1`／`theorem-2-1` 已证 ✗。 -/
 theorem genericExtensionWitnessFieldFinite_gap_registered : True := trivial
 
+/-! ## 4.58 **源 `theorem-5-1` 的域档有限孪生**：具名陈述 ＋ **端到端可达性审计（判据下调）**（第 203 轮）
+
+**⚠ 起点** ✓（**承 §165.6 第 1 项** ✓）：登记的目标是「**源 `theorem-5-1` 的域档端到端**」✗ ——
+`\mathrm{Theorem51Statement}`（本件 `:257` ✓）的域档孪生：`\mathrm{IsRationalOver}` ＋ `[Infinite F]` ⟹ 见证 ✓。
+
+**🔴 判据先审可达性（r196 纪律** ✓**）—— 审计结论：不可达** ✗**（本会话** ✗**）**：端到端的**唯一**结构性缺口
+＝ 源侧数据的两项**外部输入** ✓（**逐条见下方登记** ✓）；**其余全部在库内可供给** ✓
+（含 **`hfix`** ✓ —— **r199 已清** ✓，§4.54 ③ ✓）⟹ **判据下调** ✓ 为「**模两项具名外部输入**的端到端」✓。
+
+**🔴 本轮落地** ✓（**探针两件** ✓：`probe-r203a.lean` ✓ **rc=0** ✓、**零警告** ✓；`probe-r203b.lean` ✓ **rc=1** ✓）：
+**①** **具名陈述** ✓（`\mathrm{Theorem51StatementFieldFinite}` ✓ —— 把**可达目标**固定 ✓）＋ **②** **`rfl` 型锁** ✓
+（**判别力已证** ✓：变异件**换回非有限档见证** ✗ ⟹ `rfl` 失败 ✓）＋ **③** **强度序** ✓
+（**源形 ⟹ 有限档** ✓ —— 链：**环 ⟹ 域** ✓（r198 ⑤ ✓）⟹ **域 ⟹ 有限** ✓（r202 ③ ✓））＋ **④ 审计登记** ✓。
+
+**⚠ 断言强度 ≤ 证据层级** ✓：**① 未证** ✗（**不声称**已证 ✗）；**③** 只给「源形 ⟹ 本形」✓（**不声称**严格性 ✗）。 -/
+
+/-- **源 `theorem-5-1` 的域档有限孪生**（**具名陈述** ✓）：`\mathrm{Theorem51Statement}`（本件 `:257` ✓）的**同一形** ✓，
+唯结论取 **`\mathrm{Nonempty}\ (\mathrm{GenericExtensionWitnessFieldFinite}\ F\ G)`** ✓（＝ **有限档 ＋ 弱化档**见证 ✓，
+承 r201／r202 ✓）。
+**⚠ 口径** ✓：**非**源结论 ✗（源要**环档**见证 ✓，§4.53 裁决 ✓）；本陈述是**可达目标的固定** ✓；
+**⚠ 未证** ✗（见本节审计登记 ✓）—— **不声称**已证 ✗。 -/
+def Theorem51StatementFieldFinite (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G] : Prop :=
+  Infinite F → ∀ (L : Type u) [Field L] [Algebra F L] [MulSemiringAction G L]
+    [SMulCommClass G F L],
+    IsRationalOver F ↥(FixedPoints.subalgebra F L G) →
+      Nonempty (GenericExtensionWitnessFieldFinite F G)
+
+/-- **外形锁** ✓（`rfl` 型 ✓）：本陈述与**两段展开体逐字相同** ✓ —— 前提被吞 ✗、结论的**见证档位**漂移 ✗
+即编译失败 ✓。
+**⚠ 判别力（L43／r198 五件套** ✓**）** ✓：**变异件负例已实跑** ✓（`probe-r203b.lean` ✓）——
+**变异件 ＝ 结论换回非有限档见证** ✗（`\mathrm{GenericExtensionWitnessField}` ✓）**使本 `rfl` 失败** ✓
+（读数 ＝ `Not a definitional equality` ✓，`rc=1` ✓）⟹ 本锁**能**分辨两档 ✓。 -/
+theorem Theorem51StatementFieldFinite.shape (F : Type u) [Field F] (G : Type u) [Group G]
+    [Fintype G] :
+    (Theorem51StatementFieldFinite F G)
+      = (Infinite F → ∀ (L : Type u) [Field L] [Algebra F L] [MulSemiringAction G L]
+          [SMulCommClass G F L],
+          IsRationalOver F ↥(FixedPoints.subalgebra F L G) →
+            Nonempty (GenericExtensionWitnessFieldFinite F G)) :=
+  rfl
+
+/-- **强度序（可证方向）** ✓：**源形 ⟹ 本形** ✓ —— 由源形见证（**环档** ✓）经 **环 ⟹ 域** ✓（r198 ⑤ ✓）
+再经 **域 ⟹ 有限** ✓（r202 ③ ✓）得**有限档**见证 ✓（**两次弱化，均单向** ✓）。
+**⚠ 意义** ✓：本条把「**本形弱于源形**」形式化 ✓（**不声称**严格性 ✗ —— **反向未证** ✗，那正是**环档缺口** ✓）。 -/
+theorem theorem51StatementFieldFinite_of_theorem51Statement
+    (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+    (h : Theorem51Statement F G) : Theorem51StatementFieldFinite F G := by
+  intro hinf L _ _ _ _ hL
+  obtain ⟨R, S, hRG, hisg⟩ := h hinf L hL
+  exact ⟨R, S, hRG,
+    isGenericExtensionFieldFinite_of_isGenericExtensionField
+      (isGenericExtensionField_of_isGenericExtension hisg)⟩
+
+/-- **登记** ✗：**域档端到端的可达性审计**（**判据先审可达性** ✓，r196 纪律 ✓）——
+**结论** ✓：§165.6 登记的「**域档端到端**」**不可达** ✗（**本会话** ✗），**唯一**结构性缺口 ＝ 源侧数据的两项**外部输入**：
+**(i)** **`hgal`** ✓（构造出的 `S/R` 的 **`G`-Galois 性** ✓）—— 源引 `proposition-0-2(c)` ✓
+（「there are `F` algebras `R'' \subset S''` … `S''/R''` is Galois with group `G`」✓，源引 **[Sal78b] p. 528** ✓，
+**不在 `raw/`** ✗）；
+**(ii)** **`hProj`** ✓（`\mathrm{GaloisProjectiveHyp}` ✓ ＝ **有限生成投射性** ✓）—— 源 `proposition-0-2(a)` ✓
+（源引 **[CHR68] p. 13** ✓，**不在 `raw/`** ✗）。
+**⚠ 其余全部在库内可供给** ✓：`(a)` 款 ✓（r188 ✓）／`hact_map` ✓ 与 `hS_0R` ✓（§4.48 ✓ 的**一行** ✓）／
+`hRQ`／`hRGpoint`／`hRA` ✓（§4.47 ✓ **载体具体化**后**内部导出** ✓）／**`hfix`** ✓（**r199 已清** ✓）／
+`t` 与超越基 ✓（§4.19--§4.26 ✓）。
+⟹ **判据下调** ✓：「**域档端到端**」⟹「**模两项具名外部输入**的端到端」✓；
+**⚠ 残余分类账归类** ✓：两项**均属**「**源同状态**（源引外部文献、**不在 `raw/`**）」✗ ⟹ 按账**非本会话可落** ✓
+（**与 M5／M4 具名残余同类** ✓）；**⚠ 不声称**源 `theorem-5-1` 已证 ✗。 -/
+theorem theorem51_endToEnd_reachability_audited : True := trivial
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -5532,6 +5600,10 @@ theorem genericExtensionWitnessFieldFinite_gap_registered : True := trivial
 #print axioms isGenericExtensionFieldFinite_of_sourceData
 #print axioms nonempty_genericExtensionWitnessFieldFinite_of_sourceData
 #print axioms genericExtensionWitnessFieldFinite_gap_registered
+#print axioms Theorem51StatementFieldFinite
+#print axioms Theorem51StatementFieldFinite.shape
+#print axioms theorem51StatementFieldFinite_of_theorem51Statement
+#print axioms theorem51_endToEnd_reachability_audited
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv
