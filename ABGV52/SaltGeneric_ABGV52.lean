@@ -4512,6 +4512,106 @@ theorem theorem51Statement_infiniteField_gap_registered : True := trivial
 
 end InfiniteTargetData
 
+/-! ## 4.51 **源 `theorem-5-1` 的条件总装（第一步）**：**见证打包** ＋ **(c) 款域档**（第 196 轮）
+
+**⚠ 起点** ✓（**承 §158.7 第 1 项** ✓）：§4.46／§4.47／§4.48 已把 (c) 款的**逐点**装配做齐 ✓，
+但**谓词形**（`RealizationProperty` 的 **`[CommRing L]`** ∀-形 ✓，＝ `definition-1-1`(c) 的编码 ✓）**未落** ✗（§157.2 ④ ✓）。
+
+**⚠ 本轮（断指）** ✓：**两条** ✓ ——
+**①** **见证打包** ✓✅：**三款齐** ⟹ `Nonempty (GenericExtensionWitness F G)` ✓
+（**⚠ 库内首件** ✗→✓：`GenericExtensionWitness` 此前**只在陈述侧**出现 ✓，**无任何构造件** ✗ —— `∃` 不接受实例绑定 ⟹ 须**显式打包** ✓）；
+**②** **(c) 款的域档** ✓✅：量词域收为 **`[Field L]`** ✓（＝ 源 §5 的**用点形** ✓），由**装配链**（§4.46 ✓）
+＋ **逐点数据**（正规基 `b`／`hb` ✓ ＋ `hfix` ✓）＋ **`F` 无限**（⟹ `K` 无限 ✓，r194 ✓）供给 ✓。
+
+**⚠ 登记（真卡点** ✗）：**代数档**（`[CommRing L]` ✓，即 `definition-1-1`(c) 的编码 ✓）**仍缺** ✗ —— 须**代数版（CHR）理论** ✗
+（`GaloisFixedSubringHyp` ✓／正规基**以 `G` 为指标** ✓／域档假设 ✓三条在册 ✓，见 §157.2 ②③④ ✓）。
+
+**⚠ 另一发现（登记** ✓）：装配链与**逐点数据**的**陈述**还需 `[SMulCommClass G K L]`／`[SMulCommClass G F L]` ✗
+（`smulAlgEquivHom K G L` 的**类型**即需前者 ✓）—— 二者**可由 `hKL` ＋ 塔在证明体内派生** ✓
+（`hKL` 即 `SMulCommClass G K L` ✓；`F`-档由 `IsScalarTower.algebraMap_smul` ✓ ＋ `hKL` ✓），
+但**逐点数据的假设表**须**显式带**这两项 ✓（否则该假设**不可陈述** ✗）⟹ **登记** ✓（非谓词层缺口 ✓）。 -/
+
+section SourceDataToWitness
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **(c) 款的域档形** ✓：`RealizationProperty`（`definition-1-1`(c) ✓）把量词域收为 **`[Field L]`** ✓ ——
+**⚠ 用途** ✓：这是**装配链能供给**的形 ✓（§4.46 ✓）；**代数档**（`[CommRing L]` ✗）**仍缺** ✗（**登记** ✓）。 -/
+def RealizationPropertyField (F : Type*) [Field F] (G : Type*) [Group G] [Fintype G]
+    (R S : Type*) [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] : Prop :=
+  ∀ (K : Type) [Field K] [Algebra F K]
+    (L : Type) [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+    [MulSemiringAction G L]
+    (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+    BTier.IsGaloisWithGroup K L G hKL →
+      ∃ (φ : R →ₐ[F] K),
+        letI : Algebra R K := φ.toRingHom.toAlgebra
+        Nonempty (L ≃ₐ[K] (TensorProduct R K S))
+
+/-- **(c) 款域档 · 源侧总装** ✓✅：**§4.46 的全部源侧数据** ✓ ＋ **`F` 无限** ✓ ＋ **逐点数据** ✓
+⟹ **`RealizationPropertyField F G R S_0`** ✓（`S_0 := Localization.Away t` ✓）。
+**⚠ 不重证** ✓：逐点调用 §4.46 ✓；`K` 的无限性由 r194 的派生件 ✓ 供给；两条 `SMulCommClass` 由 `hKL` ＋ 塔**现场派生** ✓。 -/
+theorem realizationPropertyField_of_sourceData
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ g : G, g • t = t)
+    {R : Type} [CommRing R] [Algebra R (Localization.Away t)] [Algebra F R]
+    [IsScalarTower F R (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    [Algebra R (NoetherField F G)] [IsScalarTower F R (NoetherField F G)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : R) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup R (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp R (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : R,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap R (Localization.Away t) r)
+        = algebraMap R (NoetherField F G) r)
+    (hRQ : ∀ r : R,
+      algebraMap R (NoetherField F G) r ∈ (awayToFieldAlg (F := F) (G := G) t ht).range)
+    (hRGpoint : ∀ (g : G) (r : R),
+      g • algebraMap R (NoetherField F G) r = algebraMap R (NoetherField F G) r)
+    (hinf : Infinite F)
+    (hdata : ∀ (K : Type) [Field K] [Algebra F K]
+      (L : Type) [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+      [MulSemiringAction G L] [SMulCommClass G K L] [SMulCommClass G F L]
+      (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+      BTier.IsGaloisWithGroup K L G hKL →
+        ∃ (_b : Module.Basis G K L), Function.Bijective (smulAlgEquivHom K G L) ∧
+          ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x) :
+    RealizationPropertyField F G R (Localization.Away t) := by
+  intro K _ _ L _ _ _ _ _ hKL hgalKL
+  let _ : SMulCommClass G K L := ⟨fun g k x => hKL g k x⟩
+  let _ : SMulCommClass G F L := ⟨fun g f x => by
+    rw [← IsScalarTower.algebraMap_smul K f x, ← IsScalarTower.algebraMap_smul K f (g • x),
+      hKL g (algebraMap F K f) x]⟩
+  obtain ⟨b, hb, hfix⟩ := hdata K L hKL hgalKL
+  let _ : Infinite K := infinite_of_algebra_of_infinite (F := F) (K := K)
+  obtain ⟨φ, e, _he⟩ := exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
+    (F := F) (G := G) (t := t) ht htinv hact_map hRG hgal hProj hS₀R hRQ hRGpoint b hb hfix
+  refine ⟨φ, ?_⟩
+  let _ : Algebra R K := φ.toRingHom.toAlgebra
+  exact ⟨e⟩
+
+end SourceDataToWitness
+
+section WitnessPackaging
+
+variable {F : Type v} [Field F] {G : Type u} [Group G] [Fintype G]
+
+/-- **见证打包** ✓✅：`IsGenericExtension` 的**三款齐** ✓ ⟹ `Nonempty (GenericExtensionWitness F G)` ✓
+（**⚠ 库内首件** ✓；`∃` 不接受实例绑定 ⟹ 见证须**显式打包** ✓）。 -/
+theorem nonempty_genericExtensionWitness_of_clauses {R S : Type u}
+    [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (ha : ∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w))
+    (hb : BTier.IsGaloisWithGroup R S G hRG) (hc : BTier.RealizationProperty F G R S) :
+    Nonempty (GenericExtensionWitness F G) :=
+  ⟨{ R := R, S := S, hRG := hRG, isGeneric := ⟨ha, hb, hc⟩ }⟩
+
+end WitnessPackaging
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -4578,6 +4678,8 @@ end InfiniteTargetData
 #print axioms realizationProperty_gap_registered
 #print axioms infinite_of_algebra_of_infinite
 #print axioms theorem51Statement_infiniteField_gap_registered
+#print axioms realizationPropertyField_of_sourceData
+#print axioms nonempty_genericExtensionWitness_of_clauses
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv

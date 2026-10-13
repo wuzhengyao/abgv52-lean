@@ -487,7 +487,10 @@ is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-
   source's theorem asks the ground field to be infinite and the argument invokes that the extension
   field is, which is derived here.  That ground-field hypothesis now stands in the library's
   statement of the theorem as the source writes it, with a definitional lock that fails if it is
-  dropped.
+  dropped.  The three clauses of the generic-extension definition are also packaged into the
+  existence witness, which had no construction in the library before, and the realization clause
+  is now available in the field form the source's argument uses, supplied by the assembly from the
+  normal-basis and fixed-field data, with the ring form of that clause registered as still open.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
