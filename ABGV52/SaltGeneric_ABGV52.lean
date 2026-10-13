@@ -5528,6 +5528,77 @@ such that `S/R` is Galois with group `G`」✓（**r203 审计的 `hgal` 出处�
 **⚠ 未逐一目视者为残余** ✗（**L19**：**未命中不得用于排除** ✓）。 -/
 theorem saltman1982_page_citations_audited : True := trivial
 
+/-! ## 4.60 **载体具体化的端到端**：源侧数据 ＋ 两项外部输入 ⟹ **有限档见证**（第 205 轮）
+
+**⚠ 起点** ✓（**承 §167.7 的当前主攻** ✓）：§166.6 登记的「**模两项外部输入**的端到端 · **数据接线**」✗ ——
+即把 **§4.19--§4.26** ✓（超越基 ✓／`t` ✓／`R_1 = F[a]` ✓／清分母 ✓）＋ **§4.47／§4.48** ✓（**载体具体化** ✓：
+`R := ↥S` ✓、`hle` ✓、`hS_{\rm fix}` ✓）＋ **r202 ⑦** ✓ 接成**一条**定理 ✓。
+
+**🔴 本轮断指** ✓（**判据先审可达性** ✓：`probe-r205a.lean` ✓ **rc=0** ✓、**零警告** ✓）：**一条**定理 ✓ ——
+**假设表** ✓ ＝ **源侧构造输入**（`S` ✓／`t` ✓／`hle` ✓／`hS_{\rm fix}` ✓／`hact_{\rm map}` ✓／`hS_0R` ✓／`ha` ✓／
+`hinf` ✓／`hRG` ✓）＋ **两项外部输入** ✓（`hgal` ✓／`hProj` ✓）；**结论** ✓ ＝
+`\mathrm{Nonempty}\ (\mathrm{GenericExtensionWitnessFieldFinite}\ F\ G)` ✓（**有限档 ＋ 弱化档**见证 ✓）。
+**⚠ 相对 r202 ⑦ 的**弱化** ✓**：`hRQ` ✓ 与 `hRGpoint` ✓ **两项被消掉** ✓（**载体具体化**后**内部导出** ✓
+—— §4.48 ✓ 的 `hRQ` ✓ 由 `hle` ＋ 载体步 ✓／`hRGpoint` ✓ 由 `hS_{\rm fix}` ✓）。
+
+**⚠ 口径（不越界** ✗**）** ✓：**不声称**源 `theorem-5-1` 已证 ✗ —— 本件的假设表**仍含两项外部输入** ✓
+（`hgal` ⟸ 源 `proposition-0-2(c)` ✓／**[Sal78b] p. 528** ✗；`hProj` ⟸ 源 `proposition-0-2(a)` ✓／**[CHR68] p. 13** ✗，
+**均不在 `raw/`** ✗，**r203 已审** ✓）；本件**只**证明「**接线已通**」✓。
+**⚠ 一处实例教训** ✓（**探针期自纠** ✗→✓）：`hS_0R` ✓ 须用**规范** `S.\mathrm{toAlgebra}` ✓ ⟹
+**不得**再引入 `[Algebra ↥S (\mathrm{NoetherField}\ F\ G)]` ✗（**重复实例** ⟹ 类型错配 ✗）。 -/
+
+section CarrierEndToEnd
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **载体具体化的端到端** ✓✅：**源侧构造数据** ✓ ＋ **两项外部输入** ✓ ⟹ **有限档见证** ✓；
+`hRQ` ✓／`hRGpoint` ✓ **已由载体具体化消掉** ✓（§4.48 ✓）。
+**⚠ 断言强度 ≤ 证据层级** ✓：**不声称**源定理已证 ✗（假设表含两项外部输入 ✓，见节头 ✓）。 -/
+theorem nonempty_genericExtensionWitnessFieldFinite_of_subalgebra
+    {S : Subalgebra F (NoetherField F G)}
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ (g : G), g • t = t)
+    (hle : S ≤ Subalgebra.restrictScalars F (Algebra.adjoin (MvPolynomial G F)
+      ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G))))
+    (hS_fix : ∀ (g : G) {x : NoetherField F G}, x ∈ S → g • x = x)
+    [Algebra ↥S (Localization.Away t)] [IsScalarTower F ↥S (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : ↥S) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup ↥S (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp ↥S (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : ↥S,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap ↥S (Localization.Away t) r)
+        = algebraMap ↥S (NoetherField F G) r)
+    (hinf : Infinite F)
+    (ha : ∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧ Nonempty (↥S ≃ₐ[F] Localization.Away w)) :
+    Nonempty (GenericExtensionWitnessFieldFinite F G) := by
+  refine ⟨↥S, Localization.Away t, hRG, ha, hgal, ?_⟩
+  intro K _ _ L _ _ _ _ _ _ hKL hgalKL
+  let _ : SMulCommClass G K L := ⟨fun g k x => hKL g k x⟩
+  let _ : SMulCommClass G F L := ⟨fun g f x => by
+    rw [← IsScalarTower.algebraMap_smul K f x, ← IsScalarTower.algebraMap_smul K f (g • x),
+      hKL g (algebraMap F K f) x]⟩
+  obtain ⟨b, hb, hfix⟩ := exists_chrData_of_isGaloisWithGroup hKL hgalKL
+  let _ : Infinite K := infinite_of_algebra_of_infinite (F := F) (K := K)
+  obtain ⟨φ, e, _he⟩ := exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
+    (F := F) (G := G) (S := S) (t := t) ht htinv hle hS_fix hact_map hRG hgal hProj hS₀R
+    b hb hfix
+  refine ⟨φ, ?_⟩
+  let _ : Algebra ↥S K := φ.toRingHom.toAlgebra
+  exact ⟨e⟩
+
+end CarrierEndToEnd
+
+/-- **登记** ✓：**端到端的接线账**（本节与 §4.48 ✓／§4.56 ✓／§4.57 ✓ 合读）——
+**已接线** ✓✅：**源侧数据**（`S` ✓／`t` ✓／`hle` ✓／`hS_{\rm fix}` ✓／`ha` ✓／`hinf` ✓）＋ **判据桥** ✓（r199 ⑤ ✓）
+⟹ **有限档见证** ✓（**`hRQ`／`hRGpoint` 已消** ✓；**`hact_{\rm map}`／`hS_0R` 仍显式** ✓ —— **规范作用**下各**一行** ✓，**登记** ✓）。
+**⚠ 剩余** ✗：**(i)** 两项**外部输入** ✓（`hgal`／`hProj` ✓，**非本会话可落** ✗，§166.3 ✓）；
+**(ii)** **数据构造链** ✓（`S`／`t` 由 `\mathrm{IsRationalOver}` 生成 ✓ —— **§4.19--§4.26 的接线** ✗，**下一手** ✓）。
+**⚠ 不声称** ✗：源 `theorem-5-1` 已证 ✗。 -/
+theorem theorem51_endToEnd_wired_registered : True := trivial
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -5640,6 +5711,8 @@ theorem saltman1982_page_citations_audited : True := trivial
 #print axioms theorem51StatementFieldFinite_of_theorem51Statement
 #print axioms theorem51_endToEnd_reachability_audited
 #print axioms saltman1982_page_citations_audited
+#print axioms nonempty_genericExtensionWitnessFieldFinite_of_subalgebra
+#print axioms theorem51_endToEnd_wired_registered
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv

@@ -173,8 +173,10 @@ with finite-dimensionality inside its quantifier and proved outright in that for
 data hypothesis the assembly had carried -- a separate name from the faithful clause, since the
 source's clause does not carry finiteness, with a definitional lock whose discriminating power is
 checked against a mutant that drops that binder, the faithful clause implying the restated one and
-the converse registered as the finiteness gap, and the page citations of the 1982 source audited and
-corrected, and the witness reached at that level: the three
+the converse registered as the finiteness gap, the page citations of the 1982 source audited and
+corrected, and the source-side data wired to the witness in one theorem, with the carrier
+concretized, the two compatibility hypotheses discharged and the two named inputs left
+explicit; the witness at that level is reached as before.
 clauses there are packaged into a witness of their own, and from the source-side data alone -- with
 no data hypothesis, the realization clause being supplied on the spot -- such a witness is obtained,
 the first witness in the library that needs nothing beyond that data, with the three levels of
@@ -599,6 +601,14 @@ cross-vocabulary lock had given the page that carries the proposition and the em
 section 0 rather than the page that carries the definition, and the two are now distinguished, with
 the pages not read one by one recorded as a residual.  A registration in the other file back-links a
 residual that an earlier round superseded.
+
+The wiring the audited target called for is now in place.  The source-side construction data,
+together with the two named inputs, yield the finite-level witness in a single theorem, and the two
+compatibility hypotheses the earlier assembly carried are discharged by concretizing the carrier to
+the invariant subalgebra of the Noether field.  A duplicate instance binder had to be dropped for
+the identification of the algebra structure to line up, which is recorded.  The hypothesis table of
+the result is exactly the source-side data plus the two named inputs, and the construction of that
+data from the rationality hypothesis is recorded as the remaining step.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
