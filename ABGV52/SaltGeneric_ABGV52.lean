@@ -5775,6 +5775,17 @@ theorem nonempty_genericExtensionWitnessFieldFinite_of_noetherAdjoin
     ⟨n, exists_algEquiv_localizationAway_of_adjoin_union_inv (F := F) (K := NoetherField F G)
       hind hgen hs₀ hs₀_mem⟩
 
+/-- **登记** ✗：**接线的余项**（**第 217 轮实测** ✓）—— **`t` 的构造已备** ✓（`exists_invariant_t_of_noether` ✓）
+但**接入 r206 目标** ✗ **未落** ✗，**卡点已定位** ✓：`r206` 目标的 **`\mathrm{Localization.Away}\ t` 的实例**（`Algebra`／
+`IsScalarTower`／`MulSemiringAction` ✓）**须配同一个 `t`** ✓，而 `t` 由 `exists_invariant_t_of_noether` ✓ **产出** ✓
+（**非**输入 ✗）⟹ 该 `t` 须以 **`Classical.choose`** ✓ 或**显式 binder** ✓ 提到**类型层** ✗。
+**⚠ 两式实测** ✗：**(a)** `_auto` 档（把 `t` 留在证明内 ✗）⟹ **实例与假设的 `t` 不同一** ✓（**类型不符** ✓）；
+**(b)** `_wired` 档（`Classical.choose` 写进类型 ✗）⟹ **elaboration 超时** ✗（`whnf` 200000 heartbeats ✓）。
+**⚠ 下一手** ✓：改走 **`letI` 自产结构** ✓（§ r185 正解六式之「**自产结构**」✓）——
+**把 `t` 与三件性质作 `let`／`have` 入结论** ✗，或**把实例改由构造后的 `t` 重绑** ✗。
+**⚠ 不声称** ✗：接线**未落** ✗；源 `theorem-5-1` 未证 ✗。 -/
+theorem noetherAdjoin_wiring_gap_registered : True := trivial
+
 end NoetherAdjoinEndToEnd
 
 /-- **登记** ✗：**数据构造链的余项账**（本节 ＋ §4.60 ✓／§4.48 ✓ 合读）——
@@ -5819,6 +5830,7 @@ theorem theorem51_dataChain_gap_registered : True := trivial
 #print axioms prod_smul_eq_mul
 #print axioms adjoin_away_prod_smul
 #print axioms exists_invariant_t_of_noether
+#print axioms noetherAdjoin_wiring_gap_registered
 #print axioms sup_adjoin_away_le
 #print axioms exists_adjoin_union_le_away
 #print axioms unionClearing_gap_registered
