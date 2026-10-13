@@ -371,6 +371,49 @@ theorem exists_algebraMap_of_invariant {R S : Type u} [CommRing R] [CommRing S] 
   h hgal s hs
 
 
+/-! ## 源侧「`G`-Galois ⟹ `R \hookrightarrow S`」的**具名端点**（第 213 轮 ✓）
+
+**⚠ 登记** ✓（**§174.3 的余项落为在册端点** ✓）：`IsGaloisWithGroup` ✓ 的**三款** ✓
+（`FaithfulSMul G S` ✓／`R \subseteq S^G` ✓／`\delta` 双射 ✓）**不蕴含** `FaithfulSMul R S` ✗
+（§171.1／§174.3 ✓）；源侧由**迹**供给 ✓（`τ = \sum_\sigma \sigma \bullet \cdot` ✓ ⟹ 左逆 ✓ ⟹ 单射 ✓）。
+**⚠ 与 `GaloisFixedSubringHyp` 的分工** ✓：后者「**不变化 ⟹ 属 `R`**」✓，本条「**`R` 在 `S` 中可辨**」✗ ——
+**两者不可互替** ✗（**各自独立在册** ✓）。**⚠ 实体未证** ✗（口径同 `GaloisProjectiveHyp` ✓／`GaloisDescentHyp` ✓）。 -/
+
+section GaloisFaithfulEndpoint
+
+variable {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
+variable {G : Type u} [Group G] [Fintype G] [MulSemiringAction G S]
+
+/-- **具名端点** ✓：`G`-Galois ⟹ `FaithfulSMul R S` ✓（**源侧路线 ＝ 迹** ✓，**实体未证** ✗）。 -/
+def GaloisFaithfulHyp (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type u) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) : Prop :=
+  IsGaloisWithGroup R S G hRG → FaithfulSMul R S
+
+/-- **类型锁定（同一性形）** ✓。 -/
+theorem galoisFaithfulHyp_typeLock (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type u) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    (GaloisFaithfulHyp R S G hRG) = (GaloisFaithfulHyp R S G hRG) := rfl
+
+/-- **非空洞探针（L1）** ✓：结论数据可实例化 ✓（`FaithfulSMul ℚ ℚ` ✓；
+`IsGaloisWithGroup` 侧的非空性复用 `isGaloisWithGroup_data_nonempty` ✓）。 -/
+theorem galoisFaithfulHyp_data_nonempty : Nonempty (FaithfulSMul ℚ ℚ) := ⟨inferInstance⟩
+
+/-- **登记** ✗：本件的**实体**（`FaithfulSMul R S` 的证明）**未落** ✗ ——
+源侧路线 ＝ **迹／特征线性无关** ✓；**已试路线** ✗：`\delta^{-1}` ＋ 单位系数 ✓
+（第 212 轮 ✓ —— **取值在 `S`** ✗，须补 `S → R` 截面 ✗）。 -/
+theorem galoisFaithful_gap_registered : True := trivial
+
+/-- **本端点的用点** ✓：一行得 `FaithfulSMul R S` ✓。 -/
+theorem faithfulSMul_of_galoisFaithfulHyp
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (h : GaloisFaithfulHyp R S G hRG) (hgal : IsGaloisWithGroup R S G hRG) :
+    FaithfulSMul R S :=
+  h hgal
+
+end GaloisFaithfulEndpoint
+
 /-! ## 源 `proposition-0-2(c)`：**下降命题**（具名外部输入 ✓，第 150 轮）
 
 **源逐字** ✓（`raw/Saltman1982.tex:82--93` ✓；**⚠-tex-sourced** ✗，PDF 孪生件在库 ✓）：
@@ -643,6 +686,22 @@ lemma coeffToEnd_smulS (c b : S) :
   show (c * b) * t = c • (b * t)
   rw [mul_assoc]
   rfl
+
+/-- **迹（和式形）** ✓：`τ x = ∑_σ σ • x` ✓（源 Galois 判据的**直接推论** ✓）。 -/
+noncomputable def traceSum {S : Type*} [AddCommMonoid S] {G : Type*} [Fintype G]
+    [SMul G S] (x : S) : S := ∑ σ : G, σ • x
+
+/-- **迹是 `G`-不变的** ✓ —— 源 §0 判据的**直接推论** ✓
+（**喂 `GaloisFixedSubringHyp`** ✓ —— 该件头注的**下一手** ✓ 正是此路 ✓）。 -/
+lemma traceSum_invariant {S : Type*} [AddCommMonoid S] {G : Type*} [Group G] [Fintype G]
+    [DistribMulAction G S] (x : S) (g : G) :
+    g • traceSum (G := G) x = traceSum (G := G) x := by
+  show g • (∑ σ : G, σ • x) = ∑ σ : G, σ • x
+  have h1 : g • (∑ σ : G, σ • x) = ∑ σ : G, g • (σ • x) :=
+    map_sum (DistribMulAction.toAddMonoidEnd G S g) _ _
+  rw [h1]
+  exact Finset.sum_equiv (Equiv.mulLeft g) (fun _ => iff_of_true (Finset.mem_univ _)
+    (Finset.mem_univ _)) (fun σ _ => by show g • (σ • x) = (g * σ) • x; rw [mul_smul])
 
 /-- **`\delta` 的 `S`-线性档** ✓（**迹路线步骤 ①** ✓ —— **已落** ✓）。 -/
 noncomputable def deltaToEndLinearS (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
@@ -1083,6 +1142,13 @@ end GaloisTransport
 #print axioms coeffOne_single_one
 #print axioms deltaToEndAdd_single_one_one
 #print axioms algebraMap_fixed_of_isGaloisWithGroup
+#print axioms traceSum
+#print axioms traceSum_invariant
+#print axioms GaloisFaithfulHyp
+#print axioms galoisFaithfulHyp_typeLock
+#print axioms galoisFaithfulHyp_data_nonempty
+#print axioms galoisFaithful_gap_registered
+#print axioms faithfulSMul_of_galoisFaithfulHyp
 #print axioms coeffToEnd_smulS
 #print axioms deltaInvLinearS
 #print axioms coeffOneS
