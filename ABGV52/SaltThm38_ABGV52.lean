@@ -31,6 +31,8 @@
   仿射 ✗（§68 的印版级发现 ✓）。
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
+import ABGV52.SaltGeneric_ABGV52
+import ABGV52.SaltLocalProj_ABGV52
 import ABGV52.SaltLocalLift_ABGV52
 import ABGV52.SaltCor_ABGV52
 import Mathlib.RingTheory.Localization.InvSubmonoid
@@ -173,5 +175,21 @@ theorem thm3_8_exists_probe (F : Type u) [Field F] :
 #print axioms exists_affine_subalgebra_of_isRetractRational
 #print axioms thm3_8_exists
 #print axioms thm3_8_exists_probe
+
+/-- **攻击顺序 ② `hRA` 的第三件** ✓✅（第 228 轮 ✓）：**`MulSemiringAction G (Localization.Away T)`** ✓ ——
+**由 `T` 的 `G`-不变化** ✓ 经**库内一般件** ✓ **`locMulSemiringAction`** ✓（`SaltLocalProj_ABGV52:340` ✓）得 ✓。
+**⚠ 本件是它唯一可为之处** ✓：**该实例的两个来源分处两件** ✓ —— `MvPolynomial G F` 的**作用** ✓ 在
+`SaltGeneric_ABGV52` ✓（**本器序 109** ✓）、**一般件** ✓ 在 `SaltLocalProj_ABGV52` ✓（**序 111** ✓）⟹
+**只有序 111 之后的件能同时看见两者** ✓（**本件序 120** ✓）。
+**⚠ 已试并作废的一式** ✗（**留痕** ✓）：**给 `SaltGeneric` 加 `import SaltLocalProj`** ✗ ——
+**编译通过** ✓ 但**闸门「编译顺序自检」判不过** ✗（`SaltGeneric` 序 109 **早于** `SaltLocalProj` 序 111 ✗
+⟹ **被依赖者列在其使用者之后** ✗，`gate-r228.txt` ✓）⟹ **已回退** ✓，**改落本处** ✓。
+**⚠ 意义** ✓：**r206 目标的三实例**至此**全部可产** ✓✅ —— ①／② 见 `SaltGeneric` 第 226 轮两件 ✓，③ 见本条 ✓。 -/
+theorem exists_mulSemiringAction_away_of_noetherAdjoin {F : Type} [Field F] {G : Type} [Group G]
+    [Fintype G] [DecidableEq G] (T : MvPolynomial G F) (hTinv : ∀ g : G, g • T = T) :
+    Nonempty (MulSemiringAction G (Localization.Away T)) :=
+  ⟨ABGV52.BTier.locMulSemiringAction (F := F) (A := MvPolynomial G F) (G := G) T hTinv⟩
+
+#print axioms exists_mulSemiringAction_away_of_noetherAdjoin
 
 end ABGV52
