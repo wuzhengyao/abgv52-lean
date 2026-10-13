@@ -2906,6 +2906,49 @@ theorem exists_adjoin_union_le_away {ι ι' : Type*} [Fintype ι] [DecidableEq �
     have := adjoin_away_mono t₁ t₀ ht₀ hmem
     rwa [mul_comm t₁ t₀] at this
 
+/-! ### 攻击顺序 ① 的 `t`：`P := ∏_σ σ • t₀` 的**两件已验证**（第 215 轮 ✓）
+
+**⚠ 更正留痕** ✓（**§176 的延续** ✓）：`r208`／§4.60 ① 的旧注把 **§4.6 引理的对象**与「**再乘 `t₀`**」**混为一谈** ✗
+（`t₀` **本身不是不变的** ✗，`t₀ · ∏_σ σ • t₀` **亦不是** ✗ —— **实测** ✓）。
+**正解** ✓ ＝ **`P := ∏_σ σ • t₀` 本身** ✓ —— 本条目落它的**非零** ✓ 与**不变化** ✓（**幂档** ✓ 一并 ✓）。
+**⚠ 余项** ✗：**包含** ✓（`A ≤ Q(P)` ✓）**未落** ✗ —— ⚠ **方向须注意** ✗：
+`adjoin_away_mono` ✓ 给 `Q(t) ≤ Q(t \cdot t')` ✓，而 `P` **不是** `t₀` 的**倍数** ✗（`t₀` 才是 `P` 的因子 ✓）
+⟹ **不能**由该件直接得 `Q(t₀) ≤ Q(P)` ✗（**待另证** ✗，见状态笔记 §177 ✓）。 -/
+
+section NoetherTProd
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G]
+
+/-- **`P := ∏_σ σ • t₀` 非零** ✓（**关键小引理**：`σ • t₀ = 0 \Rightarrow t₀ = 0` ✓，`calc` 三行 ✓）。 -/
+lemma prod_smul_ne_zero (t₀ : MvPolynomial G F) (ht₀ : t₀ ≠ 0) :
+    (∏ σ : G, σ • t₀) ≠ 0 := by
+  refine Finset.prod_ne_zero_iff.mpr ?_
+  intro σ _ h0
+  exact ht₀ (calc t₀ = (1 : G) • t₀ := (one_smul G t₀).symm
+    _ = (σ⁻¹ * σ) • t₀ := by rw [inv_mul_cancel]
+    _ = σ⁻¹ • (σ • t₀) := mul_smul σ⁻¹ σ t₀
+    _ = 0 := by rw [h0, smul_zero])
+
+/-- **`P := ∏_σ σ • t₀` 不变化** ✓（§4.6 ✓ —— **一行** ✓）。 -/
+lemma prod_smul_invariant (t₀ : MvPolynomial G F) (g : G) :
+    g • (∏ σ : G, σ • t₀) = ∏ σ : G, σ • t₀ :=
+  noether_prod_smul_invariant (F := F) (G := G) t₀ g
+
+/-- **`P^N` 不变化** ✓（不变量的幂 ✓ —— 归纳 ＋ `smul_mul'` ✓）。 -/
+lemma prod_pow_invariant (t₀ : MvPolynomial G F) (N : ℕ) (g : G) :
+    g • (∏ σ : G, σ • t₀) ^ N = (∏ σ : G, σ • t₀) ^ N := by
+  have h : g • (∏ σ : G, σ • t₀) = ∏ σ : G, σ • t₀ := prod_smul_invariant t₀ g
+  induction N with
+  | zero => simp
+  | succ n ih => rw [pow_succ, smul_mul', h, ih]
+
+/-- **`P^N` 非零** ✓。 -/
+lemma prod_pow_ne_zero (t₀ : MvPolynomial G F) (ht₀ : t₀ ≠ 0) (N : ℕ) :
+    (∏ σ : G, σ • t₀) ^ N ≠ 0 :=
+  pow_ne_zero N (prod_smul_ne_zero t₀ ht₀)
+
+end NoetherTProd
+
 /-- **登记** ✗：**`k`-半**的**接线** ✓（把 r172 的 `\mathrm{injective\_tmul\_one\_of\_galoisProjective}` ✓
 与**下降同构** `S'' \otimes_{R''} L^G \cong L` ✓ 复合得 `S'' \hookrightarrow L` ✓，再取 `S''` 的**有限生成族** ✓
 用本节的**合并件** ✓）**未落** ✗ —— **下一手** ✓。 -/
@@ -5725,6 +5768,10 @@ theorem theorem51_dataChain_gap_registered : True := trivial
 #print axioms exists_adjoin_inv_le_away_of_noether
 #print axioms noetherEmbedding_gap_registered
 #print axioms adjoin_away_mono
+#print axioms prod_smul_ne_zero
+#print axioms prod_smul_invariant
+#print axioms prod_pow_invariant
+#print axioms prod_pow_ne_zero
 #print axioms sup_adjoin_away_le
 #print axioms exists_adjoin_union_le_away
 #print axioms unionClearing_gap_registered
