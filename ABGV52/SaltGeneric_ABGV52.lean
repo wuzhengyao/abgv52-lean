@@ -4187,6 +4187,126 @@ theorem exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
 
 end SourceDataCapstone
 
+/-! ## 4.47 **装配 (c) 款 · 源侧接线**：**载体具体化 ⟹ 三项在册输入按构造消掉**（第 187 轮）
+
+**⚠ 起点** ✓（**承 §149.6 第 1 项** ✓，**仍压 (c) 款** ✓，**不转项** ✗）：§4.46 已产出 `\varphi` ＋ 保作用同构 ✓，
+但其源侧三项前提仍由调用点自备 ✗：`hRA` ✗（`R` 的像 ＝ `F[a](1/s_0)` ✓）、
+`hRQ` ✗（`R` 的像落在 `\mathrm{range}(\mathrm{awayToFieldAlg}\ t\ h_t)` ✓）、`hRGpoint` ✗（`R` 的像 `G`-不动 ✓）。
+
+**⚠ 两件** ✓：
+**①** `smul_eq_self_of_mem_adjoin_of_fixed` ✓✅ —— **不动子代数判定** ✓：由 **`G`-不动生成元** ✓
+（`a_i` ✓／`s_0` ✓／`s_0^{-1}` ✓）生成的 `F`-子代数，其元素皆 `G`-不动 ✓
+（`\mathrm{Algebra.adjoin\_induction}` **四支** ✓；**逆元支** ✓：`\mathrm{eq\_inv\_of\_mul\_eq\_one\_left}` ＋
+`\mathrm{inv\_mul\_cancel\_0}` ✓，并**分 `s_0 = 0` 两支** ✓ 以免除 `s_0 \neq 0` 前提 ✗（**最弱假设表** ✓）；
+`\mathrm{algebraMap}` 支 ✓：`\mathrm{smul\_C\_noether}` ✓ ＋ `\mathrm{smul\_algebraMap\_noether}` ✓）；
+**②** `exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra` ✓✅✅ —— **源侧装配** ✓：
+`R` 取**具体载体** `S := \hookrightarrow`（Noether 域的 `F`-子代数 ✓）⟹ **`hRA`** ✓（`S` 定义即得 ✓ ——
+元素即 `S` 的元素 ✓）、**`hRQ`** ✓（由 `hle` ＋ §4.42 ① 的**载体步** `\mathrm{adjoin\_inv\_mem\_range\_awayToFieldAlg}` ✓ **内部导出** ✓）、
+**`hRGpoint`** ✓（由 `hS_{\rm fix}` ✓ **内部导出** ✓）—— **三项在册输入按构造消掉** ✓；再调 **§4.46** ✓ ⟹
+`\exists \varphi : \hookrightarrow K` ＋ **保作用同构** ✓。
+
+**⚠ 口径** ✓：本件把 `R` **具体化**为子代数 ✓（而非抽象环 ✓）—— 代价是 `R` **不再是自由输入** ✓，
+收益是 `hRA`／`hRQ`／`hRGpoint` **三项从"在册外部输入"变为"构造内定理"** ✓；
+**⚠ 剩余在册项** ✗（**如实登记** ✓，**不隐藏** ✗）：`hle` ✓（由 r171 源侧桥供给 ✓）、
+`[\mathrm{Algebra}\ \hookrightarrow S_0]` ✓（**(a) 款**识别 ✓）、`hact_{\rm map}` ✓（**一行** ✓：`\mathrm{awayRingHom\_algebraMap}` ✓）、
+`hS_0R` ✓（同上，**一行** ✓：搬运件的刻画式 ✓）、`hgal`／`hProj` ✓（**(b) 款** ✓ ＋ 源 `proposition-0-2(a)` ✓）、
+`hfix` ✓（`\mathrm{GaloisFixedSubringHyp}` ✓）。
+
+**⚠ 工艺读数（本轮新增一条）** ✓：**逆元支的最弱假设表** ✓ —— `g \bullet s_0^{-1} = (g \bullet s_0)^{-1}` 可由
+`\mathrm{eq\_inv\_of\_mul\_eq\_one\_left}` ＋ `\mathrm{inv\_mul\_cancel\_0}` 得 ✓，**无需 `s_0 \neq 0`** ✗
+（`s_0 = 0` 支由 `\mathrm{inv\_zero}` ＋ `\mathrm{smul\_zero}` 直接闭合 ✓）。 -/
+
+section FixedAdjoin
+
+variable {F : Type} [Field F] {G : Type} [Group G]
+
+/-- **探针①**：**不动子代数判定** ✓ —— 由 `G`-不动生成元生成的 `F`-子代数，其元素皆 `G`-不动 ✓
+（`\mathrm{Algebra.adjoin\_induction}` 四支 ✓：生成元 ✓（`a_i` ✓／`s_0` ✓／`s_0^{-1}` ✓）／
+`\mathrm{algebraMap}` ✓（常量不动 ✓）／和 ✓／积 ✓）。 -/
+theorem smul_eq_self_of_mem_adjoin_of_fixed {ι : Type*}
+    {a : ι → NoetherField F G} {s₀ : NoetherField F G}
+    (ha_fix : ∀ (g : G) (i : ι), g • a i = a i) (hs₀_fix : ∀ (g : G), g • s₀ = s₀) :
+    ∀ (g : G) {x : NoetherField F G},
+      x ∈ Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}) → g • x = x := by
+  intro g x hx
+  refine Algebra.adjoin_induction (p := fun x _ => g • x = x) ?_ ?_ ?_ ?_ hx
+  · intro y hy
+    rcases hy with ⟨i, rfl⟩ | hy
+    · exact ha_fix g i
+    · rcases hy with rfl | rfl
+      · exact hs₀_fix g
+      · by_cases h0 : s₀ = 0
+        · rw [h0, inv_zero, smul_zero]
+        · have h1 : g • s₀⁻¹ * (g • s₀) = 1 := by
+            rw [← smul_mul', inv_mul_cancel₀ h0, smul_one]
+          rw [eq_inv_of_mul_eq_one_left h1, hs₀_fix g]
+  · intro c
+    have h := smul_algebraMap_noether (F := F) (G := G) g (MvPolynomial.C c)
+    rw [smul_C_noether] at h
+    simp only [MvPolynomial.C_eq_algebraMap] at h
+    exact h
+  · intro x y _ _ hx hy
+    rw [smul_add, hx, hy]
+  · intro x y _ _ hx hy
+    rw [smul_mul', hx, hy]
+
+end FixedAdjoin
+
+section SourceAssembly
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **探针②（源侧装配）** ✓：`R` 取**具体载体** `S`（Noether 域的 `F`-子代数 ✓）⟹
+`hRA` ✓（`S` 定义即得 ✓）／`hRQ` ✓（由 `hle` ＋ §4.42 ① 的**载体步**内部导出 ✓）／
+`hRGpoint` ✓（由 `hS_fix` 内部导出 ✓）—— **三项在册输入按构造消掉** ✓；
+再调 **§4.46** ✓ ⟹ `\exists \varphi : \hookrightarrow K` ＋ **保作用同构** ✓。 -/
+theorem exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
+    {S : Subalgebra F (NoetherField F G)}
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ (g : G), g • t = t)
+    (hle : S ≤ Subalgebra.restrictScalars F (Algebra.adjoin (MvPolynomial G F)
+      ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G))))
+    (hS_fix : ∀ (g : G) {x : NoetherField F G}, x ∈ S → g • x = x)
+    [Algebra ↥S (Localization.Away t)]
+    [IsScalarTower F ↥S (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : ↥S) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup ↥S (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp ↥S (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : ↥S,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap ↥S (Localization.Away t) r)
+        = algebraMap ↥S (NoetherField F G) r)
+    {K : Type} [Field K] [Algebra F K]
+    {L : Type} [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+    [MulSemiringAction G L] [SMulCommClass G K L] [SMulCommClass G F L] [Infinite K]
+    (b : Module.Basis G K L) (hb : Function.Bijective (smulAlgEquivHom K G L))
+    (hfix : ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x) :
+    ∃ φ : ↥S →ₐ[F] K,
+      letI : Algebra ↥S K := φ.toRingHom.toAlgebra
+      letI : Algebra ↥S L := ((algebraMap K L).comp φ.toRingHom).toAlgebra
+      letI := BTier.tensorMulSemiringAction (R := ↥S) (T := K) (S := Localization.Away t) hRG
+      ∃ e : L ≃ₐ[K] (TensorProduct ↥S K (Localization.Away t)),
+        ∀ (g : G) (y : L), e (g • y) = g • e y := by
+  -- ① `hRQ`：由 `hle` ＋ 载体步内部导出 ✓
+  have hRQ : ∀ r : ↥S,
+      algebraMap ↥S (NoetherField F G) r
+        ∈ (awayToFieldAlg (F := F) (G := G) t ht).range := by
+    intro r
+    exact adjoin_inv_mem_range_awayToFieldAlg (F := F) (G := G) t ht (r : NoetherField F G)
+      (hle r.property)
+  -- ② `hRGpoint`：由 `hS_fix` 内部导出 ✓
+  have hRGpoint : ∀ (g : G) (r : ↥S),
+      g • algebraMap ↥S (NoetherField F G) r = algebraMap ↥S (NoetherField F G) r := by
+    intro g r
+    exact hS_fix g r.property
+  -- ③ §4.46
+  exact exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data (R := ↥S) ht htinv
+    hact_map hRG hgal hProj hS₀R hRQ hRGpoint b hb hfix
+
+end SourceAssembly
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -4248,6 +4368,8 @@ end SourceDataCapstone
 #print axioms exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange
 #print axioms awayLift_equivariant_of_algebraMap
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
+#print axioms smul_eq_self_of_mem_adjoin_of_fixed
+#print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit
