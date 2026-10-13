@@ -253,7 +253,17 @@ Sal78b `Theorem 1.2` 的**证明**在同页给出「`R`, considered as an `S` mo
 （`S` 是投射 `R[G]`-模 ＋ `R[G]` 有限自由于 `R` ✓ ⟹ `S` 是有限自由 `R`-模的直和项 ✓）。
 **本工程未证** ✗ —— 登记为**具名外部输入**（口径与 `FischerRegularHyp` ✓ 同：先接口后实体 ✓）。
 **⚠ 用途** ✓（**一项砖两处用** ✓）：① 消除 `hBC` 后 `…_strongest` 所需的 `[Module.Finite R S]`／
-`[Module.Projective R S]` ✓（§46.4 ✓）；② 蓝图第 9 步 `lem1.2` 的投影性输入 ✓（`Saltman1984.tex:132–138` ✓）。 -/
+`[Module.Projective R S]` ✓（§46.4 ✓）；② 蓝图第 9 步 `lem1.2` 的投影性输入 ✓（`Saltman1984.tex:132–138` ✓）。
+
+**🔴 现形不可证** ✗（**第 234 轮机器反驳** ✓ —— 取代原「本工程未证」✗）：
+**任意 `Algebra R S` 档为假** ✗，反例见 `galoisProjectiveHyp_refuted` ✓
+（`R = ℤ` ✓、`S = ℚ` ✓、`G = PUnit` ✓ —— **前件与 r233 同** ✓；后件的 **`Module.Finite ℤ ℚ` 假** ✗，
+由 **`not_moduleFinite_int_rat`** ✓ 得 ✓）。
+**⚠ 修正口径** ✓（**判据下调** ✓）：本端点在**预期用例**（`S/R` 为 `G`-Galois ✓、源侧断言成立 ✓）中**才是真命题** ✓
+（源引 `[CHR68] p. 13` ✓，**不在 `raw/`** ✗）；**现形照原样保存** ✓（**留痕** ✓，**不删** ✓）。
+**⚠ 同族** ✓：`GaloisFaithfulHyp` ✓／`GaloisFixedSubringHyp` ✓ **同病** ✗
+（**§0 判据一族三件皆「任意档过宽」** ✗，见文末反驳节 ✓）⟹ **接线假设表里的 `hProj`** ✓
+亦**须按预期用例读** ✓（**其非空性未核** ✗，**下一手** ✓）。 -/
 def GaloisProjectiveHyp (R S : Type*) [CommRing R] [CommRing S] [Algebra R S]
     (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
     (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) : Prop :=
@@ -278,7 +288,10 @@ theorem galoisProjectiveHyp_data_nonempty :
 精确出处 `[CHR68] p. 13` **仍不在 `raw/`** ✗（L37 已核 ✓），**但**其**用点**已在
 `raw/Saltman1978` 印 528（＝ PDF 3 ✓）内可核 ✓ —— Sal78b `thm:1.2` 证明给出的
 **`R`-progenerator** ✓ 蕴含 `GaloisProjectiveHyp` ✓（具名端点 `GaloisProgeneratorHyp` ✓，
-**亦未证** ✗）；**`R[G]`-投射性** ✗ **仍无 `raw/` 内供给** ✗）。 -/
+**亦未证** ✗）；**`R[G]`-投射性** ✗ **仍无 `raw/` 内供给** ✗）。
+**🔴 第 234 轮机器反驳** ✓：**现形一般档为假** ✗（`galoisProjectiveHyp_refuted` ✓）⟹
+**任何路线都不可能证它** ✗；**预期用例**（`S/R` 为 `G`-Galois ✓ ＋ 源侧断言 ✓）中**才是真命题** ✓
+（源引 `[CHR68] p. 13` ✓，**不在 `raw/`** ✗），**其证明须 progenerator 输入** ✗（**未落** ✗）。 -/
 theorem galoisProjective_gap_registered : True := trivial
 
 universe u/-- **源 `lem1.2` 证明所引投射性断言的「用点形」**（`raw/Saltman1984.tex:139-142`；**⚠-tex-sourced**）。
@@ -987,10 +1000,12 @@ end Prop02bProbe
 ＋ **每个 `R`-线性自同态 `f` 满足 `f t = t \cdot f 1`** ✓ 三者得 ✓
 （**甲档** ✓ 用 **`R \to S` 满射** ✓；**乙档** ✓ 用 **`map_ratCast_smul`** ✓：**加法 ⟹ `\mathbb{Q}`-线性** ✓）。
 
-**⚠ 第三件：候选（**未机器核** ✗，**只登记** ✓）**：`GaloisProjectiveHyp` ✓ **同族** ⚠ ——
-取 **乙档**（`R = ℤ`、`S = ℚ`、`G = PUnit` ✓，**其前件已在本节机器核成立** ✓）则后件含
-**`Module.Finite ℤ ℚ`** ✗ —— **须证其假** ✗（**库内无件** ✗，**实测** ✓；**下一手** ✓）；
-**该步未落** ✗ ⟹ **不声称已反驳** ✗。 -/
+**⚠ 第三件（**第 234 轮补上** ✓）**：`GaloisProjectiveHyp` ✓ **同族** ✓ —— 取 **乙档** ✓
+（**其前件已在本节机器核成立** ✓）则后件含 **`Module.Finite ℤ ℚ`** ✗；
+**该步已落** ✓✅（**自造件 `not_moduleFinite_int_rat`** ✓，**库内无件** ✗，**实测** ✓）
+⟹ **第三件亦已反驳** ✓（`galoisProjectiveHyp_refuted` ✓）。
+**⟹ §0 判据一族三件**（`GaloisFaithfulHyp` ✓／`GaloisFixedSubringHyp` ✓／`GaloisProjectiveHyp` ✓）
+**现形皆可反驳** ✗ ⟹ **系统性缺陷** ✓（**远非偶然** ✓）。 -/
 
 section GaloisEndpointsRefutation
 
@@ -1152,6 +1167,75 @@ theorem galoisFixedSubringHyp_refuted :
     have h5 : (2 * r : ℤ) = 1 := by exact_mod_cast hr'
     omega
   exact ⟨hRG, hgal, hnf⟩
+
+/-- **`ℚ` 不是有限生成 `ℤ`-模** ✓✅（第 234 轮自造 ✓；**库内无件** ✗，**实测** ✓）：
+**`¬ Module.Finite ℤ ℚ`** ✗ —— 供**第三件**（`GaloisProjectiveHyp` ✓）的反驳 ✓。
+**证明** ✓：设有限生成 ✓ ⟹ 由 `Submodule.FG` 的定义 ✓ 取**有限** `S` ✓ 使 `span ℤ S = ⊤` ✓；
+取 **`D := ∏_{q ∈ S} q.den`** ✓（**`> 0`** ✓）✓；考虑子模 **`M := {x | ∃ z : ℤ, x = z / D}`** ✓
+（**对加法与 `ℤ`-纯量封闭** ✓）—— **每个 `q ∈ S` 都在 `M` 内** ✓（`q.den ∣ D` ✓ ⟹
+`q = (q.num · (D / q.den)) / D` ✓）⟹ **`⊤ ≤ M`** ✓ ⟹ **`1/(2D) ∈ M`** ✓ ⟹
+**`∃ z : ℤ, 1/(2D) = z/D`** ✓ ⟹ **`2 z = 1`** ✓ ⟹ **`omega`** ✓（**矛盾** ✓）。 -/
+theorem not_moduleFinite_int_rat : ¬ Module.Finite ℤ ℚ := by
+  intro hfin
+  have h1 : Module.Finite ℤ ↥(⊤ : Submodule ℤ ℚ) :=
+    Module.Finite.equiv (Submodule.topEquiv (R := ℤ) (M := ℚ)).symm
+  obtain ⟨S, hS⟩ := Module.Finite.iff_fg.mp h1
+  set D : ℤ := S.prod (fun q => (q.den : ℤ)) with hDdef
+  have hDpos : 0 < D := by
+    rw [hDdef]
+    exact Finset.prod_pos (fun q _ => by exact_mod_cast q.den_pos)
+  have hDne : D ≠ 0 := ne_of_gt hDpos
+  let M : Submodule ℤ ℚ :=
+    { carrier := {x : ℚ | ∃ z : ℤ, x = (z : ℚ) / (D : ℚ)},
+      zero_mem' := ⟨0, by simp⟩,
+      add_mem' := by
+        rintro x y ⟨a, rfl⟩ ⟨b, rfl⟩
+        exact ⟨a + b, by push_cast; ring⟩,
+      smul_mem' := by
+        rintro c x ⟨a, rfl⟩
+        exact ⟨c * a, by push_cast; ring⟩ }
+  have hSM : (↑S : Set ℚ) ⊆ M := by
+    intro q hq
+    have hdvd : (q.den : ℤ) ∣ D := by
+      rw [hDdef]
+      exact Finset.dvd_prod_of_mem _ hq
+    obtain ⟨c, hc⟩ := hdvd
+    refine ⟨q.num * c, ?_⟩
+    have hD' : (D : ℚ) = (q.den : ℚ) * (c : ℚ) := by
+      rw [hc]; push_cast; ring
+    have hcne : (c : ℚ) ≠ 0 := by
+      intro h0
+      exact hDne (by rw [hc, show c = 0 from by exact_mod_cast h0, mul_zero])
+    rw [hD', show ((q.num * c : ℤ) : ℚ) = (q.num : ℚ) * (c : ℚ) from by push_cast; ring]
+    rw [mul_div_mul_right _ _ hcne, Rat.num_div_den q]
+  have hmem : ((1 : ℚ) / (2 * (D : ℚ))) ∈ Submodule.span ℤ (↑S : Set ℚ) := by
+    rw [hS]; trivial
+  rw [Submodule.mem_span] at hmem
+  obtain ⟨z, hz⟩ := hmem M hSM
+  have hDq : (D : ℚ) ≠ 0 := by exact_mod_cast hDne
+  have h2 : (z : ℚ) = 1 / 2 := by
+    field_simp at hz
+    linarith
+  have h3 : ((2 * z : ℤ) : ℚ) = 1 := by
+    push_cast
+    rw [h2]
+    norm_num
+  have h4 : (2 * z : ℤ) = 1 := by exact_mod_cast h3
+  omega
+
+/-- **`GaloisProjectiveHyp` 现形的反驳** ✓✅（第 234 轮 ✓；**非空洞** ✓）：
+存在 `R`／`S`／`G`／`hRG` 使 **`IsGaloisWithGroup R S G hRG` 成立** ✓ 而
+**`GaloisProjectiveHyp R S G hRG` 不成立** ✗ ⟹ **其「实体」不可证** ✗。
+**⚠ 口径** ✓：**复用乙档** ✓（`R = ℤ` ✓、`S = ℚ` ✓、`G = PUnit` ✓ —— **前件由 r233 的反例供给** ✓），
+**反驳步** ✓ ＝ **`not_moduleFinite_int_rat`** ✓（`h hgal` 的第一半即 `Module.Finite ℤ ℚ` ✗）。
+**⚠ 意义** ✓：**§0 判据一族三件**（`GaloisFaithfulHyp` ✓／`GaloisFixedSubringHyp` ✓／
+`GaloisProjectiveHyp` ✓）**现形皆可反驳** ✗ ⟹ **系统性缺陷** ✓（**远非偶然** ✓）。
+**⚠ 不声称** ✗：**不**声称 `hProj` 在**接线实际对**上不成立 ✓（**相反** ✓ —— 那是源侧目标 ✓，**未落** ✗）。 -/
+theorem galoisProjectiveHyp_refuted :
+    ∃ hRG : ∀ (g : PUnit.{1}) (r : ℤ) (s : ℚ), g • (r • s) = r • (g • s),
+      IsGaloisWithGroup ℤ ℚ PUnit.{1} hRG ∧ ¬ GaloisProjectiveHyp ℤ ℚ PUnit.{1} hRG := by
+  obtain ⟨hRG, hgal, _⟩ := galoisFixedSubringHyp_refuted
+  exact ⟨hRG, hgal, fun h => not_moduleFinite_int_rat (h hgal).1⟩
 
 end GaloisEndpointsRefutation
 
@@ -1370,6 +1454,8 @@ end GaloisTransport
 #print axioms galoisFaithful_gap_registered
 #print axioms galoisFaithfulHyp_refuted
 #print axioms galoisFixedSubringHyp_refuted
+#print axioms not_moduleFinite_int_rat
+#print axioms galoisProjectiveHyp_refuted
 #print axioms faithfulSMul_of_galoisFaithfulHyp
 #print axioms coeffToEnd_smulS
 #print axioms deltaInvLinearS

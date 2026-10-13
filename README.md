@@ -725,3 +725,16 @@ statement, whose entity is still unproved.  The projectivity endpoint is flagged
 the same kind, its refutation awaiting the fact that the rational field is not a finitely generated
 module over the integers, a fact the library does not supply; the candidate is registered as such
 and not claimed.
+
+That missing fact is now supplied, and with it the third endpoint joins the two refuted ones.  The
+rational field is not a finitely generated module over the integers: a finite generating set would
+give a common denominator, the submodule of rationals with that denominator is closed under
+addition and integer scaling and contains the generators, and one over twice the denominator is not
+of that form.  With the same counterexample as before -- integers, rational field, trivial group,
+whose antecedent was already machine-checked -- the projectivity endpoint is therefore refuted as
+well, since its conclusion would give finiteness of the rational field over the integers.  All
+three endpoints of the Galois criterion are thus recorded as refuted in their stated form, the
+defect being that each was stated for an arbitrary algebra map while the intended use has an
+inclusion; and since the projectivity endpoint is the one the wiring carries as a hypothesis, that
+hypothesis must likewise be read in the intended setting, its satisfiability there being registered
+as unverified rather than assumed.
