@@ -738,3 +738,16 @@ defect being that each was stated for an arbitrary algebra map while the intende
 inclusion; and since the projectivity endpoint is the one the wiring carries as a hypothesis, that
 hypothesis must likewise be read in the intended setting, its satisfiability there being registered
 as unverified rather than assumed.
+
+A fourth endpoint closes the census of the family, and it is the one that mattered most: the
+progenerator statement whose entity the project had planned to carry over from the source.  The
+same counterexample refutes it, since its conclusion would give finiteness of the rational field
+over the integers; and the implication from it to the projectivity endpoint, already in the
+library, is consistent with both being false.  The census is now complete over the family: the four
+endpoints stated for an arbitrary algebra map are all refuted, while the two stated over algebras
+over the base field are not reached by the counterexample and their truth is left undetermined.  The
+defect is thus confined to the arbitrary-map group, and the consequence recorded for the plan is
+that the source's assertion is proved there for an inclusion, so the endpoint must be rebuilt in
+the intended setting rather than carried over as stated.  The trace-and-corestriction route
+recorded earlier keeps its value for that rebuilding, since the faithfulness clause it stumbled on
+is not an obstacle when the structure map is an inclusion.

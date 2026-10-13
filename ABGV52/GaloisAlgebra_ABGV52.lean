@@ -625,7 +625,16 @@ theorem galoisFiniteGenerationDescentHyp_data_nonempty :
 —— 即源印 528 的断言**足以**供给 `hProj` ✓（**尚未**供给 ✗：本条实体未证 ✗）。
 **⚠ 命名** ✓：源**无**此名 ✗，本工程**所加** ✓（登记 ✓）。
 **判别力负例** ✓（L43 ✓）：**同名异陈述** ＝ 把 `Module.FaithfullyFlat R S` 换成 `Module.Free R S` ✗
-⟹ 其 `rfl` 锁**必失败** ✗（实跑读数见本轮状态笔记 §170 ✓）—— 本 `rfl` 锁**有判别力** ✓。 -/
+⟹ 其 `rfl` 锁**必失败** ✗（实跑读数见本轮状态笔记 §170 ✓）—— 本 `rfl` 锁**有判别力** ✓。
+
+**🔴 现形不可证** ✗（**第 235 轮机器反驳** ✓ —— 取代原「实体未证」✗）：
+**任意 `Algebra R S` 档为假** ✗，反例见 `galoisProgeneratorHyp_refuted` ✓
+（`R = ℤ` ✓、`S = ℚ` ✓、`G = PUnit` ✓ —— **前件与 r233 同** ✓；后件的 **`Module.Finite ℤ ℚ` 假** ✗，
+由 **`not_moduleFinite_int_rat`** ✓ 得 ✓）。
+**🔴 要害** ✓：本件是**原定的「搬运源件」目标** ✗（原文「源**证**之 ✓，本工程**未搬运**」✗）
+⟹ **该计划就现形而言不可执行** ✗（**目标为假** ✗，**非材料不可得** ✗）。
+**⚠ 修正口径** ✓（**判据下调** ✓）：源印 528 的断言**是在预期用例**（`R → S` 单射 ✓）上证的 ✓，
+本形**按任意档写宽了** ✗ ⟹ **须在预期用例上重建** ✓；**现形照原样保存** ✓（**留痕** ✓，**不删** ✓）。 -/
 def GaloisProgeneratorHyp (R S : Type*) [CommRing R] [CommRing S] [Algebra R S]
     (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
     (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) : Prop :=
@@ -661,6 +670,11 @@ end Sal78bEndpoints
 
 /-! ## 迹／余截面路线：**可达性审计 ＋ 已落的三件**（第 208 轮）
 
+**🔴 目标已作废** ✗（**第 235 轮** ✓）：本节**原定靶点** ＝ 搬运 `GaloisProgeneratorHyp` ✓ 的**实体** ✗ ——
+该端点**现形已被机器反驳** ✓（`galoisProgeneratorHyp_refuted` ✓）⟹ **本节路线就现形而言不可执行** ✗
+（**目标为假** ✗，**非路线受阻** ✗）。**⚠ 保留价值** ✓：**迹／余截面**是**源在预期用例上**证该断言所用的机制 ✓
+（`R → S` **单射** ✓，**故 `FaithfulSMul R S` 一款在源侧不构成障碍** ✓）⟹
+**本节三件基础 ＋ 受阻清单**对**重建后的预期用例形**仍然适用 ✓。
 **⚠ 靶点** ✓（承 §170.9(i) ✓）：搬运 `GaloisProgeneratorHyp` ✓ 的**实体** ✓ —— 其瓶颈是
 **`Module.FaithfullyFlat` 的 `FaithfulSMul` 一款** ✗（`FaithfullyFlat.mk` ✓ 只再需 `Flat` ✓，
 而 `Flat` ✓ 由 `Module.Projective` ✓ 供给 ✓；见 `Module.Flat.of_projective` ✓）。
@@ -1004,8 +1018,23 @@ end Prop02bProbe
 （**其前件已在本节机器核成立** ✓）则后件含 **`Module.Finite ℤ ℚ`** ✗；
 **该步已落** ✓✅（**自造件 `not_moduleFinite_int_rat`** ✓，**库内无件** ✗，**实测** ✓）
 ⟹ **第三件亦已反驳** ✓（`galoisProjectiveHyp_refuted` ✓）。
-**⟹ §0 判据一族三件**（`GaloisFaithfulHyp` ✓／`GaloisFixedSubringHyp` ✓／`GaloisProjectiveHyp` ✓）
-**现形皆可反驳** ✗ ⟹ **系统性缺陷** ✓（**远非偶然** ✓）。 -/
+
+**🔴 全族普查（**第 235 轮** ✓）**：§0 判据一族的具名端点**逐一判定** ✓：
+
+| # | 端点 | 现形档 | 反例（**同一骨架** ✓） | 结论 |
+|---|---|---|---|---|
+| ① | `GaloisFaithfulHyp` ✓ | **任意 `Algebra R S`** ✗ | **甲档** ✓ | **反驳** ✗（r232 ✓） |
+| ② | `GaloisFixedSubringHyp` ✓ | **同上** ✗ | **乙档** ✓ | **反驳** ✗（r233 ✓） |
+| ③ | `GaloisProjectiveHyp` ✓ | **同上** ✗ | **乙档** ✓ | **反驳** ✗（r234 ✓） |
+| ④ | `GaloisProgeneratorHyp` ✓ | **同上** ✗ | **乙档** ✓ | **反驳** ✗（r235 ✓） |
+| ⑤ | `GaloisProjectiveSectionHyp` ✓ | **`F`-代数档** ✓ | **家族反例不覆盖** ✗ | **真值未判定** ⚠ |
+| ⑥ | `GaloisDescentHyp` ✓／`GaloisFiniteGenerationDescentHyp` ✓ | **`F`-代数档** ✓ | **同上** ✗ | **真值未判定** ⚠ |
+
+**⚠ 读法** ✓：**①②③④ 皆按「任意 `Algebra R S`」写** ✗（⑤⑥ 已按 `F`-代数档 ✓ ⟹ **不受家族反例波及** ✓）
+⟹ **缺陷集中在「任意档」那一组** ✓（**四条一网打尽** ✓）。
+**🔴 要害** ✓：**④ 是本工程原定的「搬运源件」目标** ✗（「源 `[Sal78b]` 印 528 在 `raw/` 内 ✓，实体未搬运」✗）
+⟹ **该计划就现形而言不可执行** ✗（**目标为假** ✗，**非材料不可得** ✗）——
+**须改在预期用例（`R → S` 单射 ✓）上重建** ✓（**下一手** ✓）。 -/
 
 section GaloisEndpointsRefutation
 
@@ -1237,6 +1266,22 @@ theorem galoisProjectiveHyp_refuted :
   obtain ⟨hRG, hgal, _⟩ := galoisFixedSubringHyp_refuted
   exact ⟨hRG, hgal, fun h => not_moduleFinite_int_rat (h hgal).1⟩
 
+/-- **`GaloisProgeneratorHyp` 现形的反驳** ✓✅（第 235 轮 ✓；**非空洞** ✓）：
+存在 `R`／`S`／`G`／`hRG` 使 **`IsGaloisWithGroup R S G hRG` 成立** ✓ 而
+**`GaloisProgeneratorHyp R S G hRG` 不成立** ✗ ⟹ **其「实体」不可证** ✗。
+**⚠ 口径** ✓：**复用乙档** ✓（`R = ℤ` ✓、`S = ℚ` ✓、`G = PUnit` ✓ —— **前件由 r233 的反例供给** ✓），
+**反驳步** ✓ ＝ **`not_moduleFinite_int_rat`** ✓（`h hgal` 的第一半即 `Module.Finite ℤ ℚ` ✗）。
+**⚠ 与在册件一致** ✓：`galoisProgeneratorHyp_implies_galoisProjectiveHyp` ✓（**已落** ✓）
+＋ r234 的 ③ 反驳 ✓ ⟹ **两件同假不矛盾** ✓（**`A → B` 与 `¬B` 给 `¬A`** ✓）。
+**🔴 要害** ✓：本件是**原定的「搬运源件」目标** ✗（源 `[Sal78b]` 印 528 ✓，**在 `raw/` 内** ✓）
+⟹ **该计划就现形而言不可执行** ✗（**目标为假** ✗）—— **须在预期用例上重建** ✓（**下一手** ✓）。
+**⚠ 不声称** ✗：**不**声称 `hProj` 在**接线实际对**上不成立 ✓（**相反** ✓ —— 那是源侧目标 ✓，**未落** ✗）。 -/
+theorem galoisProgeneratorHyp_refuted :
+    ∃ hRG : ∀ (g : PUnit.{1}) (r : ℤ) (s : ℚ), g • (r • s) = r • (g • s),
+      IsGaloisWithGroup ℤ ℚ PUnit.{1} hRG ∧ ¬ GaloisProgeneratorHyp ℤ ℚ PUnit.{1} hRG := by
+  obtain ⟨hRG, hgal, _⟩ := galoisFixedSubringHyp_refuted
+  exact ⟨hRG, hgal, fun h => not_moduleFinite_int_rat (h hgal).1⟩
+
 end GaloisEndpointsRefutation
 
 /-! ## 公理闸门 -/
@@ -1456,6 +1501,7 @@ end GaloisTransport
 #print axioms galoisFixedSubringHyp_refuted
 #print axioms not_moduleFinite_int_rat
 #print axioms galoisProjectiveHyp_refuted
+#print axioms galoisProgeneratorHyp_refuted
 #print axioms faithfulSMul_of_galoisFaithfulHyp
 #print axioms coeffToEnd_smulS
 #print axioms deltaInvLinearS
