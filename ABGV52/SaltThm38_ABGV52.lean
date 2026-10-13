@@ -901,4 +901,29 @@ theorem range_awayToFieldAlg_le_adjoin_pUnit_rat :
     exact Algebra.adjoin_mono (fun z hz => Or.inr hz) (pow_mem hxinv n)
 #print axioms range_awayToFieldAlg_le_adjoin_pUnit_rat
 
+/-- **`range = ↥S`** ✓✅（第 242 轮 ✓）：本档（`F = ℚ` ✓、`G = PUnit` ✓）下
+**典范映射的像恰为数据生成的子代数** ✓ —— 由 **r239** ✓（`↥S ≤ range` ✓）与 **r241** ✓（`range ≤ ↥S` ✓）
+经 **`le_antisymm`** ✓ 得 ✓（**两向皆已机器核** ✓）。
+**⚠ 意义** ✓：**`Localization.Away X ≅ ↥S`** ✓ 的**全部实质内容已备** ✓ ——
+余下只是**记账** ✓（**`AlgEquiv.ofInjective`** ✓ ＋ **`awayToField_injective`** ✓ ＋
+本等式对 `Subalgebra` 型的搬运 ✓，**下一手** ✓）。
+**⚠ 附注** ✓：`AdjoinAwayGap` 名下的登记（§202 ✓）**已由本轮结清** ✓ ——
+其「缺向」即 **r241** ✓。
+**⚠ 不声称** ✗：**同构本身未落** ✗（**实质已备** ✓）；**`hδ`／`hProj` 未证** ✗。 -/
+theorem range_awayToFieldAlg_eq_adjoin_pUnit_rat :
+    (awayToFieldAlg (F := ℚ) (G := PUnit.{1}) (MvPolynomial.X PUnit.unit)
+      (MvPolynomial.X_ne_zero PUnit.unit)).range
+      = Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+            algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit))
+          ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit),
+              (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))⁻¹}) :=
+  le_antisymm
+    (range_awayToFieldAlg_le_adjoin_pUnit_rat)
+    (adjoin_union_inv_le_range_awayToFieldAlg_pUnit_rat)
+
+#print axioms range_awayToFieldAlg_eq_adjoin_pUnit_rat
+
 end ABGV52
