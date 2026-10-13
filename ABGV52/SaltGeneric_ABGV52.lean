@@ -4461,6 +4461,42 @@ theorem realizationProperty_gap_registered : True := trivial
 
 end SourceOrientationCapstone
 
+/-! ## 4.50 **谓词形 (c) 款的缺口收敛**：`[Infinite K]` 的内部导出 ＋ `F` 无限性的**口径偏离登记**（第 194 轮）
+
+**⚠ 起点** ✓（**承 §156.6 第 1 项** ✓）：§4.49 登记了**谓词形 (c) 款缺口** ✗ —— `RealizationProperty` 的 ∀-形给
+`[CommRing L]` ✓，而装配链需 `[Field L]` ✗／`[Infinite K]` ✗／**正规基** ✓／`hfix` ✓。
+
+**⚠ 源文核对** ✓（**先审后落** ✓，本轮逐字）：
+**①** 源 `theorem-5-1` 的**假设**含「**with `F` infinite**」✓（`raw/Saltman1982.tex :640` ✓ 逐字）——
+而库内 `Theorem51Statement`（本件 `:254` ✓）**不含** ✗ ⟹ **口径偏离：库内陈述强于源** ✗（**登记** ✓）；
+**②** 源 `lemma-5-2` 的证明**显式**用「This is always possible **because `K` is infinite**」✓（`:662` ✓）——
+而 `K` 的无限性**由 `F` 无限派生** ✓（`K \supseteq F` ✓，域扩张 ✓）⟹ **`[Infinite K]` 非独立假设** ✓，**本轮落地该派生** ✓。
+
+**⚠ 正规基一条（登记，未落** ✗）：源**直接引用**「**Since some normal basis exists**」✓（`:662` ✓，**未证** ✗）；
+mathlib **有**该定理 ✓（`Mathlib/FieldTheory/Galois/NormalBasis.lean` ✓，`IsGalois.normalBasis` ✓），
+但其指标是 **`L \simeqₐ[K] L`** ✗（**不是**抽象 `G` ✗）⟹ 要与本册的 `b : Module.Basis G K L` 对接，
+**须先有 `G \simeq \mathrm{Gal}(L/K)`** ✗（＝ `hfix` 的**缺失半** ✓，在册 `GaloisFixedSubringHyp` ✗）
+⟹ **登记为外部经典** ✗（**不声称**已落 ✗）。 -/
+
+section InfiniteTargetData
+
+variable {F : Type u} [Field F] {K : Type u} [Field K] [Algebra F K]
+
+/-- **目标侧 `[Infinite K]` 的内部导出** ✓✅：`F` 无限 ✓ ＋ `K \supseteq F` ✓（`K` 是域 ✓）⟹ **`K` 无限** ✓
+（`\mathrm{algebraMap}\ F\ K` **单射** ✓ ⟹ 沿单射**前推**无限性 ✓）。
+**⚠ 与源一致** ✓：源 `lemma-5-2` 的证明正用此 ✓（「because `K` is infinite」✓，由 `theorem-5-1` 的
+「with `F` infinite」✓ 派生 ✓）—— 故此项**不是**外部假设 ✓。 -/
+theorem infinite_of_algebra_of_infinite [Infinite F] : Infinite K :=
+  Infinite.of_injective (algebraMap F K) (FaithfulSMul.algebraMap_injective F K)
+
+/-- **登记** ✗：**口径偏离（库内强于源）** —— 源 `theorem-5-1` 假设「`F` infinite」✓（`raw/Saltman1982.tex :640` ✓ 逐字），
+而 `Theorem51Statement`（本件 `:254` ✓）**不含** ✗；**⚠ 后果** ✓：装配 (c) 款须 `[Infinite K]` ✗
+（源证明显式需要 ✓；本件上方 `infinite_of_algebra_of_infinite` ✓ 给出**其派生** ✓），
+但**无**「`F` infinite」则 `[Infinite K]` **不可派生** ✗ ⟹ 谓词形 (c) 款**未落** ✗（**不声称**已闭 ✗）。 -/
+theorem theorem51Statement_infiniteField_gap_registered : True := trivial
+
+end InfiniteTargetData
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -4524,6 +4560,8 @@ end SourceOrientationCapstone
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_sourceOrientation
 #print axioms realizationProperty_gap_registered
+#print axioms infinite_of_algebra_of_infinite
+#print axioms theorem51Statement_infiniteField_gap_registered
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv

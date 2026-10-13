@@ -483,6 +483,10 @@ is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-
   tensor factor on the left, by composing the packaged isomorphism with the library's commutativity
   equivalence, whose equivariance is what carries the group actions across; the remaining
   quantifier shape of that clause is registered as an open gap rather than claimed closed.
+  The infinitude the realization argument needs on the target side is not an extra hypothesis: the
+  source's theorem asks the ground field to be infinite and the argument invokes that the extension
+  field is, which is derived here; the ground-field hypothesis itself is absent from the library's
+  statement of that theorem, and that deviation is registered rather than papered over.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision
