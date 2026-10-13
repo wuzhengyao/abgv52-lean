@@ -156,7 +156,11 @@ condition (a) asks, provided the generators are algebraically independent, they 
 field, and the distinguished element is a polynomial in them, the comparison of the carrier with
 the adjunction over the polynomial subalgebra being the library's own decomposition of an
 adjunction -- and retract rationality
-along rational extensions |
+along rational extensions, and the reading of the realization clause of the generic-extension
+definition settled from the source's own emphasis that the algebra realising an extension need not
+be a field -- so that the library's ring-level form is the faithful one and the field-level form is
+a weaker specialisation, whose witness is constructed from the assembly's data while the
+source-level witness is registered as still open |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
@@ -491,6 +495,25 @@ is maintained on the knowledge-base side, in `wiki/proj-ABGV52-named-hypotheses-
   existence witness, which had no construction in the library before, and the realization clause
   is now available in the field form the source's argument uses, supplied by the assembly from the
   normal-basis and fixed-field data, with the ring form of that clause registered as still open.
+
+The reading of the realization clause of the generic-extension definition is now settled from the
+source itself, at page level: where the paper turns to the case that the base ring is a field, it
+says that the algebra being realised is not necessarily a field, "here and in the rest of the
+paper".  The library's clause, which quantifies over commutative rings, is therefore the faithful
+transcription and is not weakened; the field-level variant that the assembly can supply is a
+weaker specialisation, and that direction is now a theorem -- the ring-level clause implies
+the field-level one, the converse left open, so no strictness is claimed.  Packaged with that
+variant are the field-level
+twin of the generic-extension predicate, its definitional shape lock, whose discriminating power is
+checked against two mutants that make the lock fail, the witness structure of the weaker predicate,
+and -- from the same source-side data as the assembled clauses -- the existence of a witness for it,
+which is the first witness reached from that data at either level.  The source-level witness is
+registered as still open, and the registration now names the three inputs it waits on: a
+group-indexed normal basis, the identification of the group with the automorphism group, and the
+fixed-point condition.  All three are bridges inside the library rather than material the source
+withholds, since the source's own proposition supplies the normal basis for general, possibly
+non-field algebras; an earlier registration, which recorded that normal basis as quoted but
+unproved, is corrected accordingly.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision

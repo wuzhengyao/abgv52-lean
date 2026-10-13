@@ -4677,10 +4677,211 @@ theorem isGenericExtensionClausesField_of_sourceData
 （**环** ✓／**域** ✓，逐字证据见节头 ✓）；库内 `RealizationProperty`（`GenericExtension_ABGV52 :26` ✓）取**从严**的**环读** ✓
 ⟹ **谓词形** ✓（**未落** ✗）；**域读**下 `(c)` 即**域档** ✓（本件上方 ✓）。
 **⚠ 裁决后果** ✓：取**域读** ⟹ thm `5.1` 的装配在 **(a) ＋ (b) ＋ 域档 `(c)`** 下**齐备** ✓
-（**仍缺** `hfix` ✓ 与**正规基** ✓ **两项在册输入** ✗，§157.2 ②③ ✓）；取**环读** ⟹ 须**代数版（CHR）理论** ✗。 -/
+（**仍缺** `hfix` ✓ 与**正规基** ✓ **两项在册输入** ✗，§157.2 ②③ ✓）；取**环读** ⟹ 须**代数版（CHR）理论** ✗。
+**⚠ r198 已裁** ✓✅（**同轮同步散文** ✓）：**环读忠实** ✓（源印 254 明写 `L` **不必**是域 ✓，**PDF 页级** ✓），
+**域读被源文排除** ✗ ⟹ 域档**只能**作**弱化档** ✗ —— 详见 §4.53 `definition11c_reading_decided` ✓
+（**本登记留痕** ✓，**不复写** ✗）。 -/
 theorem definition11c_reading_gap_registered : True := trivial
 
 end EndpointClausesField
+
+/-! ## 4.53 **`definition-1-1`(c) 的口径裁决定案（源文自证）** ＋ **域档弱化档见证**（第 198 轮）
+
+**⚠ 起点** ✓（**承 §4.52 的裁决点** ✗）：§4.52 登记 `definition-1-1`(c) 有**两读** ✓（环 ✓／域 ✓），交人类裁决 ✗
+（源 `raw/Saltman1982.tex :159` ✓）。
+
+**🔴 本轮裁决定案** ✓（**源文自证** ✓，**PDF 页级目视** ✓）：`raw/Saltman1982.pdf` **第 5 页** ＝ **印刷页 254** ✓ 逐字 ——
+「Turning to the case `R = K` is a field, let `L/K` be Galois with group `G`. **We emphasize that here and in the rest of
+the paper, `L` is not necessarily a field.** Of course, `L` is the direct sum of fields.」✓
+同页 `proposition-0-5`：**(b)**「The automorphisms in `G` are algebraically independent over `K`」✓、
+**(c)**「`L` has a normal basis over `K`. That is, `L⁺ ≅ K[G]` as `K[G]` modules.」✓ —— **两条均对一般（非域）`L`** ✓。
+⟹ **①** `definition-1-1`(c) 落在同篇「the rest of the paper」之内 ✓ ⟹ 「`L/K` is a Galois extension with group `G`」
+**只能作环读** ✓（`L` **不必**是域 ✓）⟹ **库内 `RealizationProperty`**（`GenericExtension_ABGV52 :26` ✓，`[CommRing L]` ✓）
+**忠实** ✓（**不需回正** ✓）；⟹ **②** **域读被源文排除** ✗ ⟹ `RealizationPropertyField`（§4.51 ✓）**不是** (c) 的读法 ✓，
+**只能**作**弱化档** ✓（**库内弱于源** ✗，**登记** ✓）⟹ 本节落的**见证**（③--⑦ ✓）是**弱化档见证** ✗（**非**源结论 ✗）。
+
+**⚠ 由此纠正 §4.50 的一处登记** ✓（**留痕** ✓）：§4.50 记「正规基：源**直接引用**、**未证** ✗」——
+**本轮实测** ✓：源 `proposition-0-5(c)` ✓ **正是**该条（**证在 §0** ✓，据 `[Jac74] p. 283` ＋
+「the same arguments that apply when `L` is a field」✓）；**(b)** 代数无关性 ✓ 正是 `lemma-5-2` 证明所引
+「By the algebraic independence of the `σ`'s」✓（`:662` ✓）⟹ **源侧不缺** ✓ ⟹ 缺口在**库内桥** ✗：
+mathlib 的正规基定理**指标**是 `L ≃ₐ[K] L` ✗ ⟷ **抽象 `G`** ✗，且 CHR 不动环（在册 `GaloisFixedSubringHyp` ✓）**未证** ✗
+（**在册** ✓，**不声称**已落 ✗）。
+
+**⚠ 页号回填（登记** ✓，**下一轮** ✗）：`definition-1-1` 逐字在 **印 255**（＝ **PDF 第 6 页** ✓，本轮**目视** ✓ ——
+「DEFINITION 1.1 …… (c) Let `K` be a field containing `F` and let `L/K` be a Galois extension with group `G`」✓），
+而 `GenericExtension_ABGV52` 头注写「印 **254**」✗（**差一页** ✗）⟹ **回填待办** ✓（**本轮单文件** ✓，**不动他件** ✗）；
+**偏移口径** ✓ ＝ **印 ＝ PDF ＋ 249** ✓（本轮三点复核：PDF 4／5／6 ⟷ 印 253／254／255 ✓）。
+
+**⚠ 端点结论** ✓（**不声称** ✗）：**弱化档见证可达** ✓（⑦ ✓）；**源 `theorem-5-1` 的结论**（＝ (c) **环档**）**未证** ✗ ——
+**缺**环档 `hdata` 三条（`G`-指标正规基 ✓／`G ≅ Gal(L/K)` ✓／不动点 ✓），**均库内桥** ✗（登记 ✓）。 -/
+
+/-- **裁决定案** ✓：`definition-1-1`(c) 的读法 —— **环读忠实** ✓（源印 254 逐字「and in the rest of the paper, `L` is not
+necessarily a field」✓，**PDF 页级** ✓），**域读被源文排除** ✗ ⟹ 域档谓词**只能**作**弱化档** ✓（**库内弱于源** ✗）。
+**⚠** 故本节落的见证是**弱化档见证** ✗：**源 `theorem-5-1` 的结论未证** ✗（**缺**环档 `hdata` 三条，均库内桥 ✗）。 -/
+theorem definition11c_reading_decided : True := trivial
+
+/-- **域档孪生谓词**（**弱化档** ✗）：`IsGenericExtension`（`GenericExtension_ABGV52 :40` ✓）的**同一三合取** ✓，
+唯第三款取 `RealizationPropertyField` ✓（＝ 量词 `L` 收为**域** ✗）。
+**⚠ 口径** ✓：**非**源 `definition-1-1`(c) ✓（源印 254 明写 `L` **不必**是域 ✗）；本件**只作弱化档** ✓，
+**用途** ✓ ＝ 承载**装配链能供给**的形 ✓（§4.46／§4.51 ✓）。 -/
+def IsGenericExtensionField (F : Type*) [Field F] (G : Type*) [Group G] [Fintype G]
+    (R S : Type*) [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) : Prop :=
+  (∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w)) ∧
+  BTier.IsGaloisWithGroup R S G hRG ∧
+  RealizationPropertyField F G R S
+
+/-- **外形锁** ✓（`rfl` 型 ✓）：域档谓词与**三合取展开体逐字相同** ✓ —— 合取内容或次序漂移 ✗ 即编译失败 ✓。
+**⚠ 判别力（L43／r195 纪律）** ✓：**变异件负例已实跑** ✓（`.abgv52-scratch/probe-r198b.lean` ✓）——
+**变异件 A**（第三合取换回**源形** `RealizationProperty` ✗）与**变异件 B**（第三合取**删去** ✗）**均使本 `rfl` 失败** ✓
+（读数 ＝ 两处 `Not a definitional equality` ✓，`rc=1` ✓）⟹ 本锁**能**分辨「弱化档」与「源形」✓。 -/
+theorem IsGenericExtensionField.shape {F : Type*} [Field F] {G : Type*} [Group G] [Fintype G]
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) :
+    (IsGenericExtensionField F G R S hRG)
+      = ((∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧
+            Nonempty (R ≃ₐ[F] Localization.Away w)) ∧
+          BTier.IsGaloisWithGroup R S G hRG ∧ RealizationPropertyField F G R S) :=
+  rfl
+
+/-- **两读强度序（可证方向）** ✓：**环读 ⟹ 域读** ✓ —— 源形 (c)（`[CommRing L]` ✓）在**域**上特化即域档 ✓
+（`[Field L]` **蕴含** `[CommRing L]` ✓，故把域档的量词实例喂给源形即可 ✓）。
+**⚠ 方向性** ✓：本条**只**给「源形 ⟹ 弱化档」✓；**逆方向**（域档 ⟹ 源形 ✗）**未证** ✗ —— 那正是**环档缺口** ✓（登记 ✓）。
+**⚠ 意义** ✓：`§4.53` 的裁决由此**形式化** ✓ —— 域档**弱于**源形 ✓（**⚠ 不断言「严格」** ✗：不反向**未证** ✗，故**不声称**严格性 ✗）。 -/
+theorem realizationPropertyField_of_realizationProperty {F : Type*} [Field F] {G : Type*} [Group G]
+    [Fintype G] {R S : Type*} [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] (h : BTier.RealizationProperty F G R S) :
+    RealizationPropertyField F G R S := by
+  intro K _ _ L _ _ _ _ _ hKL hgal
+  exact h K L hKL hgal
+
+/-- **谓词层同款** ✓：`IsGenericExtension` ⟹ `IsGenericExtensionField` ✓（三款逐款搬运 ✓，第三款用上行 ✓）。 -/
+theorem isGenericExtensionField_of_isGenericExtension {F : Type*} [Field F] {G : Type*} [Group G]
+    [Fintype G] {R S : Type*} [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] [MulSemiringAction G S]
+    {hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)}
+    (h : BTier.IsGenericExtension F G R S hRG) : IsGenericExtensionField F G R S hRG :=
+  ⟨h.1, h.2.1, realizationPropertyField_of_realizationProperty h.2.2⟩
+
+/-- **弱化档见证数据** ✗：与 `GenericExtensionWitness`（本件 `:166` ✓）**同款打包** ✓，唯 `isGeneric` 取**域档**谓词 ✗。
+**⚠ 口径** ✓：本结构承载的是**弱化档**见证 ✗（**非**源 `theorem-2-1`／`theorem-5-1` 的见证 ✓）。 -/
+structure GenericExtensionWitnessField (F : Type v) [Field F] (A : Type u) [Group A] [Fintype A] where
+  R : Type u
+  S : Type u
+  [commRingR : CommRing R]
+  [commRingS : CommRing S]
+  [algebraFR : Algebra F R]
+  [algebraRS : Algebra R S]
+  [algebraFS : Algebra F S]
+  [tower : IsScalarTower F R S]
+  [mulSemiringActionS : MulSemiringAction A S]
+  /-- 源 `definition-1-1` 之前所需的**等变前提** ✓（`G`-作用与 `R`-作用交换 ✓）。 -/
+  hRG : ∀ (g : A) (r : R) (t : S), g • (r • t) = r • (g • t)
+  /-- **弱化档**三款 ✓（第三款取**域读** ✗）。 -/
+  isGeneric : IsGenericExtensionField F A R S hRG
+
+/-- **弱化档见证打包** ✓：三款齐（第三款**域档** ✗）⟹ `Nonempty (GenericExtensionWitnessField F G)` ✓
+（与 §4.51 的 `nonempty_genericExtensionWitness_of_clauses` ✓ **同款** ✓ —— `∃` 不接受实例绑定 ⟹ 须显式打包 ✓）。 -/
+theorem nonempty_genericExtensionWitnessField_of_clauses {F : Type v} [Field F] {G : Type u}
+    [Group G] [Fintype G] {R S : Type u}
+    [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (ha : ∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w))
+    (hb : BTier.IsGaloisWithGroup R S G hRG) (hc : RealizationPropertyField F G R S) :
+    Nonempty (GenericExtensionWitnessField F G) :=
+  ⟨{ R := R, S := S, hRG := hRG, isGeneric := ⟨ha, hb, hc⟩ }⟩
+
+section WeakFieldEndpoint
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **域档谓词 · 源侧总装** ✓：**§4.52 的三款齐备**（＝ `isGenericExtensionClausesField_of_sourceData` ✓ 的结论 ✓）
+**逐步同型** ✓ ⟹ `IsGenericExtensionField F G R (Localization.Away t)` ✓（**rfl 级对接** ✓，**不重证** ✓）。
+**⚠ 档位** ✓：结论是**弱化档** ✗（**非**源 `definition-1-1`(c) 的形态 ✓，见节头裁决 ✓）。 -/
+theorem isGenericExtensionField_of_sourceData
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ g : G, g • t = t)
+    {R : Type} [CommRing R] [Algebra R (Localization.Away t)] [Algebra F R]
+    [IsScalarTower F R (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    [Algebra R (NoetherField F G)] [IsScalarTower F R (NoetherField F G)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : R) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup R (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp R (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : R,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap R (Localization.Away t) r)
+        = algebraMap R (NoetherField F G) r)
+    (hRQ : ∀ r : R,
+      algebraMap R (NoetherField F G) r ∈ (awayToFieldAlg (F := F) (G := G) t ht).range)
+    (hRGpoint : ∀ (g : G) (r : R),
+      g • algebraMap R (NoetherField F G) r = algebraMap R (NoetherField F G) r)
+    (hinf : Infinite F)
+    (hdata : ∀ (K : Type) [Field K] [Algebra F K]
+      (L : Type) [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+      [MulSemiringAction G L] [SMulCommClass G K L] [SMulCommClass G F L]
+      (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+      BTier.IsGaloisWithGroup K L G hKL →
+        ∃ (_b : Module.Basis G K L), Function.Bijective (smulAlgEquivHom K G L) ∧
+          ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x)
+    (ha : ∃ (n : ℕ) (w : MvPolynomial (Fin n) F),
+      w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w)) :
+    IsGenericExtensionField F G R (Localization.Away t) hRG :=
+  isGenericExtensionClausesField_of_sourceData (F := F) (G := G) (t := t) ht htinv hact_map hRG hgal
+    hProj hS₀R hRQ hRGpoint hinf hdata ha
+
+/-- **弱化档见证可达** ✓✅（**库内首件** ✓）：同一批源侧数据 ⟹ `Nonempty (GenericExtensionWitnessField F G)` ✓。
+**⚠ 断言强度 ≤ 证据层级** ✓：本条**只**给**弱化档**见证 ✗ —— **源 `theorem-5-1` 的结论未证** ✗
+（**缺**环档 `hdata` 三条 ✓，均**库内桥** ✗，登记于下 ✓）。 -/
+theorem nonempty_genericExtensionWitnessField_of_sourceData
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ g : G, g • t = t)
+    {R : Type} [CommRing R] [Algebra R (Localization.Away t)] [Algebra F R]
+    [IsScalarTower F R (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    [Algebra R (NoetherField F G)] [IsScalarTower F R (NoetherField F G)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : R) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup R (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp R (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : R,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap R (Localization.Away t) r)
+        = algebraMap R (NoetherField F G) r)
+    (hRQ : ∀ r : R,
+      algebraMap R (NoetherField F G) r ∈ (awayToFieldAlg (F := F) (G := G) t ht).range)
+    (hRGpoint : ∀ (g : G) (r : R),
+      g • algebraMap R (NoetherField F G) r = algebraMap R (NoetherField F G) r)
+    (hinf : Infinite F)
+    (hdata : ∀ (K : Type) [Field K] [Algebra F K]
+      (L : Type) [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+      [MulSemiringAction G L] [SMulCommClass G K L] [SMulCommClass G F L]
+      (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+      BTier.IsGaloisWithGroup K L G hKL →
+        ∃ (_b : Module.Basis G K L), Function.Bijective (smulAlgEquivHom K G L) ∧
+          ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x)
+    (ha : ∃ (n : ℕ) (w : MvPolynomial (Fin n) F),
+      w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w)) :
+    Nonempty (GenericExtensionWitnessField F G) :=
+  ⟨{ R := R, S := Localization.Away t, hRG := hRG,
+     isGeneric := isGenericExtensionField_of_sourceData (F := F) (G := G) (t := t) ht htinv
+       hact_map hRG hgal hProj hS₀R hRQ hRGpoint hinf hdata ha }⟩
+
+end WeakFieldEndpoint
+
+/-- **登记** ✗：**源形见证缺口** —— `theorem-5-1` 的结论（`Nonempty (GenericExtensionWitness F G)` ✓，
+＝ (c) **环档** ✓）**未证** ✗ ⟹ 弱化档见证（本件上方 ✓）**不能**充当之 ✗
+（`GenericExtensionWitness.isGeneric` 的**类型**是 `BTier.IsGenericExtension` ✓，第三合取为 `RealizationProperty` ✓，**环档** ✗）。
+**⚠ 缺的三条（均库内桥** ✗**）** ✓：**①** `G`-指标**正规基** `b : Module.Basis G K L` ✗（源 `proposition-0-5(c)` ✓
+**已给** ✓ —— 印 254 ✓「`L⁺ ≅ K[G]` as `K[G]` modules」✓；缺的是 mathlib 指标 `L ≃ₐ[K] L` ✗ ⟷ **抽象 `G`** ✗ 的桥 ✓）；
+**②** `G ≅ Gal(L/K)` ✗（＝ `hfix` 的缺失半 ✓，与在册 `GaloisFixedSubringHyp` ✓ 同族 ✓）；
+**③** 不动点条件 `L^G = K` ✗（同族 ✓）。
+**⚠ 后果** ✓：**环档**装配须上述三条 ✓（**本会话不落** ✗，**不声称**已落 ✗）。 -/
+theorem genericExtensionWitnessField_gap_registered : True := trivial
 
 /-! ## 5. 公理闸门 -/
 
@@ -4752,6 +4953,16 @@ end EndpointClausesField
 #print axioms nonempty_genericExtensionWitness_of_clauses
 #print axioms isGenericExtensionClausesField_of_sourceData
 #print axioms definition11c_reading_gap_registered
+#print axioms definition11c_reading_decided
+#print axioms IsGenericExtensionField
+#print axioms IsGenericExtensionField.shape
+#print axioms realizationPropertyField_of_realizationProperty
+#print axioms isGenericExtensionField_of_isGenericExtension
+#print axioms GenericExtensionWitnessField
+#print axioms nonempty_genericExtensionWitnessField_of_clauses
+#print axioms isGenericExtensionField_of_sourceData
+#print axioms nonempty_genericExtensionWitnessField_of_sourceData
+#print axioms genericExtensionWitnessField_gap_registered
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv
