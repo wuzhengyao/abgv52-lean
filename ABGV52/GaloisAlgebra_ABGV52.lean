@@ -569,6 +569,79 @@ theorem galoisProgeneratorHyp_data_nonempty :
 
 end Sal78bEndpoints
 
+/-! ## 迹／余截面路线：**可达性审计 ＋ 已落的三件**（第 208 轮）
+
+**⚠ 靶点** ✓（承 §170.9(i) ✓）：搬运 `GaloisProgeneratorHyp` ✓ 的**实体** ✓ —— 其瓶颈是
+**`Module.FaithfullyFlat` 的 `FaithfulSMul` 一款** ✗（`FaithfullyFlat.mk` ✓ 只再需 `Flat` ✓，
+而 `Flat` ✓ 由 `Module.Projective` ✓ 供给 ✓；见 `Module.Flat.of_projective` ✓）。
+**⚠ 结构审计** ✓（r185--r208 合读 ✓）：`IsGaloisWithGroup` ✓ 的**三款** ✓（`FaithfulSMul G S` ✓／
+`R \subseteq S^G` ✓／`\delta` 双射 ✓）**不蕴含** `FaithfulSMul R S` ✗ ——
+源侧供给它的正是 **迹／余截面** ✓：源 Galois 判据 ⟹ `\delta` 有逆 ✓ ⟹
+**`coeff_1 \circ \delta^{-1} \circ \mathrm{algebraMap}` 是 `\mathrm{algebraMap}` 的左逆** ✓
+（本件把该路线的**三件基础**落库 ✓；**迹本身的线性化** ✗ **未落** ✗，见下登记 ✓）。
+
+**⚠ 判据先审可达性** ✓（r196 纪律 ✓；探针 `.abgv52-scratch/pr208*.lean` ✓，**十余版** ✗）：
+**可达** ✓：`\delta` 的**加法层**线性化 ✓（`deltaToEndLinear` ✓）；单位系数泛函 ✓（`coeffOne` ✓，`S`-线性 ✓）；
+`\delta(\mathrm{single}\ 1\ 1) = 1` ✓。
+**受阻** ✗（**逐条登记** ✓，供下一轮直接接手 ✓）：
+**①** `\mathrm{SkewMonoidAlgebra}` ✓ 只有 **`SMul S`** ✗（**无** `SMul R` ✗ —— `Algebra R (SkewMonoidAlgebra S G)`
+需 `SMulCommClass G R S` ✗，本档**没有** ✗）⟹ 迹只能在 **`S`-线性**档构造 ✓；
+**②** `Module.End R S` 上**无** `Algebra S` ✗（`inferInstance` 实测失败 ✓）⟹ `S`-纯量经
+`Algebra.smul_mul_assoc` ✓ 与 `Module.End` 的**逐点**作用对齐 ✓（**已定位** ✓，未落 ✗）；
+**③** `algebraMap R (Module.End R S) x` 对 `x : S` **不合法** ✗（其定义域是 `R` ✗）——
+正解是 `Algebra.linearMap`／`LinearMap.mul` ✓ **而非** `algebraMap` ✗（**已定位** ✓）。
+**⚠ 不声称** ✗：迹**未落** ✗、`FaithfulSMul R S` ✓ **未证** ✗、`GaloisProgeneratorHyp` ✓ **实体未搬运** ✗。 -/
+
+section TraceRoute
+
+variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+variable {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+
+/-- **单位系数泛函** ✓（`SkewMonoidAlgebra S G →ₗ[S] S` ✓ —— `S`-线性档 ✓，因 `①` ✓）。 -/
+noncomputable def coeffOne : SkewMonoidAlgebra S G →ₗ[S] S where
+  toFun a := a.coeff 1
+  map_add' := by intro a b; rw [SkewMonoidAlgebra.coeff_add]; rfl
+  map_smul' := by intro c a; rw [SkewMonoidAlgebra.coeff_smul]; rfl
+
+omit [Fintype G] [MulSemiringAction G S] in
+/-- **`coeffOne` 在 `single 1 s` 上取 `s`** ✓。 -/
+lemma coeffOne_single_one (s : S) :
+    coeffOne (G := G) (SkewMonoidAlgebra.single (1 : G) s) = s := by
+  classical
+  show (SkewMonoidAlgebra.single (1 : G) s).coeff 1 = s
+  rw [SkewMonoidAlgebra.coeff_single_apply]
+  simp
+
+/-- **δ 在 `single 1 1` 上是恒等自同态** ✓（迹路线的**单位款** ✓）。 -/
+lemma deltaToEndAdd_single_one_one
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    deltaToEndAdd hRG (SkewMonoidAlgebra.single (1 : G) (1 : S)) = 1 := by
+  rw [deltaToEndAdd_single]
+  ext t
+  simp [coeffToEnd, actEnd, Module.End.mul_apply]
+
+/-- **判据第一、二款的合成** ✓：`G`-不动元必属 `R` 的像 ✓ —— 迹路线的**不动款** ✓。 -/
+lemma algebraMap_fixed_of_isGaloisWithGroup
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hgal : IsGaloisWithGroup R S G hRG) (g : G) (r : R) :
+    g • algebraMap R S r = algebraMap R S r :=
+  hgal.2.1 g r
+
+/-- **登记** ✗：**迹路线的余项**（**逐条** ✓，供下一轮接手 ✓）——
+**(i)** `deltaToEndLinearS`：`\delta` 的 **`S`-线性**档 ✓（**待补** ✗：`single` 支的
+`coeffToEnd_smulS` ✓ ＋ `Algebra.smul_mul_assoc` ✓，**已定位** ✓）；
+**(ii)** `deltaInvS`：由 `hgal` 的双射 ✓ 造 `S`-线性逆 ✓（`LinearEquiv.ofBijective` ✓，
+**须给全参数** ✗ —— 裸用会被推断到 `R` 档 ✗，实测十余版 ✗）；
+**(iii)** `galoisTrace := coeffOne \circ \deltaInvS \circ \mathrm{Algebra.linearMap}` ✓（**待补** ✗）；
+**(iv)** `galoisTrace (algebraMap r) = r` ✓ ⟹ `Function.Injective (algebraMap R S)` ✓
+⟹ `FaithfulSMul R S` ✓（`faithfulSMul_iff_algebraMap_injective` ✓）；
+**(v)** `Module.FaithfullyFlat` ✓ ⟹ `GaloisProgeneratorHyp` ✓ 实体 ✓。
+**⚠ 不声称** ✗：上五项**均未落** ✗；**只**落了三件基础 ✓（`coeffOne` ✓／`coeffOne_single_one` ✓／
+`deltaToEndAdd_single_one_one` ✓ ＋ 不动款 ✓）。 -/
+theorem galoisTrace_route_gap_registered : True := trivial
+
+end TraceRoute
+
 /-- **本假设的用点形** ✓（源 `theorem-5-1` 证明的第三步所需 ✓）：把 `GaloisDescentHyp` 用在给定的
 `G`-Galois 的 `S/R` 与给定的 `F`-子代数 `R' \subseteq R` 上 ✓ ⟹ 得**下降数据**
 （`R''` 有限生成于 `R'` ✓／`S''/R''` `G`-Galois ✓／`S \simeq S'' \otimes_{R''} R` ✓）。 -/
@@ -914,5 +987,10 @@ end GaloisTransport
 #print axioms galoisProgeneratorHyp_typeLock
 #print axioms galoisProgeneratorHyp_implies_galoisProjectiveHyp
 #print axioms galoisProgeneratorHyp_data_nonempty
+#print axioms coeffOne
+#print axioms coeffOne_single_one
+#print axioms deltaToEndAdd_single_one_one
+#print axioms algebraMap_fixed_of_isGaloisWithGroup
+#print axioms galoisTrace_route_gap_registered
 
 end ABGV52.BTier
