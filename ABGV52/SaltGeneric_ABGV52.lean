@@ -4035,6 +4035,158 @@ theorem exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange
 
 end TensorEndToEnd
 
+/-! ## 4.46 **装配 (c) 款收口**：**`\exists \varphi : R \toₐ[F] K` ＋ 保作用同构**（第 186 轮）
+
+**⚠ 起点** ✓（**承 §148.6 第 1 项** ✓，**仍压 (c) 款** ✓，**不转项** ✗）：§4.45 已把张量侧打包 ✓，
+但 `\Psi`／`h\Psi_R`／`h\Psi_G`／`z`／基／`hX` **六项仍要调用点自备** ✗。本轮把它们**全部内部化** ✓，
+并**产出 `\varphi`** ✓（`RealizationProperty` 的结论形 ✓：`\exists \varphi` ＋ `\mathrm{letI}` 结构 ✓）。
+
+**⚠ 两件** ✓：
+**①** `awayLift_equivariant_of_algebraMap` ✓✅ —— **通用档** ✓：r175④ 的
+`\mathrm{awayLift\_equivariant}` **固定在规范作用上** ✗，而装配点的作用实例是**输入** ✗ ⟹ 本件把前提放宽为
+「作用与 `\mathrm{algebraMap}` **相容**」✓（证明同 r175④ ✓，只换一处 ✓）；
+**②** `exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data` ✓✅✅ —— **收口** ✓：
+由**目标 Galois 数据** ✓（`b`／`hb`／`hfix` ✓）＋ **源侧桥** ✓（`hRQ` ✓）＋ `S_0/R` 的 Galois 性 ✓ ＋ `\mathrm{GaloisProjectiveHyp}` ✓
+⟹ **`\exists \varphi : R \toₐ[F] K`** ✓ ＋ **保作用的** `L \simeq_K (K \otimes_R S_0)` ✓
+（`\varphi := \Phi_0` ✓，其结构经 `\mathrm{letI}` 引入 ✓；**六项输入全内部** ✓）。
+
+**🔴 ⚠ 审计结论（本轮实测，**三处实例同一性** ✗✓）**：
+**(a)** **作用实例** ✗：输入作用 ≠ 规范 `\mathrm{awayMulSemiringAction}` ✗ ⟹ `\mathrm{awayLift\_equivariant}` **不可直接用** ✗
+⟹ **正解 ＝ ①（通用档化）** ✓；
+**(b)** **`\Phi` 不可作输入** ✗：链**产出** `\Phi_0` ✓，而输入 `\Phi` ＋ `h\Phi` **无法与 `\Phi_0` 同一** ✗
+（`h\Phi` 只联系**输入** `\Phi` ✗）⟹ **正解 ＝ 让收口件自己产出 `\varphi`** ✓ 并把 `\mathrm{letI}` 结构放进**结论** ✓
+（与 `\mathrm{RealizationProperty}` 同法 ✓）；
+**(c)** **`\mathrm{Nontrivial}` 与两条塔** ✓：`[\mathrm{Nontrivial}\ A]` ✗ 与 `\mathrm{IsScalarTower}\ R\ K\ L`／`F\ R\ K` ✗
+**均内部导出** ✓（前者由 `A \toₐ[K] L` 的**单位性** ✓：`1 \neq 0` 沿单射搬到 `L` ✓；后者由 `\Phi_0` 的 `\mathrm{commutes}` ✓）。
+
+**⚠ 工艺读数（本轮新增两条）** ✓：**①** `\mathrm{letI}`／`\mathrm{haveI}` 在 **Prop 值处**可写 `\mathrm{let}`／`\mathrm{have}` ✓
+（**(55)** ✓，消 linter 警告 ✓，实测实例仍可合成 ✓）；**②** **`\mathrm{RingHom.toAlgebra}` 的 `\mathrm{algebraMap}` 是 `\mathrm{rfl}`** ✓
+⟹ `h\Psi_R` 的收尾**恰为 `\mathrm{rfl}`** ✓（`\mathrm{algebraMap}\ R\ L\ r \equiv \mathrm{algebraMap}\ K\ L\ (\Phi_0\ r)` ✓）。
+**⚠ 登记（余项）** ✗：**①** `hact\_{\rm map}` ✓（作用与 `\mathrm{algebraMap}` 相容 ✓ —— 装配点由
+`\mathrm{awayRingHom\_algebraMap}` ✓ **一行供给** ✓）；**②** `hS_0R` ✓（`R`-结构 ＝ 嵌入 ✓ —— (a) 款侧识别 ✓，在册 ✓）。 -/
+
+section LiftEquivariantGeneral
+
+variable {F : Type} [Field F] {G : Type} [Group G]
+
+/-- **通用档**：局部化提升的等变性（**作用实例任意** ✓，只要与 `\mathrm{algebraMap}` 相容 ✓）——
+r175④ 的 `\mathrm{awayLift\_equivariant}` 固定在**规范作用**上 ✗，而装配点的作用实例是**输入** ✗
+⟹ 本件把该前提放宽 ✓（证明同 r175④ ✓，只把 `\mathrm{awayRingHom\_algebraMap}` 换成 `\mathrm{hact\_map}` ✓）。 -/
+theorem awayLift_equivariant_of_algebraMap {t : MvPolynomial G F}
+    {L' : Type} [Field L'] [Algebra F L'] [MulSemiringAction G L']
+    [MulSemiringAction G (Localization.Away t)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (φ : MvPolynomial G F →ₐ[F] L')
+    (heq : ∀ (g : G) (p : MvPolynomial G F), φ (g • p) = g • φ p)
+    (φ' : Localization.Away t →ₐ[F] L')
+    (hφ : ∀ p : MvPolynomial G F,
+      φ' (algebraMap (MvPolynomial G F) (Localization.Away t) p) = φ p) :
+    ∀ (g : G) (x : Localization.Away t), φ' (g • x) = g • φ' x := by
+  intro g x
+  have h2 : (φ'.toRingHom.comp
+        (MulSemiringAction.toRingEquiv G (Localization.Away t) g).toRingHom)
+      = ((MulSemiringAction.toRingEquiv G L' g).toRingHom.comp φ'.toRingHom) := by
+    apply IsLocalization.ringHom_ext (R := MvPolynomial G F) (S := Localization.Away t)
+      (Submonoid.powers t)
+    apply RingHom.ext
+    intro p
+    simp only [RingHom.comp_apply]
+    show φ' (g • algebraMap (MvPolynomial G F) (Localization.Away t) p)
+      = g • φ' (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+    rw [hact_map g p, hφ, hφ, heq g p]
+  exact congrFun (congrArg DFunLike.coe h2) x
+
+end LiftEquivariantGeneral
+
+section SourceDataCapstone
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **探针 v2（(c) 款收口）**：由**目标 Galois 数据** ＋ **源侧桥** ＋ `S_0/R` 的 Galois 性 ⟹
+**`\exists \varphi : R \toₐ[F] K`** ＋ **保作用的同构** `L \simeq_K (K \otimes_R S_0)` ✓
+（`\varphi` 的结构经 `letI` 引入 ✓；`\mathrm{Nontrivial}` 与两条塔**内部导出** ✓）。 -/
+theorem exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ g : G, g • t = t)
+    {R : Type} [CommRing R] [Algebra R (Localization.Away t)] [Algebra F R]
+    [IsScalarTower F R (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    [Algebra R (NoetherField F G)] [IsScalarTower F R (NoetherField F G)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : R) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup R (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp R (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : R,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap R (Localization.Away t) r)
+        = algebraMap R (NoetherField F G) r)
+    (hRQ : ∀ r : R,
+      algebraMap R (NoetherField F G) r ∈ (awayToFieldAlg (F := F) (G := G) t ht).range)
+    (hRGpoint : ∀ (g : G) (r : R),
+      g • algebraMap R (NoetherField F G) r = algebraMap R (NoetherField F G) r)
+    {K : Type} [Field K] [Algebra F K]
+    {L : Type} [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+    [MulSemiringAction G L] [SMulCommClass G K L] [SMulCommClass G F L] [Infinite K]
+    (b : Module.Basis G K L) (hb : Function.Bijective (smulAlgEquivHom K G L))
+    (hfix : ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x) :
+    ∃ φ : R →ₐ[F] K,
+      letI : Algebra R K := φ.toRingHom.toAlgebra
+      letI : Algebra R L := ((algebraMap K L).comp φ.toRingHom).toAlgebra
+      letI := BTier.tensorMulSemiringAction (R := R) (T := K) (S := Localization.Away t) hRG
+      ∃ e : L ≃ₐ[K] (TensorProduct R K (Localization.Away t)),
+        ∀ (g : G) (y : L), e (g • y) = g • e y := by
+  -- ① 源 `lemma-5.2` 真形
+  obtain ⟨z, b', hb', hne⟩ := lemma52Statement_nonzero_true (F := F) (G := G) K L b hb t ht
+  have hunit : IsUnit (noetherEval (F := F) z t) := by
+    rw [isUnit_iff_ne_zero]
+    exact hne
+  have heq : ∀ (g : G) (p : MvPolynomial G F),
+      noetherEval (F := F) z (g • p) = g • noetherEval (F := F) z p :=
+    fun g p => noetherEval_equivariant (F := F) (G := G) z g p
+  -- ② §4.41 链（同一 `t`）
+  obtain ⟨Φ', ι, Φ₀, h1, h2, h3⟩ := exists_algHom_base_of_equivariant (F := F) (G := G)
+    (t := t) htinv ht hfix (noetherEval (F := F) z) heq hunit hRGpoint hRQ
+  -- ③ `φ := Φ₀` 的结构进作用域
+  let _ : Algebra R K := Φ₀.toRingHom.toAlgebra
+  let _ : Algebra R L := ((algebraMap K L).comp Φ₀.toRingHom).toAlgebra
+  have _ : IsScalarTower R K L := IsScalarTower.of_algebraMap_eq (fun r => rfl)
+  have _ : IsScalarTower F R K := IsScalarTower.of_algebraMap_eq (fun a => (Φ₀.commutes a).symm)
+  -- ④ `hX`／`hΨG`／`hΨR`
+  have hX : ∀ σ : G,
+      Φ' (algebraMap (MvPolynomial G F) (Localization.Away t) (MvPolynomial.X σ)) = σ • z := by
+    intro σ
+    rw [h1]
+    exact noetherEval_X (F := F) z σ
+  have hΨG : ∀ (g : G) (x : Localization.Away t), Φ' (g • x) = g • Φ' x :=
+    awayLift_equivariant_of_algebraMap (F := F) (G := G) (t := t) hact_map
+      (noetherEval (F := F) z) heq Φ' h1
+  have hι : ∀ r : R, ι r = algebraMap R (Localization.Away t) r := by
+    intro r
+    apply awayToField_injective (F := F) (G := G) t ht
+    change awayToFieldAlg (F := F) (G := G) t ht (ι r)
+      = awayToFieldAlg (F := F) (G := G) t ht (algebraMap R (Localization.Away t) r)
+    rw [h2 r, hS₀R r]
+  have hΨR : ∀ r : R, Φ' (algebraMap R (Localization.Away t) r) = algebraMap R L r := by
+    intro r
+    rw [← hι r, ← h3 r]
+    rfl
+  -- ⑤ `Nontrivial` 内部导出（由 `A →ₐ[K] L` 的单位性）
+  let ΨR : Localization.Away t →ₐ[R] L := { Φ'.toRingHom with commutes' := hΨR }
+  have _ : Nontrivial (TensorProduct R K (Localization.Away t)) :=
+    ⟨⟨1, 0, fun h => by
+      have h' : (1 : L) = 0 := by
+        have h2 := congrArg (fun x => (ΨR.liftEquiv R K (Localization.Away t) L) x) h
+        simp at h2
+      exact one_ne_zero h'⟩⟩
+  -- ⑥ §4.45 收口
+  obtain ⟨e, he⟩ := exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange (F := F) (G := G)
+    (t := t) hRG hgal hProj Φ' hΨR hΨG hb' hX
+  exact ⟨Φ₀, e, he⟩
+
+end SourceDataCapstone
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -4094,6 +4246,8 @@ end TensorEndToEnd
 #print axioms realizationMap_equivariant
 #print axioms exists_equivariant_algEquiv_tensorProduct_of_galois
 #print axioms exists_equivariant_algEquiv_tensorProduct_of_galoisBaseChange
+#print axioms awayLift_equivariant_of_algebraMap
+#print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit

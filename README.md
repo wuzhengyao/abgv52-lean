@@ -138,7 +138,15 @@ equivariant evaluation, and receives the isomorphism preserving the group action
 cannot be pushed further, and the reason is recorded in the file: the tensor product and the facts
 assumed of it mention the algebra structure on the fixed field, which the assembly point produces,
 so an identity between that structure and the produced map is the price of stating the result, and
-it is registered rather than claimed away -- and retract rationality along rational extensions |
+it is registered rather than claimed away -- and the realization is now assembled: from the Galois
+data of the target extension and the transport of the base ring, a single theorem produces both the
+map of the base ring into the fixed field and an isomorphism from the extension to the tensor
+product of the fixed field with the localization which preserves the group actions, the evaluation,
+its equivariance and the rank all being supplied inside.  Two inputs remain explicit and are
+recorded: the action on the localization must agree with the canonical one on the polynomial ring,
+and its algebra structure must be the embedding into the Noether field.  The lift of an equivariant
+evaluation is also recorded in the generality that an arbitrary action requires, since that is what
+the assembly point has -- and retract rationality along rational extensions |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
