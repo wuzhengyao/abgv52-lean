@@ -160,7 +160,12 @@ along rational extensions, and the reading of the realization clause of the gene
 definition settled from the source's own emphasis that the algebra realising an extension need not
 be a field -- so that the library's ring-level form is the faithful one and the field-level form is
 a weaker specialisation, whose witness is constructed from the assembly's data while the
-source-level witness is registered as still open |
+source-level witness is registered as still open, and the bridge between the Galois-algebra
+predicate and the automorphism group is closed in the field case -- the action map bijective, a
+group-indexed normal basis on which the action multiplies indices, the spanning element the
+source's lemma produces, and the fixed points identified with the base field -- so that the three
+clauses the assembly had assumed are supplied rather than hypothesized, the field-level
+restriction and the finite-dimensionality input being registered alongside |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
 | `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
 | `Probe*` | auxiliary probes retained for auditability |
@@ -514,6 +519,22 @@ fixed-point condition.  All three are bridges inside the library rather than mat
 withholds, since the source's own proposition supplies the normal basis for general, possibly
 non-field algebras; an earlier registration, which recorded that normal basis as quoted but
 unproved, is corrected accordingly.
+
+The bridge between the library's Galois-algebra predicate and the group of automorphisms is now
+closed in the field case.  From that predicate together with finite-dimensionality one gets, for a
+field extension: that the action map from the group to the algebra automorphisms is bijective, so
+that the abstract group is the Galois group; a group-indexed normal basis, with the group acting on
+it by multiplication on the indices; an element whose conjugates are independent and span, which is
+the element the source's lemma 5.2 produces; and that the fixed points of the action are exactly
+the base field, by comparing the two degrees and applying the degree-one criterion.  The three
+clauses the earlier assembly had taken as a hypothesis are therefore no longer an independent
+input: they are supplied on the spot, and a pointwise realization is derived from the source-side
+data together with the Galois-algebra predicate and finite-dimensionality alone.  Two limits are
+registered: the bridge is field-level, because the fixed-point and automorphism-count tools are,
+while the source states its proposition for general algebras; and the one remaining input is
+finite-dimensionality, which the source obtains from the cited projectivity of a Galois extension
+over its base.  Removing that input at the level of the predicate is registered as the next step,
+since it requires the finiteness to enter the quantifier.
 
 *Note (2026-10-12): this file was accidentally truncated while being edited and has been restored
 from the submodule commit `bd659a8` plus the update above; the prose of the intermediate revision

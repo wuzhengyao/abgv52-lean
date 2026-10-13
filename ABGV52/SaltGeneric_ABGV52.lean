@@ -83,6 +83,7 @@ import ABGV52.GenericExtension_ABGV52
 import Mathlib.Algebra.MvPolynomial.Funext
 import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 import Mathlib.FieldTheory.Galois.NormalBasis
+import Mathlib.FieldTheory.Fixed
 import ABGV52.BaseChangeProj_ABGV52
 import Mathlib.RingTheory.TensorProduct.Finite
 
@@ -738,7 +739,9 @@ theorem eval_normalBasisPoly {L : Type u} [Field L] [Algebra K L] [MulSemiringAc
 （mathlib `exists_linearIndependent_algEquiv_apply` ✓）＋ §4.9 的判据 ✓，**但** mathlib 那条是就
 `L \simeq_K L` ✓ 陈述的，而本件 `G` **抽象** ✓ ⟹ **须先有 `G \simeq \mathrm{Gal}(L/K)` 的识别** ✗（**在册** ✓）；
 ② **`f'`** ✗（`t'` 对应的多项式 ✓）及其**非零** ✗ —— 源用「**the algebraic independence of the `\sigma`'s**」✓，
-**未建** ✗；③ **组装** ✗（`exists_eval_mul_ne_zero` ✓ 已备 ✓，待 ①② ✓）。 -/
+**未建** ✗；③ **组装** ✗（`exists_eval_mul_ne_zero` ✓ 已备 ✓，待 ①② ✓）。
+**⚠ r199 已落（域档）** ✓✅：**① 的入口**（＝ `G ≃ \mathrm{Gal}(L/K)` 的识别 ✓）**已通** ✓ ——
+见 §4.54 `smulAlgEquivHom_bijective_of_isGaloisWithGroup` ✓；**⚠ 本条余项 ①②③ 本身仍未落** ✗（**不复写** ✗）。 -/
 theorem normalBasisPoly_gap_registered : True := trivial
 
 end NormalBasisPolynomial
@@ -2655,7 +2658,10 @@ theorem exists_algHom_of_equivariant_of_fixed
 
 /-- **登记** ✗：本件的 `hfix`（`L^G \subseteq K` ✓）是**在册不动域缺口**的显式形 ✓
 （**同族**：`GaloisFixedSubringHyp` ✓ ＝ `S^G \subseteq R` ✓）—— **未证** ✗（**非本会话可落** ✓：
-须 Artin 型定理在**本口径**下重建 ✓）。 -/
+须 Artin 型定理在**本口径**下重建 ✓）。
+**⚠ r199 已落（域档）** ✓✅：**Artin 定理**已由 mathlib ✓（`FixedPoints.finrank_eq_card` ✓）供给 ⟹
+`fixedPoints_eq_of_isGaloisWithGroup` ✓（§4.54 ✓）**在域档落地** ✓（**前提**：`[FiniteDimensional K L]` ✗ ＋ `[Field L]` ✗）；
+**⚠ 环档与有限性两条仍开放** ✗（§4.54 节头登记 ✓，**不复写** ✗）。 -/
 theorem fixedField_gap_registered : True := trivial
 
 end BTier
@@ -4883,6 +4889,197 @@ end WeakFieldEndpoint
 **⚠ 后果** ✓：**环档**装配须上述三条 ✓（**本会话不落** ✗，**不声称**已落 ✗）。 -/
 theorem genericExtensionWitnessField_gap_registered : True := trivial
 
+/-! ## 4.54 **CHR 桥（域档）**：`G ≅ Gal(L/K)` ＋ `G`-指标正规基 ＋ 不动点（第 199 轮）
+
+**⚠ 起点** ✓（**承 §4.53 的下一手** ✓）：§4.53 把 `hdata`（r196 ✓）的三条登记为**缺口** ✗ ——
+**①** `G`-指标**正规基** ✗／**②** `G ≅ \mathrm{Gal}(L/K)` ✗／**③** 不动点 `L^G = K` ✗；
+且 §4.10（`normalBasisPoly_gap_registered` ✓）与 §4.35（`fixedField_gap_registered` ✓）两条登记**均指向**
+「须先有 `G ≃ \mathrm{Gal}(L/K)` 的识别」✗。
+
+**🔴 本轮断指** ✓（**三件齐落** ✓，**判据先审可达性** ✓：探针 `.abgv52-scratch/probe-r199e.lean` ✓ **rc=0** ✓）：
+由 **`IsGaloisWithGroup`** ✓ ＋ **`[FiniteDimensional K L]`** ✓ 直接供给三条 ✓ ——
+**②** `G ≅ \mathrm{Gal}(L/K)` ✓✅：**Artin 界** ✓（mathlib `AlgEquiv.card_le` ✓，`Fixed.lean` ✓）
+＋ **判据秩等式** ✓（`BTier.finrank_eq_card_of_isGaloisWithGroup` ✓，r184 ✓）**两侧夹逼** ✓
+（**单射** ✓ 由 `FaithfulSMul` ✓ ＝ 判据**第一合取** ✓ —— 即源 `proposition-0-5` 之前的「`G` **忠实**作用」✓）；
+**①** `G`-**指标正规基** ✓✅：mathlib `exists_linearIndependent_algEquiv_apply` ✓（**只需 `[FiniteDimensional]`** ✓，**不需** `IsGalois` ✓）
+＋ **②** 的双射重指标 ✓ ＋ 秩等式 ⟹ **基** ✓（`basisOfLinearIndependentOfCardEqFinrank` ✓），且**乘性形**
+`g • b h = b (g * h)` ✓ —— 正是源「**normal basis**」✓ 的**逐元形** ✓；
+**③** **不动点 `L^G = K`** ✓✅：mathlib `FixedPoints.finrank_eq_card` ✓（**Artin 定理** ✓，`[Fintype G]` ＋ `[FaithfulSMul]` ✓）
+＋ 秩等式 ⟹ **`[L : L^G] = [L : K]`** ✓ ⟹ **次数 1** ✓ ⟹ `L^G = K` ✓（`IntermediateField.finrank_eq_one_iff` ✓）。
+
+**⚠ 源文对照** ✓（**承 §4.53 的纠正** ✓）：源 `proposition-0-5` **(b)** ✓（代数无关性 ✓）／**(c)** ✓（正规基 ✓）
+（**印 254** ✓）就 **一般（非域）`L`** 陈述 ✓；本节是**同一内容在 `[Field L]` 下的形** ✓ ——
+**⚠ 环档仍缺** ✗（mathlib 的 `FixedPoints` 与 Artin 界**均只域档** ✗，**登记** ✓）。
+
+**⚠ 唯一剩余输入（登记** ✗**）** ✓：**`[FiniteDimensional K L]`** ✗ —— 源侧由 **`proposition-0-2(a)`** ✓
+（[CHR68] p. 13 ✓，**不在 `raw/`** ✗）供给：`S/R` `G`-Galois ⟹ **有限生成投射** ✓；
+库内对应 **`GaloisProjectiveHyp`** ✓（`GaloisAlgebra_ABGV52 :235` ✓，**未证** ✗）。
+**⚠ 后果** ✓✅：**`hdata` 不再是独立输入** ✓ —— 本节 **⑤** ✓ 内部供给之 ✓（**有限性除外** ✗），
+**⑥** ✓ 展示「源侧数据 ＋ `IsGaloisWithGroup` ＋ 有限性 ⟹ `∃φ` ＋ 保作用同构」**无需 `hdata`** ✓。 -/
+
+section CHRBridgeField
+
+variable {K L : Type u} [Field K] [Field L] [Algebra K L] {G : Type u} [Group G] [Fintype G]
+
+/-- **② `G ≅ \mathrm{Gal}(L/K)`（域档）** ✓✅：**单射** ✓（`FaithfulSMul` ✓，判据第一合取 ✓）
+＋ **两侧夹逼** ✓（`|G| ≤ |\mathrm{Gal}|` ✓ 由单射；`|\mathrm{Gal}| ≤ [L:K] = |G|` ✓ 由 **Artin 界** ✓ ＋ r184 秩等式 ✓）。
+**⚠ 用途** ✓：它是 §4.10（`f \neq 0` ✗）与 §4.35（`hfix` ✗）两条登记的**共同入口** ✓ —— **本轮已通** ✓。 -/
+theorem smulAlgEquivHom_bijective_of_isGaloisWithGroup [MulSemiringAction G L]
+    [SMulCommClass G K L]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup K L G hKL) [FiniteDimensional K L] :
+    Function.Bijective (smulAlgEquivHom K G L) := by
+  let _ : FaithfulSMul G L := hgal.1
+  have hinj : Function.Injective (smulAlgEquivHom K G L) := by
+    intro g h hgh
+    refine eq_of_smul_eq_smul (fun x : L => ?_)
+    have hx := congrArg (fun f : L ≃ₐ[K] L => f x) hgh
+    simpa [smulAlgEquivHom, smulAlgEquiv] using hx
+  have hcard : Fintype.card G = Fintype.card (L ≃ₐ[K] L) := by
+    refine le_antisymm (Fintype.card_le_of_injective (smulAlgEquivHom K G L) hinj) ?_
+    rw [← BTier.finrank_eq_card_of_isGaloisWithGroup (K := K) (A := L) (G := G) hKL hgal]
+    exact AlgEquiv.card_le
+  exact (Fintype.bijective_iff_injective_and_card _).mpr ⟨hinj, hcard⟩
+
+/-- **① `G`-指标正规基（乘性形）** ✓✅：`g • b h = b (g * h)` ✓ —— 源 `proposition-0-5(c)` ✓（印 254 ✓）的
+**逐元形** ✓（**基** ✓ ＝ 由 `G` 指标化 ✓，故「`L⁺ ≅ K[G]`」✓ 的向量形 ✓）。
+**⚠ 机制** ✓：LI 家族由 **mathlib 的抽象正规基定理** ✓（`exists_linearIndependent_algEquiv_apply` ✓）取**子族** ✓
+（沿 **②** 的双射 ✓ 重指标 ✓），再与 r184 秩等式**凑成基** ✓；**乘性** ✓ 由 z 的取法 `b h = h • z` ✓ 直接给出 ✓。 -/
+theorem exists_normalBasis_of_isGaloisWithGroup [MulSemiringAction G L] [SMulCommClass G K L]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup K L G hKL) [FiniteDimensional K L] :
+    ∃ b : Module.Basis G K L, ∀ g h : G, g • b h = b (g * h) := by
+  obtain ⟨x, hx⟩ := exists_linearIndependent_smul K G L
+    (smulAlgEquivHom_bijective_of_isGaloisWithGroup hKL hgal)
+  refine ⟨basisOfLinearIndependentOfCardEqFinrank hx ?_, ?_⟩
+  · exact (BTier.finrank_eq_card_of_isGaloisWithGroup (K := K) (A := L) (G := G) hKL hgal).symm
+  · intro g h
+    rw [coe_basisOfLinearIndependentOfCardEqFinrank]
+    exact (mul_smul g h x).symm
+
+/-- **源 `lemma-5-2` 的 `z`** ✓（源 `raw/Saltman1982.tex :658` ✓ 逐字「there is a `z \in L` such that
+`\{\sigma(z)\}` is a **normal basis** for `L` over `K`」✓）：**存在 `z`** ✓ 使 `\{g \bullet z\}` **线性无关** ✓
+且**张满** ✓ —— 即源义的「**生成正规基**」✓。
+**⚠ 用途** ✓：源证明的下一步（避免 `t(g \bullet z) = 0` ✓，§4.10 ✓ 的 `\mathrm{exists\_eval\_mul\_ne\_zero}` ✓）**以此为输入** ✓。 -/
+theorem exists_normalBasisElement_of_isGaloisWithGroup [MulSemiringAction G L] [SMulCommClass G K L]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup K L G hKL) [FiniteDimensional K L] :
+    ∃ z : L, LinearIndependent K (fun g : G => g • z) ∧
+      Submodule.span K (Set.range (fun g : G => g • z)) = ⊤ := by
+  obtain ⟨b, hb⟩ := exists_normalBasis_of_isGaloisWithGroup hKL hgal
+  have hfun : (fun g : G => g • b 1) = fun g : G => b g := by
+    funext g; rw [hb g 1, mul_one]
+  exact ⟨b 1, by rw [hfun]; exact b.linearIndependent, by rw [hfun]; exact b.span_eq⟩
+
+/-- **③ 不动点 `L^G = K`（点形）** ✓✅（**＝ r196 `hfix` ✓ 的形** ✓）：由 **Artin 定理** ✓
+（`FixedPoints.finrank_eq_card` ✓：`[L : L^G] = |G|` ✓）＋ r184 秩等式 ✓ ⟹ `[L : L^G] = [L : K]` ✓ ⟹
+**次数 1** ✓（`IntermediateField.finrank_eq_one_iff` ✓）⟹ **逐点落进 `K`** ✓。
+**⚠ 口径** ✓：`L^G` 落为**显式构造的 `\mathrm{IntermediateField}`** ✓（`carrier := \{x \mid \forall g,\ g \bullet x = x\}` ✓），
+其与 mathlib `FixedPoints.subfield` **载体逐字相同** ✓（`FixedPoints.finrank_eq_card` ✓ **可直接用作其秩** ✓，实测 defeq ✓）。 -/
+theorem fixedPoints_eq_of_isGaloisWithGroup [MulSemiringAction G L]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup K L G hKL) [FiniteDimensional K L] :
+    ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x := by
+  let _ : FaithfulSMul G L := hgal.1
+  let P : IntermediateField K L :=
+    { carrier := {x : L | ∀ g : G, g • x = x}
+      mul_mem' := fun hx hy g => by rw [smul_mul', hx g, hy g]
+      one_mem' := fun g => by rw [smul_one]
+      add_mem' := fun hx hy g => by rw [smul_add, hx g, hy g]
+      zero_mem' := fun g => by rw [smul_zero]
+      algebraMap_mem' := fun k g => by rw [Algebra.algebraMap_eq_smul_one, hKL g k 1, smul_one]
+      inv_mem' := fun x hx g => by rw [smul_inv₀', hx g] }
+  have hPL : Module.finrank ↥P L = Fintype.card G := FixedPoints.finrank_eq_card G L
+  have hKLcard : Module.finrank K L = Fintype.card G :=
+    BTier.finrank_eq_card_of_isGaloisWithGroup (K := K) (A := L) (G := G) hKL hgal
+  have htower : Module.finrank K ↥P * Module.finrank ↥P L = Module.finrank K L :=
+    Module.finrank_mul_finrank K ↥P L
+  have hone : Module.finrank K ↥P = 1 := by
+    rw [hPL, hKLcard] at htower
+    exact Nat.eq_of_mul_eq_mul_right Fintype.card_pos (by rw [one_mul]; exact htower)
+  have hbot : P = ⊥ := IntermediateField.finrank_eq_one_iff.mp hone
+  intro x hx
+  have hxP : x ∈ P := hx
+  rw [hbot, IntermediateField.mem_bot] at hxP
+  exact hxP
+
+/-- **⑤ 打包（`hdata` 形）** ✓✅：三件**合取** ✓ —— 即 r196 `realizationPropertyField_of_sourceData` ✓
+所**假设**的逐点输入 ✓（`\exists (_b : \mathrm{Module.Basis}\ G\ K\ L)` ✓ ＋ 双射 ✓ ＋ 不动点 ✓）。
+**⚠ 意义** ✓：`hdata` 由**输入** ✗ 变为**可供给** ✓（**有限性除外** ✗，见节头登记 ✓）。 -/
+theorem exists_chrData_of_isGaloisWithGroup [MulSemiringAction G L] [SMulCommClass G K L]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup K L G hKL) [FiniteDimensional K L] :
+    ∃ (_b : Module.Basis G K L), Function.Bijective (smulAlgEquivHom K G L) ∧
+      ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x :=
+  ⟨(exists_normalBasis_of_isGaloisWithGroup hKL hgal).choose,
+    smulAlgEquivHom_bijective_of_isGaloisWithGroup hKL hgal,
+    fixedPoints_eq_of_isGaloisWithGroup hKL hgal⟩
+
+end CHRBridgeField
+
+section ChrRealizationPointwise
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **⑥ 点形实现（`hdata` 已删）** ✓✅：**源侧数据** ✓ ＋ **`BTier.IsGaloisWithGroup K L G`** ✓ ＋ **`[FiniteDimensional K L]`** ✓
+⟹ `\exists \varphi : R \toₐ[F] K` ✓ 与**保作用同构** `L \simeq_K (S_0 \otimes_R K)` ✓ ——
+**不再**以 `hdata`（r196 ✓）为假设 ✓（由 **⑤** ✓ 现场供给 ✓）。
+**⚠ 断言强度 ≤ 证据层级** ✓：本条**只**是**点形**（固定 `(K, L)` ✓）；**谓词形**（`RealizationPropertyField` ✓）
+的 `hdata` 删除**未做** ✗ —— 须把 `[FiniteDimensional K L]` 入 **∀-binder** ✓（**登记** ✓）。 -/
+theorem exists_realization_of_isGaloisWithGroup
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ g : G, g • t = t)
+    {R : Type} [CommRing R] [Algebra R (Localization.Away t)] [Algebra F R]
+    [IsScalarTower F R (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    [Algebra R (NoetherField F G)] [IsScalarTower F R (NoetherField F G)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : R) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup R (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp R (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : R,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap R (Localization.Away t) r)
+        = algebraMap R (NoetherField F G) r)
+    (hRQ : ∀ r : R,
+      algebraMap R (NoetherField F G) r ∈ (awayToFieldAlg (F := F) (G := G) t ht).range)
+    (hRGpoint : ∀ (g : G) (r : R),
+      g • algebraMap R (NoetherField F G) r = algebraMap R (NoetherField F G) r)
+    (hinf : Infinite F)
+    {K : Type} [Field K] [Algebra F K]
+    {L : Type} [Field L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+    [MulSemiringAction G L] [SMulCommClass G K L] [SMulCommClass G F L]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgalKL : BTier.IsGaloisWithGroup K L G hKL) [FiniteDimensional K L] :
+    ∃ φ : R →ₐ[F] K,
+      letI : Algebra R K := φ.toRingHom.toAlgebra
+      letI : Algebra R L := ((algebraMap K L).comp φ.toRingHom).toAlgebra
+      letI := BTier.tensorMulSemiringAction (R := R) (T := K) (S := Localization.Away t) hRG
+      ∃ e : L ≃ₐ[K] (TensorProduct R K (Localization.Away t)),
+        ∀ (g : G) (y : L), e (g • y) = g • e y := by
+  obtain ⟨b, hb, hfix⟩ := exists_chrData_of_isGaloisWithGroup hKL hgalKL
+  let _ : Infinite K := infinite_of_algebra_of_infinite (F := F) (K := K)
+  exact exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
+    (F := F) (G := G) (t := t) ht htinv hact_map hRG hgal hProj hS₀R hRQ hRGpoint b hb hfix
+
+end ChrRealizationPointwise
+
+/-- **登记** ✗：**唯一剩余输入 ＝ `[FiniteDimensional K L]`** ✓ —— 源侧由 `proposition-0-2(a)` ✓
+（「`S` is a **projective** `R[G]`-module」✓，源引 **[CHR68] p. 13** ✓，**不在 `raw/`** ✗）供给：
+`S/R` `G`-Galois ⟹ **有限生成投射** ✓ ⟹ 域上**有限维** ✓；库内对应 `GaloisProjectiveHyp` ✓（**未证** ✗）。
+**⚠ 后果** ✓：本节三件的**陈述**均以 `[FiniteDimensional K L]` 为前提 ✓ —— **不声称**去除它 ✗。 -/
+theorem chrBridgeField_finiteness_gap_registered : True := trivial
+
+/-- **登记** ✗：**环档仍缺** —— 本节三件**均域档** ✓（`[Field L]` ✓）：**Artin 界** ✓（`AlgEquiv.card_le` ✓）
+与 `FixedPoints` ✓（不动域／Artin 定理 ✓）**在 mathlib 只域档** ✗；源 `proposition-0-5` ✓ 就**一般 `L`** 陈述 ✓
+⟹ **环档（CHR 代数版）**仍须另建 ✗（**不声称**已落 ✗）。 -/
+theorem chrBridgeField_ringTier_gap_registered : True := trivial
+
+/-- **登记** ✗：**谓词形的 `hdata` 删除待办** —— `RealizationPropertyField`（§4.51 ✓）的 ∀-形**未含**
+`[FiniteDimensional K L]` ✗ ⟹ 本节 **⑤** ✓ 的供给**不能**直接填入该 ∀-binder ✗；
+**正解** ✓ ＝ 把有限性**入 binder** ✓（＝ 把源 `proposition-0-2(a)` 的**有限性显式化** ✓）—— **下一手** ✓。 -/
+theorem realizationPropertyField_hdata_removal_registered : True := trivial
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -4963,6 +5160,15 @@ theorem genericExtensionWitnessField_gap_registered : True := trivial
 #print axioms isGenericExtensionField_of_sourceData
 #print axioms nonempty_genericExtensionWitnessField_of_sourceData
 #print axioms genericExtensionWitnessField_gap_registered
+#print axioms smulAlgEquivHom_bijective_of_isGaloisWithGroup
+#print axioms exists_normalBasis_of_isGaloisWithGroup
+#print axioms exists_normalBasisElement_of_isGaloisWithGroup
+#print axioms fixedPoints_eq_of_isGaloisWithGroup
+#print axioms exists_chrData_of_isGaloisWithGroup
+#print axioms exists_realization_of_isGaloisWithGroup
+#print axioms chrBridgeField_finiteness_gap_registered
+#print axioms chrBridgeField_ringTier_gap_registered
+#print axioms realizationPropertyField_hdata_removal_registered
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 #print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv
