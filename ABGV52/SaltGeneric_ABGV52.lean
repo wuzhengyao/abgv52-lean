@@ -2917,8 +2917,9 @@ theorem exists_adjoin_union_le_away {ι ι' : Type*} [Fintype ι] [DecidableEq �
 
 section NoetherTProd
 
-variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G]
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
 
+omit [DecidableEq G] in
 /-- **`P := ∏_σ σ • t₀` 非零** ✓（**关键小引理**：`σ • t₀ = 0 \Rightarrow t₀ = 0` ✓，`calc` 三行 ✓）。 -/
 lemma prod_smul_ne_zero (t₀ : MvPolynomial G F) (ht₀ : t₀ ≠ 0) :
     (∏ σ : G, σ • t₀) ≠ 0 := by
@@ -2929,11 +2930,13 @@ lemma prod_smul_ne_zero (t₀ : MvPolynomial G F) (ht₀ : t₀ ≠ 0) :
     _ = σ⁻¹ • (σ • t₀) := mul_smul σ⁻¹ σ t₀
     _ = 0 := by rw [h0, smul_zero])
 
+omit [DecidableEq G] in
 /-- **`P := ∏_σ σ • t₀` 不变化** ✓（§4.6 ✓ —— **一行** ✓）。 -/
 lemma prod_smul_invariant (t₀ : MvPolynomial G F) (g : G) :
     g • (∏ σ : G, σ • t₀) = ∏ σ : G, σ • t₀ :=
   noether_prod_smul_invariant (F := F) (G := G) t₀ g
 
+omit [DecidableEq G] in
 /-- **`P^N` 不变化** ✓（不变量的幂 ✓ —— 归纳 ＋ `smul_mul'` ✓）。 -/
 lemma prod_pow_invariant (t₀ : MvPolynomial G F) (N : ℕ) (g : G) :
     g • (∏ σ : G, σ • t₀) ^ N = (∏ σ : G, σ • t₀) ^ N := by
@@ -2942,10 +2945,51 @@ lemma prod_pow_invariant (t₀ : MvPolynomial G F) (N : ℕ) (g : G) :
   | zero => simp
   | succ n ih => rw [pow_succ, smul_mul', h, ih]
 
+omit [DecidableEq G] in
 /-- **`P^N` 非零** ✓。 -/
 lemma prod_pow_ne_zero (t₀ : MvPolynomial G F) (ht₀ : t₀ ≠ 0) (N : ℕ) :
     (∏ σ : G, σ • t₀) ^ N ≠ 0 :=
   pow_ne_zero N (prod_smul_ne_zero t₀ ht₀)
+
+/-- **`P = t₀ \cdot \prod_{\sigma \neq 1} \sigma \bullet t₀`** ✓（按 `1` 分离乘积 ✓）——
+**包含** ✓ 的**第一步** ✓。 -/
+lemma prod_smul_eq_mul (t₀ : MvPolynomial G F) :
+    (∏ σ : G, σ • t₀) = t₀ * ∏ σ ∈ Finset.univ.erase (1 : G), σ • t₀ := by
+  rw [← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ (1 : G))]
+  simp
+
+/-- **`Q(t₀) \leq Q(P)`** ✓（**包含** ✓ 的**第二步** ✓）—— 由 `adjoin_away_mono` ✓
+（`t₀` 是 `t₀ \cdot \prod_{\sigma \neq 1} \sigma \bullet t₀` 的**因子** ✓）。 -/
+lemma adjoin_away_prod_smul (t₀ : MvPolynomial G F) (ht₀ : t₀ ≠ 0) :
+    Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) t₀)⁻¹} : Set (NoetherField F G)) ≤
+      Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) (∏ σ : G, σ • t₀))⁻¹}
+          : Set (NoetherField F G)) := by
+  rw [prod_smul_eq_mul]
+  exact adjoin_away_mono (A := MvPolynomial G F) (L := NoetherField F G) t₀
+    (∏ σ ∈ Finset.univ.erase (1 : G), σ • t₀)
+    (Finset.prod_ne_zero_iff.mpr (fun σ _ h0 => ht₀ (calc t₀ = (1 : G) • t₀ :=
+      (one_smul G t₀).symm
+      _ = (σ⁻¹ * σ) • t₀ := by rw [inv_mul_cancel]
+      _ = σ⁻¹ • (σ • t₀) := mul_smul σ⁻¹ σ t₀
+      _ = 0 := by rw [h0, smul_zero])))
+
+/-- **攻击顺序 ① 收口** ✓✅：`t` 的构造（**非零** ✓ ＋ **不变化** ✓ ＋ **包含** ✓）——
+由 §4.23 ✓ 给非零 `t₀` ＋ 包含 ✓，取 **`t := ∏_σ σ \bullet t₀`** ✓（§4.6 ✓ 给**不变化** ✓）
+并用 `adjoin_away_prod_smul` ✓ **搬包含** ✓。
+**⚠ 更正留痕** ✓：`r208` 旧注取 **`t₀ \cdot \prod_\sigma \sigma \bullet t₀`** ✗ —— **该式不变化性不成立** ✗
+（`t₀` **本身不是不变的** ✗）；**正解** ✓ ＝ **本条的 `\prod_\sigma \sigma \bullet t₀`** ✓。 -/
+theorem exists_invariant_t_of_noether {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (a : ι → NoetherField F G) (s₀ : NoetherField F G) (hs₀ : s₀ ≠ 0) :
+    ∃ t : MvPolynomial G F, t ≠ 0 ∧ (∀ g : G, g • t = t) ∧
+      Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}) ≤
+        Subalgebra.restrictScalars F (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G))) := by
+  classical
+  obtain ⟨t₀, ht₀, hle₀⟩ := exists_adjoin_inv_le_away_of_noether (F := F) (G := G) a s₀ hs₀
+  exact ⟨∏ σ : G, σ • t₀, prod_smul_ne_zero t₀ ht₀, prod_smul_invariant t₀,
+    hle₀.trans (adjoin_away_prod_smul t₀ ht₀)⟩
 
 end NoetherTProd
 
@@ -5772,6 +5816,9 @@ theorem theorem51_dataChain_gap_registered : True := trivial
 #print axioms prod_smul_invariant
 #print axioms prod_pow_invariant
 #print axioms prod_pow_ne_zero
+#print axioms prod_smul_eq_mul
+#print axioms adjoin_away_prod_smul
+#print axioms exists_invariant_t_of_noether
 #print axioms sup_adjoin_away_le
 #print axioms exists_adjoin_union_le_away
 #print axioms unionClearing_gap_registered
