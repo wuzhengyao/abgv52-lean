@@ -898,3 +898,16 @@ clashes with the one the Galois predicate expects.
 Applied to the wiring's pair this gives the crossed-product input, the structure map onto the
 localization being surjective because the localization is isomorphic to the subalgebra.
 
+
+A registration closes this round.  The instantiation of the crossed-product input on the wiring's
+pair was assembled and its proof body is valid: with the trivial action declared locally, the
+algebra structure over the subalgebra bound in the conclusion, surjectivity of the structure map
+read off from the isomorphism, and the general lemma of the preceding round, the first version
+compiles; the only diagnostic is a style linter that is a false positive for instance registration.
+Packaging the same proof without that diagnostic did not go through in this round: replacing the
+instance binding in the proof by a plain local definition changes the goal into a function type, so
+the introduction binds the instance instead of the compatibility clause, and moving the structure to
+a section-level local instance meets the noncomputability of the localization's ring structure,
+which a noncomputable marker should address but which was not pursued further.  The route for the
+next round is recorded in the statement itself.
+
