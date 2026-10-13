@@ -4307,6 +4307,78 @@ theorem exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
 
 end SourceAssembly
 
+/-! ## 4.48 **装配 (a) 款 · 落到 §4.47 的载体** ✓✅（第 188 轮）
+
+**⚠ 起点** ✓（**承 §150.6 第 1 项** ✓，**仍压 `(a)` 款** ✓，**不转项** ✗）：§4.47 把 `R` 取为子代数载体
+`S := \hookrightarrow F[a, s_0, s_0^{-1}]` ✓，而 **(a) 款**（`\mathrm{IsGenericExtension}` 第一款 ✓）要求
+`S \simeq_F \mathrm{Localization.Away}\ w` ✓ —— 此前只对 `\uparrow(A_0[s^{-1}])`（**以 `A_0` 为基** ✓）成立 ✗。
+
+**⚠ 一件** ✓：`exists_algEquiv_localizationAway_of_adjoin_union_inv` ✓✅✅ ——
+**代数无关族** ✓ ＋ **域生成** ✓ ＋ `s_0 \neq 0` ✓ ＋ **`s_0 \in F[a]`** ✓ ⟹
+`\exists w \neq 0,\ \hookrightarrow F[a, s_0, s_0^{-1}] \simeq_F \mathrm{Localization.Away}\ w` ✓
+—— **`S` 满足 (a) 款** ✓；与 §4.47 合读 ⟹ **(a) 款与 (c) 款落在同一载体上** ✓。
+
+**⚠ 手法** ✓（**读数 (70)** ✓：**先查现成机器** ✗→✓）：**载体桥免证** ✓ —— **mathlib 现成件**
+`\mathrm{Algebra.adjoin\_union\_eq\_adjoin\_adjoin}` ✓（`\mathrm{adjoin}\ R\ (s \cup t) = (\mathrm{adjoin}\ (\mathrm{adjoin}\ R\ s)\ t).\mathrm{restrictScalars}\ R` ✓）
+一次给出 ✓；再由 **`s_0 \in A_0`** ✓ **约去 `\{s_0\}`** ✓（`\mathrm{adjoin}\ \uparrow A_0\ \{s_0, s_0^{-1}\} = \mathrm{adjoin}\ \uparrow A_0\ \{s_0^{-1}\}` ✓，
+`\mathrm{adjoin\_le\_iff}` 两支 ✓）；最后用 **r168 ③** `\mathrm{exists\_algEquiv\_localizationAway\_of\_adjoin\_inv'}` ✓
+（**(a) 款无假设形** ✓）＋ `\mathrm{Subalgebra.equivOfEq}` ✓ 搬运 ✓。
+
+**⚠ 工艺读数（本轮新增两条）** ✓：
+**① `\mathrm{rintro}\ \dots\ (\mathrm{rfl} \mid \mathrm{rfl})` 陷阱** ✗✓：当假设形如 `y = s_0`（**两侧皆局部变量** ✓）时，
+`\mathrm{rfl}` **模式会替换掉 `s_0` 本身** ✗（`\mathrm{cases}` 择一侧替换 ✗）⟹ 其后的 `s_0` **变成未知标识符** ✗
+（**报错为 `Unknown identifier` 而非类型错误** ✗，**极具误导性** ✗）—— **正解** ✓：`\mathrm{rintro}\ y\ (hy \mid hy)` ✓ ＋ `\mathrm{rw}\ [hy]` ✓（**只动目标** ✓，**不动上下文** ✓）；
+**② `\mathrm{let}` 缩写 ＋ `\mathrm{show}`** ✓：重项（`\mathrm{adjoin}\ \uparrow A_0\ \{\dots\}` ✓）在**陈述处出现一次** ✓、
+证明内以 `\mathrm{let}\ T` 缩写 ✓ 并用 `\mathrm{show} \dots = T` ✓ 对齐 ✓ ⟹ **避免重项反复统一** ✓（**承 (74)／(75)** ✓）。
+**⚠ 前提表** ✓（**最弱假设** ✓）：`hind` ✓／`hgen` ✓／`hs_0` ✓／`hs_0 \in F[a]` ✓ —— **无多余前提** ✗
+（`\mathrm{AlgebraicIndependent}` 支**不可去** ✗：`\mathrm{MvPolynomial}` 同构之所在 ✓）。 -/
+
+section ClauseACarrier
+
+variable {F : Type} [Field F] {K : Type} [Field K] [Algebra F K]
+
+/-- **探针（(a) 款落到 §4.47 的载体 `S`）** ✓：代数无关族 `a` ＋ 域生成 ✓ ＋ `s_0 \neq 0` ✓ ＋
+**`s_0 \in F[a]`** ✓ ⟹ **`S := \hookrightarrow F[a, s_0, s_0^{-1}]` 同构于某局部化多项式环** ✓。 -/
+theorem exists_algEquiv_localizationAway_of_adjoin_union_inv {n : ℕ} {a : Fin n → K}
+    (hind : AlgebraicIndependent F a)
+    (hgen : IntermediateField.adjoin F (Set.range a) = ⊤)
+    {s₀ : K} (hs₀ : s₀ ≠ 0) (hs₀_mem : s₀ ∈ Algebra.adjoin F (Set.range a)) :
+    ∃ (w : MvPolynomial (Fin n) F), w ≠ 0 ∧
+      Nonempty (↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) ≃ₐ[F] Localization.Away w) := by
+  classical
+  -- ① (a) 款无假设形（r168 ③）
+  obtain ⟨w, hw, ⟨e⟩⟩ := exists_algEquiv_localizationAway_of_adjoin_inv' (K := K)
+    hind hgen ⟨s₀, hs₀_mem⟩ (fun h => hs₀ (congrArg Subtype.val h))
+  -- ② 载体桥（`s₀ ∈ A_0` ⟹ `{s₀}` 可约）
+  have h2 : Algebra.adjoin ↥(Algebra.adjoin F (Set.range a)) {s₀, s₀⁻¹}
+      = Algebra.adjoin ↥(Algebra.adjoin F (Set.range a))
+          {(algebraMap ↥(Algebra.adjoin F (Set.range a)) K
+            (⟨s₀, hs₀_mem⟩ : ↥(Algebra.adjoin F (Set.range a))))⁻¹} := by
+    let T : Subalgebra ↥(Algebra.adjoin F (Set.range a)) K :=
+      Algebra.adjoin ↥(Algebra.adjoin F (Set.range a))
+        {(algebraMap ↥(Algebra.adjoin F (Set.range a)) K
+          (⟨s₀, hs₀_mem⟩ : ↥(Algebra.adjoin F (Set.range a))))⁻¹}
+    show Algebra.adjoin ↥(Algebra.adjoin F (Set.range a)) {s₀, s₀⁻¹} = T
+    apply le_antisymm
+    · rw [Algebra.adjoin_le_iff]
+      rintro y (hy | hy)
+      · rw [hy]
+        exact Subalgebra.algebraMap_mem T (⟨s₀, hs₀_mem⟩ : ↥(Algebra.adjoin F (Set.range a)))
+      · rw [Set.mem_singleton_iff] at hy
+        rw [hy]
+        exact Algebra.subset_adjoin (Set.mem_singleton _)
+    · rw [Algebra.adjoin_le_iff]
+      rintro y hy
+      rw [Set.mem_singleton_iff] at hy
+      rw [hy]
+      exact Algebra.subset_adjoin (by simp)
+  have h1 := Algebra.adjoin_union_eq_adjoin_adjoin F (Set.range a) {s₀, s₀⁻¹}
+  refine ⟨w, hw, ?_⟩
+  exact ⟨(Subalgebra.equivOfEq _ _
+    (h1.trans (congrArg (Subalgebra.restrictScalars F) h2))).trans e⟩
+
+end ClauseACarrier
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp
@@ -4370,6 +4442,7 @@ end SourceAssembly
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_source_data
 #print axioms smul_eq_self_of_mem_adjoin_of_fixed
 #print axioms exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
+#print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv
 #print axioms noetherEval
 #print axioms noetherEval_X
 #print axioms exists_algHom_away_of_isUnit
