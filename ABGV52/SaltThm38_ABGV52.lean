@@ -8528,4 +8528,68 @@ end ArtinSchreierAutomorphism293
 #print axioms asShiftH_bijective
 
 
+/-! ### 4.83 **AS 移位的复合律 ＋ `RingEquiv` 形**（第 294 轮）—— `MulSemiringAction` 的全部前置 ✓
+
+**落成四件** ✓✅：**(i)** **`fermat_add`** ✓（素域元对加法封闭 ✓：`add_pow_char` ✓）；
+**(ii)** **`castHom_pow`** ✓（**`ZMod p` 的像元满足 Fermat 性** ✓：`ZMod.castHom` ✓ ＋ `ZMod.pow_card` ✓
+—— **素域元供体** ✓，**无需 `Algebra (ZMod p) R` 实例** ✓）；**(iii)** **`asShiftH_comp_add`** ✓✅
+（**复合律** `φ_k ∘ φ_l = φ_{k+l}` ✓，**同一外延二步** ✓）；**(iv)** **`asShiftEquiv`** ✓✅
+（**移位自同构的 `RingEquiv` 形** ✓：`RingEquiv.ofBijective` ✓ ＋ §4.82 的 `asShiftH_bijective` ✓）。
+
+**⚠ 机制** ✓：**(iii)** 的 `C`-支 ＝ 两边**都固定系数** ✓（`asShiftH_of` ✓ 各一次 ✓）；`X`-支 ＝
+`(root + of k) + of l` 与 `root + (of k + of l)` 的**结合律归一** ✓（`asShiftH_root` ✓／`map_add` ✓／`add_assoc` ✓）。
+
+**⚠ 意义** ✓：**`MulSemiringAction (Multiplicative (ZMod p)) asCarrier`** 的**全部前置已备** ✓ ——
+**(ii)** 供作用元 ✓、**(iii)** 供 `mul_smul` ✓、**(iv)** 供自同构载体 ✓ ⟹ **下一手只余组装** ✓。
+
+**🔴 不声称** ✗：**不**声称 `MulSemiringAction` 已落 ✗（**下一手** ✓）；
+**不**声称 `IsGaloisWithGroup` 任何一款 ✗；**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section ArtinSchreierCompLaw294
+
+/-- **素域元对加法封闭** ✓：`k^p = k`、`l^p = l` ⟹ `(k+l)^p = k+l` ✓。 -/
+theorem fermat_add {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p] {k l : R}
+    (hk : k ^ p = k) (hl : l ^ p = l) : (k + l) ^ p = k + l := by
+  rw [add_pow_char, hk, hl]
+
+/-- **素域元供体** ✓：`ZMod p` 的像元满足 Fermat 性 ✓（**无需 `Algebra (ZMod p) R`** ✓）。 -/
+theorem castHom_pow {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p] (k : ZMod p) :
+    (ZMod.castHom (dvd_refl p) R k) ^ p = ZMod.castHom (dvd_refl p) R k := by
+  rw [← map_pow, ZMod.pow_card]
+
+/-- **复合律** ✓：`φ_k ∘ φ_l = φ_{k+l}` ✓（**同一外延二步** ✓）。 -/
+theorem asShiftH_comp_add {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k l : R) (hk : k ^ p = k) (hl : l ^ p = l) :
+    (asShiftH a k hk).comp (asShiftH a l hl) = asShiftH a (k + l) (fermat_add hk hl) := by
+  refine Ideal.Quotient.ringHom_ext (I := Ideal.span {ASpoly R p a}) ?_
+  refine Polynomial.ringHom_ext ?_ ?_
+  · intro r
+    show (asShiftH a k hk) ((asShiftH a l hl)
+        ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)))
+      = (asShiftH a (k + l) (fermat_add hk hl))
+        ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r))
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)
+        = AdjoinRoot.of (ASpoly R p a) r from rfl]
+    rw [asShiftH_of, asShiftH_of, asShiftH_of]
+  · show (asShiftH a k hk) ((asShiftH a l hl)
+        ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)))
+      = (asShiftH a (k + l) (fermat_add hk hl))
+        ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X))
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)
+        = AdjoinRoot.root (ASpoly R p a) from rfl]
+    rw [asShiftH_root, map_add, asShiftH_root, asShiftH_of, asShiftH_root, map_add, add_assoc]
+
+/-- **移位自同构（`RingEquiv` 形）** ✓✅。 -/
+noncomputable def asShiftEquiv {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) : asCarrier R p a ≃+* asCarrier R p a :=
+  RingEquiv.ofBijective (asShiftH a k hk) (asShiftH_bijective a k hk)
+
+end ArtinSchreierCompLaw294
+
+#print axioms fermat_add
+#print axioms castHom_pow
+#print axioms asShiftH_comp_add
+#print axioms asShiftEquiv
+
+
 end ABGV52

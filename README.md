@@ -1340,3 +1340,12 @@ Two practical points are recorded: the two composites are written out separately
 another by substituting the negative scalar, because that substitution would move a proof term into a dependent
 position and block rewriting, and the associativity of the sum is normalized before the cancellation is applied.
 The group action and the Galois clauses are not claimed here.
+
+Round 294 assembles everything the cyclic action on the Artin-Schreier carrier needs.  The set of scalars fixed by
+the p-th power map is shown to be closed under addition, and the elements of the prime field inside the coefficient
+ring are shown to lie in that set, so a supply of group-like parameters is available without installing an algebra
+structure on the coefficient ring.  The shifts are then shown to compose: the shift by one parameter followed by the
+shift by another is the shift by their sum, proved by the same two-step extensionality as before, where the
+coefficient case is that both sides fix the base and the root case reduces to associativity of the sum.  Finally the
+bijectivity of the previous round is packaged as a ring equivalence, so each shift is available as an automorphism
+rather than merely as a bijective homomorphism.  The action itself and the Galois clauses are not claimed here.
