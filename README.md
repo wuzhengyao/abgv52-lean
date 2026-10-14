@@ -1072,3 +1072,14 @@ unsatisfiable when the group is nontrivial: the hypothesis table of that route i
 of wiring along it can reach the statement.  The repair is recorded and landed: the data should be
 read as a fixed transcendence basis of the invariant field, which the rationality hypothesis supplies
 directly, rather than as an adelic basis of the ambient field.
+
+The data chain of the first source statement has been rerouted to the invariant-field reading, and the
+rerouting is not vacuous.  The residual hypothesis table is now read on the fixed field: the
+transcendence basis lives there, so the demand for invariance is automatic rather than contradictory,
+which is exactly what made the previous encoding empty for nontrivial groups.  Along the way two
+library lemmas were strengthened: the identification of a localisation with a subalgebra no longer
+needs the fraction-ring hypothesis, and clause (a) of the source's construction no longer needs the
+generating hypothesis.  A non-emptiness probe supplies the whole data table and machinery from the
+rationality hypothesis, leaving only the two named Galois endpoints as unproved rows; an unconditional
+probe at the one-point group over the rationals is also landed.  The old route is left in place,
+documented as vacuous, and the ring-tier residual is still shared with the second source statement.

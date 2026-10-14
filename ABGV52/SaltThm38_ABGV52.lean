@@ -2604,5 +2604,642 @@ theorem noetherWiringResidual_pUnit_registered : True := trivial
 #print axioms oldEndToEndAudit_corrected
 #print axioms noetherWiringResidual_pUnit_registered
 
+/-! ### H. **改接（`L^G` 读法）**：不动域数据 ＋ **分式环无关的 `(a)` 款机器** ＋ **残余 ④（新）** ＋ **L1 非空探针** -/
+
+/-- **⚠ 本节缘起（r259 的机器判定** ✓**）**：§D ✓ 判定 r206 表（残余 ② ✓，`NoetherWiringResidual` ✓）在
+**`G` 非平凡档为空** ✗ —— 其两行 `hgen` ✓（`\mathrm{adjoin}_F a = \top`，**读在 `L`** ✗）与
+`ha_fix` ✓（**读在 `L` 的元素上** ✗）**不可同真** ✓（`subsingleton_of_fixed_generating` ✓）。
+
+**⚠ 修正方向** ✓（**源文用法** ✓）：把**源侧数据** `a`／`s_0` **读在不动域 `L^G`** ✓（§E ✓，
+`↥(\mathrm{FixedPoints.intermediateField}\ F\ G)` ✓）—— 于是 `\mathrm{adjoin}` 取**在 `L^G` 内** ✓、
+`ha_fix` 由**隶属定义自动成立** ✓ ⟹ §D 的两行冲突**消失** ✓✅。
+
+**⚠ 本节（甲）组：数据沿「子代数/中间域强制」的搬运三式** ✓
+（**⚠ 三式皆**双向或**所需单向** ✓，**逐条注明** ✓）。
+
+**🔴 不声称** ✗：**不**声称两条源陈述已证 ✗（源 `theorem-5-1` ✓／`theorem-2-1` ✓ **仍未证** ✗）；
+**不**声称残余 ①（环档桥 ✓）已证 ✗（**仍共享、仍开** ✗）；**不**声称 r206 路线可用 ✗
+（**非平凡 `G` 档已判定为空** ✗，§D ✓；**其定理一律原样保留** ✓，本节**只追加** ✓）。 -/
+theorem fixedPointRewiring_scope_registered : True := trivial
+
+section FixedPointRewiring
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **不动域载体（`L^G`，`L = \mathrm{NoetherField}\ F\ G`）** ✓：源侧数据**读取之处** ✓
+（§E ✓ 的 `\mathrm{FixedPoints.intermediateField}` ✓；隶属形 ＝ 「被每个 `g` 固定」✓，**定义相等** ✓）。
+**⚠ 实例** ✓：`\mathrm{Field}` ✓／`\mathrm{Algebra}\ F` ✓／`\mathrm{IsScalarTower}\ F\ \cdot\ L` ✓ **皆可合成** ✓（实测 ✓）。 -/
+abbrev NoetherInvariantField (F : Type) [Field F] (G : Type) [Group G] : Type :=
+  ↥(FixedPoints.intermediateField (F := F) (E := NoetherField F G) G)
+
+/-- **wiring 载体（**强制转换后**在 `L` 中的 `F[a, s_0, s_0^{-1}]`）** ✓：新残余与新归约**共用**的 `\uparrow S` ✓
+（**与 r206 的载体同形** ✓，**只把 `a`／`s_0` 换成强制转换** ✓）。 -/
+abbrev noetherFixedCarrier (F : Type) [Field F] (G : Type) [Group G] {n : ℕ}
+    (a : Fin n → NoetherInvariantField F G) (s₀ : NoetherInvariantField F G) :
+    Subalgebra F (NoetherField F G) :=
+  Algebra.adjoin F (Set.range (fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+    ∪ {((s₀ : NoetherInvariantField F G) : NoetherField F G),
+       (((s₀ : NoetherInvariantField F G) : NoetherField F G))⁻¹})
+
+/-- **(甲) ① 代数无关沿子代数强制** ✓✅（**双向** ✓）：`\mathrm{AlgebraicIndependent}\ F\ x` ✓
+（在 `\uparrow S` **内** ✓）⟺ 其**强制像族**在 `A` 内代数无关 ✓。
+**证明** ✓（**两向** ✓）：**关键件** ＝ mathlib **`\mathrm{Subalgebra.mvPolynomial\_aeval\_coe}`** ✓
+（`\mathrm{aeval}\ (\uparrow \circ x)\ p = \uparrow(\mathrm{aeval}\ x\ p)` ✓）＋ **`\mathrm{Subtype.ext}`** ✓
+（`\mathrm{AlgebraicIndependent}` ✓ **就是** `\mathrm{aeval}` 的单射性 ✓，`\mathrm{RingTheory.AlgebraicIndependent.Defs:54}` ✓）。
+**⚠ 用途** ✓：新归约的 `hind` ✓（`L^G` ⟹ `L` ✓，**`.mp`** ✓）与探针的 `hind` ✓（`L` ⟹ `L^G` ✓，**`.mpr`** ✓）。
+**🔴 不声称** ✗：**不**声称 `x` 与强制像族的**其他**性质（如 `\mathrm{adjoin}` 顶 ✓）同样搬运 ✗
+（**那须单列** ✓，见 ③ ✓）。 -/
+theorem algebraicIndependent_coe_iff_of_subalgebra {F A ι : Type} [CommRing F] [CommRing A]
+    [Algebra F A] (S : Subalgebra F A) (x : ι → ↥S) :
+    AlgebraicIndependent F x ↔ AlgebraicIndependent F (fun i => (x i : A)) := by
+  constructor
+  · intro h p q hpq
+    refine h (Subtype.ext ?_)
+    simpa only [Subalgebra.mvPolynomial_aeval_coe] using hpq
+  · intro h p q hpq
+    refine h ?_
+    rw [Subalgebra.mvPolynomial_aeval_coe S x p, Subalgebra.mvPolynomial_aeval_coe S x q, hpq]
+
+#print axioms algebraicIndependent_coe_iff_of_subalgebra
+
+/-- **(甲) ② `\mathrm{adjoin}` 隶属沿子代数强制** ✓（**单向** ✓：`L^G` ⟹ `L` ✓）：
+`s \in \mathrm{Algebra.adjoin}\ F\ (\mathrm{range}\ a)` ✓（**在 `\uparrow S` 内** ✓）⟹
+强制像在 `A` 的 `\mathrm{range}` 的 `\mathrm{adjoin}` 内 ✓。
+**证明** ✓：**`\mathrm{AlgHom.map\_adjoin}`** ✓（`(\mathrm{adjoin}\ F\ s).\mathrm{map}\ \varphi = \mathrm{adjoin}\ F\ (\varphi\ ''\ s)` ✓）
+＋ **`\mathrm{Set.range\_comp}`** ✓ ＋ **`\mathrm{Algebra.subset\_adjoin}`** 的直接搬运 ✓。
+**⚠ 用途** ✓：新归约的 `hs_0 \in F[a]` ✓（(a) 款机器的**输入** ✓）。
+**🔴 不声称** ✗：**不**声称**逆向**（`L` ⟹ `L^G` ✓）成立 ✗ —— 它**不**由本式给出 ✗
+（`L` 中的 `\mathrm{adjoin}` **更大** ✗：系数可取遍 `L^G` ✓，**探针侧**因此改取 `s_0 = 1` ✓，见下 ✓）。 -/
+theorem mem_adjoin_coe_of_mem_adjoin {F A ι : Type} [CommRing F] [CommRing A] [Algebra F A]
+    (S : Subalgebra F A) {x : ↥S} {a : ι → ↥S}
+    (hx : x ∈ Algebra.adjoin F (Set.range a)) :
+    (x : A) ∈ Algebra.adjoin F (Set.range (fun i => (a i : A))) := by
+  have himg : (Subalgebra.val S) '' Set.range a = Set.range (fun i => (a i : A)) := by
+    rw [← Set.range_comp]
+    congr 1
+  have h1 : ((Algebra.adjoin F (Set.range a)).map (Subalgebra.val S))
+      = Algebra.adjoin F ((Subalgebra.val S) '' Set.range a) := AlgHom.map_adjoin _ _
+  have h2 : (Subalgebra.val S) x ∈ (Algebra.adjoin F (Set.range a)).map (Subalgebra.val S) :=
+    ⟨x, hx, rfl⟩
+  rwa [h1, himg] at h2
+
+#print axioms mem_adjoin_coe_of_mem_adjoin
+
+/-- **(甲) ③ 中间域 `\mathrm{adjoin}` 的「顶／满」沿强制搬运** ✓✅（**双向** ✓）：
+`\mathrm{IntermediateField.adjoin}\ F\ (\mathrm{range}\ a) = \top` ✓（**在 `\uparrow I` 内** ✓）⟺
+`\mathrm{IntermediateField.adjoin}\ F\ (\mathrm{range}\ (\uparrow \circ a)) = I` ✓（**在 `L` 内** ✓）。
+**⚠ 为什么不用代数档** ✓（**本轮实测** ✗）：mathlib 的代数档等式
+`(\mathrm{IntermediateField.adjoin}\ F\ s).\mathrm{toSubalgebra} = \mathrm{Algebra.adjoin}\ F\ s` ✓
+**须 `[\mathrm{Algebra.IsAlgebraic}\ F\ L]`** ✗（`\mathrm{IntermediateField.adjoin\_toSubalgebra}` ✓）——
+**本题不满足** ✗（`L = F(x_\sigma)` **超越** ✓）⟹ **代数档搬运是错的口径** ✗（**不可用** ✗，
+**本轮一度误设** ✓✓，**据实登记** ✓）；**正解** ＝ **中间域档** ✓。
+**证明** ✓：**`\mathrm{IntermediateField.adjoin\_map}`** ✓ ＋ **`\mathrm{IntermediateField.map\_injective}`** ✓
+（域同态的 `\mathrm{map}` **单** ✓）＋ **`\mathrm{IntermediateField.map}\ \uparrow\ \top = I`** ✓（**两向** ✓：
+`\mathrm{mem\_map}` ✓ 一支 ＋ 隶属 `x.2` ✓ 一支）。
+**⚠ 用途** ✓：新残余第 2 行 `hgen` ✓（**读在 `L^G`** ✓，**＝ 改接的要害** ✓）的**探针** ✓（`L` ⟹ `L^G` ✓，**`.mpr`** ✓）。
+**🔴 不声称** ✗：**不**声称本式能搬运**其它**谓词（如 `\mathrm{IsRationalOver}` ✓）✗。 -/
+theorem intermediateField_adjoin_eq_top_iff_of_val {L : Type} [Field L] [Algebra F L]
+    (I : IntermediateField F L) {ι : Type} (a : ι → ↥I) :
+    IntermediateField.adjoin F (Set.range a) = ⊤ ↔
+      IntermediateField.adjoin F (Set.range (fun i => (a i : L))) = I := by
+  have himg : (IntermediateField.val I) '' Set.range a = Set.range (fun i => (a i : L)) := by
+    rw [← Set.range_comp]
+    congr 1
+  have hmap : IntermediateField.map (IntermediateField.val I)
+      (IntermediateField.adjoin F (Set.range a))
+      = IntermediateField.adjoin F (Set.range (fun i => (a i : L))) := by
+    rw [IntermediateField.adjoin_map, himg]
+  have htop : IntermediateField.map (IntermediateField.val I) (⊤ : IntermediateField F ↥I) = I := by
+    refine le_antisymm ?_ ?_
+    · intro y hy
+      obtain ⟨x, -, rfl⟩ := (IntermediateField.mem_map (⊤ : IntermediateField F ↥I)).mp hy
+      exact x.2
+    · intro y hy
+      exact (IntermediateField.mem_map (⊤ : IntermediateField F ↥I)).mpr ⟨⟨y, hy⟩, trivial, rfl⟩
+  constructor
+  · intro h
+    rw [← hmap, h, htop]
+  · intro h
+    refine IntermediateField.map_injective (IntermediateField.val I) ?_
+    rw [hmap, h, htop]
+
+#print axioms intermediateField_adjoin_eq_top_iff_of_val
+
+end FixedPointRewiring
+
+/-! ### I. **(乙) `(a)` 款的**分式环无关形**（r188 的 `\mathrm{IsFractionRing}` 假设被消）** ＋ **(丙) 残余 ④ 与探针** -/
+
+/-- **⚠ 为什么这一件是改接的实质** ✓✅：r188 ✓ 的 **(a) 款具名件**
+`exists_algEquiv_localizationAway_of_adjoin_union_inv` ✓（`SaltGeneric:4506` ✓）的假设表含
+**`[\mathrm{IsFractionRing}\ \uparrow A_0\ K]`** ✓，其**唯一来源**是 **`hgen`（域生成）** ✓
+（r168 ② ✓ `isFractionRing_adjoin_of_adjoin_eq_top` ✓）—— 而 r206 ✓ **把 `hgen` 读在 `L` 上** ✗
+⟹ 该假设在 `L^G` 读法下**不可得** ✗（`L = \mathrm{Frac}(F[x_\sigma])` **不是** `F[a]` 的分式环 ✗）。
+**本轮读数** ✓：**该假设其实是多余的** ✓ —— `(a)` 款所需的**只是**「`A_0[s^{-1}]` 是 `A_0` 在 `s` 处的局部化」✓，
+**只需** `A_0 \to K` **单** ✓ ＋ `s \neq 0` ✓（**不**需 `K = \mathrm{Frac}(A_0)` ✗）。 -/
+theorem awayLocalizationFree_scope_registered : True := trivial
+
+section AwayLocalizationFree
+
+variable {A : Type u} [CommRing A] {K : Type u} [Field K] [Algebra A K] [FaithfulSMul A K]
+
+set_option maxHeartbeats 1000000 in
+/-- **(乙) ① 分式环无关的局部化结构** ✓✅（**库内首件** ✓）：
+`A_0 := A` ✓、`s \neq 0` ✓、`A \to K` **单**（`\mathrm{FaithfulSMul}` ✓）⟹
+**`A[s^{-1}]` 是 `A` 在 `s` 的幂处的局部化** ✓ —— **去掉了 `[\mathrm{IsFractionRing}\ A\ K]`** ✗。
+**证明** ✓（**三款直造** ✓，入口 **`isLocalization\_iff`** ✓）：
+**`\mathrm{map\_units}`** ✓ ＝ `s` 在 `\mathrm{adjoin}\ A\ \{s^{-1}\}` 中**可逆** ✓（逆元 ＝ 生成元 ✓，
+乘积 `= 1` 在 `K` 中算 ✓，用 **`\mathrm{IsScalarTower.algebraMap\_apply}`** ✓ ＋ `\mathrm{mul\_inv\_cancel_0}` ✓）；
+**`\mathrm{surj}`** ✓ ＝ **库内 r163 ✓ 的 `exists\_pow\_mul\_eq\_of\_mem\_adjoin\_inv`** ✓
+（**只**需 `[\mathrm{CommRing}\ A]` ✓／`[\mathrm{Field}\ K]` ✓／`[\mathrm{Algebra}\ A\ K]` ✓／`[\mathrm{FaithfulSMul}\ A\ K]` ✓ —— **无分式环** ✗）；
+**`\mathrm{exists\_of\_eq}`** ✓ ＝ 强制到 `K` 后用 **`\mathrm{FaithfulSMul.algebraMap\_injective}`** ✓，取 `c = 1` ✓。
+**🔴 不声称** ✗：**不**声称 `\mathrm{IsLocalization.Away}` 的**任何**下游件（如 `\mathrm{AlgEquiv}` ✓）已随之落 ✗
+（**那在 (乙) ② 单列** ✓）；**不**声称 r164／r165 的**旧件**（带 `\mathrm{IsFractionRing}` ✓）被取代 ✗
+（**原样保留** ✓，**本节只追加** ✓）。 -/
+theorem isLocalization_away_adjoin_inv_of_faithfulSMul (s : A) (hs : s ≠ 0) :
+    IsLocalization.Away s ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) := by
+  have hsK : algebraMap A K s ≠ 0 := fun h0 =>
+    hs (FaithfulSMul.algebraMap_injective A K (by rw [h0, map_zero]))
+  refine (isLocalization_iff (M := Submonoid.powers s)
+    (S := ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)))).mpr ⟨?_, ?_, ?_⟩
+  · intro y
+    obtain ⟨n, hn⟩ := (Submonoid.mem_powers_iff (y : A) s).mp y.2
+    have hmem : (algebraMap A K s)⁻¹ ∈ Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K) :=
+      Algebra.subset_adjoin (Set.mem_singleton _)
+    have hprod : algebraMap A ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) s
+        * (⟨(algebraMap A K s)⁻¹, hmem⟩ :
+            ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K))) = 1 := by
+      apply Subtype.ext
+      change algebraMap ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) K
+          (algebraMap A ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) s)
+          * (algebraMap A K s)⁻¹ = (1 : K)
+      rw [← IsScalarTower.algebraMap_apply A
+        ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) K s]
+      exact mul_inv_cancel₀ hsK
+    have hunit : IsUnit (algebraMap A ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) s) :=
+      isUnit_iff_exists_inv.mpr ⟨_, hprod⟩
+    rw [← hn, map_pow]
+    exact hunit.pow n
+  · intro z
+    obtain ⟨n, a, ha⟩ := exists_pow_mul_eq_of_mem_adjoin_inv (A := A) (K := K) s hs z z.2
+    refine ⟨(a, ⟨s ^ n, Submonoid.pow_mem (Submonoid.powers s)
+      ((Submonoid.mem_powers_iff s s).mpr ⟨1, pow_one s⟩) n⟩), ?_⟩
+    apply Subtype.ext
+    show (z : K) * algebraMap A K (s ^ n) = algebraMap A K a
+    rw [map_pow]
+    exact ha
+  · intro x y hxy
+    refine ⟨1, ?_⟩
+    have hK : algebraMap A K x = algebraMap A K y := by
+      have h1 := congrArg (algebraMap
+        ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) K) hxy
+      rwa [← IsScalarTower.algebraMap_apply A
+          ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) K x,
+        ← IsScalarTower.algebraMap_apply A
+          ↥(Algebra.adjoin A ({(algebraMap A K s)⁻¹} : Set K)) K y] at h1
+    rw [FaithfulSMul.algebraMap_injective A K hK]
+
+end AwayLocalizationFree
+
+#print axioms isLocalization_away_adjoin_inv_of_faithfulSMul
+
+section AwayClauseWithoutTop
+
+variable {F K : Type} [Field F] [Field K] [Algebra F K] {n : ℕ}
+
+set_option maxHeartbeats 1000000 in
+/-- **(乙) ② `(a)` 款「无 `hgen` 形」** ✓✅（**本轮主落** ✓）：**代数无关** ✓ ＋ `s_0 \neq 0` ✓ ＋
+**`s_0 \in F[a]`** ✓ ⟹ `\exists w \neq 0,\ \uparrow F[a, s_0, s_0^{-1}] \simeq_F \mathrm{Localization.Away}\ w` ✓
+—— **假设表比 r188 ✓ 少一行 `hgen`（域生成）** ✗。
+**⚠ 证明体** ✓（**三件复合** ✓，**不重证** ✗）：**①** r158 ✓ 的**多项式环识别**
+`\mathrm{nonempty\_algEquiv\_mvPolynomial\_adjoin}` ✓（**只**需 `hind` ✓）；**②** (乙) ① ✓ 的
+**分式环无关局部化** ✓（**消掉** `\mathrm{IsFractionRing}` ✗）＋ **`\mathrm{IsLocalization.algEquiv}`** ✓；
+**③** r188 ✓ 的**载体桥**（`\mathrm{Algebra.adjoin\_union\_eq\_adjoin\_adjoin}` ✓ ＋ `s_0 \in F[a]` ✓ 约去 `\{s_0\}` ✓）。
+**⚠ 意义（＝**改接的实质** ✓）**：r206 ✓ 之所以**必须**把 `hgen` 读在 `L` 上 ✗，**唯一原因**是本件的 `hgen` ✗；
+**本件落地 ⟹ `hgen` 不再是 `(a)` 款的输入** ✓ ⟹ **`L^G` 读法下 `(a)` 款照样可得** ✓✅
+（新归约经此件产出 `(a)` 款 ✓，**残余 ④ 因此不必含 `(a)` 款为一行** ✓）。
+**🔴 不声称** ✗：**不**声称 r188 ✓ 的旧件被取代 ✗（**原样保留** ✓，**本节只追加** ✓）；
+**不**声称 `hgen` 可删 ✗（它仍是**源侧资格行** ✓：数据须是 `L^G` 的**超越基** ✓）。 -/
+theorem exists_algEquiv_localizationAway_of_adjoin_union_inv_of_faithfulSMul
+    {a : Fin n → K} {s₀ : K} (hind : AlgebraicIndependent F a) (hs₀ : s₀ ≠ 0)
+    (hs₀_mem : s₀ ∈ Algebra.adjoin F (Set.range a)) :
+    ∃ w : MvPolynomial (Fin n) F, w ≠ 0 ∧
+      Nonempty (↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) ≃ₐ[F] Localization.Away w) := by
+  classical
+  obtain ⟨e⟩ := nonempty_algEquiv_mvPolynomial_adjoin (K := K) hind
+  let A₀ : Subalgebra F K := Algebra.adjoin F (Set.range a)
+  let s' : ↥A₀ := ⟨s₀, hs₀_mem⟩
+  have hs'val : algebraMap ↥A₀ K s' = s₀ := rfl
+  have hs' : s' ≠ 0 := fun h => hs₀ (congrArg Subtype.val h)
+  have hloc : IsLocalization.Away s' ↥(Algebra.adjoin ↥A₀ {(algebraMap ↥A₀ K s')⁻¹}) :=
+    isLocalization_away_adjoin_inv_of_faithfulSMul (A := ↥A₀) (K := K) s' hs'
+  let χ : Localization.Away s' ≃ₐ[↥A₀] ↥(Algebra.adjoin ↥A₀ {(algebraMap ↥A₀ K s')⁻¹}) :=
+    IsLocalization.algEquiv (Submonoid.powers s') _ _
+  obtain ⟨ψ⟩ := nonempty_algEquiv_localizationAway_map e (e.symm s')
+  rw [e.apply_symm_apply s'] at ψ
+  have h2 : Algebra.adjoin ↥A₀ {s₀, s₀⁻¹}
+      = Algebra.adjoin ↥A₀ {(algebraMap ↥A₀ K s')⁻¹} := by
+    refine le_antisymm ?_ ?_
+    · rw [Algebra.adjoin_le_iff]
+      rintro y (hy | hy)
+      · rw [hy]
+        exact Subalgebra.algebraMap_mem _ s'
+      · rw [Set.mem_singleton_iff] at hy
+        rw [hy, hs'val]
+        exact Algebra.subset_adjoin (Set.mem_singleton _)
+    · rw [Algebra.adjoin_le_iff]
+      rintro y hy
+      rw [Set.mem_singleton_iff] at hy
+      rw [hy, hs'val]
+      exact Algebra.subset_adjoin (by simp)
+  have h1 := Algebra.adjoin_union_eq_adjoin_adjoin F (Set.range a) {s₀, s₀⁻¹}
+  refine ⟨e.symm s', (algEquiv_ne_zero_iff e.symm).mpr hs', ?_⟩
+  exact ⟨(Subalgebra.equivOfEq _ _
+    (h1.trans (congrArg (Subalgebra.restrictScalars F) h2))).trans
+      (ψ.trans (χ.restrictScalars F)).symm⟩
+
+#print axioms exists_algEquiv_localizationAway_of_adjoin_union_inv_of_faithfulSMul
+
+end AwayClauseWithoutTop
+
+/-- **(乙) ③ `PUnit` 档：不动域 ＝ 全空间** ✓✅：`G = \mathrm{PUnit}`（**单点** ✓）时
+`\mathrm{FixedPoints.intermediateField}\ F\ (\mathrm{NoetherField}\ F\ \mathrm{PUnit})\ \mathrm{PUnit} = \top` ✓。
+**证明** ✓：`\top \le \cdot` ✓ 支由 **隶属形** ✓（`\mathrm{FixedPoints.mem\_intermediateField\_iff}` ✓）
+化到「`g \bullet x = x`」✓，再用 **`\mathrm{MulSemiringAction.toRingEquiv}`** ✓
+（**它是 `G \to^* (L \simeq^* L)`** ✓）＋ **`\mathrm{Subsingleton.elim}`** ✓ ＋ **`\mathrm{map\_one}`** ✓ 得作用 ≡ `1` ✓
+（**⚠ 不得用 `\mathrm{one\_smul}`** ✗：`\mathrm{PUnit}` **另有** mathlib 的**泛用** `\mathrm{MulAction}` 实例 ✓
+⟹ `\mathrm{rw}` 匹配到**另一个** `\mathrm{SMul}` 档 ✗，**本轮实测** ✗；**正解 ＝ 走环自同构** ✓）。
+**⚠ 用途** ✓：L1 探针的**中间域档搬运** ✓（`intermediateField_adjoin_eq_top_iff_of_val` ✓）。
+**🔴 不声称** ✗：**不**声称 `G` 非平凡档的不动域是 `\top` ✗（**恰恰相反** ✗）。 -/
+theorem noetherInvariantField_pUnit {F : Type} [Field F] :
+    FixedPoints.intermediateField (F := F) (E := NoetherField F PUnit.{1}) PUnit.{1} = ⊤ := by
+  refine le_antisymm le_top ?_
+  intro x _
+  rw [FixedPoints.mem_intermediateField_iff]
+  intro g
+  have hfun : (MulSemiringAction.toRingEquiv PUnit.{1} (NoetherField F PUnit.{1})) g
+      = RingEquiv.refl (NoetherField F PUnit.{1}) := by
+    rw [Subsingleton.elim g 1, map_one]
+    rfl
+  have h2 : ((MulSemiringAction.toRingEquiv PUnit.{1} (NoetherField F PUnit.{1})) g) x = x :=
+    congrArg (fun e : NoetherField F PUnit.{1} ≃+* NoetherField F PUnit.{1} => e x) hfun
+  rwa [MulSemiringAction.toRingEquiv_apply_apply] at h2
+
+#print axioms noetherInvariantField_pUnit
+
+/-! ### J. **(丙) 残余 ④（新，具名）** ＋ **归约（源 `theorem-5-1`）** -/
+
+section FixedWiringResidual
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **残余 ④（新，具名）** ✓：**改接后的 wiring 表** —— **源侧数据 `a`／`s_0` 读在不动域 `L^G`** ✓
+（`\mathrm{NoetherInvariantField}\ F\ G` ✓，§H ✓），**其余各行与残余 ②（`NoetherWiringResidual` ✓）同形** ✓
+（`t` ✓／三实例 ✓／`ht` ✓／`t` 不变化 ✓／`hle` ✓／`hact_{\rm map}` ✓／`hRG` ✓／
+**两项具名端点** `hgal` ✓／`hProj` ✓／`hS_0R` ✓），**逐行以强制转换后的数据表述** ✓。
+
+**⚠ 与残余 ② 的**唯一实质差别** ✓✅**：第 2 行 `hgen` ✓ ＝
+`\mathrm{IntermediateField.adjoin}\ F\ (\mathrm{range}\ a) = \top` ✓ ——
+**取在 `L^G` 内** ✓（残余 ② 取在 `L` 内 ✗）。**⚠ 后果** ✓：`ha_fix` ✓（第 5 行）与 `hs_0`-不动 ✓（第 6 行）
+**由隶属定义自动成立** ✓（`(a\ i).2` ✓／`s_0.2` ✓）⟹ **§D 的两行冲突消失** ✓✅
+（残余 ② 在该档**为空** ✗，§D ✓；残余 ④ **非空** ✓，见 §K 的机器探针 ✓）。
+
+**⚠ 十八行** ✓（∃-绑定 9 行 ✓／合取 12 行 ✓，**与残余 ② 逐位对应** ✓ ——
+故两者可**逐行对读** ✓，**差别只在 `hgen` 的域** ✓）。
+**⚠ 数据部分的**来源** ✓**：`a`／`s_0` 由**源假设** `\mathrm{IsRationalOver}\ F\ L^G` ✓ 产出 ✓
+（§E ✓ 的 `exists_fixed_transcendenceBasis_of_isRationalOver` ✓；**机器验证**见
+`exists_fixedWiringData_of_isRationalOver` ✓，**本节后** ✓）。
+**⚠ 未消费行（**如实登记** ✗）**：`hgen` ✓ 在**归约中不被消费** ✗ —— 归约的 `(a)` 款经
+**(乙) ②** ✓（**无 `hgen` 形** ✓）产出 ✓ ⟹ `hgen` 是**源侧资格行** ✓（数据须是 `L^G` 的**超越基** ✓），
+**本条只登记** ✓，**不声称它多余** ✗（**候选用法**：`hind + hgen \Rightarrow \mathrm{IsRationalOver}\ F\ L^G` ✓，
+**未落** ✗，**登记为下一手** ✓）。
+**🔴 不声称** ✗：**不**声称本残余可证 ✗（**两项具名端点** `hgal` ✓／`hProj` ✓ **无证明** ✗
+—— 端点的**实体**＝源 `proposition-0-2(c)` ✓／`(a)` ✓，**在册** ✗）；**不**声称残余 ① 已证 ✗；
+**不**声称源 `theorem-5-1` 已证 ✗。 -/
+def NoetherWiringResidualFixed (F : Type) [Field F] (G : Type) [Group G] [Fintype G]
+    [DecidableEq G] : Prop :=
+  ∃ (n : ℕ) (a : Fin n → NoetherInvariantField F G) (s₀ : NoetherInvariantField F G)
+    (t : MvPolynomial G F)
+    (_ : Algebra ↥(noetherFixedCarrier F G a s₀) (Localization.Away t))
+    (_ : IsScalarTower F ↥(noetherFixedCarrier F G a s₀) (Localization.Away t))
+    (_ : MulSemiringAction G (Localization.Away t))
+    (ht : t ≠ 0)
+    (hRG : ∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀)) (x : Localization.Away t),
+      g • (r • x) = r • (g • x)),
+    AlgebraicIndependent F a ∧
+      IntermediateField.adjoin F (Set.range a) = ⊤ ∧
+      s₀ ≠ 0 ∧ s₀ ∈ Algebra.adjoin F (Set.range a) ∧
+      (∀ (g : G) (i : Fin n),
+        g • ((a i : NoetherInvariantField F G) : NoetherField F G)
+          = ((a i : NoetherInvariantField F G) : NoetherField F G)) ∧
+      (∀ g : G, g • ((s₀ : NoetherInvariantField F G) : NoetherField F G)
+        = ((s₀ : NoetherInvariantField F G) : NoetherField F G)) ∧
+      (∀ g : G, g • t = t) ∧
+      (noetherFixedCarrier F G a s₀ ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G)))) ∧
+      (∀ (g : G) (p : MvPolynomial G F),
+        g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+          = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p)) ∧
+      BTier.IsGaloisWithGroup ↥(noetherFixedCarrier F G a s₀) (Localization.Away t) G hRG ∧
+      BTier.GaloisProjectiveHyp ↥(noetherFixedCarrier F G a s₀) (Localization.Away t) G hRG ∧
+      (∀ r : ↥(noetherFixedCarrier F G a s₀),
+        awayToFieldAlg (F := F) (G := G) t ht
+            (algebraMap ↥(noetherFixedCarrier F G a s₀) (Localization.Away t) r)
+          = algebraMap ↥(noetherFixedCarrier F G a s₀) (NoetherField F G) r)
+
+set_option maxHeartbeats 1000000 in
+/-- **归约（源 `theorem-5-1`，改接版）** ✓✅：**残余 ④ ＋ 残余 ① ⟹ `Theorem51Statement F G`** ✓。
+
+**⚠ 证明体** ✓（**三步** ✓）：**①** 把 `L^G` 数据**强制搬进 `L`** ✓ —— `hind` ✓（(甲) ① ✓，`.mp` ✓）、
+`hs_0` ✓（隶属单射 ✓）、`s_0 \in F[a]` ✓（(甲) ② ✓）；**②** **(a) 款由 (乙) ② 产出** ✓✅
+（**不再**经 r188 ✓，**故不需 `hgen`** ✗）；**③** 余行**逐位喂给 §4.60** ✓
+（`nonempty\_genericExtensionWitnessFieldFinite\_of\_subalgebra` ✓，**不重证** ✓），
+其中 `hS_{\rm fix}` ✓ 由 **§4.47** ✓（`smul\_eq\_self\_of\_mem\_adjoin\_of\_fixed` ✓）从**两条不动行**得 ✓；
+再经**残余 ①** ✓（`nonempty\_...\_of\_fieldFinite\_and\_ringBridge` ✓）搬成**源形见证** ✓。
+**⚠ `L` 与 `hL` 全程闲置** ✓（`theorem51Statement_of_witness` ✓ 的观察 ✓）。
+**🔴 不声称** ✗：**不**声称残余 ④ 可证 ✗（**两项具名端点** ✗）；**不**声称残余 ① 已证 ✗；
+**不**声称两条源陈述已证 ✗。 -/
+theorem theorem51Statement_of_noetherWiringResidualFixed_and_ringBridge
+    (hb : RealizationRingTierBridge F G) (hw : NoetherWiringResidualFixed F G) :
+    Theorem51Statement F G := by
+  intro hinf L _ _ _ _ _
+  obtain ⟨n, a, s₀, t, instA, instT, instM, ht, hRG, hind, _hgen, hs₀, hs₀_mem, ha_fix, hs₀_fix,
+    htinv, hle, hact_map, hgal, hProj, hS₀R⟩ := hw
+  have hindL : AlgebraicIndependent F
+      (fun i => ((a i : NoetherInvariantField F G) : NoetherField F G)) :=
+    (algebraicIndependent_coe_iff_of_subalgebra
+      (FixedPoints.intermediateField (F := F) (E := NoetherField F G) G).toSubalgebra a).mp hind
+  have hs₀L : ((s₀ : NoetherInvariantField F G) : NoetherField F G) ≠ 0 :=
+    fun h => hs₀ (Subtype.ext h)
+  have hs₀_memL : ((s₀ : NoetherInvariantField F G) : NoetherField F G)
+      ∈ Algebra.adjoin F
+        (Set.range (fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))) :=
+    mem_adjoin_coe_of_mem_adjoin
+      (FixedPoints.intermediateField (F := F) (E := NoetherField F G) G).toSubalgebra hs₀_mem
+  have ha := exists_algEquiv_localizationAway_of_adjoin_union_inv_of_faithfulSMul
+    hindL hs₀L hs₀_memL
+  exact nonempty_genericExtensionWitness_of_fieldFinite_and_ringBridge hb
+    (nonempty_genericExtensionWitnessFieldFinite_of_subalgebra
+      (S := noetherFixedCarrier F G a s₀) ht htinv hle
+      (smul_eq_self_of_mem_adjoin_of_fixed ha_fix hs₀_fix) hact_map hRG hgal hProj hS₀R hinf
+      ⟨n, ha⟩)
+
+#print axioms NoetherWiringResidualFixed
+#print axioms theorem51Statement_of_noetherWiringResidualFixed_and_ringBridge
+
+end FixedWiringResidual
+
+/-! ### K. **L1 非空探针**：残余 ④ 的**数据部分非空** ✓✅（**两式**：一般档（条件）＋ `ℚ`／`PUnit` 档（无条件）） -/
+
+section FixedWiringDataProbe
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+omit [Fintype G] [DecidableEq G] in
+/-- **L1 非空探针 ①（一般档，**由源假设**）** ✓✅：**源假设** `\mathrm{IsRationalOver}\ F\ L^G` ✓ ⟹
+**残余 ④ 的数据部分非空** ✓ —— 即 §D ✓ 判定为空的那**两行冲突**在改接后**不再出现** ✓✅。
+**⚠ 证明** ✓（**两行** ✓）：**§E** ✓ 的 `exists\_fixed\_transcendenceBasis\_of\_isRationalOver` ✓ 直接给
+`a` ✓（代数无关 ✓ ＋ 生成 `L^G` ✓ ＋ **被每个 `g` 固定** ✓）；取 **`s_0 := 1`** ✓
+（`1 \neq 0` ✓；`1 \in F[a]` ✓ **因任何子代数含 `1`** ✓）。
+**⚠ 判别力** ✓：本条是**定理**（**非**断言 ✗）—— **`hgen` 读在 `L` 的旧读法下** ✗ 本条**不可能**成立 ✓
+（§D ✓）；**若把第 2 行的域改回 `L`** ✗，本证明**立即失败** ✗（`hind` 与 `hgen` 的类型不匹配 ✗）。
+**🔴 不声称** ✗：**不**声称残余 ④ 本身非空 ✗（**另两行** `hgal` ✓／`hProj` ✓ **不在本探针内** ✗）；
+**不**声称 `\mathrm{IsRationalOver}\ F\ L^G` 可证 ✗（**那正是 Noether 问题** ✓，`G = C_{47}` ✓ 时为假 ✓）。 -/
+theorem exists_fixedWiringData_of_isRationalOver
+    (h : IsRationalOver F (NoetherInvariantField F G)) :
+    ∃ (n : ℕ) (a : Fin n → NoetherInvariantField F G) (s₀ : NoetherInvariantField F G),
+      AlgebraicIndependent F a ∧ IntermediateField.adjoin F (Set.range a) = ⊤ ∧
+        s₀ ≠ 0 ∧ s₀ ∈ Algebra.adjoin F (Set.range a) := by
+  obtain ⟨n, a, hind, hgen, _hfix⟩ :=
+    exists_fixed_transcendenceBasis_of_isRationalOver (F := F) (G := G) (L := NoetherField F G) h
+  exact ⟨n, a, 1, hind, hgen, one_ne_zero, one_mem _⟩
+
+#print axioms exists_fixedWiringData_of_isRationalOver
+
+end FixedWiringDataProbe
+
+
+section AdjoinTransportAlongEquiv
+
+variable {F : Type} [Field F] {E E' : Type} [Field E] [Field E'] [Algebra F E] [Algebra F E']
+
+/-- **(甲) ④ 中间域 `adjoin` 的顶沿 `AlgEquiv` 搬运** ✓✅（**双向** ✓）：
+`\mathrm{adjoin}_F(\mathrm{range}\ a) = \top` ✓ ⟺ 其**沿 `e` 的像族**的 `\mathrm{adjoin}` 为 `\top` ✓。
+**证明** ✓：**`\mathrm{IntermediateField.adjoin\_map}`** ✓ ＋ **`\mathrm{IntermediateField.map\_injective}`** ✓
+＋ `\mathrm{map}\ e\ \top = \top` ✓（**满射** ✓：`y = e (e^{-1} y)` ✓）。
+**⚠ 用途** ✓：`\mathbb{Q}`／`\mathrm{PUnit}` 档的 `hgen` ✓ 探针（**先把 `L^G = \top` 化成 `\mathrm{AlgEquiv}`** ✓，
+**避开**在目标里 `\mathrm{rw}` 掉 `\uparrow I` 的**依赖类型** ✗ —— **本轮实测**：`\mathrm{rw}\ [h_I]` 报
+`motive is not type correct` ✗，**因 `a'` 的类型依赖 `I`** ✓）。
+**🔴 不声称** ✗：**不**声称本式能搬运**其它**谓词 ✗。 -/
+theorem intermediateField_adjoin_eq_top_iff_of_algEquiv (e : E ≃ₐ[F] E') {ι : Type} (a : ι → E) :
+    IntermediateField.adjoin F (Set.range a) = ⊤ ↔
+      IntermediateField.adjoin F (Set.range (fun i => e (a i))) = ⊤ := by
+  have himg : (e : E →ₐ[F] E') '' Set.range a = Set.range (fun i => e (a i)) := by
+    rw [← Set.range_comp]
+    congr 1
+  have hmap : IntermediateField.map (e : E →ₐ[F] E') (IntermediateField.adjoin F (Set.range a))
+      = IntermediateField.adjoin F (Set.range (fun i => e (a i))) := by
+    rw [IntermediateField.adjoin_map, himg]
+  have htop : IntermediateField.map (e : E →ₐ[F] E') (⊤ : IntermediateField F E) = ⊤ := by
+    refine le_antisymm le_top ?_
+    intro y _
+    exact (IntermediateField.mem_map (⊤ : IntermediateField F E)).mpr
+      ⟨e.symm y, trivial, e.apply_symm_apply y⟩
+  constructor
+  · intro h
+    rw [← hmap, h, htop]
+  · intro h
+    refine IntermediateField.map_injective (e : E →ₐ[F] E') ?_
+    rw [hmap, h, htop]
+
+#print axioms intermediateField_adjoin_eq_top_iff_of_algEquiv
+
+end AdjoinTransportAlongEquiv
+
+/-! ### L. **L1 非空探针 ②（`\mathbb{Q}`／`\mathrm{PUnit}` 档，**无条件**）** -/
+
+/-- **L1 非空探针 ②（`F = \mathbb{Q}` ✓／`G = \mathrm{PUnit}` ✓ 档，**无条件**）** ✓✅：
+**残余 ④ 的数据部分在测试实例上非空** ✓ —— 见证 ＝ `n = 1` ✓、`a` ＝ r237 ✓ 的见证者之**强制像** ✓、
+`s_0 := 1` ✓。
+**⚠ 两行来历** ✓：**①** `hind` ✓（**读在 `L^G`** ✓）＝ r237 ✓ 的 `hind` ✓（**读在 `L`** ✓）沿
+**(甲) ①** ✓ 的 **`.mpr`** ✓ 搬入 ✓；**②** `hgen` ✓（**读在 `L^G`** ✓，**＝ 改接的要害行** ✓）＝
+r237 ✓ 的 `hgen` ✓（**读在 `L`** ✓）沿 **(甲) ④** ✓ 的 **`.mpr`** ✓ 搬入 ✓，
+其中 `L^G = \top` ✓ 由 **`noetherInvariantField_pUnit`** ✓ 化成 **`\mathrm{AlgEquiv}`** ✓
+（`\mathrm{IntermediateField.equivOfEq}` ✓ ＋ **`\mathrm{IntermediateField.topEquiv}`** ✓）——
+**⚠ 不走代数档** ✗（代数档等式须 `[\mathrm{Algebra.IsAlgebraic}\ F\ L]` ✗，本题**超越** ✗）。
+**⚠ `s_0 := 1` 的理由** ✓（**如实** ✗）：把 r237 的 `s_0 \in F[a]` ✓（**读在 `L`** ✓）**拉回** `L^G` ✗
+须另证（**该方向不属本节两式** ✗，**本轮未落** ✗）；而 `s_0` 在残余 ④ 中**只受两条约束** ✓
+（`s_0 \neq 0` ✓ ＋ `s_0 \in F[a]` ✓），`1` **两条皆满足** ✓ ⟹ **取 `1` 即可** ✓。
+**🔴 不声称** ✗：**不**声称残余 ④ **整体**非空 ✗ —— `hgal` ✓／`hProj` ✓ 与 wiring 各行
+（`t` ✓／三实例 ✓／`hle` ✓／`hact_{\rm map}` ✓／`hS_0R` ✓）**不在本探针内** ✗：
+r249 ✓ 逐行供给的是**残余 ② 的表** ✓（**读在 `L`** ✓），**未打包为残余 ④ 的项** ✗（**登记** ✓，
+**下一手** ✓）；**不**声称两条源陈述已证 ✗。 -/
+theorem exists_fixedWiringData_pUnit_rat :
+    ∃ (n : ℕ) (a : Fin n → NoetherInvariantField ℚ PUnit.{1})
+      (s₀ : NoetherInvariantField ℚ PUnit.{1}),
+      AlgebraicIndependent ℚ a ∧ IntermediateField.adjoin ℚ (Set.range a) = ⊤ ∧
+        s₀ ≠ 0 ∧ s₀ ∈ Algebra.adjoin ℚ (Set.range a) := by
+  obtain ⟨a, -, -, hind, hgen, -, -, -, -, -, -, -, -⟩ := exists_noetherWiringData_pUnit_rat
+  have hI : FixedPoints.intermediateField (F := ℚ) (E := NoetherField ℚ PUnit.{1}) PUnit.{1} = ⊤ :=
+    noetherInvariantField_pUnit
+  let a' : Fin 1 → NoetherInvariantField ℚ PUnit.{1} := fun i => ⟨a i, by rw [hI]; trivial⟩
+  refine ⟨1, a', 1, ?_, ?_, one_ne_zero, one_mem _⟩
+  · exact (algebraicIndependent_coe_iff_of_subalgebra
+      (FixedPoints.intermediateField (F := ℚ) (E := NoetherField ℚ PUnit.{1}) PUnit.{1}).toSubalgebra
+      a').mpr (by simpa using hind)
+  · refine (intermediateField_adjoin_eq_top_iff_of_algEquiv
+      ((IntermediateField.equivOfEq hI).trans IntermediateField.topEquiv) a').mpr ?_
+    show IntermediateField.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+      ((IntermediateField.equivOfEq hI).trans IntermediateField.topEquiv) (a' _))) = ⊤
+    exact hgen
+
+#print axioms exists_fixedWiringData_pUnit_rat
+
+
+/-! ### N. **(丙) 机器件的**不动域版**（r259 ✓ 的 `noetherWiringMachinery_of_sourceData` ✓ 的改接形）** -/
+
+section FixedWiringMachinery
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+set_option maxHeartbeats 1000000 in
+/-- **(丙) 机器 6 行的不动域版** ✓✅：**不动域数据** `a` ✓／`s_0` ✓ ＋ **两条不动行** ✓ ⟹
+**残余 ④ 的机器各行**（`t` ✓／三实例 ✓／`ht` ✓／`t` 不变化 ✓／`hle` ✓／`hact_map` ✓／`hRG` ✓／`hS_0R` ✓）**存在** ✓
+—— 即 **r259 ✓ 的 `noetherWiringMachinery_of_sourceData` ✓**（**读在 `L`** ✓）**的不动域形** ✓。
+**⚠ 证明** ✓（**一步** ✓）：把**不动域数据**经**强制转换**搬进 `L` ✓（`hs_0 \neq 0` ✓ 由**隶属单射** ✓，
+**两条不动行原样可用** ✓ —— **其类型本就是「强制转换后的元素」** ✓，**此即改接的便利处** ✓），
+再**逐位喂给 r259** ✓（**不重证** ✓）。
+**⚠ 用途** ✓：探针 ③ ✓（**数据 ＋ 机器 ＝ 残余 ④ 减两行端点** ✓，**已消费本件** ✓）。
+**🔴 不声称** ✗：**不**声称 `t` 唯一 ✗（**r259 ✓ 的 `t` 是**构造产出**** ✓，`\mathrm{Classical.choose}` 档 ✓）；
+**不**声称两项具名端点（`hgal` ✓／`hProj` ✓）随之可得 ✗（**它们不在 r259 的输出内** ✗）。 -/
+theorem exists_noetherFixedWiringMachinery {n : ℕ} (a : Fin n → NoetherInvariantField F G)
+    (s₀ : NoetherInvariantField F G) (hs₀ : s₀ ≠ 0)
+    (ha_fix : ∀ (g : G) (i : Fin n),
+      g • ((a i : NoetherInvariantField F G) : NoetherField F G)
+        = ((a i : NoetherInvariantField F G) : NoetherField F G))
+    (hs₀_fix : ∀ g : G, g • ((s₀ : NoetherInvariantField F G) : NoetherField F G)
+        = ((s₀ : NoetherInvariantField F G) : NoetherField F G)) :
+    ∃ (t : MvPolynomial G F) (ht : t ≠ 0)
+      (_ : Algebra ↥(noetherFixedCarrier F G a s₀) (Localization.Away t))
+      (_ : IsScalarTower F ↥(noetherFixedCarrier F G a s₀) (Localization.Away t))
+      (_ : MulSemiringAction G (Localization.Away t)),
+      (∀ g : G, g • t = t) ∧
+      (noetherFixedCarrier F G a s₀ ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G)))) ∧
+      (∀ (g : G) (p : MvPolynomial G F),
+        g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+          = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p)) ∧
+      (∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀)) (x : Localization.Away t),
+        g • (r • x) = r • (g • x)) ∧
+      (∀ r : ↥(noetherFixedCarrier F G a s₀),
+        awayToFieldAlg (F := F) (G := G) t ht
+            (algebraMap ↥(noetherFixedCarrier F G a s₀) (Localization.Away t) r)
+          = algebraMap ↥(noetherFixedCarrier F G a s₀) (NoetherField F G) r) := by
+  have hs₀L : ((s₀ : NoetherInvariantField F G) : NoetherField F G) ≠ 0 :=
+    fun h => hs₀ (Subtype.ext h)
+  exact noetherWiringMachinery_of_sourceData (F := F) (G := G)
+    (fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+    ((s₀ : NoetherInvariantField F G) : NoetherField F G) hs₀L ha_fix hs₀_fix
+
+#print axioms exists_noetherFixedWiringMachinery
+
+end FixedWiringMachinery
+
+/-! ### M. **L1 非空探针 ③／④：残余 ④ **减去两项具名端点**后**整体非空**（数据 ＋ 机器各行） -/
+
+section FixedWiringMachineryProbe
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+set_option maxHeartbeats 1000000 in
+/-- **L1 非空探针 ③（一般档，由源假设）** ✓✅：**源假设** `\mathrm{IsRationalOver}\ F\ L^G` ✓ ⟹
+**残余 ④ 除两项具名端点外的**全部行**同时成立** ✓ —— 即 **数据 6 行** ✓ ＋ **机器 6 行** ✓
+（`ht` ✓／`t` 不变化 ✓／`hle` ✓／`hact_{\rm map}` ✓／`hRG` ✓／`hS_0R` ✓ ＋ **三实例** ✓）。
+**⚠ 证明** ✓（**三步** ✓，**不新造** ✗）：**①** 探针 ① ✓ 给**数据**（`a` ✓／`s_0` ✓ 及其四行 ✓）；
+**②** 数据**强制搬进 `L`** ✓（(甲) ① ✓ 的 `.mp` ✓；`hs_0 \neq 0` ✓ 由隶属单射 ✓；
+**两条不动行** ✓ 由**隶属定义** ✓ `(a\ i).2` ✓／`s_0.2` ✓ —— **§D 的冲突在此彻底消失** ✓✅）；
+**③** **r259 ✓ 的 `noetherWiringMachinery_of_sourceData`** ✓ 一次产出**机器 6 行 ＋ 三实例** ✓。
+**⚠ 与残余 ④ 的差** ✓（**精确** ✓）：**只差两行** ✗ ＝ **`hgal`** ✓（`\mathrm{IsGaloisWithGroup}` ✓）
+＋ **`hProj`** ✓（`\mathrm{GaloisProjectiveHyp}` ✓）—— 即**源 `proposition-0-2` 的两条端点** ✓
+（**在册、无证明** ✗）。⟹ **残余 ④ 的空洞性风险全部集中在两项具名端点** ✓（**此即本探针的读数** ✓）。
+**🔴 不声称** ✗：**不**声称残余 ④ **整体**非空 ✗（**两行端点在探针之外** ✗）；
+**不**声称 `\mathrm{IsRationalOver}\ F\ L^G` 可证 ✗（**那是 Noether 问题** ✓）；
+**不**声称 `hgal`／`hProj` 可证 ✗。 -/
+theorem exists_fixedWiringData_and_machinery_of_isRationalOver
+    (h : IsRationalOver F (NoetherInvariantField F G)) :
+    ∃ (n : ℕ) (a : Fin n → NoetherInvariantField F G) (s₀ : NoetherInvariantField F G)
+      (t : MvPolynomial G F)
+      (_ : Algebra ↥(noetherFixedCarrier F G a s₀) (Localization.Away t))
+      (_ : IsScalarTower F ↥(noetherFixedCarrier F G a s₀) (Localization.Away t))
+      (_ : MulSemiringAction G (Localization.Away t))
+      (ht : t ≠ 0),
+      AlgebraicIndependent F a ∧ IntermediateField.adjoin F (Set.range a) = ⊤ ∧
+        s₀ ≠ 0 ∧ s₀ ∈ Algebra.adjoin F (Set.range a) ∧
+        (∀ (g : G) (i : Fin n),
+          g • ((a i : NoetherInvariantField F G) : NoetherField F G)
+            = ((a i : NoetherInvariantField F G) : NoetherField F G)) ∧
+        (∀ g : G, g • ((s₀ : NoetherInvariantField F G) : NoetherField F G)
+          = ((s₀ : NoetherInvariantField F G) : NoetherField F G)) ∧
+        (∀ g : G, g • t = t) ∧
+        (noetherFixedCarrier F G a s₀ ≤ Subalgebra.restrictScalars F
+          (Algebra.adjoin (MvPolynomial G F)
+            ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹}
+              : Set (NoetherField F G)))) ∧
+        (∀ (g : G) (p : MvPolynomial G F),
+          g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+            = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p)) ∧
+        (∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀)) (x : Localization.Away t),
+          g • (r • x) = r • (g • x)) ∧
+        (∀ r : ↥(noetherFixedCarrier F G a s₀),
+          awayToFieldAlg (F := F) (G := G) t ht
+              (algebraMap ↥(noetherFixedCarrier F G a s₀) (Localization.Away t) r)
+            = algebraMap ↥(noetherFixedCarrier F G a s₀) (NoetherField F G) r) := by
+  obtain ⟨n, a, s₀, hind, hgen, hs₀, hs₀_mem⟩ := exists_fixedWiringData_of_isRationalOver h
+  have ha_fix : ∀ (g : G) (i : Fin n),
+      g • ((a i : NoetherInvariantField F G) : NoetherField F G)
+        = ((a i : NoetherInvariantField F G) : NoetherField F G) := fun _ i => (a i).2 _
+  have hs₀_fix : ∀ g : G, g • ((s₀ : NoetherInvariantField F G) : NoetherField F G)
+      = ((s₀ : NoetherInvariantField F G) : NoetherField F G) := fun _ => s₀.2 _
+  obtain ⟨t, ht, instA, instT, instM, htinv, hle, hact_map, hRG, hS₀R⟩ :=
+    exists_noetherFixedWiringMachinery a s₀ hs₀ ha_fix hs₀_fix
+  exact ⟨n, a, s₀, t, instA, instT, instM, ht, hind, hgen, hs₀, hs₀_mem, ha_fix, hs₀_fix,
+    htinv, hle, hact_map, hRG, hS₀R⟩
+
+#print axioms exists_fixedWiringData_and_machinery_of_isRationalOver
+
+end FixedWiringMachineryProbe
+
+
+/-! ### O. **登记（r260 总账，逐条如实）** -/
+
+/-- **登记** ✓：**r260 的总账** ——
+**(甲) 已落** ✓✅：**数据沿强制转换的搬运四式** ✓（AI ✓（双向 ✓）／`\mathrm{adjoin}` 隶属 ✓（单向 ✓）／
+`\mathrm{adjoin}` 顶（中间域档 ✓，双向 ✓）／`\mathrm{adjoin}` 顶沿 `\mathrm{AlgEquiv}` ✓（双向 ✓））；
+**(乙) 已落** ✓✅：**分式环无关的 `(a)` 款两件** ✓ —— `\mathrm{IsLocalization.Away}` 结构 ✓
+（**去掉 r165 ✓ 的 `[\mathrm{IsFractionRing}\ A\ K]`** ✗）＋ **`(a)` 款无 `hgen` 形** ✓
+（**去掉 r188 ✓ 的 `hgen`** ✗）；
+**(丙) 已落** ✓✅：**机器 6 行的不动域版** ✓（`exists_noetherFixedWiringMachinery` ✓）；
+**(丁) 已落** ✓✅：**残余 ④** ✓（`NoetherWiringResidualFixed` ✓）＋ **归约** ✓
+（`theorem51Statement_of_noetherWiringResidualFixed_and_ringBridge` ✓）＋ **L1 探针三式** ✓
+（① 一般档数据 ✓（条件 ✓）／② `\mathbb{Q}`／`\mathrm{PUnit}` 档数据 ✓（**无条件** ✓）／
+③ 一般档**数据 ＋ 机器** ✓（**＝ 残余 ④ 减两行端点** ✓，条件 ✓））。
+**⚠ 未落** ✗（**逐条** ✓）：**(i)** 把**两项具名端点** ✓ 与**机器各行**装进**残余 ④ 的整项** ✗
+（**卡点已定位** ✓：r249 ✓ 的 `hgal` ✓／`hProj` ✓ 见证**钉在 `t = X`** ✓ 与**其载体** ✓，
+而 (丙) ✓ 产出的 `t` 是**构造性的**（`\mathrm{Classical.choose}` 档 ✓）⟹ **两者不同一** ✗；
+**⚠ 且** `\mathbb{Q}`／`\mathrm{PUnit}` 档**另有一层障碍** ✗：`\mathrm{PUnit}` 在 mathlib **另有泛用**
+`\mathrm{MulAction}` ✓ ⟹ **语句里的 `\bullet` 与 `\mathrm{Noether}` 作用档可能不同一** ✗
+（**本轮实测** ✓：`(a\ i).2` 与目标里的 `\bullet` 类型不符 ✗；r249 ✓ 的工艺读数同款 ✓））；
+**(ii)** 两条源陈述 ✓（`Theorem51Statement` ✓／`Theorem21Statement` ✓）**仍未证** ✗；
+**(iii)** **残余 ①** ✓（`RealizationRingTierBridge` ✓，CHR 代数版 ✗）**仍开** ✓、**两路共享** ✓；
+**(iv)** **`hgen` 的消费件** ✗（`hind + hgen \Rightarrow \mathrm{IsRationalOver}\ F\ L^G` ✓）**未落** ✗
+（**故 `hgen` 在归约中不被消费** ✗ —— **如实登记** ✓）。
+**🔴 不声称** ✗：**不**声称 (i)--(iv) 任一已落 ✗；**不**声称残余 ④ **整体**非空 ✗；
+**不**声称两条源陈述已证 ✗；**不**声称 r206 路线可用 ✗（**非平凡 `G` 档为空** ✗，§D ✓，
+**其定理原样保留** ✓）。 -/
+theorem noetherWiringResidualFixed_registered : True := trivial
+
+#print axioms noetherWiringResidualFixed_registered
+
 
 end ABGV52
