@@ -1626,4 +1626,111 @@ end GaloisProjectiveSectionRefutation
 
 #print axioms galoisProjectiveSectionHyp_refuted
 
+
+/-! ## **⑥ 的判定 · 反例实例 ＋ 关键引理**（第 251 轮）
+
+**靶点** ✓：⚠ **⑥ `GaloisDescentHyp` ＋ `GaloisFiniteGenerationDescentHyp` 的真值判定** ✓。
+**⚠ 本轮结果** ✓：**归约** ✓ —— **反例实例已落** ✓（其 **Galois 谓词成立** ✓）＋ **关键引理已落** ✓
+（**有限生成 ⟹ 只涉及有限多个变量** ✓）；**余下一步 ＝ 张量／基变换 ＋ 维数** ✗（**登记** ✓）。
+**⚠ 位置** ✓：同 §250 的反驳件 ✓（`GaloisAlgebra` 先于本文件 ⟹ 家族文件看不见 r247 通用件 ✗）。 -/
+
+section GaloisDescentHypRefutation
+
+/-- **反例实例的结构映射** ✓：**`MvPolynomial ℕ ℚ → ℚ`** ✓ 取 **所有坐标 ＝ 1 的点** ✓（**`aeval (fun _ => 1)`** ✓）。
+**⚠ 选点理由** ✓：**无穷多个坐标非零** ✓ ⟹ 其**核（极大理想）不有限生成** ✗
+（**有限个坐标非零** ✓ 时核 ＝ **`(X_1,…,X_N)`** ✓ **有限生成** ✓ ⟹ **另选点** ✓）；
+**该结构不是全局实例** ✗（**实测** ✗）⟹ **节级 `local instance`** ✓。 -/
+noncomputable local instance instA251 : Algebra (MvPolynomial ℕ ℚ) ℚ :=
+  (MvPolynomial.aeval (fun _ : ℕ => (1 : ℚ))).toRingHom.toAlgebra
+
+/-- **反例实例的 `G`-作用** ✓：**`G = PUnit`** ✓ 的**平凡作用** ✓（**非全局实例** ✗）。 -/
+noncomputable local instance instMSA251 : MulSemiringAction PUnit.{1} ℚ :=
+  { smul := fun _ x => x
+    one_smul := fun _ => rfl
+    mul_smul := fun _ _ _ => rfl
+    smul_zero := fun _ => rfl
+    smul_add := fun _ _ _ => rfl
+    smul_mul := fun _ _ _ => rfl
+    smul_one := fun _ => rfl }
+
+/-- **反例实例的前件成立** ✓✅（第 251 轮 ✓）：**`IsGaloisWithGroup (MvPolynomial ℕ ℚ) ℚ PUnit hRG`** ✓
+（**任意 `hRG`** ✓）—— 由 **r247 通用件** ✓（**`G` 单点** ✓ ＋ **`algebraMap` 满射** ✓：
+**`q = aeval (fun _ => 1) (C q)`** ✓）。
+**⚠ 意义** ✓：**⑥ 的两个端点在这一实例上都有前件** ✓ ⟹ **该实例是判定 ⑥ 的合法试验台** ✓。 -/
+theorem exists_isGaloisWithGroup_mvPolynomial_allOnes :
+    ∃ hRG : ∀ (g : PUnit.{1}) (r : MvPolynomial ℕ ℚ) (t : ℚ),
+      g • (r • t) = r • (g • t),
+      BTier.IsGaloisWithGroup (MvPolynomial ℕ ℚ) ℚ PUnit.{1} hRG :=
+  ⟨fun g r t => rfl,
+    isGaloisWithGroup_of_subsingleton_of_surjective_algebraMap (G := PUnit.{1})
+      (by
+        intro q
+        exact ⟨MvPolynomial.C q, by
+          show MvPolynomial.aeval (fun _ : ℕ => (1 : ℚ)) (MvPolynomial.C q) = q
+          simp⟩)
+      _⟩
+
+/-- **关键引理（⑥ 反驳的桥）** ✓✅（第 251 轮 ✓；**自造件** ✓）：**有限生成 `ℚ`-代数** ✓ 打到
+**`MvPolynomial ℕ ℚ`** ✓ 的**像只涉及有限多个变量** ✓ —— 即 **∃ `n`，像 ⊆ `ℚ[X_0,…,X_{n-1}]`** ✓。
+**⚠ 证明** ✓：**`Algebra.FiniteType.out`** ✓ 给**有限生成集** ✓（`Subalgebra.fg_def` ✓）⟹
+**像 ⊆ `adjoin ℚ (φ '' t)`** ✓（**`AlgHom.map_adjoin`** ✓）⟹ **每个生成元的支撑有限** ✓
+（**`Finset.sup`** ✓ 取上界 ✓）⟹ **逐项按 `as_sum` ＋ `monomial_eq` 展开即入 `adjoin`** ✓。
+**⚠ 用途** ✓：**任何候选 `R''`（有限生成 ✓）的像都落在有限多个变量的子代数里** ✓ ⟹
+**张量 `S'' ⊗_{R''} R` 仍带无穷多个自由变量** ✓ ⟹ **不可能 ≅ ℚ** ✗（**余下一步** ✗）。 -/
+theorem exists_variables_bound_of_finiteType (R'' : Type) [CommRing R'']
+    [Algebra ℚ R''] [Algebra.FiniteType ℚ R''] (φ : R'' →ₐ[ℚ] MvPolynomial ℕ ℚ) :
+    ∃ (n : ℕ), ∀ x : R'', φ x ∈ Algebra.adjoin ℚ
+      (Set.range (fun i : Fin n => (MvPolynomial.X (i : ℕ) : MvPolynomial ℕ ℚ))) := by
+  classical
+  obtain ⟨t, htfin, ht⟩ := Subalgebra.fg_def.mp (Algebra.FiniteType.out (R := ℚ) (A := R''))
+  let B : R'' → ℕ := fun a => (φ a).support.sup (fun m => m.support.sup fun i => i + 1)
+  refine ⟨htfin.toFinset.sup B + 1, ?_⟩
+  have hgen : ∀ a ∈ t, φ a ∈ Algebra.adjoin ℚ
+      (Set.range (fun i : Fin (htfin.toFinset.sup B + 1) =>
+        (MvPolynomial.X (i : ℕ) : MvPolynomial ℕ ℚ))) := by
+    intro a ha
+    have hle : ∀ m ∈ (φ a).support, ∀ i ∈ m.support, i < htfin.toFinset.sup B + 1 := by
+      intro m hm i hi
+      have h1 : i < B a := lt_of_lt_of_le (Finset.le_sup (f := fun i => i + 1) hi)
+        (Finset.le_sup (f := fun m => m.support.sup fun i => i + 1) hm)
+      have h2 : B a ≤ htfin.toFinset.sup B := Finset.le_sup (htfin.mem_toFinset.mpr ha)
+      omega
+    rw [MvPolynomial.as_sum (φ a)]
+    refine Subalgebra.sum_mem _ fun m hm => ?_
+    rw [MvPolynomial.monomial_eq]
+    refine mul_mem (Subalgebra.algebraMap_mem _ _) (Subalgebra.prod_mem _ fun i hi => ?_)
+    exact Subalgebra.pow_mem _
+      (Algebra.subset_adjoin (show (MvPolynomial.X i : MvPolynomial ℕ ℚ) ∈
+        Set.range (fun j : Fin (htfin.toFinset.sup B + 1) =>
+          (MvPolynomial.X (j : ℕ) : MvPolynomial ℕ ℚ)) from
+        ⟨⟨i, hle m hm i hi⟩, rfl⟩)) _
+  have himage : ∀ x : R'', φ x ∈ Algebra.adjoin ℚ (φ '' (t : Set R'')) := by
+    intro x
+    have hx : x ∈ Algebra.adjoin ℚ (t : Set R'') := by rw [ht]; trivial
+    have hx' : φ x ∈ Subalgebra.map φ (Algebra.adjoin ℚ (t : Set R'')) := ⟨x, hx, rfl⟩
+    rwa [AlgHom.map_adjoin] at hx'
+  intro x
+  refine Algebra.adjoin_le ?_ (himage x)
+  rintro _ ⟨a, ha, rfl⟩
+  exact hgen a ha
+
+/-- **登记** ✗：**⑥ 的反驳余下一步** ✓ —— **张量／基变换 ＋ 维数** ✗（**本轮未落** ✗）。
+**⚠ 已备** ✓：**反例实例** ✓（`exists_isGaloisWithGroup_mvPolynomial_allOnes` ✓，**前件成立** ✓）
+＋ **关键引理** ✓（`exists_variables_bound_of_finiteType` ✓，**像只涉及有限多变量** ✓）。
+**⚠ 余步的精确形** ✓：设 **`R'' → R`** ✓ 的像 ⊆ **`R₀ := ℚ[X_0,…,X_{n-1}]`** ✓（**关键引理** ✓）；
+则 **`S'' ⊗_{R''} R ≅ (S'' ⊗_{R''} R₀) ⊗_{R₀} R`** ✓（**张量结合** ✓）；
+而 **`R ≅ MvPolynomial τ R₀`** ✓（**`τ := {m // n ≤ m}`** ✓；**`MvPolynomial.sumAlgEquiv`** ✓ ＋ **重标号** ✓）
+⟹ **`S'' ⊗_{R''} R ≅ MvPolynomial τ (S'' ⊗_{R''} R₀)`** ✓（**`MvPolynomial.algebraTensorAlgEquiv`** ✓）
+⟹ **`τ ≠ ∅`** ✓ ⟹ **若首因子 ≠ 0 则 `ℚ`-维 ≥ 2** ✗，**若 ＝ 0 则张量 ＝ 0** ✗ ⟹ **皆 ≇ ℚ** ✗
+（**`MvPolynomial.basisMonomials`** ✓ 给基 ✓ ⟹ **`1` 与 `X_m` 线性无关** ✓）。
+**⚠ 不声称** ✗：**⑥ 未判定** ✗（**只到归约** ✓）；**不**声称两个端点为假 ✗（**余步未落** ✗）；
+**不**声称预期用例中下降不成立 ✗。 -/
+theorem galoisDescentHyp_reduction_registered : True := trivial
+
+end GaloisDescentHypRefutation
+
+#print axioms exists_isGaloisWithGroup_mvPolynomial_allOnes
+#print axioms exists_variables_bound_of_finiteType
+#print axioms galoisDescentHyp_reduction_registered
+
 end ABGV52
