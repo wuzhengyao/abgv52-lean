@@ -3509,5 +3509,325 @@ end HgenCoherenceDiscrimination
 theorem hgenCoherence_registered : True := trivial
 
 #print axioms hgenCoherence_registered
+/-! ### 4.63 **残余 ①（环档桥）的**根因**与**修正形**：`Subsingleton G` 档**已证** -/
+
+open BTier
+
+section RingTierBridgeRootCause
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G]
+
+set_option maxHeartbeats 1000000 in
+/-- **零环是 `G`-Galois 的（`G` 亚单档）** ✓：`S = 0`（Lean 取 `PUnit` 的环结构 ✓）时判据三款
+**全部自动成立** ✓ —— ① `\mathrm{FaithfulSMul}` ✓ 由 `G` 亚单 ✓；② 环同态款 ✓ 由单点性 ✓；
+③ `\delta` 双射 ✓ 由两侧同为单点 ✓。
+**🔴 根因** ✓：源 `definition-1-1`(c) 的 `L`-**量词**在库内取**全部** `\mathrm{CommRing}` ✓
+⟹ **零环是合法目标** ✗；而源侧 `S/R` `G`-Galois **蕴含** `S` 有限生成投射于 `R`（`proposition-0-2`(a) ✓，
+引 [CHR68] p. 13 ✓）—— 零环**秩 0** ✗ 而 `G = \mathrm{PUnit}` 档源侧秩为 `1` ✗
+⟹ **零环不在源的量词域内** ✗、却在**库内判据**的量词域内 ✓。
+**⚠ 不声称** ✗：**不**声称原形为假已证 ✗（见本节末登记 ✓）。 -/
+theorem isGaloisWithGroup_zeroRing_of_subsingleton {K : Type} [CommRing K]
+    [MulSemiringAction G PUnit] (hG : Subsingleton G)
+    (hKL : ∀ (g : G) (r : K) (t : PUnit), g • (r • t) = r • (g • t)) :
+    BTier.IsGaloisWithGroup K PUnit G hKL := by
+  have hsingle : ∀ a : PUnit,
+      deltaToEndAdd hKL (SkewMonoidAlgebra.single (1 : G) a) = coeffToEnd a := by
+    intro a
+    rw [deltaToEndAdd_single]
+    have hact : actEnd hKL (1 : G) = 1 := by ext t
+    rw [hact, mul_one]
+  have hsingle_eq : ∀ u : SkewMonoidAlgebra PUnit G,
+      u = SkewMonoidAlgebra.single (1 : G) (u.coeff 1) := by
+    intro u
+    refine SkewMonoidAlgebra.ext (fun g => ?_)
+    rw [hG.elim g 1, SkewMonoidAlgebra.coeff_single_apply, if_pos rfl]
+  have hcoeff : ∀ u : SkewMonoidAlgebra PUnit G, (deltaToEndAdd hKL u) 1 = u.coeff 1 := by
+    intro u
+    rw [hsingle_eq u]
+  refine ⟨⟨fun {a b : G} _ => hG.elim a b⟩, fun g r => Subsingleton.elim _ _, ?_⟩
+  constructor
+  · intro u v huv
+    have h1 : u.coeff 1 = v.coeff 1 := by
+      have h2 : (deltaToEndAdd hKL u) 1 = (deltaToEndAdd hKL v) 1 :=
+        congrArg (fun f : Module.End K PUnit => f 1) huv
+      exact (hcoeff u).symm.trans (h2.trans (hcoeff v))
+    rw [hsingle_eq u, hsingle_eq v, h1]
+  · intro f
+    refine ⟨SkewMonoidAlgebra.single (1 : G) (f 1), ?_⟩
+    show deltaToEndAdd hKL (SkewMonoidAlgebra.single (1 : G) (f 1)) = f
+    rw [hsingle]
+    ext t
+
+set_option maxHeartbeats 1000000 in
+/-- **零环不是域** ✓（**机器核** ✓）：`\mathrm{Field}\ \mathrm{PUnit}` 蕴含非平凡 ✓ 而 `\mathrm{PUnit}` 单点 ✗
+⟹ 矛盾 ✓。**⚠ 意义** ✓：域档 `(c)` 的量词域含 `[\mathrm{Field}\ L]` ✓ ⟹ **零环不在其中** ✗
+—— 故**「域档 ⟹ 环档」不能由域档的实例集单独供给** ✗（量词域之差是本档的**结构缺口** ✓）。 -/
+theorem pUnit_not_field : ¬ Nonempty (Field PUnit.{1}) := by
+  rintro ⟨hF⟩
+  let _instF : Field PUnit.{1} := hF
+  obtain ⟨a, b, hab⟩ := (inferInstance : Nontrivial PUnit.{1})
+  exact hab (Subsingleton.elim a b)
+
+end RingTierBridgeRootCause
+
+section FiniteDimensionalOne
+
+variable {K L : Type} [Field K] [CommRing L] [Nontrivial L] [Algebra K L] [Module.Finite K L]
+
+set_option maxHeartbeats 1000000 in
+/-- **域上 `1` 维非平凡结合代数 ≅ 基域** ✓：`\mathrm{algebraMap}` 单射 ✓（`\mathrm{FaithfulSMul}` ✓）
+＋ 两侧 `\mathrm{finrank}` 相等 ✓ ⟹ 双射 ✓ ⟹ `K`-代数同构 ✓。
+**⚠ 用途** ✓：`|G| = 1` 档的环档目标由本条**分类** ✓（＝ 修正形证明的**唯一**结构性输入 ✓）。 -/
+theorem nonempty_algEquiv_of_finrank_eq_one (h : Module.finrank K L = 1) :
+    Nonempty (L ≃ₐ[K] K) := by
+  have hinj : Function.Injective (Algebra.linearMap K L) :=
+    FaithfulSMul.algebraMap_injective K L
+  have hfr : Module.finrank K K = Module.finrank K L := by
+    rw [Module.finrank_self K, h]
+  have hsurj : Function.Surjective (Algebra.linearMap K L) :=
+    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hfr).mp hinj
+  refine ⟨(AlgEquiv.ofLinearEquiv (LinearEquiv.ofBijective (Algebra.linearMap K L)
+    ⟨hinj, hsurj⟩) ?_ ?_).symm⟩
+  · simp [Algebra.linearMap]
+  · intro x y
+    simp [Algebra.linearMap]
+
+end FiniteDimensionalOne
+
+section SelfTrivialGroupFieldTier
+
+variable {F : Type} [Field F]
+
+set_option maxHeartbeats 1000000 in
+/-- **域档 `(c)` 款在 `(R, S) = (F, F)`、`G = \mathrm{PUnit}` 上成立** ✓：`L` 域 ＋ `|G| = 1`
+⟹ 秩定理给 `[L : K] = 1` ✓ ⟹ `L \cong K` ✓，再与 `F \otimes_F K \cong K` 复合 ✓。
+**⚠ 意义** ✓：前件在该载体上**非空** ✓ ⟹ 原形若要被反驳，**必须**落在环档一侧 ✓（见登记 ✓）。 -/
+theorem realizationPropertyFieldFinite_self_trivialGroup :
+    RealizationPropertyFieldFinite F PUnit.{1} F F := by
+  intro K _ _ L _ _ _ _ _ _ hKL hgal
+  refine ⟨Algebra.ofId F K, ?_⟩
+  let _inst : Algebra F K := (Algebra.ofId F K).toRingHom.toAlgebra
+  have hcard : Fintype.card PUnit.{1} = 1 := Fintype.card_unique
+  have hfin : Module.finrank K L = 1 := by
+    rw [BTier.finrank_eq_card_of_isGaloisWithGroup hKL hgal, hcard]
+  obtain ⟨e⟩ := nonempty_algEquiv_of_finrank_eq_one (K := K) (L := L) hfin
+  have h1 : K ≃ₐ[K] (TensorProduct F K F) := (Algebra.TensorProduct.rid F K K).symm
+  exact ⟨e.trans h1⟩
+
+end SelfTrivialGroupFieldTier
+
+section RingTierBridgeFinite
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G]
+
+set_option maxHeartbeats 1000000 in
+/-- **残余 ① 的修正形（非退化 ＋ 有限档）** ✓：把 `L`-量词收到**源侧有效域** ✓ ——
+`[\mathrm{Nontrivial}\ L]` ✓（排除零环 ✗）＋ `[\mathrm{Module.Finite}\ K\ L]` ✓
+（＝ 源 `proposition-0-2`(a) 的**有限生成投射**后果 ✓，库内对应 `\mathrm{GaloisProjectiveHyp}` ✓）。
+**⚠ 与旧形的强度序** ✓：旧形 ⟹ 本形 ✓（`realizationRingTierBridgeFinite_of_realizationRingTierBridge` ✓）；
+**反向未证** ✗（**且**零环即是差别的见证 ✓，见 `isGaloisWithGroup_zeroRing_of_subsingleton` ✓）。
+**⚠ 档位** ✓：本形**弱于** `\mathrm{RealizationRingTierBridge}`（原形 ✓）⟹ 若原形可证则本形可证 ✓，
+**反向未证** ✗（**不声称**两者等价 ✗）。 -/
+def RealizationRingTierBridgeFinite (F : Type) [Field F] (G : Type) [Group G] [Fintype G] : Prop :=
+  ∀ (R S : Type) [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S], RealizationPropertyFieldFinite F G R S →
+      ∀ (K : Type) [Field K] [Algebra F K]
+        (L : Type) [CommRing L] [Nontrivial L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+        [MulSemiringAction G L] [Module.Finite K L]
+        (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+        BTier.IsGaloisWithGroup K L G hKL →
+          ∃ (φ : R →ₐ[F] K),
+            letI : Algebra R K := φ.toRingHom.toAlgebra
+            Nonempty (L ≃ₐ[K] (TensorProduct R K S))
+
+set_option maxHeartbeats 1000000 in
+/-- **强度序（可证方向）** ✓：**原形 ⟹ 修正形** ✓ —— 把修正形的量词实例喂给原形即可 ✓
+（`\mathrm{Nontrivial}` ✓ 与 `\mathrm{Module.Finite}` ✓ 是**加**在量词域上的前提 ✓）。
+**⚠ 判别力** ✓：零环档使**反向不可能由域档供给** ✗（`pUnit_not_field` ✓ ⟹ 零环不在域档量词域 ✓）。 -/
+theorem realizationRingTierBridgeFinite_of_realizationRingTierBridge
+    (h : RealizationRingTierBridge F G) : RealizationRingTierBridgeFinite F G := by
+  intro R S _ _ _ _ _ _ hfield K _ _ L _ _ _ _ _ _ _ hKL hgal
+  exact h R S hfield K L hKL hgal
+
+set_option maxHeartbeats 1000000 in
+/-- **`K` 在自身上是 `G`-Galois（`G` 亚单、作用平凡）** ✓：三款直接验 ✓ —— ① ✓；② 平凡作用 ✓；
+③ `\delta` 双射 ✓（单射：`u = \mathrm{single}\ 1\ (u.\mathrm{coeff}\ 1)` ✓；满射：每个 `K`-线性自同态
+`f` 都是 `x \mapsto x \cdot f(1)` ✓ ＝ `\delta(\mathrm{single}\ 1\ (f\ 1))` ✓）。
+**⚠ 用途** ✓：修正形证明中把**域档假设实例化于 `L' = K`** ✓ 所需的 Galois 实例 ✓。 -/
+theorem isGaloisWithGroup_self_of_subsingleton {K : Type} [Field K] [MulSemiringAction G K]
+    (hG : Subsingleton G)
+    (hKK : ∀ (g : G) (r : K) (t : K), g • (r • t) = r • (g • t)) :
+    BTier.IsGaloisWithGroup K K G hKK := by
+  have hsingle : ∀ a : K,
+      deltaToEndAdd hKK (SkewMonoidAlgebra.single (1 : G) a) = coeffToEnd a := by
+    intro a
+    rw [deltaToEndAdd_single]
+    have hact : actEnd hKK (1 : G) = 1 := by
+      refine LinearMap.ext (fun x => ?_)
+      simp [actEnd]
+    rw [hact, mul_one]
+  have hsingle_eq : ∀ u : SkewMonoidAlgebra K G,
+      u = SkewMonoidAlgebra.single (1 : G) (u.coeff 1) := by
+    intro u
+    refine SkewMonoidAlgebra.ext (fun g => ?_)
+    rw [hG.elim g 1, SkewMonoidAlgebra.coeff_single_apply, if_pos rfl]
+  have hcoeff : ∀ u : SkewMonoidAlgebra K G, (deltaToEndAdd hKK u) 1 = u.coeff 1 := by
+    intro u
+    rw [hsingle_eq u, hsingle]
+    simp [coeffToEnd]
+  refine ⟨⟨fun {a b : G} _ => hG.elim a b⟩, fun g r => ?_, ?_⟩
+  · rw [hG.elim g 1]; simp
+  constructor
+  · intro u v huv
+    have h1 : u.coeff 1 = v.coeff 1 := by
+      have h2 : (deltaToEndAdd hKK u) 1 = (deltaToEndAdd hKK v) 1 :=
+        congrArg (fun f : Module.End K K => f 1) huv
+      exact (hcoeff u).symm.trans (h2.trans (hcoeff v))
+    rw [hsingle_eq u, hsingle_eq v, h1]
+  · intro f
+    refine ⟨SkewMonoidAlgebra.single (1 : G) (f 1), ?_⟩
+    show deltaToEndAdd hKK (SkewMonoidAlgebra.single (1 : G) (f 1)) = f
+    rw [hsingle]
+    refine LinearMap.ext (fun x => ?_)
+    have hfx : f x = x * f 1 := by
+      simpa [smul_eq_mul] using (map_smul f x (1 : K))
+    show f 1 * x = f x
+    rw [hfx, mul_comm]
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴 本轮主结论：修正形在 `\mathrm{Subsingleton}\ G` 档成立（无条件** ✓✅**）**：
+`R`／`S`／`F` **任意** ✓，只要 `G` 亚单 ✓ —— 环档目标 `L` 被**分类**为 `K` ✓
+（秩定理 `[L : K] = |G| = 1` ✓ ＋ `nonempty_algEquiv_of_finrank_eq_one` ✓），
+而 `L' = K` 的域档实例给 `\varphi` ✓ 与 `K \cong S \otimes_R K` ✓ ⟹ 复合即得 ✓。
+**⚠ 意义** ✓：修正形**非空洞** ✓（不是「换个说法」✗）；**且**证明只用了**两件**结构性输入 ✓
+（秩定理 ✓ ＋ 域档假设在 `L' = K` 的实例 ✓）⟹ 一般 `G` 档所缺的**正是**「`L` 的分类」✓
+（源 `proposition-0-5` ✓：`L` 是域的直和 ✓／`L \cong \mathrm{Ind}_H^G(eL)` ✓／正规基 ✓／代数无关性 ✓
+—— **库内与 mathlib 均未落** ✗）。
+**🔴 不声称** ✗：**不**声称原形（`RealizationRingTierBridge` ✓）已证或已驳 ✗；
+**不**声称一般 `G` 档的修正形已证 ✗。 -/
+theorem realizationRingTierBridgeFinite_of_subsingleton (hG : Subsingleton G) :
+    RealizationRingTierBridgeFinite F G := by
+  intro R S _ _ _ _ _ _ hfield K _ _ L _ _ _ _ _ _ _ hKL hgal
+  have hcard : Fintype.card G = 1 := by
+    have h1 : Fintype.card G ≤ 1 := Fintype.card_le_one_iff.mpr (fun a b => hG.elim a b)
+    have h0 : 0 < Fintype.card G := Fintype.card_pos
+    omega
+  have hfin : Module.finrank K L = 1 := by
+    rw [BTier.finrank_eq_card_of_isGaloisWithGroup hKL hgal, hcard]
+  obtain ⟨eL⟩ := nonempty_algEquiv_of_finrank_eq_one (K := K) (L := L) hfin
+  let _instK : MulSemiringAction G K :=
+    { smul := fun _ x => x
+      one_smul := fun _ => rfl
+      mul_smul := fun _ _ _ => rfl
+      smul_zero := fun _ => rfl
+      smul_add := fun _ _ _ => rfl
+      smul_mul := fun _ _ _ => rfl
+      smul_one := fun _ => rfl }
+  have hKK : ∀ (g : G) (r : K) (t : K), g • (r • t) = r • (g • t) := fun g r t => rfl
+  have hgalKK : BTier.IsGaloisWithGroup K K G hKK := isGaloisWithGroup_self_of_subsingleton hG hKK
+  obtain ⟨φ, ⟨eK⟩⟩ := hfield K K hKK hgalKK
+  exact ⟨φ, ⟨eL.trans eK⟩⟩
+
+#print axioms isGaloisWithGroup_zeroRing_of_subsingleton
+#print axioms pUnit_not_field
+#print axioms nonempty_algEquiv_of_finrank_eq_one
+#print axioms realizationPropertyFieldFinite_self_trivialGroup
+#print axioms RealizationRingTierBridgeFinite
+#print axioms realizationRingTierBridgeFinite_of_realizationRingTierBridge
+#print axioms isGaloisWithGroup_self_of_subsingleton
+#print axioms realizationRingTierBridgeFinite_of_subsingleton
+
+end RingTierBridgeFinite
+
+section CarrierShapedResiduals
+
+variable {G : Type} [Group G] [Fintype G] {F : Type} [Field F]
+
+set_option maxHeartbeats 1000000 in
+/-- **源 `theorem-2-1` 侧的载体形残余**（环档 `(c)` 款整项入残余 ⟹ 归约**不再需要环档桥**）。 -/
+def Thm21RingTierResidual (A : Type) [Group A] [Fintype A] (F : Type) [Field F] : Prop :=
+  SaltmanCondition A F →
+    ∃ (R S : Type) (_ : CommRing R) (_ : CommRing S) (_ : Algebra F R) (_ : Algebra R S)
+      (_ : Algebra F S) (_ : IsScalarTower F R S) (_ : MulSemiringAction A S)
+      (hRG : ∀ (g : A) (r : R) (t : S), g • (r • t) = r • (g • t)),
+      (∃ (n : ℕ) (w : MvPolynomial (Fin n) F),
+        w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w)) ∧
+      BTier.IsGaloisWithGroup R S A hRG ∧ BTier.RealizationProperty F A R S
+
+set_option maxHeartbeats 1000000 in
+/-- **归约（源 `theorem-2-1`，无环档桥）** ✓：残余（载体形 ✓）⟹ 源陈述 ✓。 -/
+theorem theorem21Statement_of_ringTierResidual (A : Type) [Group A] [Fintype A]
+    (F : Type) [Field F] (hres : Thm21RingTierResidual A F) : Theorem21Statement A F := by
+  intro hC
+  obtain ⟨R, S, _hcR, _hcS, _haFR, _haRS, _haFS, _hst, _hmsa, hRG, ha, hgal, hc⟩ := hres hC
+  exact ⟨R, S, hRG, ha, hgal, hc⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **强度序** ✓：旧残余 ＋ 原形环档桥 ⟹ 载体形残余 ✓（**逐字**同一构造 ✓）。 -/
+theorem thm21RingTierResidual_of_clausesResidual_and_ringBridge (A : Type) [Group A] [Fintype A]
+    (F : Type) [Field F] (hres : Thm21ClausesResidual A F)
+    (hb : RealizationRingTierBridge F A) : Thm21RingTierResidual A F := by
+  intro hC
+  obtain ⟨R, S, hcR, hcS, haFR, haRS, haFS, hst, hmsa, hRG, ha, hgal, hc⟩ := hres hC
+  exact ⟨R, S, hcR, hcS, haFR, haRS, haFS, hst, hmsa, hRG, ha, hgal, hb R S hc⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **源 `theorem-5-1` 侧的载体形残余**（环档 `(c)` 款整项入残余 ⟹ 归约**不再需要环档桥**）。 -/
+def NoetherRingTierResidual (F : Type) [Field F] (G : Type) [Group G] [Fintype G]
+    [DecidableEq G] : Prop :=
+  Infinite F →
+    ∃ (R S : Type) (_ : CommRing R) (_ : CommRing S) (_ : Algebra F R) (_ : Algebra R S)
+      (_ : Algebra F S) (_ : IsScalarTower F R S) (_ : MulSemiringAction G S)
+      (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)),
+      (∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧
+        Nonempty (R ≃ₐ[F] Localization.Away w)) ∧
+      BTier.IsGaloisWithGroup R S G hRG ∧ BTier.RealizationProperty F G R S
+
+set_option maxHeartbeats 1000000 in
+/-- **归约（源 `theorem-5-1`，无环档桥）** ✓。 -/
+theorem theorem51Statement_of_noetherRingTierResidual [DecidableEq G]
+    (h : NoetherRingTierResidual F G) : Theorem51Statement F G := by
+  intro hinf L _ _ _ _ _
+  obtain ⟨R, S, _hcR, _hcS, _haFR, _haRS, _haFS, _hst, _hmsa, hRG, ha, hgal, hc⟩ := h hinf
+  exact ⟨R, S, hRG, ha, hgal, hc⟩
+
+#print axioms Thm21RingTierResidual
+#print axioms theorem21Statement_of_ringTierResidual
+#print axioms thm21RingTierResidual_of_clausesResidual_and_ringBridge
+#print axioms NoetherRingTierResidual
+#print axioms theorem51Statement_of_noetherRingTierResidual
+
+
+
+/-! ### 4.64 **登记（r262 总账，逐条如实）** -/
+
+/-- **登记** ✓：**残余 ①（`RealizationRingTierBridge`，原形）的状态** ——
+**(甲) 已落** ✓✅：**根因** ✓（零环是库内合法 `G`-Galois 目标 ✓，`G` 亚单档 ✓；
+`pUnit_not_field` ✓ ⟹ 它**不在**域档量词域内 ✓）；**域档前件在该载体上非空** ✓
+（`realizationPropertyFieldFinite_self_trivialGroup` ✓）；**修正形** ✓（`RealizationRingTierBridgeFinite` ✓）
+＋ **其 `\mathrm{Subsingleton}\ G` 档的证明** ✓✅（`realizationRingTierBridgeFinite_of_subsingleton` ✓）；
+**两条源陈述的**无桥**归约** ✓✅（`theorem21Statement_of_ringTierResidual` ✓／
+`theorem51Statement_of_noetherRingTierResidual` ✓ —— 环档 `(c)` 款整项**收进载体形残余** ✓）。
+**(乙) 未落** ✗（**逐条，含理由** ✓）：**(i)** **原形的机器反驳** ✗ —— 计划路线（零环目标 ＋
+`F \otimes_F F` 非平凡 ✓）在**形式化**时受阻 ✓：`RealizationProperty` 结论中的
+`\mathrm{letI} : \mathrm{Algebra}\ R\ K := \varphi.\mathrm{toRingHom.toAlgebra}` ✓（**遮蔽** ✓）
+使该结论的实例在 `R = K = S = F` 档出现**两个候选** ✗（`\mathrm{instAlgebra}` ✗ 与
+`\mathrm{leftAlgebra}` ✗：实测报错「synthesized … instAlgebra, inferred … leftAlgebra」✓），
+而取**非平凡底域** `K = F(t)` ✓ 时张量的 `\mathrm{Semiring}`／`\mathrm{Algebra}\ K` 实例在
+**遮蔽语境**下不可合成 ✗（实测「failed to synthesize `\mathrm{Semiring}\ (K \otimes_F F)`」✓）
+⟹ 该反驳须先把 `\mathrm{RealizationProperty}` 的 `\mathrm{letI}` 结构改成**显式参数** ✓
+（**口径变更** ✗，**不在本轮** ✗）；**(ii)** **一般 `G` 档的判别力** ✗ —— 零环在 `G` 非平凡时
+**不是** `G`-Galois ✓（`\mathrm{FaithfulSMul}` 款即排除 ✓；`isGaloisWithGroup_zeroRing_of_subsingleton`
+的 `hG` 前提正是它 ✓）⟹ **原形在一般档的真值仍未判定** ⚠；**(iii)** 修正形的一般 `G` 档 ✗ ——
+所需输入 ＝ 源 `proposition-0-5` ✓ 的**分类**（`L` 是域的直和 ✓／`L \cong \mathrm{Ind}_H^G(eL)` ✓／
+正规基 ✓／代数无关性 ✓），**库内与 mathlib 均未落** ✗（mathlib 的 Artin 界／`\mathrm{FixedPoints}`／
+正规基定理**均只域档** ✗）；**(iv)** 两条源陈述 ✓ **仍未证** ✗（且 §D 已判残余 ② 在 `G` 非平凡档为空 ✗）。
+**🔴 不声称** ✗：**不**声称原形已证 ✗；**不**声称原形已驳 ✗（(i) 未落 ✓）；
+**不**声称修正形的一般 `G` 档已证 ✗；**不**声称两条源陈述已证 ✗。 -/
+theorem ringTierBridge_residual_registered : True := trivial
+
+#print axioms ringTierBridge_residual_registered
+
+end CarrierShapedResiduals
 
 end ABGV52

@@ -1094,3 +1094,15 @@ equivalence, a strengthened reduction whose second conjunct consumes the generat
 discrimination witness for the empty family, and two non-emptiness probes including an unconditional
 one at the one-point group over the rationals.  The old reduction is untouched, because its proof
 route genuinely does not need the generating row.
+
+The shared ring-tier residual has been diagnosed rather than discharged, and both source statements
+have been re-reduced without it.  The diagnosis is machine-checked: the library's Galois predicate
+accepts the zero ring when the group is a one-point type, while on the source's side a Galois
+extension is a finitely generated projective module of rank the group order, so the zero ring lies in
+the library's quantifier range but not in the source's.  Since the zero ring is not a field, the
+finite-field tier cannot see such targets, which is why the implication from that tier to the ring
+tier cannot be expected to hold as stated.  The corrected residual adds non-triviality and finite
+generation over the base, matching the source's own finiteness consequence, and that corrected form is
+proved unconditionally for one-point groups.  Finally the two source statements now reduce without the
+ring-tier bridge at all: the ring-tier clause is absorbed into a carrier-shaped residual, and the
+conditions under which the bridge was previously assumed are recorded.
