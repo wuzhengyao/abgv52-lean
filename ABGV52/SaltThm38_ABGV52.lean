@@ -39,6 +39,8 @@ import ABGV52.SaltCor_ABGV52
 import Mathlib.RingTheory.Localization.InvSubmonoid
 import Mathlib.RingTheory.TensorProduct.Nontrivial
 import Mathlib.LinearAlgebra.Trace
+import Mathlib.RingTheory.Trace.Basic
+import Mathlib.FieldTheory.Galois.NormalBasis
 import Mathlib.FieldTheory.Fixed
 import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
@@ -7897,6 +7899,45 @@ theorem r284_traceFormula_iff_eta_kerTrace
 
 end R284TraceCriterion
 
+/-! ##### 270.G **源文路线（field-tier）：正规基 ＋ 迹恒等式**（第 285 轮；直用 mathlib 已发表件）
+
+**📌 用户指令** ✓（2026-10-14）：「**需形式化的内容，若已发表文章有，则使用即可**」✓。
+**源侧** ✓：`Saltman1982` **`proposition-0-5(c)`**（印 254 ✓）：「`L` has a **normal basis** over `K`；
+`L⁺ ≅ K[G]` as `K[G]` modules」✓ —— **field 档** ✓，源 `theorem-5-1` 证明所使用者 ✓（`lemma-5-2` ✓）。
+**库内现成件** ✓：**`IsGalois.normalBasis`** ✓（`FieldTheory/Galois/NormalBasis.lean` ✓）＋
+**`trace_eq_sum_automorphisms`** ✓（`RingTheory/Trace/Basic.lean:263` ✓）—— **本条只作桥接，不重证** ✓。 -/
+
+section R285SourceRoute
+
+/-- **桥：`r270MulTrace` ＝ mathlib `Algebra.trace`** ✓（任意交换环 ✓、任意基 ✓）——
+`+` 侧 `r283MulTrace_eq_linearMapTrace` ✓，`−` 侧 `Algebra.trace_apply` ✓（`Algebra.lmul` 与
+`LinearMap.mul` 同函 ✓）。**⟹ mathlib 的迹理论（环档 ✓）可与本工程 `r270MulTrace` 互用** ✓。 -/
+lemma r285MulTrace_eq_algebraTrace {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι R S) (x : S) :
+    r270MulTrace b x = Algebra.trace R S x := by
+  rw [r283MulTrace_eq_linearMapTrace, Algebra.trace_apply]
+  congr 1
+
+/-- **field-tier 迹恒等式** ✓✅（**直用 mathlib** ✓）：有限 Galois 扩张 `L/K` 上
+`Algebra.trace K L x = ∑_{σ ∈ Gal(L/K)} σ • x`（`algebraMap` 形 ✓）。
+**⚠ 口径** ✓：mathlib 侧写 `σ x`；本件右侧写 `σ • x`（`AlgEquiv.applyMulSemiringAction` ✓，`rfl` ✓ 同函 ✓）。 -/
+theorem r285_traceFormula_field {K L : Type*} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsGalois K L] (x : L) :
+    algebraMap K L (Algebra.trace K L x) = ∑ σ : L ≃ₐ[K] L, σ • x := by
+  rw [trace_eq_sum_automorphisms x]
+  exact Finset.sum_congr rfl (fun σ _ => by rfl)
+
+/-- **field-tier 正规基存在性** ✓✅（**直用 mathlib** ✓）：源 `proposition-0-5(c)` ✓ 的
+**field 档机检版** ✓ —— `∃ b : Basis Gal(L/K) K L, b σ = σ (b 1)` ✓。
+**🔴 不声称** ✗：本件**不**声称 ring-tier `TraceUnimodularSufficiency269` ✓（**并行登记** ✓，见 §246.4 ✓）。 -/
+theorem r285_normalBasis_field {K L : Type*} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsGalois K L] :
+    ∃ b : Module.Basis (L ≃ₐ[K] L) K L, ∀ σ : L ≃ₐ[K] L, b σ = σ (b 1) :=
+  ⟨IsGalois.normalBasis K L, IsGalois.normalBasis_apply⟩
+
+end R285SourceRoute
+
+
 
 
 /-- **`δ` 在求和上的取值式** ✓：`δ (∑_g single g (s g)) x = ∑_g s g · (g • x)` ✓
@@ -7999,6 +8040,9 @@ end R270TraceUnimodular
 #print axioms r284MulTrace_eta
 #print axioms r284MulTrace_algebraMap
 #print axioms r284_traceFormula_iff_eta_kerTrace
+#print axioms r285MulTrace_eq_algebraTrace
+#print axioms r285_traceFormula_field
+#print axioms r285_normalBasis_field
 
 /-! #### 270.D **非空性（L1）**：分裂载体（**任意交换环** ✓）＋ 二次载体（迹公式**自动** ✓） -/
 

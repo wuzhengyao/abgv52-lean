@@ -1253,3 +1253,11 @@ statement; the criterion is verified on the split carrier but is not yet forced 
 The next round follows the published route: Saltman's normal-basis proposition for the field case and the trace
 identity for Galois field extensions already available in mathlib are to be used where they apply.
 
+Round 285 opens the published-source route for the trace-formula obligation.  The multiplicative trace is
+identified with mathlib's `Algebra.trace` for an arbitrary commutative coefficient ring and basis, and the two
+field-tier facts that Saltman's Theorem 5.1 proof invokes are landed as direct bridges from mathlib: existence
+of a normal basis for a finite Galois field extension (`IsGalois.normalBasis`) and the trace identity expressing
+the field trace as the sum over the Galois group (`trace_eq_sum_automorphisms`).  The ring-tier registered
+implication remains open and is carried as a parallel registration; the source route now has its field-tier
+inputs machine-checked in the project.
+
