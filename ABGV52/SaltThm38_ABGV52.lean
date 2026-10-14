@@ -8440,4 +8440,92 @@ end ArtinSchreierShiftAPI292
 #print axioms asShiftH_root
 
 
+/-! ### 4.82 **AS 移位是自同构**（第 293 轮）—— 双射性收口 ✓（§253.3／§254.6 的下一手 ✓）
+
+**落成** ✓✅：**`asShiftH_comp_neg`** ✓（`φ_{-k} ∘ φ_k = id` ✓）＋ **`asShiftH_comp_pos`** ✓（`φ_k ∘ φ_{-k} = id` ✓）
+⟹ **`asShiftH_bijective`** ✓✅：**`Function.Bijective (asShiftH a k hk)`** ✓ —— 即源 `C_p`-作用的生成端
+**是环自同构** ✓（`asShiftH a k hk : asCarrier ≃+* asCarrier` 的双射半 ✓）。
+
+**机制** ✓（**外延二步** ✓，避开隐式类型陷阱 ✓）：
+**(i)** **商环外延** ✓ `Ideal.Quotient.ringHom_ext` ✓（`AdjoinRoot f ＝ R[X] ⧸ (f)` ✓）；
+**(ii)** **多项式外延** ✓ `Polynomial.ringHom_ext` ✓（`C`-支 ＝ **固定系数** ✓ `asShiftH_of` ✓；`X`-支 ＝ **根 ↦ `root + k`** ✓
+`asShiftH_root` ✓ ＋ `of (-k) + of k = 0` ✓）。
+**⚠ 工艺** ✓（**入 §5.1** ✓）：两条复合**各写一遍** ✓（**不**用 `comp_neg` 在 `-k` 处实例化 ✗ ——
+那会引入 `-(-k)` 并把证明项搬进依赖位置 ⟹ `rw [neg_neg]` 报 **motive is not type correct** ✗，实测 ✓）；
+结构性步骤用 `add_assoc` 先把 `(root + of (-k)) + of k` 归一 ✓（否则 `show` 形**句法不匹配** ✗）。
+
+**🔴 不声称** ✗：**不**声称 `MulSemiringAction (ZMod p)` 已落 ✗（**下一手** ✓）；
+**不**声称 `IsGaloisWithGroup` 任何一款 ✗；**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section ArtinSchreierAutomorphism293
+
+/-- **复合 ①** ✓：**`φ_{-k} ∘ φ_k = id`** ✓（`hneg : (-k)^p = -k` ✓ 由 §4.80 ✓ 供给）。 -/
+theorem asShiftH_comp_neg {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) (hneg : (-k) ^ p = -k) :
+    (asShiftH a (-k) hneg).comp (asShiftH a k hk)
+      = RingHom.id (asCarrier R p a) := by
+  refine Ideal.Quotient.ringHom_ext (I := Ideal.span {ASpoly R p a}) ?_
+  refine Polynomial.ringHom_ext ?_ ?_
+  · intro r
+    show (asShiftH a (-k) hneg) ((asShiftH a k hk)
+        ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)))
+      = (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)
+        = AdjoinRoot.of (ASpoly R p a) r from rfl]
+    rw [asShiftH_of, asShiftH_of]
+  · show (asShiftH a (-k) hneg) ((asShiftH a k hk)
+        ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)))
+      = (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)
+        = AdjoinRoot.root (ASpoly R p a) from rfl]
+    rw [asShiftH_root, map_add, asShiftH_root, asShiftH_of]
+    rw [add_assoc, show AdjoinRoot.of (ASpoly R p a) (-k) + AdjoinRoot.of (ASpoly R p a) k = 0 from by
+      rw [← map_add, neg_add_cancel, map_zero], add_zero]
+
+/-- **复合 ②** ✓：**`φ_k ∘ φ_{-k} = id`** ✓（与 ① **各写一遍** ✓ —— 避开 `-(-k)` 依赖位陷阱 ✗）。 -/
+theorem asShiftH_comp_pos {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) (hneg : (-k) ^ p = -k) :
+    (asShiftH a k hk).comp (asShiftH a (-k) hneg)
+      = RingHom.id (asCarrier R p a) := by
+  refine Ideal.Quotient.ringHom_ext (I := Ideal.span {ASpoly R p a}) ?_
+  refine Polynomial.ringHom_ext ?_ ?_
+  · intro r
+    show (asShiftH a k hk) ((asShiftH a (-k) hneg)
+        ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)))
+      = (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)
+        = AdjoinRoot.of (ASpoly R p a) r from rfl]
+    rw [asShiftH_of, asShiftH_of]
+  · show (asShiftH a k hk) ((asShiftH a (-k) hneg)
+        ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)))
+      = (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)
+        = AdjoinRoot.root (ASpoly R p a) from rfl]
+    rw [asShiftH_root, map_add, asShiftH_root, asShiftH_of]
+    rw [add_assoc, show AdjoinRoot.of (ASpoly R p a) k + AdjoinRoot.of (ASpoly R p a) (-k) = 0 from by
+      rw [← map_add, add_neg_cancel, map_zero], add_zero]
+
+/-- **🔴 主结果** ✓✅：**AS 移位是双射** ✓（**故为环自同构** ✓）。 -/
+theorem asShiftH_bijective {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) : Function.Bijective (asShiftH a k hk) := by
+  have hkneg := neg_pow_eq_neg hk
+  have h1 := asShiftH_comp_neg a k hk hkneg
+  have h2 := asShiftH_comp_pos a k hk hkneg
+  have hleft : Function.LeftInverse (asShiftH a (-k) hkneg) (asShiftH a k hk) :=
+    fun x => by
+      have := congrArg (fun f => f x) h1
+      simpa only [RingHom.comp_apply, RingHom.id_apply] using this
+  have hright : Function.RightInverse (asShiftH a (-k) hkneg) (asShiftH a k hk) :=
+    fun x => by
+      have := congrArg (fun f => f x) h2
+      simpa only [RingHom.comp_apply, RingHom.id_apply] using this
+  exact ⟨hleft.injective, hright.surjective⟩
+
+end ArtinSchreierAutomorphism293
+
+#print axioms asShiftH_comp_neg
+#print axioms asShiftH_comp_pos
+#print axioms asShiftH_bijective
+
+
 end ABGV52

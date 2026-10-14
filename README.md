@@ -1329,3 +1329,14 @@ automorphism argument needs, namely that the shift fixes the coefficients and th
 plus one, become direct instances of the evaluation lemmas for adjoining a root.  The restated shift has the same
 value as the version landed earlier, which is kept for the record.  Bijectivity itself, the group action and the
 Galois clauses are not claimed here; what is landed is the pair of computations the bijectivity argument consumes.
+
+Round 293 completes the automorphism: the Artin-Schreier shift is now proved bijective, and with the ring hom
+structure landed earlier it is therefore a ring automorphism of the carrier.  The proof composes the shift by the
+scalar and the shift by its negative in both orders and shows each composite is the identity.  Extensionality is
+taken in two steps, first along the quotient presentation of the carrier and then along the polynomial presentation
+of the ring being quotiented, so that it suffices to check the coefficients and the root; the coefficient case is the
+statement that the shift fixes the base, and the root case reduces to the trivial cancellation of the two shifts.
+Two practical points are recorded: the two composites are written out separately rather than obtained from one
+another by substituting the negative scalar, because that substitution would move a proof term into a dependent
+position and block rewriting, and the associativity of the sum is normalized before the cancellation is applied.
+The group action and the Galois clauses are not claimed here.
