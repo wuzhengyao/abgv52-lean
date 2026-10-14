@@ -8978,4 +8978,85 @@ end ArtinSchreierGaloisAssembly301
 #print axioms asCarrier_isGaloisWithGroup_of_delta
 
 
+/-! ### 4.90 **`δ` 在两条生成族上的取值 ＋ AS 档落点**（第 302 轮）
+—— 款③ 的**生成元计算** ✓：`δ` 由 `{single k 1}` 与 `{single 1 s}` 两族**钉住** ✓
+
+**落成五件** ✓✅（四件**通用** ✓、一件 **AS 档** ✓）：
+**(i)** **`coeffToEnd_one`** ✓（左乘 `1` ＝ 单位 ✓）；**(ii)** **`actEnd_one`** ✓（`1` 的作用端 ＝ 单位 ✓）；
+**(iii)** **`deltaToEndRingHom_single_one`** ✓✅：**`δ (single g 1) = actEnd g`** ✓（**群部** ✓）；
+**(iv)** **`deltaToEndRingHom_single_self`** ✓✅：**`δ (single 1 s) = coeffToEnd s`** ✓（**系数部** ✓）；
+**(v)** **`delta_AS_single_one_apply`** ✓✅：**AS 档** ✓ —— `δ (single k 1)` 作用在 `x` 上 ＝ **AS 自同构 `φ_k`** 作用在 `x` 上 ✓
+（**(iii)** ＋ `rfl` ✓）。
+
+**⚠ 机制与工艺** ✓：**(iii)/(iv)** 由 **`deltaToEndAdd_single`** ✓（已落 ✓：`δ(single g s) = coeffToEnd s * actEnd g` ✓）
+＋ `one_mul`／`mul_one` ✓ 收口 ✓；**(v)** 的 `rfl` 成功 ⟹ **AS 作用与 `actEnd` 定义上同一** ✓。
+**工艺（两条）** ✓（入 §5.1 ✓）：**(甲)** `deltaToEndRingHom` **需要 `[Fintype G]`** ✓（而 `coeffToEnd`／`actEnd` **不需要** ✗）
+—— 故前者用 `omit [Fintype G] in` ✓，后者保留 ✓（否则报 unused section variable ✗ 或 synthInstanceFailed ✗）；
+**(乙)** 四件为**通用引理** ✓（与 `R`／`S`／`G` 无关 ✓），本件**置于 AS 档文件** ✓ 以守**单文件改动**纪律 ✓。
+
+**⚠ 意义** ✓：**(iii)/(iv)** 给 `δ` 在 **`S`-部与 `G`-部**的显式像 ✓ ⟹ 款③ 的**显式逆**只需在
+`{y^i · g}` 基上写出 ✓（**下一手** ✓）；**(v)** 把 AS 链的 `φ_k` **接进 `δ`** ✓。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗（**只**落生成元取值 ✓）；**不**声称 `IsGaloisWithGroup` 无条件形 ✗；
+**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section DeltaOnGenerators302
+
+open ABGV52.BTier
+
+variable {R : Type*} [CommRing R] {S : Type*} [CommRing S] [Algebra R S]
+  {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+
+omit [Fintype G] in
+/-- **左乘 `1` ＝ 单位** ✓。 -/
+lemma coeffToEnd_one : (coeffToEnd (R := R) (1 : S) : Module.End R S) = 1 := by
+  ext t; simp [coeffToEnd]
+
+omit [Fintype G] in
+/-- **`1` 的作用端 ＝ 单位** ✓。 -/
+lemma actEnd_one (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) :
+    actEnd hRG (1 : G) = 1 := by
+  ext t; simp [actEnd]
+
+/-- **`δ` 在群部上的取值** ✓：`δ (single g 1) = actEnd g` ✓。 -/
+lemma deltaToEndRingHom_single_one (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (g : G) :
+    deltaToEndRingHom hRG (SkewMonoidAlgebra.single g (1 : S)) = actEnd hRG g := by
+  show deltaToEndAdd hRG (SkewMonoidAlgebra.single g (1 : S)) = actEnd hRG g
+  rw [deltaToEndAdd_single, coeffToEnd_one, one_mul]
+
+/-- **`δ` 在系数部上的取值** ✓：`δ (single 1 s) = coeffToEnd s` ✓。 -/
+lemma deltaToEndRingHom_single_self (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (s : S) :
+    deltaToEndRingHom hRG (SkewMonoidAlgebra.single (1 : G) s) = coeffToEnd (R := R) s := by
+  show deltaToEndAdd hRG (SkewMonoidAlgebra.single (1 : G) s) = coeffToEnd (R := R) s
+  rw [deltaToEndAdd_single, actEnd_one, mul_one]
+
+end DeltaOnGenerators302
+
+section DeltaAS302
+
+open ABGV52.BTier
+
+attribute [local instance] asCarrierMSA
+
+/-- **AS 档落点** ✓✅：`δ (single k 1)` 在 `x` 上的值 ＝ **AS 自同构 `φ_k`** 在 `x` 上的值 ✓。 -/
+lemma delta_AS_single_one_apply {R : Type*} [CommRing R] [IsDomain R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R) (k : Multiplicative (ZMod p)) (x : asCarrier R p a) :
+    (deltaToEndRingHom (S := asCarrier R p a) (G := Multiplicative (ZMod p))
+        (asCarrier_hRG a) (SkewMonoidAlgebra.single k (1 : asCarrier R p a))) x
+      = asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+        (castHom_pow (p := p) (Multiplicative.toAdd k)) x := by
+  rw [deltaToEndRingHom_single_one]
+  rfl
+
+end DeltaAS302
+
+#print axioms coeffToEnd_one
+#print axioms actEnd_one
+#print axioms deltaToEndRingHom_single_one
+#print axioms deltaToEndRingHom_single_self
+#print axioms delta_AS_single_one_apply
+
+
 end ABGV52

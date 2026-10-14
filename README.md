@@ -1411,3 +1411,13 @@ for the carrier therefore follows as soon as the crossed-product clause is avail
 as a theorem whose only hypothesis is precisely that remaining clause.  Two practical points are recorded: the
 scalar action must be unfolded by rewriting with the algebra scalar law rather than by definitional unfolding, and the
 criterion lives in a nested namespace, so it must be referenced by its qualified name.
+
+Round 302 computes the crossed-product map on the two families of generators that determine it.  On an element of the
+form one tensor a group element the map is the action of that group element, and on an element of the form a carrier
+element tensor the identity it is left multiplication by that carrier element; both computations are immediate from
+the description of the map on single terms that was already available.  Specializing the first of them to the
+Artin-Schreier carrier identifies the value of the crossed-product map on the group part with the shift automorphism,
+so the formalization now records that the crossed-product map and the action studied in the previous rounds agree on
+the group part.  Two practical points are recorded, one about which of these constructions require the group to be
+finite and one about the placement of generic lemmas inside the carrier-specific file.  Bijectivity of the
+crossed-product map is not claimed here.
