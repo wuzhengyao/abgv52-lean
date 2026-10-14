@@ -9373,4 +9373,57 @@ end DeltaExpansion309
 #print axioms delta_apply_sum
 
 
+/-! ### 4.98 **作用即 `R`-代数自同构（Dedekind 通道的桥）**（第 310 轮）
+—— **纠正一条错误路线** ✗ ＋ 落**正确的桥** ✓
+
+**⚠ 路线纠正（重要，本节留存）** ✗：§270.5／§271.5 曾拟「在 `w = θ` 处取值 ⟹ 由 `{g•θ}` 的
+**`R`-线性无关**推系数全零」✗ —— **该推理无效** ✗：`δ z = 0` 在 `w = θ` 处给出的关系是
+`∑_g (coeff z g) * (g • θ) = 0` ✓，其系数 `coeff z g` 属 **`S`** ✓ 而非 `R` ✗；而 **`S`-线性关系恒存在** ✓
+（`dim_S S = 1` ✓：任两元素都 `S`-相关 ✗）⟹ **不能**由 `R`-无关性推出 `S`-系数为零 ✗。
+**正路** ✓ ＝ **Dedekind 引理** ✓：**已核** mathlib 有
+**`linearIndependent_algHom_toLinearMap (K M L) : LinearIndependent L AlgHom.toLinearMap`** ✓
+（**`L`-线性**无关 ✓ —— **强形** ✓，正是所需 ✓）。
+
+**落成** ✓✅：**`actionAlgEquiv`** ✓✅：给定 `[MulSemiringAction G S]` ✓ ＋ **不动基**
+`hfix : ∀ g r, g • algebraMap R S r = algebraMap R S r` ✓ ⟹ **每个 `g` 给出 `S ≃ₐ[R] S`** ✓
+（`toFun x := g • x` ✓，逆 `g⁻¹ • -` ✓，由 `mul_smul`／`inv_mul_cancel` ✓；保乘／加由
+**`MulSemiringAction.smul_mul`** ✓／**`smul_add`** ✓；与 `R` 交换由 `hfix` ✓）。
+
+**⚠ 工艺（三条，入 §5.1；均本轮实测）** ✓：**(甲)** `AlgEquiv` 结构字面量中 `toFun`／`invFun` 的复合**未 β-归约** ✗
+⟹ `left_inv`／`right_inv` **须先 `show`** ✓（否则 `rw [← mul_smul, …]` 不命中 ✗）；
+**(乙)** `smul_mul` **须限定** ✓（`MulSemiringAction.smul_mul` ✓；裸名**未知** ✗）而 **`smul_add` 用裸名** ✓
+（`MulSemiringAction.smul_add` **未知** ✗ —— **二者不对称** ✗，实测 ✓）；
+**(丙)** `LinearIndependent L AlgHom.toLinearMap` 的 `L` 是**系数域** ✓（**不是** `K` ✓）—— 引用时勿错位 ✗。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗；**不**声称 Dedekind 通道已通 ✗（**已备桥** ✓，**未接线** ✗）；
+**不**声称域档通道已通 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗。 -/
+
+section ActionAsAlgEquiv310
+
+/-- **作用即 `R`-代数自同构** ✓：由 `MulSemiringAction` ＋ **不动基** ✓。 -/
+noncomputable def actionAlgEquiv {R : Type*} [CommRing R] {S : Type*} [CommRing S] [Algebra R S]
+    {G : Type*} [Group G] [MulSemiringAction G S]
+    (hfix : ∀ (g : G) (r : R), g • algebraMap R S r = algebraMap R S r) (g : G) :
+    S ≃ₐ[R] S where
+  toFun x := g • x
+  invFun x := g⁻¹ • x
+  left_inv x := by
+    show g⁻¹ • (g • x) = x
+    rw [← mul_smul, inv_mul_cancel, one_smul]
+  right_inv x := by
+    show g • (g⁻¹ • x) = x
+    rw [← mul_smul, mul_inv_cancel, one_smul]
+  map_mul' x y := by
+    show g • (x * y) = (g • x) * (g • y)
+    exact MulSemiringAction.smul_mul g x y
+  map_add' x y := by
+    show g • (x + y) = g • x + g • y
+    exact smul_add g x y
+  commutes' r := hfix g r
+
+end ActionAsAlgEquiv310
+
+#print axioms actionAlgEquiv
+
+
 end ABGV52

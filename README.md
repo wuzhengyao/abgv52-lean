@@ -1488,3 +1488,14 @@ one side of an equation must be restricted to that side, otherwise the same symb
 the other side as well; the evaluation of a sum of endomorphisms must be moved inside the sum by the linear-map
 version of the lemma, the set version not applying; and the earlier failure of this step was due to an anonymous
 conversion rather than to a named lemma.  Injectivity itself is not claimed here.
+
+Round 310 records a correction and lands the bridge that the corrected route needs.  A previously planned step argued
+that evaluating the crossed-product map at a normal basis element forces all coefficients to vanish by linear
+independence of the conjugates; that step is invalid, because the relation obtained there has coefficients in the
+extension rather than in the base, and relations with coefficients in the extension always exist since the extension
+is one-dimensional over itself.  The valid route goes through the independence of distinct field automorphisms, which
+the library provides in the strong form, linear independence over the extension itself.  The bridge landed here turns
+the group action into algebra automorphisms of the extension, using that the action fixes the base; it is the first
+input of that route.  Three practical points are recorded, about beta-reduction in the structure fields of an algebra
+equivalence, about the asymmetric naming of the compatibility lemmas for addition and multiplication, and about the
+field over which independence is asserted.
