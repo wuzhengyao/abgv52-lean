@@ -2506,6 +2506,108 @@ theorem galoisProjectiveHyp_rows_probe :
       rw [← faithfulSMul_iff_algebraMap_injective]
       infer_instance)
 
+/-! ### 286.1 正规基 ⟹ 两行：`R[G]`-有限 ＋ `R[G]`-投射（第 286 轮；**源 `proposition-0-5(c)` 路线** ✓）
+
+**源侧机制** ✓（**逐字** ✓，`raw/Saltman1982.tex:122–131` ✓；**label 主锚** ✓ 规则 18 ✓）：
+源 `proposition-0-5(c)`（印 254 ✓）：「`L` has a normal basis over `K`. That is, `L⁺ ≅ K[G]` as `K[G]`
+modules」✓ —— **正规基 ⟹ `S ≅ R[G]` 作为 `R[G]`-模（自由秩 1）** ✓ ⟹ **`R[G]`-有限 ✓ ＋ `R[G]`-投射 ✓**
+（**一次拿两行** ✓，正对 §1.2 的 **T4** ✓；**不新证模论** ✗ —— 两条实例由 `R[G]` 自身**搬过去** ✓）。
+
+**机检内容** ✓：给定**正规基**（`b : Module.Basis G R S` ✓ ＋ `β` ✓ ＋ `b g = g • β` ✓），
+`x ↦ x • β` 是 `R[G]`-**线性双射** ✓ —— 单射与满射由**同一计算**给出：`b.repr (x • β) = x.coeff` ✓
+（即 `x • β = Σ_g (x.coeff g) • (g • β)` ✓ 的坐标读出 ✓）；**⟹ `S ≃ₗ[R[G]] R[G]`** ✓ ⟹
+`Module.Finite.equiv` ✓ ＋ `Module.Projective.of_equiv'` ✓ **搬两条实例** ✓。
+
+**⚠ 载体登记（L12／L16 ＋ 规则 17）** ✓：**正规基的存在性未被本件证明** ✗ —— 它是**源侧输入** ✓
+（源 `proposition-0-5(c)` ✓；其**证明**曰「与 `L` 为域时同一论证（引 `[Jac74, p. 283]`）」✓，
+而 `[Jac74]` **不在 `raw/`** ✗）⟹ 本件给**条件式** ✓：**「有正规基 ⟹ 两行」** ✓（**环档蕴含** ✓）；
+**field 档**的正规基存在性**已机检** ✓（`r285_normalBasis_field` ✓，`SaltThm38` §247 ✓）。
+
+**⚠ 与 `TraceUnimodularSufficiency269` 的关系** ✓：本件**不经迹公式** ✗、**不经迹形式幺模** ✗
+⟹ 该登记件对**源路线**是**旁路** ✓（**旁路判据 ＝ 正规基的存在性** ✓ —— **显式登记** ✓）。
+
+**🔴 不声称** ✗：**不**声称任何档的 `S/R` **确有**正规基 ✗（源侧输入 ✓，**非**本工程机检 ✗）；
+**不**声称源 `theorem-5-1`／`theorem-2-1` 已证 ✗；**不**声称 `hProj` 的**任意档**现形 ✗（**已被机检反驳** ✓）；
+**不**声称 `TraceUnimodularSufficiency269` 成立 ✗。 -/
+
+section NormalBasisRows286
+
+variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+variable {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+
+omit [Fintype G] in
+/-- **🔴🔴 主结果（T4）** ✓✅：**正规基 ⟹ `R[G]`-有限 ＋ `R[G]`-投射** ✓ —— **源 `proposition-0-5(c)`
+自己的机制** ✓（正规基 ⟹ `S ≅ R[G]` 作为 `R[G]`-模 ⟹ 自由秩 1 ⟹ 两行 ✓）。
+**输入** ✓：`R[G]`-模结构（`hcompat` ✓ 钉住「单项作用 ＝ 群作用」✓）＋ 正规基 `b` ✓（`b g = g • β` ✓）。
+**⚠ 归约工艺** ✓（**如实** ✓）：证明**只用** `x • β` 的坐标式 `b.repr (x • β) = x.coeff` ✓
+（`Finsupp.induction_linear` ✓：零／加／单项三档 ✓）—— 单射与满射**同源** ✓；
+两条结论经 `LinearEquiv.ofBijective` ✓ 从 `R[G]` 自身**搬运** ✓。
+**⚠ 不声称** ✗：**不**声称 `S/R` 有正规基 ✗（该项为**假设输入** ✓）；**不**声称 `hProj` 无条件形 ✗。 -/
+theorem rows_of_normalBasis
+    [Module (MonoidAlgebra R G) S]
+    (hcompat : ∀ (g : G) (r : R) (s : S), (MonoidAlgebra.single g r) • s = r • (g • s))
+    (b : Module.Basis G R S) (β : S) (hb : ∀ g : G, b g = g • β) :
+    Module.Finite (MonoidAlgebra R G) S ∧ Module.Projective (MonoidAlgebra R G) S := by
+  classical
+  have key : ∀ c : G →₀ R, b.repr ((MonoidAlgebra.ofCoeff c) • β) = c := by
+    intro c
+    induction c using Finsupp.induction_linear with
+    | zero => rw [MonoidAlgebra.ofCoeff_zero, zero_smul, map_zero]
+    | add c d hc hd => rw [MonoidAlgebra.ofCoeff_add, add_smul, map_add, hc, hd]
+    | single g r =>
+      rw [show MonoidAlgebra.ofCoeff (Finsupp.single g r) = MonoidAlgebra.single g r from rfl,
+        hcompat g r β, ← hb g, map_smul, Module.Basis.repr_self, Finsupp.smul_single]
+      congr 1
+      rw [smul_eq_mul, mul_one]
+  have key' : ∀ x : MonoidAlgebra R G, b.repr (x • β) = x.coeff := by
+    intro x
+    simpa only [MonoidAlgebra.ofCoeff_coeff] using key x.coeff
+  have hinj : Function.Injective (fun x : MonoidAlgebra R G => x • β) := by
+    intro x y hxy
+    have hxy' : x • β = y • β := hxy
+    have h : b.repr ((x - y) • β) = (x - y).coeff := key' (x - y)
+    rw [sub_smul, hxy', sub_self, map_zero] at h
+    exact sub_eq_zero.mp (MonoidAlgebra.coeff_injective h.symm)
+  have hsurj : Function.Surjective (fun x : MonoidAlgebra R G => x • β) := by
+    intro s
+    refine ⟨MonoidAlgebra.ofCoeff (b.repr s), ?_⟩
+    exact b.repr.injective (key (b.repr s))
+  let Phi : MonoidAlgebra R G →ₗ[MonoidAlgebra R G] S :=
+    { toFun := fun x => x • β
+      map_add' := fun x y => add_smul x y β
+      map_smul' := fun a x => by
+        show (a * x) • β = a • (x • β)
+        rw [mul_smul] }
+  have hPhi : ∀ x : MonoidAlgebra R G, Phi x = x • β := fun x => rfl
+  have hbij : Function.Bijective Phi := by
+    constructor
+    · intro x y h
+      exact hinj (by simpa only [hPhi] using h)
+    · intro s
+      obtain ⟨x, hx⟩ := hsurj s
+      exact ⟨x, by rw [hPhi]; exact hx⟩
+  have e : MonoidAlgebra R G ≃ₗ[MonoidAlgebra R G] S := LinearEquiv.ofBijective Phi hbij
+  exact ⟨Module.Finite.equiv e, Module.Projective.of_equiv' e⟩
+
+/-- **T4 收口** ✓✅：**正规基 ＋ `algebraMap` 单射** ⟹ **`GaloisProjectiveHyp R S G hRG`** ✓ ——
+**接口** ✓ 正是 `galoisProjectiveHyp_of_monoidAlgebraRows` ✓（**四输入** ✓：`R[G]`-模结构 ✓／塔式 ✓／
+有限 ✓／投射 ✓ ＋ 单射 ✓），其中**两条模论行**由 `rows_of_normalBasis` ✓ 供给 ✓（**取代**源侧
+`[CHR68] p. 13` 的**材料请求**位置 ✓，**但不声称**源侧那一条 ✗）。
+**⚠ 不声称** ✗：**不**声称 `R[G]`-模结构与塔式的**任意档**可得 ✗；**不**声称正规基可得 ✗。 -/
+theorem galoisProjectiveHyp_of_normalBasis
+    [Module (MonoidAlgebra R G) S] [IsScalarTower R (MonoidAlgebra R G) S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hcompat : ∀ (g : G) (r : R) (s : S), (MonoidAlgebra.single g r) • s = r • (g • s))
+    (b : Module.Basis G R S) (β : S) (hb : ∀ g : G, b g = g • β)
+    (hinj : Function.Injective (algebraMap R S)) :
+    GaloisProjectiveHyp R S G hRG :=
+  galoisProjectiveHyp_of_monoidAlgebraRows hRG
+    (rows_of_normalBasis hcompat b β hb).1
+    (rows_of_normalBasis hcompat b β hb).2 hinj
+
+end NormalBasisRows286
+
+
 end RowReductions266
 
 #print axioms deltaToEndRingHom_coeff_sum
@@ -2519,5 +2621,7 @@ end RowReductions266
 #print axioms galoisProjectiveHyp_of_monoidAlgebraRows
 #print axioms deltaInjective_probe_rat_punit
 #print axioms galoisProjectiveHyp_rows_probe
+#print axioms rows_of_normalBasis
+#print axioms galoisProjectiveHyp_of_normalBasis
 
 end ABGV52.BTier

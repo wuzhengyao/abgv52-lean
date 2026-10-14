@@ -1261,3 +1261,20 @@ the field trace as the sum over the Galois group (`trace_eq_sum_automorphisms`).
 implication remains open and is carried as a parallel registration; the source route now has its field-tier
 inputs machine-checked in the project.
 
+
+Round 286 opens and closes the module-theoretic pair of rows by the published route.  Saltman's normal-basis
+proposition states that the extension possesses a normal basis, that is, that it is isomorphic to the group
+algebra as a module over that group algebra, and that is exactly the mechanism the two rows need.  What is
+landed here is the resulting conditional implication at ring tier: given a normal basis, the map sending a
+group-algebra element to its action on the basis element is a bijection of group-algebra modules, because the
+coordinates of that action in the normal basis are precisely the coefficients of the element.  Injectivity and
+surjectivity therefore come from one computation rather than two, and the two rows, finiteness and projectivity
+over the group algebra, are then transferred along the resulting linear equivalence from the group algebra
+itself, so no module theory is reproved.  The transport is wired into the existing reduction, so the projectivity
+hypothesis is now supplied by a normal basis.  The existence of that basis is the source-side input and is not
+claimed at ring tier; the field-tier instance was machine-checked in the previous round.  With this, the
+trace-formulation obligation of the earlier rounds is bypassed for the main chain, and the bypass criterion is
+registered explicitly: the normal basis, not the trace formula.  A probe that appeared to refute the trace
+formulation through the split carrier was itself refuted by the project's existing machine-checked lemmas, which
+show that carrier to satisfy both the trace formula and the conclusion; that line is closed as a positive
+instance rather than a counterexample.
