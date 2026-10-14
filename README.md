@@ -1289,3 +1289,15 @@ argument is a transport of existing results.  Neither the trace form nor the tra
 the weight of the earlier trace rounds precisely: they matter only over a general ring, where equal ranks no longer
 suffice.  The field tier of the outstanding surjectivity obligation therefore reduces to injectivity alone.  Nothing
 about the ring tier is claimed; the registered shape remains open there.
+
+Round 288 makes the first incision into the source's Section 1 carrier for the Artin-Schreier case.  The carrier is
+the algebra obtained by adjoining a root of the polynomial X^p - X - a in characteristic p, and the group action
+the source uses sends that root to the root shifted by one.  What is landed here is the relation-preserving core of
+that action: in characteristic p with p prime, if an element satisfies the Artin-Schreier relation, then so does its
+shift by any scalar fixed by the p-th power map, in particular by one.  The computation is a single application of
+the Frobenius identity in characteristic p together with ring arithmetic, and it covers the whole orbit at once
+rather than the generator alone, because the shift parameter is arbitrary among the p-th-power-fixed scalars.  The
+statement is deliberately stated for an arbitrary commutative ring of characteristic p rather than for one
+particular model of the carrier, so that any later construction of the carrier can consume it directly.  The
+carrier itself, the resulting action of the cyclic group, and the Galois clauses are not claimed here; this round
+lands the relation-preserving core only.

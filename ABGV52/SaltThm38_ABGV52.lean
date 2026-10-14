@@ -8209,4 +8209,49 @@ end FieldTierDeltaRank
 #print axioms delta_surjective_of_injective_of_card_eq_finrank
 
 
+/-! ### 4.78 **源 §1 载体（Artin–Schreier）的位移核**（第 288 轮）
+—— 源 `theorem-1-2(a)` 的 `C_p`-作用的**代数核**（**残余 ③ 的第一口** ✓）
+
+**源侧** ✓（**逐字** ✓，`raw/Saltman1982.tex:165–171` ✓，label `theorem-1-2` ✓）：
+「Let `F` be a field of characteristic a prime `p`. Set `R = F[x]` and **`S = R{y^p − y − x}`**.
+Then `S/R` is generic for `C_p` over `F`」✓ —— 其中 `R{y^p − y − a}` ＝ **`R[y]/(y^p − y − a)`** ✓
+（**本工程尚未落该载体** ✗ —— `AdjoinRoot` 形态登记为下一手 ✓）。
+
+**本轮落成** ✓✅（**载体无关** ✓ —— 对**任意**满足 `y^p − y − a = 0` 的 `y` 成立 ✓，故 `AdjoinRoot` 档
+一旦落地即可**直接消费** ✓）：`char p`（`p` 素 ✓）下
+**(i)** `as_shift` ✓：`k^p = k` ⟹ **`(y + k)^p − (y + k) − a = 0`** ✓；
+**(ii)** `as_shift_one` ✓：**`(y + 1)^p − (y + 1) − a = 0`** ✓（源侧生成元 `y ↦ y + 1` ✓ 的位移核 ✓）。
+**机制** ✓：`add_pow_char` ✓（Frobenius ✓）＋ 环运算 ✓ —— **一次算出整条 `𝔽_p`-轨道** ✓
+（`k` 取遍素域元 ⟹ 载体的 `C_p`-自同构族 `y ↦ y + k` 的**关系保持** ✓ 得证 ✓）。
+
+**⚠ 用途与缺口（逐字如实）** ✓：本条是 `S/R` **`C_p`-Galois**（源 `theorem-1-2` 的 (b) 款 ✓）证明的**第一步** ✓ ——
+即「`y ↦ y+k` 保持定义关系」✓；**尚未落** ✗：**(甲)** 载体 `AdjoinRoot (X^p − X − C a)` 及其 `CharP` 传递 ✓（下一手 ✓）；
+**(乙)** 由此得的 `MulSemiringAction (ZMod p)` ✓（自同构 ＋ 群作用公理 ✓）；
+**(丙)** `IsGaloisWithGroup` 的**另两款** ✗（忠实性 ✓／不动环 ✓／`δ` 双射 ✓）。
+
+**🔴 不声称** ✗：**不**声称源 `theorem-1-2` 已证 ✗（**只**落位移核 ✓）；**不**声称载体已落 ✗；
+**不**声称残余 ③ 已开 ✗ —— 本条**只**是它的**第一口** ✓；**不**声称 `δ` 满射在载体档可得 ✗。 -/
+
+section ArtinSchreierShift
+
+/-- **AS 位移核（素域档）** ✓：`char p`（`p` 素）下，`k^p = k` ⟹
+`y^p − y − a = 0` 时 **`(y + k)^p − (y + k) − a = 0`** ✓ —— 即 `y ↦ y + k` **保持 AS 定义关系** ✓。 -/
+theorem as_shift {A : Type*} [CommRing A] {p : ℕ} [CharP A p] (hp : p.Prime) {y a k : A}
+    (hk : k ^ p = k) (h : y ^ p - y - a = 0) : (y + k) ^ p - (y + k) - a = 0 := by
+  let _inst : Fact p.Prime := ⟨hp⟩
+  have h1 : (y + k) ^ p = y ^ p + k := by rw [add_pow_char, hk]
+  rw [h1, show y ^ p + k - (y + k) - a = y ^ p - y - a by ring]
+  exact h
+
+/-- **AS 位移核（`+1` 档）** ✓：源侧生成元 `y ↦ y + 1` ✓（源 `theorem-1-2(a)` 的 `C_p` 作用 ✓）的关系保持 ✓。 -/
+theorem as_shift_one {A : Type*} [CommRing A] {p : ℕ} [CharP A p] (hp : p.Prime) {y a : A}
+    (h : y ^ p - y - a = 0) : (y + 1) ^ p - (y + 1) - a = 0 :=
+  as_shift hp (by rw [one_pow]) h
+
+end ArtinSchreierShift
+
+#print axioms as_shift
+#print axioms as_shift_one
+
+
 end ABGV52
