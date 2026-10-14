@@ -9241,4 +9241,39 @@ end DeltaPointValue306
 #print axioms delta_single_apply
 
 
+/-! ### 4.95 **基的系数消去（步骤丙的规范化形）**（第 307 轮）
+—— 域档款③ 单射证明的**独立性接口** ✓（把 smul 会话交给调用方 ✓）
+
+**落成** ✓✅：**`basis_coeff_eq_zero`** ✓✅：设 `b : Module.Basis G R S` ✓、`c : G → R` ✓，
+**`∑_g c g • b g = 0` ⟹ 全部 `c g = 0`** ✓（由 `Fintype.linearIndependent_iff` ✓ ＋ `b.linearIndependent` ✓ 一行 ✓）。
+
+**⚠ 工艺（两条，入 §5.1；均为本轮实测所得）** ✓：
+**(甲) 实例路径不一致** ✗：`Module.Basis.linearIndependent` 落在 **`AddCommMonoid`** 路径 ✓ 而
+`Fintype.linearIndependent_iff` 落在 **`AddCommGroup`** 路径 ✓ ⟹ 二者**不必互相匹配** ✗（实测报
+"Application type mismatch: … AddCommGroup.toAddCommMonoid" ✓）；**解** ✓：把本件的 `S` 声明为
+**`[AddCommGroup S]`** ✓（令两侧同路径 ✓）。
+**(乙) `whnf` 心跳** ✗：`∑ g, c g • b g = 0` 型目标在**抽象 `Semiring`／多 smul 实例**下 elaboration 极贵 ✓
+（实测 **200000 心跳耗尽** ✗）；**解** ✓：`set_option maxHeartbeats 800000 in` ✓（**不增警告** ✓）。
+
+**⚠ 用途** ✓：域档款③ 的**步骤丙** ＝ 在 `w = h⁻¹ • θ` 处取 `(δ z) w = 0` ✓ 得
+`∑_g (coeff z g) • ((g h⁻¹) • θ) = 0` ✓ ⟹（把 `((g h⁻¹) • θ)` 写成 `b (g h⁻¹)` ✓ —— 由正规基
+`b g = g • θ` ✓）用**本件** ⟹ `coeff z (·) = 0` ✓ ⟹ `z = 0` ✓。
+
+**🔴 不声称** ✗：**不**声称系数展开（§268.3 ✓ 的分解步）已证 ✗；**不**声称款③ 已证 ✗；
+**不**声称域档通道已通 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗。 -/
+
+section BasisCoeffCancel307
+
+set_option maxHeartbeats 800000 in
+/-- **基的系数消去** ✓：`∑_g c g • b g = 0` ⟹ 全部 `c g = 0` ✓。 -/
+theorem basis_coeff_eq_zero {R : Type*} [CommRing R] {S : Type*} [AddCommGroup S]
+    [Module R S] {G : Type*} [Group G] [Fintype G] (b : Module.Basis G R S) {c : G → R}
+    (h : ∑ g, c g • b g = 0) : ∀ g : G, c g = 0 :=
+  (Fintype.linearIndependent_iff.mp b.linearIndependent) c h
+
+end BasisCoeffCancel307
+
+#print axioms basis_coeff_eq_zero
+
+
 end ABGV52

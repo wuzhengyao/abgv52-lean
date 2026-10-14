@@ -1458,3 +1458,13 @@ vanish by linear independence of the conjugates.  The expansion itself is not co
 the intended decomposition of an element into single terms is blocked, together with the route that the next round
 should take, namely to prove it by injectivity of the coefficient map and then reduce to a statement about finitely
 supported functions.  Two rank computations for the dimension count were landed in the previous round.
+
+Round 307 records the linear-independence interface that the injectivity argument for the crossed-product map consumes:
+given a basis indexed by the group and a family of scalars whose combination against that basis vanishes, every scalar
+vanishes.  The statement is a direct consequence of the library's criterion for linear independence of a finite
+family, and it is stated with the scalars appearing only through the basis, so that callers who know their combination
+in the shape of the conjugates of a normal basis element can pass it after rewriting.  Two practical points are
+recorded.  The library's criterion lives along a different instance path than the linear independence attached to a
+basis, so the statement is phrased with an additive group to bring the two into the same path; and the elaboration of
+such a combination over an abstract semiring is expensive enough to require a raised heartbeat budget, which does not
+add warnings.  The coefficient expansion of the crossed-product map and injectivity itself are not claimed here.
