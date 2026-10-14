@@ -1439,3 +1439,13 @@ cannot form a basis as soon as the prime exceeds two, and a normal basis element
 higher weight; the top power of the root is the natural candidate.  The round thus converts a plausible but wrong
 guess into a machine-checked statement, so that no later round can quietly rely on it, and it records a repetition of
 a practical point about beta-reduction that was met once before.
+
+Round 305 supplies the two rank computations that the dimension count for the crossed-product map needs: the
+crossed product has rank the order of the group times the rank of the algebra, and the endomorphism ring has rank the
+square of that rank.  The first is obtained by transporting along the linear equivalence between the crossed product
+and finitely supported functions, the second is the standard rank of a module of linear maps.  The round also records
+a change of ground: on the carrier over a polynomial ring the explicit inverse would amount to a matrix computation of
+size the square of the prime, whereas the two statements of the source live over a field, so the remainder of this
+line goes through the field case, where the normal basis theorem is available in the library and was already used in
+an earlier round.  Three practical points are recorded about the transport, the direction of the rank lemma, and the
+instances the rank lemmas require.

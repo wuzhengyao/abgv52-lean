@@ -9161,4 +9161,45 @@ end ArtinSchreierNaiveCandidate304
 #print axioms asCarrier_conj_span_le
 
 
+/-! ### 4.93 **款③ 的两条秩输入（交叉积／自同态环）**（第 305 轮）
+—— 款③ 的**维数计数**两半 ✓（场地换挡：环档 AS 载体 → **域档 Galois 通道** ✓）
+
+**落成两件** ✓✅：**(i)** **`skew_finrank`** ✓✅：**`finrank R (Δ(S/R,G)) = |G| · finrank R S`** ✓；
+**(ii)** **`end_finrank`** ✓✅：**`finrank R (End_R S) = (finrank R S)²`** ✓。
+
+**⚠ 意义（换挡说明）** ✓：环档 AS 载体上款③ 的显式逆须算 **`p²` 阶矩阵** ✗（§265.6／§266.6 ✓）；
+而**源两条陈述的场地是域** ✓ ⟹ 改走**域档 Galois 通道** ✓：**(甲)** **mathlib 正规基定理** ✓
+（`IsGalois.normalBasis` ✓，`Galois/NormalBasis.lean:120` ✓，且**本库第 285 轮已机检** ✓）；
+**(乙)** 正规基 ⟹ **`δ` 单射** ✓（由 `{g•θ}` 的**无关性** ✓）；**(丙)** 秩相等（**本轮两件** ✓）＋ 单射
+⟹ **双射** ✓（域档 ✓，第 287 轮 `delta_surjective_of_injective_of_card_eq_finrank` ✓ 同型）。
+
+**⚠ 工艺** ✓（入 §5.1 ✓）：**(甲)** `SkewMonoidAlgebra` 是**结构** ✗（非 `G →₀ S` 的 defeq ✗）⟹ 秩须经
+**`coeffLinearEquiv`** ✓（注意 mathlib 形参名：其 `S` ＝ 我们的 `R` ✓、其 `k` ＝ 我们的 `S` ✓ —— **易错** ✗）；
+**(乙)** `finrank_eq` 方向：**正向** ✓（`←` 不命中 ✗，实测 ✓）；**(丙)** 两件皆需 **`StrongRankCondition R`** ✓
+（`skew` 侧还需 `Module.Free R S` ✓）。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗（**只**落秩输入 ✓）；**不**声称域档正规基通道已通 ✗（**下两步** ✓）；
+**不**声称 `IsGaloisWithGroup` 无条件形 ✗；**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section GaloisRankInputs305
+
+/-- **交叉积的秩** ✓：`finrank R (Δ(S/R,G)) = |G| · finrank R S` ✓。 -/
+theorem skew_finrank {R : Type u} [CommRing R] [StrongRankCondition R] {S : Type u}
+    [CommRing S] [Algebra R S] [Module.Free R S] {G : Type u} [Group G] [Fintype G] :
+    Module.finrank R (SkewMonoidAlgebra S G) = Fintype.card G * Module.finrank R S := by
+  rw [(SkewMonoidAlgebra.coeffLinearEquiv (S := R) (k := S) (G := G)).finrank_eq,
+    Module.finrank_finsupp]
+
+/-- **自同态环的秩** ✓：`finrank R (End_R S) = (finrank R S)²` ✓。 -/
+theorem end_finrank {R : Type u} [CommRing R] [StrongRankCondition R] {S : Type u}
+    [CommRing S] [Algebra R S] [Module.Free R S] [Module.Finite R S] :
+    Module.finrank R (Module.End R S) = Module.finrank R S * Module.finrank R S := by
+  rw [Module.finrank_linearMap]
+
+end GaloisRankInputs305
+
+#print axioms skew_finrank
+#print axioms end_finrank
+
+
 end ABGV52
