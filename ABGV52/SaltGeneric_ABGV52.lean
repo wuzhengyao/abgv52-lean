@@ -5862,6 +5862,92 @@ end NoetherAdjoinEndToEnd
 **现账** ✓ ＝ 「源**在 `raw/` 内** ✓、**实体未落**」✗，§166.3 ✓）。**⚠ 不声称**源 `theorem-5-1` 已证 ✗。 -/
 theorem theorem51_dataChain_gap_registered : True := trivial
 
+/-! ## 4.62 **有限档的谓词级收口**：**载体具体化**（`R := ↥S`）⟹ **假设表严格变短**（第 265 轮）
+
+**⚠ 起点** ✓（**承 §4.56** ✓／**§4.60 ①** ✓）：§4.56 的 `realizationPropertyFieldFinite_of_sourceData` ✓
+把**有限档**压到**源侧数据** ✓，但其假设表**逐条含 `hRQ`** ✓／**`hRGpoint`** ✓ 与**两条 `R`-塔实例** ✓
+（`[Algebra R (NoetherField F G)]` ✓／`[IsScalarTower F R (NoetherField F G)]` ✓）；§4.60 ① ✓ 的**证明体**
+已显示：当 `R` **具体化**为 `NoetherField F G` 的**子代数** `S` 时，那**四项**可由 `hle` ✓ 与
+`hS_{\rm fix}` ✓ **内部导出** ✓ —— **当时只在见证层内联** ✗，**未作谓词** ✗。
+
+**🔴 本轮断指** ✓：把该内联体**提为具名谓词级件** ✓ ——
+`realizationPropertyFieldFinite_of_subalgebra` ✓：结论 ＝
+`RealizationPropertyFieldFinite F G ↥S (Localization.Away t)` ✓，假设表 ＝ **§4.56 的假设表减四槽** ✓
+（`hRQ` ✓／`hRGpoint` ✓／**上述两条塔实例** ✓ —— 后两条由**子代数载体**的**结构实例**供给 ✓）。
+
+**⚠ 可达性** ✓（**不做新数学** ✓）：证明体**逐字**为 §4.60 ① ✓ 的内联块 ✓
+（**唯一调用** ＝ `exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra` ✓，**§4.47** ✓）
+—— 本件只**具名化** ✗→✓，**不重证** ✓。**探针** ✓：`.abgv52-scratch/probe-r265a.lean` ✓ **rc=0** ✓、**零警告** ✓。
+
+**⚠ 断言强度 ≤ 证据层级** ✓：**不声称**源 `definition-1-1`(c) ✓（**环档** ✓）已证 ✗
+（**仍差残余 ① 环档桥** ✓）；**不声称**两项具名端点（`hgal` ✓／`hProj` ✓）已证 ✗；
+**不声称**两条源陈述已证 ✗。**⚠ 无 sorry、无自造公理** ✓；公理门见 §5 ✓。 -/
+
+section RealizationFieldFiniteSubalgebra
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+set_option maxHeartbeats 1000000 in
+/-- **有限档 · 载体具体化形** ✓✅：`R` 取 `NoetherField F G` 的**子代数** `S` ✓ ⟹
+`RealizationPropertyFieldFinite F G ↥S (Localization.Away t)` ✓。
+**⚠ 假设表** ✓（**逐行** ✓）：`S` ✓／`t` ✓／`ht` ✓／`ht_inv` ✓／`hle` ✓／`hS_fix` ✓／**三实例** ✓／
+`hact_map` ✓／`hRG` ✓／**两项具名端点** `hgal` ✓／`hProj` ✓／`hS₀R` ✓／`hinf` ✓ ——
+**比 §4.56 少四槽** ✓（`hRQ` ✓／`hRGpoint` ✓／两条 `R`-塔实例 ✓）；**代价** ＝ `R` **不再是自由输入** ✗
+（**口径** ✓：与 §4.47 ✓／§4.60 ① ✓ 同一具体化 ✓）。
+**⚠ 证明体** ✓：**逐字**为 §4.60 ① ✓ 的内联块 ✓（**不重证** ✗）。
+**🔴 不声称** ✗：**不**声称本件消除两项具名端点 ✗（其实体 ＝ 源 `proposition-0-2` ✓，**在册未证** ✗）；
+**不**声称源 (c) 款（**环档** ✓）已证 ✗。
+**⚠ 判别力（L43）** ✓：**变异件负例已实跑** ✓（`.abgv52-scratch/probe-r265f.lean` ✓ **rc≠0** ✓）——
+**M4** ＝ 把 `hle` ✗ 换成 `True` ✗、**M6** ＝ 把 `hS_fix` ✗ 换成 `True` ✗（**证明体逐字照抄** ✓）
+⟹ §4.47 ✓ 的对应槽**无从供给** ✗ ⟹ **两者皆编译失败** ✓ ⟹ 两行**承重** ✓、**不可去** ✗。 -/
+theorem realizationPropertyFieldFinite_of_subalgebra
+    {S : Subalgebra F (NoetherField F G)}
+    {t : MvPolynomial G F} (ht : t ≠ 0) (htinv : ∀ (g : G), g • t = t)
+    (hle : S ≤ Subalgebra.restrictScalars F (Algebra.adjoin (MvPolynomial G F)
+      ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G))))
+    (hS_fix : ∀ (g : G) {x : NoetherField F G}, x ∈ S → g • x = x)
+    [Algebra ↥S (Localization.Away t)] [IsScalarTower F ↥S (Localization.Away t)]
+    [MulSemiringAction G (Localization.Away t)]
+    (hact_map : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p))
+    (hRG : ∀ (g : G) (r : ↥S) (x : Localization.Away t), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup ↥S (Localization.Away t) G hRG)
+    (hProj : BTier.GaloisProjectiveHyp ↥S (Localization.Away t) G hRG)
+    (hS₀R : ∀ r : ↥S,
+      awayToFieldAlg (F := F) (G := G) t ht (algebraMap ↥S (Localization.Away t) r)
+        = algebraMap ↥S (NoetherField F G) r)
+    (hinf : Infinite F) :
+    RealizationPropertyFieldFinite F G ↥S (Localization.Away t) := by
+  intro K _ _ L _ _ _ _ _ _ hKL hgalKL
+  let _ : SMulCommClass G K L := ⟨fun g k x => hKL g k x⟩
+  let _ : SMulCommClass G F L := ⟨fun g f x => by
+    rw [← IsScalarTower.algebraMap_smul K f x, ← IsScalarTower.algebraMap_smul K f (g • x),
+      hKL g (algebraMap F K f) x]⟩
+  obtain ⟨b, hb, hfix⟩ := exists_chrData_of_isGaloisWithGroup hKL hgalKL
+  let _ : Infinite K := infinite_of_algebra_of_infinite (F := F) (K := K)
+  obtain ⟨φ, e, _he⟩ := exists_algHom_and_equivariant_algEquiv_tensorProduct_of_subalgebra
+    (F := F) (G := G) (S := S) (t := t) ht htinv hle hS_fix hact_map hRG hgal hProj hS₀R
+    b hb hfix
+  refine ⟨φ, ?_⟩
+  let _ : Algebra ↥S K := φ.toRingHom.toAlgebra
+  exact ⟨e⟩
+
+#print axioms realizationPropertyFieldFinite_of_subalgebra
+
+end RealizationFieldFiniteSubalgebra
+
+/-- **登记** ✓：**§4.62 的账**（与 §4.56 ✓／§4.60 ① ✓ 合读）——
+**已落** ✓✅：**谓词级载体具体化件** ✓（`realizationPropertyFieldFinite_of_subalgebra` ✓，
+**假设表减四槽** ✓，**证明体不重证** ✓）。
+**未落** ✗（**逐条** ✓）：**(i)** 两项**具名端点** ✓（`hgal` ✓／`hProj` ✓ —— **源 `proposition-0-2`** ✓，
+**实体未落** ✗，§4.54 ⑧／§5 ✓）；**(ii)** 残余 ①（**环档桥** ✓，**未证** ✗）；
+**(iii)** **(a) 款**在同载体上 ✓（须 `hind` ✓／`hgen` ✓，**本件不含** ✗ —— §4.61 ✓ 的账另立 ✓）；
+**(iv)** 两条源陈述 ✓（**仍未证** ✗）。**⚠ 不声称** ✗：源 `theorem-5-1`／`theorem-2-1` 已证 ✗。 -/
+theorem realizationPropertyFieldFinite_subalgebra_registered : True := trivial
+
+#print axioms realizationPropertyFieldFinite_subalgebra_registered
+
 /-! ## 5. 公理闸门 -/
 
 #print axioms genericObjectExists_of_saltmanHyp

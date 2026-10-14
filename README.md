@@ -1132,3 +1132,16 @@ groups is exactly the problem of making the finite-field tier true at some carri
 available carriers are the source-side generic objects, whose field tier is the project's open
 main-line obligation.  The instance-ambiguity trap of the previous round is broken by fixing the
 tensor's instances once and naming the algebra homomorphism's compatibility slots explicitly.
+
+The field tier of the realisation property is now instantiated at a non-degenerate carrier on the
+source side, and the two source statements have been shown to share a single input.  On the carrier
+given by the fixed-field construction, with the base field the rationals and the one-point group, the
+tier holds unconditionally: every row of the source-data table is instantiated, so the predicate now
+has a non-degenerate example rather than only the degenerate one.  A sharper reduction replaces the
+former eighteen-row table by two rows plus one datum, and it feeds both source statements at once: from
+the same data one gets the second source statement's clause residual and the first's wiring residual,
+which makes explicit that the surjectivity of the structure map and the projectivity of the carrier are
+exactly the common input.  A mutant probe where each of five rows is replaced by a trivial statement
+fails inside the proofs, so the rows are load-bearing rather than decorative.  The ring-tier bridge
+remains open, and the degenerate carrier for it is now provably dead, so a refutation there needs a
+non-degenerate carrier instead.

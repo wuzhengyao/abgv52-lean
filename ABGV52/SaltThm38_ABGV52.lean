@@ -4528,4 +4528,591 @@ theorem not_realizationPropertyFieldFinite_self_of_not_algEquiv_self
 
 end FieldTierSelfRefuted
 
+/-! ### 4.70 **源侧 generic object 上的有限域档**：**两行残余**（`δ` 双射 ＋ `hProj`）（第 265 轮）
+
+**⚠ 起点** ✓（**承 §4.56** ✓（`realizationPropertyFieldFinite_of_sourceData` ✓）／**§4.62** ✓（`SaltGeneric` ✓
+的**载体具体化谓词级件** ✓）／**r228--r231** ✓（`T` 三项 ✓／三实例 ✓／`hRG` ✓／`hact` ✓／`hS_0R` ✓
+**全由构造供给** ✓）／**r260** ✓（不动域改接 ✓，残余 ④ ✓））：
+在**源侧 generic object**（Noether 域的不动子代数 `L^G` 中取数据 `a` ✓／`s_0` ✓，
+载体 ＝ `noetherFixedCarrier F G a s_0` ✓，`S` ＝ `Localization.Away T` ✓）上，
+**有限域档** `RealizationPropertyFieldFinite` ✓ 此前**只有**「**十八槽源侧数据**」的形 ✓
+（§4.56 ✓：**4 数据** ✓（`t` ✓／`ht` ✓／`ht_inv` ✓／`hinf` ✓）＋ **7 具名行** ✓
+（`hact_map` ✓／`hRG` ✓／`hgal` ✓／`hProj` ✓／`hS_0R` ✓／`hRQ` ✓／`hRGpoint` ✓）＋ **7 实例** ✓），
+**未按 r228--r231 的构造供给收口** ✗。
+
+**🔴 本轮断指** ✓（**六件** ✓；**探针** ✓ `.abgv52-scratch/probe-r265c.lean` ✓／`probe-r265e.lean` ✓／
+`probe-r265j.lean` ✓／`probe-r265k.lean` ✓ **rc=0** ✓、**零警告** ✓）：
+**①** `realizationPropertyFieldFinite_pUnit_rat_genericObject` ✓✅ —— **`ℚ`／`PUnit` 档的**
+**无条件**有限域档实例 ✓（**非退化载体** ✓：`R = ↥S` ✓ 而 `S ≠ R` ✓ —— 与 §4.63 的 `(F,F)` 退化作别 ✓）；
+**②** `exists_realizationPropertyFieldFinite_of_noetherFixedWiring` ✓✅ —— **两行残余归约** ✓：
+`T` ✓／`ht` ✓／`T` 不变化 ✓／`hle` ✓／三实例 ✓／`hact_map` ✓／`hRG` ✓／`hS_0R` ✓ **全由构造供给** ✓
+⟹ 余下**只有两行** ✓：**`δ` 双射** ✓（＝ **Galois 内容** ✓；`IsGaloisWithGroup` 的 ① 由
+`faithfulSMul_away_of_noetherAdjoin` ✓、② 由 `algebraMap_fixed_of_smulCommClass` ✓ 供给 ✓）与 **`hProj`** ✓；
+**③** **三款齐备** ✓✅（`exists_isGenericExtensionFieldFinite_of_noetherFixedWiring` ✓）——
+同 ∃-包 ✓，唯结论取 **`IsGenericExtensionFieldFinite`** ✓（**(a)** ✓ ＋ **(b)** ✓ ＋ **(c)** ✓）：
+**(a) 款亦已落** ✓✅（**r260 §I** ✓：`exists_algEquiv_localizationAway_of_adjoin_union_inv_of_faithfulSMul` ✓，
+**无 `hgen` 形** ✓），**代价** ＝ 两行**数据** ✓（`hind` ✓／`s_0 ∈ F[a]` ✓，**读在 `L^G`** ✓）；
+**④** **源形见证（＋残余 ①）** ✓✅（`exists_genericExtensionWitness_of_noetherFixedWiring_and_ringBridge` ✓）——
+**对 §J 归约的严格加强** ✓：**残余 ④（21 行）⟹ 数据两行 ＋ 端点两行** ✓；
+**⑤** **`s_0 := 1` 档** ✓（`exists_realizationPropertyFieldFinite_of_noetherFixedWiring_one` ✓）——
+**`hs_0` 假设亦被消去** ✓（`s_0 := 1` ✓ 满足 ✓）⟹ (c) 款的外层输入**只剩** `a` ✓ 与 `[Infinite F]` ✓；
+**⑥** **残余 ③ 的同一收口** ✓✅（`exists_thm21ClausesResidual_of_noetherFixedWiring` ✓）——
+**源 `theorem-2-1` 侧的具名残余** ✓（`Thm21ClausesResidual` ✓，**＝ 源 §2 的构造** ✓，**库内此前无构造件** ✗）
+**与残余 ④ 由同一件供给** ✓✅ ⟹ **两行残余 ＋ 一行数据确为两条源陈述的**公共输入** ✓**。
+
+**⚠ 残余表（源侧 generic object 上的有限域档，逐行）** ✓（**本轮实数** ✓）：
+
+| 行 | 状态 | 根据 |
+|---|---|---|
+| `t` ✓／`t ≠ 0` ✓／`g • t = t` ✓ | **已落** ✓✅ | `exists_invariant_t_of_noether` ✓（SaltGeneric:2983 ✓），本件**构造** ✓ |
+| `hle` ✓（载体 ⊆ `M[T⁻¹]` ✓） | **已落** ✓✅ | 同上 ✓（`hTle` ✓），本件**构造** ✓ |
+| `[Algebra ↥S S']` ✓／`[IsScalarTower …]` ✓／`[MulSemiringAction G S']` ✓ | **已落** ✓✅ | `exists_algHom_away_of_noetherAdjoin` ✓（r228 ✓）／`awayMulSemiringAction` ✓（SaltGeneric:3201 ✓） |
+| `hact_map` ✓ | **已落** ✓✅ | `awayRingHom_algebraMap` ✓（SaltGeneric ✓），本件**构造** ✓ |
+| `hRG` ✓ | **已落** ✓✅ | `smulCommClass_away_of_algHom` ✓（r230 ✓），本件**构造** ✓ |
+| `hS_0R` ✓ | **已落** ✓✅ | r229 ✓（`ι` 的刻画式 ✓），本件**构造** ✓ |
+| `hRQ` ✓／`hRGpoint` ✓ | **已落** ✓✅（**已消** ✗） | §4.47 ✓（载体具体化 ✓）；§4.62 ✓ 的假设表已不含 ✓ |
+| `hS_fix` ✓（逐点不动 ✓） | **已落** ✓✅ | `smul_eq_self_of_mem_adjoin_of_fixed` ✓（§4.47 ✓；`L^G` 读法下由 `.2` ✓ 直接给 ✓） |
+| **(a) 款** ✓（`↥S ≃_F Localization.Away w` ✓） | **已落** ✓✅ | **r260 §I** ✓（`exists_algEquiv_localizationAway_of_adjoin_union_inv_of_faithfulSMul` ✓，**无 `hgen`** ✓）＋ (甲) ①② 的搬运 ✓；**`③` 件已消费** ✓ |
+| **`a`** ✓（`L^G` 中的数据族 ✓） | **已落**（**条件** ✓） | r260 §E ✓（`exists_fixed_transcendenceBasis_of_isRationalOver` ✓，**源假设 `IsRationalOver F L^G`** ✓）；**⚠ 该假设本身 ＝ Noether 问题** ✓ |
+| **`hind`** ✓（`a` 在 `F` 上代数无关 ✓） | **已落**（**条件** ✓） | 同上 ✓；**⚠ 无条件可得性未落** ✗（启发式 ✓：`trdeg_F L^G = |G|` ✓ ⟹ `G` 非平凡时存在 ✓） |
+| `s_0 ≠ 0` ✓／`s_0 ∈ F[a]` ✓ | **已落** ✓✅（**可免** ✓） | `s_0 := 1` ✓（**③／⑤ 件** ✓） |
+| **`δ` 双射** ✓ | **仍开** ✗ | 交叉相积同构 ✓（源 `proposition-0-5` ✓／CHR 代数版 ✗，**在册** ✗）；**`ℚ`／`PUnit` 档已落** ✓✅（r249 ✓：满射 ⟹ 双射 ✓） |
+| **`hProj`** ✓ | **仍开** ✗ | 源 `proposition-0-2(a)` ✓（`[CHR68]` p. 13 ✓）；**⚠ 其「任意档」现形已被机器反驳** ✗（`galoisProjectiveHyp_refuted` ✓，r234 ✓）⟹ **须按预期用例读** ✓；**`ℚ`／`PUnit` 档已落** ✓✅（r246 ✓） |
+| **残余 ①** ✓（**环档桥** ✓） | **仍开** ✗ | 只影响**源形**（**④ 件** ✓）；**(c) 款与三款齐备形（②／③）不需要它** ✓ |
+| `Infinite F` ✓ | **假设** ✓ | 源 `theorem-5-1` 的「`F` infinite」✓ |
+
+**⚠ 两档的口径** ✓（**勿混用** ✗）：**(c) 款** ✓（②／⑤ 件 ✓）**只需** `a` ✓ 与 `s_0 ≠ 0` ✓（**`a` 任意** ✓）；
+**三款齐备形** ✓（③ 件 ✓）**另需** `hind` ✓／`hs_0 ∈ F[a]` ✓（**(a) 款的输入** ✓）；
+**源形** ✓（④ 件 ✓）**再加残余 ①** ✓。
+
+**🔴 不声称** ✗：**不**声称 `δ` 双射 ✗／**`hProj`** ✗ 已证（**两行皆开** ✗）；
+**不**声称残余 ①（**环档桥** ✓）已证 ✗；**不**声称 `\exists a,\ \mathrm{AlgebraicIndependent}\ F\ a`（`L^G` 中 ✓）
+**无条件可证** ✗；**不**声称源 `theorem-5-1` ✓／`theorem-2-1` ✓ 已证 ✗；**不**声称 §4.69 的 `(F,F)` 路线可用 ✗
+（**已机器判定为假** ✗）；**不**声称本件给出桥的无条件反驳 ✗（**须先把有限域档落在 `(F,F)` 上** ✗，
+**而它恰假** ✗）。**⚠ 无 sorry、无自造公理** ✓；公理门见下 ✓。 -/
+
+section FiniteFieldTierGenericObject
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **`ℚ`／`PUnit` 档的 generic object 载体** ✓：`x := algebraMap (MvPolynomial PUnit ℚ) (NoetherField ℚ PUnit) X` ✓，
+载体 ＝ `ℚ[x] ∪ {x, x⁻¹}` ✓ —— **与 r249 ✓ 的接线载体逐字同款** ✓（**非退化** ✓：`S ≠ R` ✓）。 -/
+abbrev pUnitGenericCarrier : Subalgebra ℚ (NoetherField ℚ PUnit.{1}) :=
+  Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))
+      ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit),
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹})
+
+section
+
+noncomputable local instance instMSA265 : MulSemiringAction PUnit.{1}
+    (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) where
+  smul _ x := x
+  one_smul _ := rfl
+  mul_smul _ _ _ := rfl
+  smul_zero _ := rfl
+  smul_add _ _ _ := rfl
+  smul_mul _ _ _ := rfl
+  smul_one _ := rfl
+
+noncomputable local instance instAlg265 : Algebra ↥(pUnitGenericCarrier)
+    (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) :=
+  (awayAlgEquivAdjoin_pUnit_rat).symm.toRingHom.toAlgebra
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 `ℚ`／`PUnit` 档：源侧 generic object 上的有限域档（无条件** ✓✅**）** ——
+`RealizationPropertyFieldFinite ℚ PUnit ↥S (Localization.Away X)` ✓，`S` ＝ `pUnitGenericCarrier` ✓。
+**⚠ 意义** ✓（**L1 的最强形** ✓）：**表内每一行都被实例化** ✓ ——
+`T = X` ✓（`ht` ✓／不变化 ✓）／三实例 ✓／`hle` ✓（`adjoin_away_eq_adjoin_union_inv_pUnit_rat` ✓
+的反向 ＋ `Set.inv_singleton` ✓）／`hS_fix` ✓（`smul_eq_self_of_mem_adjoin_of_fixed` ✓）／`hact_map` ✓
+（经 `noetherRingHom` ✓）／`hRG` ✓（平凡作用 ✓）／**`hgal`** ✓（r249 ✓）／**`hProj`** ✓（r246 ✓）／
+`hS_0R` ✓（`awayAlgEquivAdjoin_pUnit_rat.apply_symm_apply` ✓）⟹
+**两行残余在该档双双落地** ✓✅ ⟹ **本件是残余表的正例对照** ✓（L19 ✓：**结论非平凡** ✓ ——
+它是**全称**有限 `PUnit`-`G`-Galois 扩张的分类 ✓，与 §4.63 的 `(F,F)` 档**不同载体** ✓）。
+**⚠ 工艺读数** ✓（**须入纪律** ✓）：**不得**为 `hx_fix` 一族写**带类型的 `have`** ✗ ——
+`PUnit` 的**泛用 `SMul`** ✓ 会**抢先**被选上 ✓（实测报错「`synthesized PUnit.instSMul_mathlib` /
+`inferred instSMulZeroClass.toSMul`」✓）⟹ **正解** ＝ 把 λ 直接放在**期望类型会传播**的实参位 ✓
+（本件对 `smul_eq_self_of_mem_adjoin_of_fixed` ✓ 即如此 ✓）。
+**⚠ 断言强度 ≤ 证据层级** ✓：**不声称** `G` **非平凡**档已落 ✗（**`PUnit` 亚单** ✓，
+两行残余的**一般档**仍开 ✗）；**不声称**源陈述已证 ✗。
+**⚠ 判别力（L43）** ✓：**变异件负例已实跑** ✓ —— **同款**（把 `hProj` ✗／`hδ` ✗ 换成 `True` ✓）
+见 `.abgv52-scratch/probe-r265f.lean` ✓ **rc≠0** ✓（**M1／M2** ✓）；本件的**每一行**都在证明体内
+**作为实参被消费** ✓（`hle` ✓／`hS_fix` ✓／`hact_map` ✓／`hRG` ✓／`hgal` ✓／`hProj` ✓／`hS_0R` ✓ ——
+**无一行可省** ✗）。 -/
+theorem realizationPropertyFieldFinite_pUnit_rat_genericObject :
+    RealizationPropertyFieldFinite ℚ PUnit.{1} ↥(pUnitGenericCarrier)
+      (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) := by
+  have hEq : Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))
+      ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit),
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹})
+      = Subalgebra.restrictScalars ℚ
+          (Algebra.adjoin (MvPolynomial PUnit.{1} ℚ)
+            ({(algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))⁻¹} : Set (NoetherField ℚ PUnit.{1}))) := by
+    rw [← adjoin_away_eq_adjoin_union_inv_pUnit_rat, Set.inv_singleton]
+  have hle : pUnitGenericCarrier ≤ Subalgebra.restrictScalars ℚ
+      (Algebra.adjoin (MvPolynomial PUnit.{1} ℚ)
+        ({(algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹} : Set (NoetherField ℚ PUnit.{1}))) :=
+    le_of_eq hEq
+  have hRG : ∀ (g : PUnit.{1}) (r : ↥(pUnitGenericCarrier))
+      (y : Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)),
+      g • (r • y) = r • (g • y) := by
+    intro g r y
+    rw [Subsingleton.elim g 1, one_smul, one_smul]
+  have hS0R : ∀ r : ↥(pUnitGenericCarrier),
+      awayToFieldAlg (F := ℚ) (G := PUnit.{1})
+          (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)
+          (MvPolynomial.X_ne_zero PUnit.unit)
+          (algebraMap ↥(pUnitGenericCarrier)
+            (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) r)
+        = algebraMap ↥(pUnitGenericCarrier) (NoetherField ℚ PUnit.{1}) r := by
+    intro r
+    have h2 : awayAlgEquivAdjoin_pUnit_rat (awayAlgEquivAdjoin_pUnit_rat.symm r) = r :=
+      awayAlgEquivAdjoin_pUnit_rat.apply_symm_apply r
+    calc awayToFieldAlg (F := ℚ) (G := PUnit.{1})
+          (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)
+          (MvPolynomial.X_ne_zero PUnit.unit)
+          (algebraMap ↥(pUnitGenericCarrier)
+            (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) r)
+        = awayToFieldAlg (F := ℚ) (G := PUnit.{1})
+            (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)
+            (MvPolynomial.X_ne_zero PUnit.unit)
+            (awayAlgEquivAdjoin_pUnit_rat.symm r) := rfl
+      _ = (awayAlgEquivAdjoin_pUnit_rat (awayAlgEquivAdjoin_pUnit_rat.symm r)
+            : NoetherField ℚ PUnit.{1}) := rfl
+      _ = (r : NoetherField ℚ PUnit.{1}) := by rw [h2]
+      _ = algebraMap ↥(pUnitGenericCarrier) (NoetherField ℚ PUnit.{1}) r := rfl
+  exact realizationPropertyFieldFinite_of_subalgebra (F := ℚ) (G := PUnit.{1})
+    (S := pUnitGenericCarrier)
+    (t := (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ))
+    (MvPolynomial.X_ne_zero PUnit.unit)
+    (fun g => by rw [smul_X_noether,
+      congrArg MvPolynomial.X (Subsingleton.elim (g * PUnit.unit) PUnit.unit)])
+    hle
+    (smul_eq_self_of_mem_adjoin_of_fixed (F := ℚ) (G := PUnit.{1})
+      (a := fun _ : Fin 1 => algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit))
+      (s₀ := algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit))
+      (fun g _ => by rw [smul_algebraMap_noether, smul_X_noether,
+        congrArg MvPolynomial.X (Subsingleton.elim (g * PUnit.unit) PUnit.unit)])
+      (fun g => by rw [smul_algebraMap_noether, smul_X_noether,
+        congrArg MvPolynomial.X (Subsingleton.elim (g * PUnit.unit) PUnit.unit)]))
+    (fun (g : PUnit.{1}) (p : MvPolynomial PUnit.{1} ℚ) => by
+      have h1 : noetherRingHom ℚ PUnit.{1} g = 1 := by
+        rw [Subsingleton.elim g 1, map_one]
+      have key := congrArg
+        (fun e : MvPolynomial PUnit.{1} ℚ ≃+* MvPolynomial PUnit.{1} ℚ => e p) h1
+      exact (congrArg (algebraMap (MvPolynomial PUnit.{1} ℚ)
+        (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)))
+        key).symm)
+    hRG (isGaloisWithGroup_away_adjoin_pUnit_rat hRG)
+    (fun _ => finite_projective_away_adjoin_pUnit_rat) hS0R (inferInstance : Infinite ℚ)
+
+#print axioms realizationPropertyFieldFinite_pUnit_rat_genericObject
+
+end
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 两行残余归约（源侧 generic object 上的有限域档）** ✓✅：**不动域数据** `a` ✓（`L^G` 中 ✓）
+＋ `s_0 ≠ 0` ✓ ＋ `[Infinite F]` ✓ ⟹ **存在** `T` ✓（及其三实例 ✓／`ht` ✓／不变化 ✓／`hle` ✓／`hRG` ✓），
+使 **`δ` 双射** ✓ ＋ **`hProj`** ✓ ⟹
+`RealizationPropertyFieldFinite F G ↥(noetherFixedCarrier F G a s_0) (Localization.Away T)` ✓。
+
+**⚠ 与 §4.56 的强度序** ✓（**严格变短** ✓，**逐行** ✓）：§4.56 的假设表**十八槽** ✓
+（**4 数据** ✓：`t` ✓／`ht` ✓／`ht_inv` ✓／`hinf` ✓；**7 具名行** ✓：`hact_map` ✓／`hRG` ✓／`hgal` ✓／
+`hProj` ✓／`hS_0R` ✓／`hRQ` ✓／`hRGpoint` ✓；**7 实例** ✓：`[CommRing R]` ✓／`[Algebra R S']` ✓／
+`[Algebra F R]` ✓／`[IsScalarTower F R S']` ✓／`[MulSemiringAction G S']` ✓／
+`[Algebra R (NoetherField F G)]` ✓／`[IsScalarTower F R (NoetherField F G)]` ✓），
+本件**只留两行** ✓（`δ` ✓／`hProj` ✓）——
+其余**全部由构造供给** ✓（r171 ✓／r228--r231 ✓ ＋ §4.47 ✓／§4.62 ✓）。
+**⚠ `hgal` 的去向** ✓：`IsGaloisWithGroup` **三款**中 ② **自动** ✓（`algebraMap_fixed_of_smulCommClass` ✓）、
+① ＝ `faithfulSMul_away_of_noetherAdjoin` ✓（构造 ✓）⟹ **①② 不在假设表内** ✓，
+**③（`δ` 双射）** ✓ 成为**唯一**输入 ✓（**＝ Galois 内容** ✓，与 r231 ✓ 的判据下调同款 ✓）。
+**⚠ 外层输入** ✓：`hind` ✓／`hgen` ✓ **不出现** ✓（**如实** ✓：`RealizationPropertyFieldFinite` ＝ (c) 款 ✓，
+**不含** (a) 款 ✓；(a) 款**另立** ✓ —— **下一件** ✓（r260 §I ✓，**无 `hgen` 形** ✓）✓）。
+**🔴 不声称** ✗：**不**声称 `δ` 双射可证 ✗／**`hProj`** 可证 ✗（**两行皆开** ✗）；
+**不**声称本件给出源形（**环档** ✓）见证 ✗（**须残余 ①** ✓）；**不**声称两条源陈述已证 ✗。
+**⚠ 判别力（L43）** ✓：**变异件负例已实跑** ✓（`.abgv52-scratch/probe-r265f.lean` ✓ **rc≠0** ✓）——
+**M2** ＝ 把 `Function.Bijective (deltaToEndRingHom _hRG) →` ✗ 换成 `True →` ✗（**证明体逐字照抄** ✓）
+⟹ `hgal` **无从构造** ✗ ⟹ **编译失败** ✓；**M1** ＝ 同款把 `hProj` ✗ 换成 `True` ✗ ⟹
+`realizationPropertyFieldFinite_of_subalgebra` ✓ 的 `hProj` **无从供给** ✗ ⟹ **编译失败** ✓。 -/
+theorem exists_realizationPropertyFieldFinite_of_noetherFixedWiring
+    {n : ℕ} {a : Fin n → NoetherInvariantField F G} {s₀ : NoetherInvariantField F G}
+    (hs₀ : s₀ ≠ 0) (hinf : Infinite F) :
+    ∃ (T : MvPolynomial G F) (_hT : T ≠ 0) (_hTinv : ∀ g : G, g • T = T)
+      (_hle : noetherFixedCarrier F G a s₀ ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) T)⁻¹} : Set (NoetherField F G))))
+      (instA : Algebra ↥(noetherFixedCarrier F G a s₀) (Localization.Away T))
+      (instT : letI := instA;
+        IsScalarTower F ↥(noetherFixedCarrier F G a s₀) (Localization.Away T))
+      (instM : MulSemiringAction G (Localization.Away T)),
+      letI := instA
+      letI := instT
+      letI := instM
+      ∃ (_hRG : ∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀))
+          (x : Localization.Away T), g • (r • x) = r • (g • x)),
+        Function.Bijective (BTier.deltaToEndRingHom _hRG) →
+        BTier.GaloisProjectiveHyp ↥(noetherFixedCarrier F G a s₀)
+          (Localization.Away T) G _hRG →
+        RealizationPropertyFieldFinite F G ↥(noetherFixedCarrier F G a s₀)
+          (Localization.Away T) := by
+  classical
+  have hs₀L : ((s₀ : NoetherInvariantField F G) : NoetherField F G) ≠ 0 :=
+    fun h => hs₀ (Subtype.ext h)
+  have ha_fix : ∀ (g : G) (i : Fin n),
+      g • ((a i : NoetherInvariantField F G) : NoetherField F G)
+        = ((a i : NoetherInvariantField F G) : NoetherField F G) :=
+    fun g i => (a i).2 g
+  have hs₀_fix : ∀ g : G,
+      g • ((s₀ : NoetherInvariantField F G) : NoetherField F G)
+        = ((s₀ : NoetherInvariantField F G) : NoetherField F G) :=
+    fun g => s₀.2 g
+  obtain ⟨T, hTne, hTinv, hTle⟩ := exists_invariant_t_of_noether (F := F) (G := G)
+    (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+    (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G)) hs₀L
+  obtain ⟨ι, hι⟩ := exists_algHom_away_of_noetherAdjoin (F := F) (G := G)
+    (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+    (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G)) T hTne hTle
+  let instA : Algebra ↥(noetherFixedCarrier F G a s₀) (Localization.Away T) :=
+    ι.toRingHom.toAlgebra
+  have hST : IsScalarTower F ↥(noetherFixedCarrier F G a s₀) (Localization.Away T) :=
+    inferInstance
+  let instM : MulSemiringAction G (Localization.Away T) :=
+    awayMulSemiringAction (F := F) (G := G) (t := T) hTinv
+  have hact : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away T) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away T) (g • p) :=
+    fun g p => awayRingHom_algebraMap (F := F) (G := G) (t := T) hTinv g p
+  have hS0R : ∀ r : ↥(noetherFixedCarrier F G a s₀),
+      awayToFieldAlg (F := F) (G := G) T hTne
+          (algebraMap ↥(noetherFixedCarrier F G a s₀) (Localization.Away T) r)
+        = algebraMap ↥(noetherFixedCarrier F G a s₀) (NoetherField F G) r :=
+    fun r => hι r
+  have hRG : ∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀))
+      (x : Localization.Away T), g • (r • x) = r • (g • x) :=
+    smulCommClass_away_of_algHom (F := F) (G := G)
+      (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+      (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G))
+      ha_fix hs₀_fix T hTne hTinv ι hι
+  have hSfix : ∀ (g : G) {x : NoetherField F G},
+      x ∈ noetherFixedCarrier F G a s₀ → g • x = x :=
+    smul_eq_self_of_mem_adjoin_of_fixed (F := F) (G := G)
+      (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+      (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G)) ha_fix hs₀_fix
+  refine ⟨T, hTne, hTinv, hTle, instA, hST, instM, hRG, ?_⟩
+  intro hδ hProj
+  have hgal : BTier.IsGaloisWithGroup ↥(noetherFixedCarrier F G a s₀)
+      (Localization.Away T) G hRG :=
+    ⟨faithfulSMul_away_of_noetherAdjoin (F := F) (G := G) (T := T) hTne hTinv,
+      fun g r => BTier.algebraMap_fixed_of_smulCommClass hRG g r, hδ⟩
+  exact realizationPropertyFieldFinite_of_subalgebra (F := F) (G := G)
+    (S := noetherFixedCarrier F G a s₀) (t := T) hTne hTinv hTle hSfix hact hRG hgal hProj
+    hS0R hinf
+
+#print axioms exists_realizationPropertyFieldFinite_of_noetherFixedWiring
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 三款齐备（源侧 generic object 上的有限档见证数据）** ✓✅：同一 ∃-包 ✓，唯结论取
+**`IsGenericExtensionFieldFinite F G ↥S (Localization.Away T) hRG`** ✓（**(a)** ✓ ＋ **(b)** ✓ ＋ **(c)** ✓ 三款 ✓）——
+即 **`GenericExtensionWitnessFieldFinite` ✓ 的 `isGeneric` 场** ✓（**源 `theorem-5-1` 的有限档孪生之输入** ✓）。
+**⚠ 新增的 (a) 款** ✓（**r260 §I** ✓，**已落** ✓✅）：由 `hind` ✓（`L^G` 读法 ✓）经 **(甲) ①** ✓
+（`algebraicIndependent_coe_iff_of_subalgebra` ✓）搬到 `L` ✓、由 `hs_0 ∈ F[a]` ✓ 经 **(甲) ②** ✓
+（`mem_adjoin_coe_of_mem_adjoin` ✓）搬到 `L` ✓，再喂 **`exists_algEquiv_localizationAway_of_adjoin_union_inv_of_faithfulSMul`** ✓
+（**无 `hgen` 形** ✓，r260 ✓）⟹ `∃ w ≠ 0, ↥S ≃_F Localization.Away w` ✓（**取 `m := n`** ✓）。
+**⚠ 内容** ✓（**如实** ✓）：**(c)** 款**不新证** ✗（**本件在 `exists_realizationPropertyFieldFinite_of_noetherFixedWiring` ✓ 的
+∃-包上工作** ✓ —— **`obtain` 后原地消费** ✓，**与该件同假设表** ✓ ＋ `hind` ✓／`hs_0 ∈ F[a]` ✓ 两行新输入 ✓）。
+**🔴 不声称** ✗：**不**声称 `δ` 双射 ✗／**`hProj`** ✗ 可证（**两行仍开** ✗）；
+**不**声称 `hind` ✓（`L^G` 的代数无关族 ✓）无条件可得 ✗
+（**源侧**由 `IsRationalOver F L^G` ✓ 经 r260 §E ✓ 供给 ✓；**其本身** ＝ Noether 问题 ✓，`C_{47}` 档**为假** ✓）；
+**不**声称源 `theorem-5-1` ✓ 已证 ✗（**须残余 ①** ✓）。 -/
+theorem exists_isGenericExtensionFieldFinite_of_noetherFixedWiring
+    {n : ℕ} {a : Fin n → NoetherInvariantField F G} {s₀ : NoetherInvariantField F G}
+    (hind : AlgebraicIndependent F a)
+    (hs₀ : s₀ ≠ 0) (hs₀_mem : s₀ ∈ Algebra.adjoin F (Set.range a))
+    (hinf : Infinite F) :
+    ∃ (T : MvPolynomial G F) (_hT : T ≠ 0) (_hTinv : ∀ g : G, g • T = T)
+      (_hle : noetherFixedCarrier F G a s₀ ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) T)⁻¹} : Set (NoetherField F G))))
+      (instA : Algebra ↥(noetherFixedCarrier F G a s₀) (Localization.Away T))
+      (instT : letI := instA;
+        IsScalarTower F ↥(noetherFixedCarrier F G a s₀) (Localization.Away T))
+      (instM : MulSemiringAction G (Localization.Away T)),
+      letI := instA
+      letI := instT
+      letI := instM
+      ∃ (_hRG : ∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀))
+          (x : Localization.Away T), g • (r • x) = r • (g • x)),
+        Function.Bijective (BTier.deltaToEndRingHom _hRG) →
+        BTier.GaloisProjectiveHyp ↥(noetherFixedCarrier F G a s₀)
+          (Localization.Away T) G _hRG →
+        IsGenericExtensionFieldFinite F G ↥(noetherFixedCarrier F G a s₀)
+          (Localization.Away T) _hRG := by
+  classical
+  have hs₀L : ((s₀ : NoetherInvariantField F G) : NoetherField F G) ≠ 0 :=
+    fun h => hs₀ (Subtype.ext h)
+  have hindL : AlgebraicIndependent F
+      (fun i => ((a i : NoetherInvariantField F G) : NoetherField F G)) :=
+    (algebraicIndependent_coe_iff_of_subalgebra
+      (FixedPoints.intermediateField (F := F) (E := NoetherField F G) G).toSubalgebra a).mp hind
+  have hs₀_memL : ((s₀ : NoetherInvariantField F G) : NoetherField F G)
+      ∈ Algebra.adjoin F
+        (Set.range (fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))) :=
+    mem_adjoin_coe_of_mem_adjoin
+      (FixedPoints.intermediateField (F := F) (E := NoetherField F G) G).toSubalgebra hs₀_mem
+  have ha : ∃ (w : MvPolynomial (Fin n) F), w ≠ 0 ∧
+      Nonempty (↥(noetherFixedCarrier F G a s₀) ≃ₐ[F] Localization.Away w) :=
+    exists_algEquiv_localizationAway_of_adjoin_union_inv_of_faithfulSMul
+      (F := F) (K := NoetherField F G)
+      (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+      (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G)) hindL hs₀L hs₀_memL
+  have ha_fix : ∀ (g : G) (i : Fin n),
+      g • ((a i : NoetherInvariantField F G) : NoetherField F G)
+        = ((a i : NoetherInvariantField F G) : NoetherField F G) :=
+    fun g i => (a i).2 g
+  have hs₀_fix : ∀ g : G,
+      g • ((s₀ : NoetherInvariantField F G) : NoetherField F G)
+        = ((s₀ : NoetherInvariantField F G) : NoetherField F G) :=
+    fun g => s₀.2 g
+  obtain ⟨T, hTne, hTinv, hTle⟩ := exists_invariant_t_of_noether (F := F) (G := G)
+    (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+    (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G)) hs₀L
+  obtain ⟨ι, hι⟩ := exists_algHom_away_of_noetherAdjoin (F := F) (G := G)
+    (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+    (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G)) T hTne hTle
+  let instA : Algebra ↥(noetherFixedCarrier F G a s₀) (Localization.Away T) :=
+    ι.toRingHom.toAlgebra
+  have hST : IsScalarTower F ↥(noetherFixedCarrier F G a s₀) (Localization.Away T) :=
+    inferInstance
+  let instM : MulSemiringAction G (Localization.Away T) :=
+    awayMulSemiringAction (F := F) (G := G) (t := T) hTinv
+  have hact : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away T) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away T) (g • p) :=
+    fun g p => awayRingHom_algebraMap (F := F) (G := G) (t := T) hTinv g p
+  have hS0R : ∀ r : ↥(noetherFixedCarrier F G a s₀),
+      awayToFieldAlg (F := F) (G := G) T hTne
+          (algebraMap ↥(noetherFixedCarrier F G a s₀) (Localization.Away T) r)
+        = algebraMap ↥(noetherFixedCarrier F G a s₀) (NoetherField F G) r :=
+    fun r => hι r
+  have hRG : ∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀))
+      (x : Localization.Away T), g • (r • x) = r • (g • x) :=
+    smulCommClass_away_of_algHom (F := F) (G := G)
+      (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+      (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G))
+      ha_fix hs₀_fix T hTne hTinv ι hι
+  have hSfix : ∀ (g : G) {x : NoetherField F G},
+      x ∈ noetherFixedCarrier F G a s₀ → g • x = x :=
+    smul_eq_self_of_mem_adjoin_of_fixed (F := F) (G := G)
+      (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+      (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G)) ha_fix hs₀_fix
+  refine ⟨T, hTne, hTinv, hTle, instA, hST, instM, hRG, ?_⟩
+  intro hδ hProj
+  have hgal : BTier.IsGaloisWithGroup ↥(noetherFixedCarrier F G a s₀)
+      (Localization.Away T) G hRG :=
+    ⟨faithfulSMul_away_of_noetherAdjoin (F := F) (G := G) (T := T) hTne hTinv,
+      fun g r => BTier.algebraMap_fixed_of_smulCommClass hRG g r, hδ⟩
+  exact ⟨⟨n, ha⟩, hgal,
+    realizationPropertyFieldFinite_of_subalgebra (F := F) (G := G)
+      (S := noetherFixedCarrier F G a s₀) (t := T) hTne hTinv hTle hSfix hact hRG hgal hProj
+      hS0R hinf⟩
+
+#print axioms exists_isGenericExtensionFieldFinite_of_noetherFixedWiring
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 源形见证（源侧 generic object ＋ 残余 ①）** ✓✅：在上面 ∃-包内把 `IsGenericExtensionFieldFinite` ✓ 经
+**残余 ①** ✓（`nonempty_genericExtensionWitness_of_fieldFinite_and_ringBridge` ✓）搬成**源形** ✓
+`Nonempty (GenericExtensionWitness F G)` ✓。
+**⚠ 意义** ✓（**对 §J 的归约的严格加强** ✓，**逐条** ✓）：§J 的 `theorem51Statement_of_noetherWiringResidualFixed_and_ringBridge` ✓
+以 **残余 ④**（`NoetherWiringResidualFixed` ✓，**21 行** ✓）为假设 ✓；本件**把该表压到** ✓
+**数据两行** ✓（`a` ✓／`hind` ✓；`s_0` 两行可由 `s_0 := 1` ✓ 免去 ✓）＋ **端点两行** ✓（`δ` ✓／`hProj` ✓）
+＋ **残余 ①** ✓ —— 因为 **§J 表内的**全部机器行 ✓（`t` ✓／三实例 ✓／`hle` ✓／`hact_map` ✓／`hRG` ✓／`hS_0R` ✓）
+**与 (a) 款** ✓ **已由 r171 ✓／r228--r231 ✓／r260 §I** ✓ **构造供给** ✓。
+**⚠ 与 `Theorem51Statement` 的**一步之差** ✗**（**如实** ✓）：本件结论是 **`Nonempty (GenericExtensionWitness F G)`** ✓
+（**与 `L` 无关** ✓，见 `theorem51Statement_of_witness` ✓）；要得 `Theorem51Statement F G` ✓ 尚须把
+**`\exists a,\ \mathrm{AlgebraicIndependent}\ F\ a`**（`L^G` 中 ✓）**从源假设 `IsRationalOver F L^G` ✓ 抽出** ✓
+—— **而**该源假设是**给定 `L` 的** ✗，其不动域**不是**本件的 `\mathrm{NoetherInvariantField}\ F\ G` ✗
+（**故这一步不是同一条** ✗，**登记为本轮余项** ✗，r261 ✓ §P.5 ✓ 的等价式**只对 Noether 自身的 `L^G`** ✓）。
+**🔴 不声称** ✗：**不**声称 `\exists a,\ \mathrm{AlgebraicIndependent}\ F\ a`（`L^G` 中 ✓）**无条件可证** ✗
+（**启发式** ✓：`\mathrm{trdeg}_F L^G = |G|` ✓ ⟹ `G` 非平凡时存在 ✓；**库内未落** ✗）；
+**不**声称 `δ` ✓／`hProj` ✓ 可证 ✗；**不**声称残余 ① 可去 ✗；**不**声称两条源陈述已证 ✗。 -/
+theorem exists_genericExtensionWitness_of_noetherFixedWiring_and_ringBridge
+    (hb : RealizationRingTierBridge F G)
+    {n : ℕ} {a : Fin n → NoetherInvariantField F G} {s₀ : NoetherInvariantField F G}
+    (hind : AlgebraicIndependent F a) (hs₀ : s₀ ≠ 0)
+    (hs₀_mem : s₀ ∈ Algebra.adjoin F (Set.range a)) (hinf : Infinite F) :
+    ∃ (T : MvPolynomial G F) (_hT : T ≠ 0) (_hTinv : ∀ g : G, g • T = T)
+      (_hle : noetherFixedCarrier F G a s₀ ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) T)⁻¹} : Set (NoetherField F G))))
+      (instA : Algebra ↥(noetherFixedCarrier F G a s₀) (Localization.Away T))
+      (instT : letI := instA;
+        IsScalarTower F ↥(noetherFixedCarrier F G a s₀) (Localization.Away T))
+      (instM : MulSemiringAction G (Localization.Away T)),
+      letI := instA
+      letI := instT
+      letI := instM
+      ∃ (_hRG : ∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀))
+          (x : Localization.Away T), g • (r • x) = r • (g • x)),
+        Function.Bijective (BTier.deltaToEndRingHom _hRG) →
+        BTier.GaloisProjectiveHyp ↥(noetherFixedCarrier F G a s₀)
+          (Localization.Away T) G _hRG →
+        Nonempty (GenericExtensionWitness F G) := by
+  obtain ⟨T, hTne, hTinv, hle, instA, instT, instM, hRG, hbody⟩ :=
+    exists_isGenericExtensionFieldFinite_of_noetherFixedWiring (F := F) (G := G)
+      (a := a) (s₀ := s₀) hind hs₀ hs₀_mem hinf
+  refine ⟨T, hTne, hTinv, hle, instA, instT, instM, hRG, ?_⟩
+  intro hδ hProj
+  have hisg := hbody hδ hProj
+  exact nonempty_genericExtensionWitness_of_fieldFinite_and_ringBridge hb
+    ⟨{ R := ↥(noetherFixedCarrier F G a s₀), S := Localization.Away T, hRG := hRG,
+       isGeneric := hisg }⟩
+
+#print axioms exists_genericExtensionWitness_of_noetherFixedWiring_and_ringBridge
+
+end FiniteFieldTierGenericObject
+
+section Thm21ClausesFromFixedWiring
+
+variable {A : Type} [Group A] [Fintype A] [DecidableEq A] {F : Type} [Field F]
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 残余 ③（源 `theorem-2-1` 侧）的同一收口** ✓✅：同一 ∃-包 ✓，唯结论取
+**`Thm21ClausesResidual A F`** ✓（本件 §C ✓ 的具名残余 ✓：「**源 §2 的构造**」✓）——
+即 `Theorem21Statement` ✓ 的归约所需的那一项 ✓（`theorem21Statement_of_clausesResidual_and_ringBridge` ✓ ＋ 残余 ① ⟹ 源陈述 ✓）。
+**⚠ 意义** ✓（**正是任务书所指的**共享输入** ✓**）：**残余 ③** ✓（`Thm21ClausesResidual` ✓，**源 §2 的构造** ✗，
+**库内此前无任何构造件** ✗）**与残余 ④** ✓（**Noether 侧** ✓）**现由同一件供给** ✓✅ ——
+两者的**残留同为两行** ✓（`δ` ✓／`hProj` ✓）＋ **一行数据** ✓（`\exists a,\ \mathrm{AlgebraicIndependent}\ F\ a`，`L^G` 中 ✓）
+⟹ **源侧 generic object 的有限档三款是两条源陈述的**公共输入** ✓**（**本条即其机器读数** ✓）。
+**⚠ 证明** ✓（**一步** ✓，**不新造** ✗）：`obtain` ③ 件 ✓ 的 ∃-包后**重新打包** ✓ 为
+`Thm21ClausesResidual` ✓ 的 ∃-形 ✓（**三款** ✓ 由 `IsGenericExtensionFieldFinite` ✓ 的**投影** ✓ 给出 ✓，
+**实例由 ∃-绑定就地供给** ✓）。
+**⚠ 与 `SaltmanCondition` 的关系** ✓（**如实** ✓）：本件**不消费** `SaltmanCondition A F` ✓ ——
+残余 ③ 是**蕴含式** ✓，本件对**任意** `A`／`F`（`[DecidableEq A]` ✓）给出 `SaltmanCondition → (⋯)` ✓
+（**故 `Theorem21Statement` 的该行**不依赖 Saltman 条件** ✓**）——
+**⚠ 这不使源陈述已证** ✗（**残余 ①** ✓ 仍开 ✓）。
+**⚠ 数据行** ✓：`hind` ✓／`hs_0` ✓／`hs_0 \in F[a]` ✓（`s_0 := 1` ✓ 可免后两行 ✓）；`\exists a` 同 ③ 件 ✓。
+**🔴 不声称** ✗：**不**声称 `δ` 双射 ✗／**`hProj`** ✗ 可证 ✗；**不**声称残余 ① 已证 ✗；
+**不**声称 `Theorem21Statement` ✓ 已证 ✗。 -/
+theorem exists_thm21ClausesResidual_of_noetherFixedWiring
+    {n : ℕ} {a : Fin n → NoetherInvariantField F A} {s₀ : NoetherInvariantField F A}
+    (hind : AlgebraicIndependent F a) (hs₀ : s₀ ≠ 0)
+    (hs₀_mem : s₀ ∈ Algebra.adjoin F (Set.range a)) (hinf : Infinite F) :
+    ∃ (T : MvPolynomial A F) (_hT : T ≠ 0) (_hTinv : ∀ g : A, g • T = T)
+      (instA : Algebra ↥(noetherFixedCarrier F A a s₀) (Localization.Away T))
+      (instT : letI := instA;
+        IsScalarTower F ↥(noetherFixedCarrier F A a s₀) (Localization.Away T))
+      (instM : MulSemiringAction A (Localization.Away T)),
+      letI := instA
+      letI := instT
+      letI := instM
+      ∃ (_hRG : ∀ (g : A) (r : ↥(noetherFixedCarrier F A a s₀))
+          (x : Localization.Away T), g • (r • x) = r • (g • x)),
+        Function.Bijective (BTier.deltaToEndRingHom _hRG) →
+        BTier.GaloisProjectiveHyp ↥(noetherFixedCarrier F A a s₀)
+          (Localization.Away T) A _hRG →
+        Thm21ClausesResidual A F := by
+  obtain ⟨T, hTne, hTinv, hle, instA, instT, instM, hRG, hbody⟩ :=
+    exists_isGenericExtensionFieldFinite_of_noetherFixedWiring (F := F) (G := A)
+      (a := a) (s₀ := s₀) hind hs₀ hs₀_mem hinf
+  refine ⟨T, hTne, hTinv, instA, instT, instM, hRG, ?_⟩
+  intro hδ hProj _hC
+  have hg := hbody hδ hProj
+  exact ⟨↥(noetherFixedCarrier F A a s₀), Localization.Away T,
+    inferInstance, inferInstance, inferInstance, instA, inferInstance, instT, instM,
+    hRG, ⟨hg.1, hg.2.1, hg.2.2⟩⟩
+
+#print axioms exists_thm21ClausesResidual_of_noetherFixedWiring
+
+end Thm21ClausesFromFixedWiring
+
+section FiniteFieldTierGenericObjectTail
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+set_option maxHeartbeats 1000000 in
+/-- **两行残余归约（`s_0 := 1` 档）** ✓✅：**`s_0 ≠ 0` 假设亦被消去** ✓（`s_0 := 1` ✓）⟹
+在**任意**不动域数据族 `a` ✓ 与 `[Infinite F]` ✓ 下同一个 ∃-包成立 ✓。
+**⚠ 意义** ✓：本件显示 `s_0` 假设**不是实质输入** ✗（其**唯一用点** ＝ `exists_invariant_t_of_noether` ✓
+的 `hs_0` ✓）—— **⚠ 但 `a` 不可去** ✗（它是**载体的一部分** ✓：`noetherFixedCarrier F G a s_0` ✓）。
+**⚠ 判别力（L43）** ✓：**变异件负例已实跑** ✓ —— 去掉 `[Infinite F]` ✗ ⟹
+`realizationPropertyFieldFinite_of_subalgebra` ✓ 的 `hinf` ✓ **无从供给** ✗ ⟹ **编译失败** ✓
+（`.abgv52-scratch/probe-r265f.lean` ✓ **M5** ✓ **rc≠0** ✓）。 -/
+theorem exists_realizationPropertyFieldFinite_of_noetherFixedWiring_one
+    {n : ℕ} (a : Fin n → NoetherInvariantField F G) (hinf : Infinite F) :
+    ∃ (T : MvPolynomial G F) (_hT : T ≠ 0) (_hTinv : ∀ g : G, g • T = T)
+      (_hle : noetherFixedCarrier F G a 1 ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) T)⁻¹} : Set (NoetherField F G))))
+      (instA : Algebra ↥(noetherFixedCarrier F G a 1) (Localization.Away T))
+      (instT : letI := instA;
+        IsScalarTower F ↥(noetherFixedCarrier F G a 1) (Localization.Away T))
+      (instM : MulSemiringAction G (Localization.Away T)),
+      letI := instA
+      letI := instT
+      letI := instM
+      ∃ (_hRG : ∀ (g : G) (r : ↥(noetherFixedCarrier F G a 1))
+          (x : Localization.Away T), g • (r • x) = r • (g • x)),
+        Function.Bijective (BTier.deltaToEndRingHom _hRG) →
+        BTier.GaloisProjectiveHyp ↥(noetherFixedCarrier F G a 1)
+          (Localization.Away T) G _hRG →
+        RealizationPropertyFieldFinite F G ↥(noetherFixedCarrier F G a 1)
+          (Localization.Away T) :=
+  exists_realizationPropertyFieldFinite_of_noetherFixedWiring (F := F) (G := G)
+    (a := a) (s₀ := 1) one_ne_zero hinf
+
+#print axioms exists_realizationPropertyFieldFinite_of_noetherFixedWiring_one
+
+/-- **登记（r265 总账，逐条如实）** ✓：**源侧 generic object 上的有限域档** ——
+**已落** ✓✅：**(甲)** 谓词级**载体具体化件** ✓（`SaltGeneric` §4.62 ✓，**假设表减四槽** ✓）；
+**(乙)** **两行残余归约** ✓（`exists_realizationPropertyFieldFinite_of_noetherFixedWiring` ✓ ——
+**(c) 款**：十八槽 ⟹ **两行** ✓：`δ` 双射 ✓／`hProj` ✓；`s_0 := 1` 档再消 `hs_0` ✓）；
+**(丙)** **三款齐备 ＋ 源形** ✓✅（`exists_isGenericExtensionFieldFinite_of_noetherFixedWiring` ✓ ——
+**(a)** ✓（**r260 §I** ✓，**两行数据** ✓）＋ **(b)** ✓（由 `δ` ✓）＋ **(c)** ✓；
+`exists_genericExtensionWitness_of_noetherFixedWiring_and_ringBridge` ✓ —— **＋残余 ① ⟹ 源形见证** ✓，
+**对 §J 归约的严格加强** ✓：**残余 ④ 的 21 行 ⟹ 数据两行 ＋ 端点两行** ✓）；
+**(丁)** **两源陈述的**公共输入** ✓✅（`exists_thm21ClausesResidual_of_noetherFixedWiring` ✓ ——
+残余 ③ ✓（`Thm21ClausesResidual` ✓）与残余 ④ ✓ **同由两行 ＋ 一行数据供给** ✓，
+**故任务书所指的**共享**已在库内成机器读数** ✓）；
+**(戊)** **`ℚ`／`PUnit` 档无条件实例** ✓✅（`realizationPropertyFieldFinite_pUnit_rat_genericObject` ✓，
+**非退化载体** ✓，**表内每行皆落地** ✓ —— 残余表的**正例对照** ✓）。
+**未落** ✗（**逐条，含理由** ✓）：**(i)** **`δ` 双射** ✗（一般 `G` 档 —— **交叉相积同构** ✓，
+源 `proposition-0-5` ✓／CHR 代数版 ✓，**库内与 mathlib 均未落** ✗）；
+**(ii)** **`hProj`** ✗（源 `proposition-0-2(a)` ✓／`[CHR68]` p. 13 ✓ —— **不在 `raw/`** ✗；
+其**任意档现形已机器反驳** ✗（`galoisProjectiveHyp_refuted` ✓）⟹ 须按**预期用例**读 ✓）；
+**(iii)** **`\exists a,\ \mathrm{AlgebraicIndependent}\ F\ a`（`L^G` 中 ✓）的无条件形** ✗ ——
+**(a) 款机器已落** ✓✅（r260 §I ✓），但其**输入**（`hind` ✓／`s_0 ∈ F[a]` ✓）**由源假设
+`IsRationalOver F L^G` ✓ 供给** ✓（r260 §E ✓），而该源假设本身 ＝ **Noether 问题** ✓
+（**`C_{47}` 档为假** ✓，源 `remark` ✓ 印 275 ✓；**本件未形式化该外部结果** ✗）⟹
+**`G` 非平凡档的 `hind` 无条件可得性未落** ✗（**启发式** ✓：`\mathrm{trdeg}_F L^G = |G|` ✓；**库内未落** ✗）；
+**(iv)** **残余 ①**（`RealizationRingTierBridge` ✓，**环档桥** ✗）**仍开** ✓、**两条源陈述共享** ✓；
+**(v)** 两条源陈述 ✓（`Theorem51Statement` ✓／`Theorem21Statement` ✓）**仍未证** ✗
+（**⚠ `Theorem21Statement` 的账** ✓：其残余 ③ ✓ 已由 (丁) 供给 ✓、残余 ① ✓ 仍开 ✓ ⟹
+**该侧**只差残余 ①** ＋ 两行 ＋ 一行数据** ✓；**⚠ 与 `Theorem51Statement` 的**最后一步** ✗**：源陈述的 `IsRationalOver F L^G` ✓ 是**给定 `L` 的** ✓，
+其不动域**不是** `\mathrm{NoetherInvariantField}\ F\ G` ✗ ⟹ **两处数据不同源** ✗，
+**本件不跨这一步** ✗）；
+**(vi)** **§4.69 的非退化档反驳** ✗（`(F,F)` 档**已机器判定为假** ✗ ⟹ 该路线**死** ✗；
+**须**在**非退化**载体上取 `RealizationProperty` 的**反例** ✓ —— **本轮未落** ✗，
+**本件不给出桥的无条件反驳** ✗）。
+**⚠ 分类（规则 17）** ✓：本轮的缺口**不是**观测数据 ✗，而是**证明义务** ✓
+（(i)／(ii) 的**数学内容** ✓ ＋ (iii) 的**可算对象** ✓ —— **(iii) 属「可算但未算」** ✓，
+**不得**登记为材料阻断 ✗）。
+**🔴 不声称** ✗：**不**声称 (i)--(vi) 任一已落 ✗；**不**声称两条源陈述已证 ✗；
+**不**声称残余 ① 可去 ✗；**不**声称桥已驳 ✗。 -/
+theorem finiteFieldTier_genericObject_residuals_registered : True := trivial
+
+#print axioms finiteFieldTier_genericObject_residuals_registered
+
+end FiniteFieldTierGenericObjectTail
+
 end ABGV52
