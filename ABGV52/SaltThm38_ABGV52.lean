@@ -9333,4 +9333,44 @@ end SkewDecomposition308
 #print axioms skew_eq_sum_single
 
 
+/-! ### 4.97 **`δ` 的系数展开（步骤甲收官）**（第 309 轮）
+—— 域档款③ 单射的**前半** ✓
+
+**落成** ✓✅：**`delta_apply_sum`** ✓✅：**`(δ z) w = ∑_{g ∈ supp z} (coeff z g) * (g • w)`** ✓ ——
+由 §4.96 的**分解** ✓ ＋ `map_sum` ✓ ＋ `LinearMap.sum_apply` ✓ ＋ §4.94 的 `delta_single_apply` ✓ 收口 ✓。
+
+**⚠ 工艺（四条，入 §5.1；均本轮实测）** ✓：
+**(甲)** `skew_eq_sum_single` 的 `R` **不可推断** ✗（其 `R` 不出现在 `z` 中 ✓）⟹ 须 **`(R := R)`** 显式给出 ✓
+（否则报 "typeclass instance problem is stuck: Algebra ?m S" ✓）；
+**(乙)** 重写**必须限于左侧** ✗：直接 `rw` 会把右侧 `z.support`／`z.coeff` 里的 `z` **一并改写** ✗
+（实测右侧变成 `(∑ …).support` ✓）⟹ 用 **`conv_lhs => rw [ … ]`** ✓；
+**(丙)** 求值**须从和号外搬入** ✗：`map_sum` 给出 `(∑ …) w` ✓ 而目标是 `∑ … (… w)` ✓ ⟹ 用
+**`LinearMap.sum_apply`** ✓（**`Finset.sum_apply` 不命中** ✗，实测 ✓）；
+**(丁)** `conv_lhs` 在**旧版**写法下曾报 "There are unsolved goals" ✗（§268.3 ✓）——**本轮**用**具名引理**（非 `show … from ?_`）✓ 后成立 ✓。
+
+**⚠ 意义** ✓：**步骤甲**（系数展开）**收官** ✓ ⟹ 域档款③ 的**单射**只余：取 `w = h⁻¹ • θ` ✓
+（换元用 `b.reindex (Equiv.mulRight h⁻¹)` ✓）＋ §4.95 的 `basis_coeff_eq_zero` ✓ ⟹ `z = 0` ✓。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗；**不**声称域档通道已通 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗；
+**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section DeltaExpansion309
+
+open ABGV52.BTier
+
+/-- **系数展开** ✓：`(δ z) w = ∑_{g ∈ supp z} (coeff z g) * (g • w)` ✓。 -/
+theorem delta_apply_sum {R : Type*} [CommRing R] {S : Type*} [CommRing S] [Algebra R S]
+    {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (z : SkewMonoidAlgebra S G) (w : S) :
+    deltaToEndRingHom hRG z w = ∑ g ∈ z.support, z.coeff g * (g • w) := by
+  conv_lhs => rw [skew_eq_sum_single (R := R) z]
+  rw [map_sum, LinearMap.sum_apply]
+  exact Finset.sum_congr rfl fun g _ => delta_single_apply hRG g _ w
+
+end DeltaExpansion309
+
+#print axioms delta_apply_sum
+
+
 end ABGV52

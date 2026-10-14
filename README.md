@@ -1478,3 +1478,13 @@ the crossed-product map as a sum over the support is one step away, and that exp
 injectivity argument in the field case.  Three practical points are recorded, concerning the transport of
 coefficients through a sum, the direction expected by a lemma about single functions, and the correct name for the
 support membership criterion.
+
+Round 309 completes the expansion of the crossed-product map as a sum over the support of the coefficients, which is
+the first half of the injectivity argument in the field case.  The expansion follows from the decomposition of an
+element into its single terms, from the compatibility of the map with finite sums, and from the value of the map on a
+single term computed three rounds earlier.  Four practical points are recorded: an auxiliary statement whose base ring
+does not occur in its main argument must have that ring supplied explicitly; a rewrite that is meant to affect only
+one side of an equation must be restricted to that side, otherwise the same symbol is rewritten inside the terms of
+the other side as well; the evaluation of a sum of endomorphisms must be moved inside the sum by the linear-map
+version of the lemma, the set version not applying; and the earlier failure of this step was due to an anonymous
+conversion rather than to a named lemma.  Injectivity itself is not claimed here.
