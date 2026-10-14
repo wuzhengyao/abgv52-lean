@@ -9276,4 +9276,61 @@ end BasisCoeffCancel307
 #print axioms basis_coeff_eq_zero
 
 
+/-! ### 4.96 **交叉积元的 `single` 分解（§268.3 受阻点的拆除）**（第 308 轮）
+—— 系数展开（步骤甲）的**最后一环** ✓
+
+**落成** ✓✅：**`skew_eq_sum_single`** ✓✅：**`z = ∑_{g ∈ supp z} single g (z.coeff g)`** ✓
+（**第 306 轮受阻** ✗ —— 当时用 `conv_lhs` ＋ `show … from ?_` 报 "There are unsolved goals" ✓；
+**本轮拆除** ✓）。
+
+**机制** ✓：**(i)** 经 **`SkewMonoidAlgebra.coeff_injective`** ✓ 化归 **Finsupp 等式** ✓；
+**(ii)** 和的 `coeff` 经 **`coeffAddEquiv` ＋ `map_sum`** ✓（**不可**直接对 `coeff` 用 `map_sum` ✗ —— 实测
+"Did not find an occurrence" ✓，须先 `show … coeffAddEquiv (∑ …) = _` ✓）；
+**(iii)** 逐点比较用 **`Finsupp.finsetSum_apply`** ✓ ＋ `Finset.sum_eq_single`／`sum_eq_zero` ✓（分 `g ∈ supp z` 两档 ✓）。
+
+**⚠ 工艺（三条，入 §5.1；均本轮实测）** ✓：**(甲)** `coeff` 的和须经 **`coeffAddEquiv`** ✓（见上 ✗）；
+**(乙)** `Finsupp.single_eq_of_ne` 的**方向** ✗：其参数是 `a ≠ a'` ✓ 而常见假设形是 `b ≠ g` ✓ ⟹ 须 **`Ne.symm`** ✓；
+**(丙)** **`Finsupp.not_mem_support_iff` 不存在** ✗（§269.6 已登记 ✓）⟹ 用 **`Finsupp.mem_support_iff`** ✓
+（`g ∉ supp z` ⟹ `z.coeff g = 0` ✓ 经 `simpa [Finsupp.mem_support_iff] using hg` ✓）。
+
+**⚠ 意义** ✓：**步骤甲**的分解已备 ✓ ⟹ 展开 `(δ z) w = ∑_{g ∈ supp z} (coeff z g) * (g • w)` ✓
+（`map_sum` ✓ ＋ §4.94 的 `delta_single_apply` ✓）**只余一步** ✓。
+
+**🔴 不声称** ✗：**不**声称系数展开已证 ✗（**分解已落** ✓，**展开未落** ✗）；**不**声称款③ 已证 ✗；
+**不**声称域档通道已通 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗。 -/
+
+section SkewDecomposition308
+
+/-- **`single` 分解** ✓：`z = ∑_{g ∈ supp z} single g (coeff z g)` ✓。 -/
+theorem skew_eq_sum_single {R : Type*} [CommRing R] {S : Type*} [CommRing S] [Algebra R S]
+    {G : Type*} [Group G] [MulSemiringAction G S] (z : SkewMonoidAlgebra S G) :
+    z = ∑ g ∈ z.support, SkewMonoidAlgebra.single g (z.coeff g) := by
+  classical
+  apply SkewMonoidAlgebra.coeff_injective
+  have hcoe : (∑ g ∈ z.support, SkewMonoidAlgebra.single g (z.coeff g)).coeff
+      = ∑ g ∈ z.support, Finsupp.single g (z.coeff g) := by
+    show SkewMonoidAlgebra.coeffAddEquiv (∑ g ∈ z.support,
+      SkewMonoidAlgebra.single g (z.coeff g)) = _
+    rw [map_sum]
+    exact Finset.sum_congr rfl fun g _ => SkewMonoidAlgebra.coeff_single g (z.coeff g)
+  rw [hcoe]
+  ext g
+  rw [Finsupp.finsetSum_apply]
+  by_cases hg : g ∈ z.support
+  · rw [Finset.sum_eq_single g]
+    · simp
+    · intro b _ hbg
+      exact Finsupp.single_eq_of_ne (Ne.symm hbg)
+    · intro hg'
+      exact absurd hg hg'
+  · rw [Finset.sum_eq_zero]
+    · simpa [Finsupp.mem_support_iff] using hg
+    · intro b hb
+      exact Finsupp.single_eq_of_ne (fun h => hg (h ▸ hb))
+
+end SkewDecomposition308
+
+#print axioms skew_eq_sum_single
+
+
 end ABGV52

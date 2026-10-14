@@ -1468,3 +1468,13 @@ recorded.  The library's criterion lives along a different instance path than th
 basis, so the statement is phrased with an additive group to bring the two into the same path; and the elaboration of
 such a combination over an abstract semiring is expensive enough to require a raised heartbeat budget, which does not
 add warnings.  The coefficient expansion of the crossed-product map and injectivity itself are not claimed here.
+
+Round 308 discharges the decomposition of an element of the crossed product into its single terms, which had been
+recorded as blocked two rounds earlier.  The identity is proved by injectivity of the coefficient map, which reduces
+it to a statement about finitely supported functions; the coefficients of a sum are moved inside the sum along the
+linear equivalence between the crossed product and finitely supported functions, and the resulting pointwise identity
+is settled by splitting on whether the index lies in the support.  With this decomposition available, the expansion of
+the crossed-product map as a sum over the support is one step away, and that expansion is the first half of the
+injectivity argument in the field case.  Three practical points are recorded, concerning the transport of
+coefficients through a sum, the direction expected by a lemma about single functions, and the correct name for the
+support membership criterion.
