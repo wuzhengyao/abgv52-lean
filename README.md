@@ -1007,3 +1007,13 @@ One endpoint remains: the other descent statement carries an extra tensor factor
 so the same instance and skeleton apply only after that factor is accounted for, and nothing about
 it is claimed here.  Neither is anything claimed about the source's descent statement; only the
 project's named endpoint is refuted.
+
+The first descent endpoint is now refuted as well, so both named endpoints of that criterion are
+decided.  Its conclusion differs from the second endpoint only in that the small algebra is required
+to be finitely generated over a subalgebra of the big one rather than over the base field, and in
+that the structure map into the second algebra is required to be injective; the tensor tail has the
+same shape.  Refuting it therefore amounts to choosing the bottom subalgebra and transporting finite
+generation across the identification of that subalgebra with the base field, which is done by
+surjectivity of the structure map of the bottom subalgebra together with transitivity of finite
+generation along the scalar tower.  With that instance in hand the preceding round's proof applies
+verbatim, including the injectivity hypothesis, which is simply unused.

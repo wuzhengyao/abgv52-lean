@@ -2009,4 +2009,126 @@ theorem galoisFiniteGenerationDescentHyp_refuted :
 end GaloisFiniteGenerationDescentHypRefuted
 
 
+/-! ## **⑥ 第一端点 `GaloisDescentHyp ℚ PUnit.{1}` 的机器反驳**（第 254 轮）
+
+**靶点** ✓：`BTier.GaloisDescentHyp ℚ PUnit.{1}` ✓（`GaloisAlgebra_ABGV52.lean:497` ✓）。
+**⚠ 位置** ✓：本文件**先于**家族文件 ✓，故 ⑥ 的判定件只能落在此处 ✓（同 §251／§252／§253 三件 ✓）。
+
+**本轮落** ✓✅：`galoisDescentHyp_refuted` ✓ —— 即 **⑥ 的第一端点现形为假** ✗；
+与第 253 轮的第二端点 ✓ 合，**⑥ 的两个具名端点均已判定为假** ✗。
+**⚠ 复用** ✓（**不重定义** ✗）：结构引理 `mvPolynomial_algEquiv_adjoinR253` ✓（`:1938` ✓）、
+维数步 `not_nonempty_algEquiv_rat_of_mvPolynomial` ✓（`:1754` ✓）、反例实例
+`exists_isGaloisWithGroup_mvPolynomial_allOnes` ✓（`:1660` ✓）、变量界
+`exists_variables_bound_of_finiteType` ✓（`:1680` ✓）。
+
+**⚠ 与第二端点的两处差别** ✓：**①** `GaloisDescentHyp` 对 `R' : Subalgebra F R` **全称量化** ✓
+⟹ 反驳取 **`R' := ⊥`** ✓（**一个**特例即足以反驳全称形 ✓）；**②** 结论**只**给
+`Algebra.FiniteType ↥⊥ R''` ✓ 而**不给** `Algebra.FiniteType ℚ R''` ✗ ⟹ 须先做**基变换** ✓
+（定理体第 ① 步 ✓）。**其余骨架逐字可搬** ✓（张量结合 ✓／基变换 ✓／`τ ≠ ∅` ✓／两档收口 ✓）。
+
+**⚠ 不声称** ✗：**不**声称源 `[Sal78b]`（印 528 ✓）的下降陈述为假 ✗；**不**声称 `G` **非单点**档
+成立 ✗；**不**声称预期用例（如 `R' ⊆ R` 上有限型 ✓）中下降不成立 ✗。 -/
+
+section GaloisDescentHypRefuted
+
+/-- **反例实例的结构映射** ✓：`MvPolynomial ℕ ℚ → ℚ` 取**所有坐标 ＝ 1 的点** ✓
+（**复用 §251 的档** ✓；**该结构不是全局实例** ✗ ⟹ **节级 `local instance`** ✓）。 -/
+noncomputable local instance instA254 : Algebra (MvPolynomial ℕ ℚ) ℚ :=
+  (MvPolynomial.aeval (fun _ : ℕ => (1 : ℚ))).toRingHom.toAlgebra
+
+/-- **反例实例的 `G`-作用** ✓：`G = PUnit.{1}` 的**平凡作用** ✓（**复用 §251 的档** ✓）。 -/
+noncomputable local instance instMSA254 : MulSemiringAction PUnit.{1} ℚ :=
+  { smul := fun _ x => x
+    one_smul := fun _ => rfl
+    mul_smul := fun _ _ _ => rfl
+    smul_zero := fun _ => rfl
+    smul_add := fun _ _ _ => rfl
+    smul_mul := fun _ _ _ => rfl
+    smul_one := fun _ => rfl }
+
+/-! ### 端点反驳 ✓ -/
+
+set_option maxHeartbeats 1000000 in
+/-- **⑥ 第一端点的反驳** ✓✅（第 254 轮）：**`¬ BTier.GaloisDescentHyp ℚ PUnit.{1}`** ✓。
+**反例实例** ✓：`F = ℚ` ✓、`G = PUnit.{1}` ✓、`R = MvPolynomial ℕ ℚ` ✓、`S = ℚ` ✓，
+结构映射 ＝ **全 1 点** ✓、`G` **平凡作用** ✓（与第 253 轮**同一实例** ✓）；`R'` 取 **`⊥`** ✓。
+**证明骨架** ✓：设 `h` 为该端点 ✓，由 `exists_isGaloisWithGroup_mvPolynomial_allOnes` ✓ 取
+`R''`／`S''` ✓ 与 **`ℚ ≃ₐ[ℚ] S'' ⊗_{R''} R`** ✓；① **基变换** ✓：`R' = ⊥` ⟹
+**`algebraMap ℚ ↥⊥` 满** ✓（`Algebra.mem_bot` ✓ 逐元素给原像 ✓）⟹ **`Algebra.FiniteType ℚ ↥⊥`** ✓
+（`Algebra.FiniteType.of_surjective` ✓）⟹ **`Algebra.FiniteType ℚ R''`** ✓
+（`Algebra.FiniteType.trans` ✓ ＋ 结论给的 **`IsScalarTower ℚ ↥⊥ R''`** ✓）；
+② **有限生成 ⟹ 像只涉及有限多变量** ✓（`exists_variables_bound_of_finiteType` ✓）
+⟹ `R'' → R` **过 `R₀`** ✓（`R₀ := ℚ[X_0,…,X_{n-1}]` ✓）；③ **结构引理** ✓
+（`mvPolynomial_algEquiv_adjoinR253` ✓ ⟹ **`R ≅ₐ[R₀] MvPolynomial τ R₀`** ✓）＋ **张量结合** ✓
+（`Algebra.TensorProduct.assoc` ✓）＋ **基变换** ✓（`MvPolynomial.algebraTensorAlgEquiv` ✓）
+⟹ **`S'' ⊗_{R''} R ≅ₐ[ℚ] MvPolynomial τ (S'' ⊗_{R''} R₀)`** ✓；
+④ **`τ ≠ ∅`** ✓（`⟨n, le_rfl⟩` ✓）；**若 `T := S'' ⊗_{R''} R₀` 非平凡** ✓ ⟹
+**`not_nonempty_algEquiv_rat_of_mvPolynomial`** ✓ 立得矛盾 ✓；**若 `T` 平凡** ✓ ⟹ `MvPolynomial τ T`
+**平凡** ✓ ⟹ **`ℚ` 平凡** ✗ 矛盾 ✓（两档皆闭 ✓）。
+**未用输入** ✓：结论给的 `Function.Injective (algebraMap R'' S'')` ✓ 与
+`IsGaloisWithGroup R'' S'' G hRG''` ✓ **在本骨架中不用** ✓（**登记** ✓）。
+**⚠ 不声称** ✗：**不**声称源 `[Sal78b]` 的下降陈述为假 ✗ —— 本条**只**反驳**本工程 ⑥ 的具名端点** ✓，
+且**只以 `R' = ⊥` 一档**反驳该全称形 ✓；**不**声称 `G` **非单点**档成立 ✗；
+**不**声称该端点在**预期用例**（如 `R' ⊆ R` 上有限型 ✓）中为假 ✗。 -/
+theorem galoisDescentHyp_refuted : ¬ BTier.GaloisDescentHyp ℚ PUnit.{1} := by
+  intro h
+  obtain ⟨hRG, hgal⟩ := exists_isGaloisWithGroup_mvPolynomial_allOnes
+  obtain ⟨R'', hcR'', haR''F, haR''bot, hstBotR'', haR''R, hstFR'', hstBotR''R, hftBotR'',
+    S'', hcS'', haS''F, haR''S'', hstR''S'', hinjR''S'', hmsa'', hRG'', hgal'', ⟨e⟩⟩ :=
+    h (MvPolynomial ℕ ℚ) ℚ hRG hgal (⊥ : Subalgebra ℚ (MvPolynomial ℕ ℚ))
+  have hsurjBot : Function.Surjective
+      (algebraMap ℚ ↥(⊥ : Subalgebra ℚ (MvPolynomial ℕ ℚ))) := by
+    intro x
+    obtain ⟨q, hq⟩ := Set.mem_range.mp (Algebra.mem_bot.mp x.2)
+    exact ⟨q, Subtype.ext hq⟩
+  have hftBot : Algebra.FiniteType ℚ ↥(⊥ : Subalgebra ℚ (MvPolynomial ℕ ℚ)) :=
+    Algebra.FiniteType.of_surjective
+      (Algebra.ofId ℚ ↥(⊥ : Subalgebra ℚ (MvPolynomial ℕ ℚ))) hsurjBot
+  let _instFT : Algebra.FiniteType ℚ R'' :=
+    Algebra.FiniteType.trans (R := ℚ) (S := ↥(⊥ : Subalgebra ℚ (MvPolynomial ℕ ℚ)))
+      (A := R'') hftBot hftBotR''
+  obtain ⟨n, hn⟩ := exists_variables_bound_of_finiteType R''
+    (IsScalarTower.toAlgHom ℚ R'' (MvPolynomial ℕ ℚ))
+  let R₀ : Subalgebra ℚ (MvPolynomial ℕ ℚ) := adjoinR253 n
+  let τ := tauR253 n
+  let ψ : R'' →ₐ[ℚ] MvPolynomial ℕ ℚ := IsScalarTower.toAlgHom ℚ R'' (MvPolynomial ℕ ℚ)
+  have hψ : ∀ x : R'', ψ x ∈ R₀ := hn
+  let ψ₀ : R'' →ₐ[ℚ] ↥R₀ := ψ.codRestrict R₀ hψ
+  let _instA : Algebra R'' ↥R₀ := ψ₀.toRingHom.toAlgebra
+  let _instST1 : IsScalarTower ℚ R'' ↥R₀ :=
+    IsScalarTower.of_algebraMap_eq (fun a => (ψ₀.commutes a).symm)
+  let _instST2 : IsScalarTower R'' ↥R₀ (MvPolynomial ℕ ℚ) :=
+    IsScalarTower.of_algebraMap_eq (fun a => rfl)
+  let _instSCC1 : SMulCommClass ℚ R'' ↥R₀ :=
+    ⟨fun a b c => by simp only [Algebra.smul_def]; ring⟩
+  let _instST3 : IsScalarTower R'' ↥R₀ (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ) := inferInstance
+  obtain ⟨θ⟩ := mvPolynomial_algEquiv_adjoinR253 n
+  let θD : MvPolynomial ℕ ℚ ≃ₐ[↥R₀] (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ) :=
+    θ.symm.trans (MvPolynomial.algebraTensorAlgEquiv (R := ℚ) (A := ↥R₀) (σ := τ)).symm
+  let θR'' : MvPolynomial ℕ ℚ ≃ₐ[R''] (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ) :=
+    AlgEquiv.restrictScalars R'' θD
+  let step1 : (S'' ⊗[R''] MvPolynomial ℕ ℚ) ≃ₐ[R'']
+      (S'' ⊗[R''] (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ)) :=
+    Algebra.TensorProduct.congr (AlgEquiv.refl : S'' ≃ₐ[R''] S'') θR''
+  let step2 : (S'' ⊗[R''] (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ)) ≃ₐ[R'']
+      ((S'' ⊗[R''] ↥R₀) ⊗[ℚ] MvPolynomial τ ℚ) :=
+    (Algebra.TensorProduct.assoc (R := ℚ) (S := R'') (T := R'') (A := S'') (C := ↥R₀)
+      (D := MvPolynomial τ ℚ)).symm
+  let step3 : ((S'' ⊗[R''] ↥R₀) ⊗[ℚ] MvPolynomial τ ℚ) ≃ₐ[ℚ]
+      MvPolynomial τ (S'' ⊗[R''] ↥R₀) :=
+    (MvPolynomial.algebraTensorAlgEquiv (R := ℚ) (A := S'' ⊗[R''] ↥R₀) (σ := τ)).restrictScalars ℚ
+  have hcomp : ℚ ≃ₐ[ℚ] MvPolynomial τ (S'' ⊗[R''] ↥R₀) :=
+    e.trans (((step1.trans step2).restrictScalars ℚ).trans step3)
+  by_cases hT : Nontrivial (S'' ⊗[R''] ↥R₀)
+  · exact @not_nonempty_algEquiv_rat_of_mvPolynomial (S'' ⊗[R''] ↥R₀) _ _ hT τ
+      ⟨⟨n, le_rfl⟩⟩ ⟨hcomp.symm⟩
+  · have hTsub : Subsingleton (S'' ⊗[R''] ↥R₀) := not_nontrivial_iff_subsingleton.mp hT
+    let _instSub : Subsingleton (MvPolynomial τ (S'' ⊗[R''] ↥R₀)) := inferInstance
+    exact one_ne_zero (hcomp.injective (Subsingleton.elim (hcomp 1) (hcomp 0)))
+
+#print axioms galoisDescentHyp_refuted
+
+end GaloisDescentHypRefuted
+
+
 end ABGV52
