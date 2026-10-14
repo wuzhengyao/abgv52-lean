@@ -1017,3 +1017,14 @@ generation across the identification of that subalgebra with the base field, whi
 surjectivity of the structure map of the bottom subalgebra together with transitivity of finite
 generation along the scalar tower.  With that instance in hand the preceding round's proof applies
 verbatim, including the injectivity hypothesis, which is simply unused.
+
+The refuted section criterion has been rebuilt on its expected use case.  The unrestricted form was
+false because a Galois structure alone says nothing about the module structure, and the counterexample
+satisfies every hypothesis of the rebuilt statement except projectivity.  The rebuilt form therefore
+adds exactly two inputs: that the target algebra is projective over the base ring, and that the order
+of the group is invertible there.  Under them a section exists: projectivity splits the equivariant
+surjection linearly, and averaging the resulting linear section over the group produces a section that
+is again equivariant, the inverse of the group order supplying the normalisation.  A companion
+statement keeps the Galois hypothesis for signature compatibility, documenting it as redundant, and a
+characteristic-zero corollary dispenses with the invertibility input, which holds automatically there.
+Neither the refuted unrestricted form nor the source's projectivity statement is claimed.

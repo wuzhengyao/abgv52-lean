@@ -1600,4 +1600,162 @@ end GaloisTransport
 #print axioms deltaToEndLinearS
 #print axioms galoisTrace_route_gap_registered
 
+
+/-! ## 预期用例的重建形：`Module.Projective R S'` ＋ `IsUnit (|G| : R)` ⟹ `G`-等变截面（第 255 轮 ✓）
+
+**背景** ✓：源 `lem1.2` 证明第二步所引的**无限制端点** `GaloisProjectiveSectionHyp` ✓（§52 ✓）
+已在**第 250 轮机器反驳** ✗（`galoisProjectiveSectionHyp_refuted` ✓，`SaltThm38_ABGV52.lean:1582` ✓）
+⟹ **不能再作假设用** ✗。本节按**源的真实用例**重建该步 ✓：`S'` 对 `R` **投射** ✓
+（源侧由 `R'[G]`-投射性供给 ✓，`raw/Saltman1984.tex:139-142` ✓，**⚠-tex-sourced** ✗）＋
+`|G|` 在 `R` 中**可逆** ✓ —— 此时**分裂 ＋ 平均**给出 `G`-等变 `R`-线性截面 ✓（机制逐条见主定理文档 ✓）。
+
+**⚠ 口径** ✓：源侧的 **Galois 假设**（`hgal'` ✓）在本步**不被使用** ✗ —— 机制只需**投射性** ＋
+**`|G|` 可逆** ✓（源构型亦然 ✓：其 `δ` 由 `F[G]`-投射性给出 ✓）。故主定理**不列** `hgal'` ✗；
+保留它的**调用点签名一致形** ✓ 见 `exists_galoisProjectiveSection_of_galois_projective` ✓。
+-/
+
+set_option maxHeartbeats 1000000 in
+/-- **预期用例的重建形** ✓（**第 255 轮** ✓）：**投射性** ✓ ＋ **`|G|` 可逆** ✓ ⟹ **`G`-等变 `R`-线性截面** ✓ ——
+即源 `lem1.2` 证明第二步所需之物 ✓（**旧用点** ✓：`exists_galoisProjectiveSection` ✓，`:344` ✓）。
+
+**机制** ✓（**split ＋ average** ✓，两步皆已落 ✓）：
+① **分裂** ✓：`hproj` ✓ 给出 `ψ` 的 `R`-线性**右逆** `σ` ✓（`ψ ∘ σ = id` ✓）—— 用 mathlib
+`LinearMap.exists_rightInverse_of_surjective` ✓（其输入恰是 `[Module.Projective R S']` ✓，
+即 `Module.Projective` 的**提升性质**形 ✓，`Mathlib/Algebra/Module/Projective.lean:111` ✓）。
+② **平均** ✓：`δ x := u⁻¹ • ∑_g g⁻¹ • σ (g • x)` ✓，`u` ＝ `|G|` 在 `R` 中的**单位** ✓（`hunit.unit` ✓）。
+**⚠ 工艺** ✗：`R` 一般**无** `Inv` 实例 ✗（实测 `(c : R)⁻¹` 在 `CommRing` 档 `synthInstanceFailed` ✗），
+故逆由 `Rˣ` 承载 ✓（`IsUnit.val_inv_mul` ✓）。
+③ **截面性** ✓（`ψ ∘ δ = id` ✓）：逐项 `ψ (g⁻¹ • σ (g • x)) = g⁻¹ • (g • x) = x` ✓（`hψG` ✓ ＋ `ψ ∘ σ = id` ✓），
+再 `∑_g x = |G| • x` ✓（`Finset.sum_const` ✓ ＋ `Nat.cast_smul_eq_nsmul` ✓）并约去 `|G|` ✓。
+④ **等变性** ✓：重指标 `g ↦ g * g₀` ✓（`Equiv.mulRight` ✓ ＋ `Equiv.sum_comp` ✓）
+＋ `SMulCommClass G R S` ✓（由 `hRG` ✓ 得 ✓，同旧用点档 ✓）。
+
+**🔴 不声称** ✗：**①** 本定理**不**重证已反驳的**无限制形** ✗ —— `GaloisProjectiveSectionHyp` ✓ 仍为假 ✗
+（`galoisProjectiveSectionHyp_refuted` ✓，第 250 轮 ✓）；**②** **不**声称**去掉 `hproj` 或去掉 `hunit`** 时
+截面仍存在 ✗ —— 第 250 轮反例 ✓ **除 `hproj` 外全部中** ✓（`R = Polynomial ℚ` ✓、`S' = ℚ` ✓ 为 `G`-Galois ✓、
+`G = PUnit` ✓ 故 `|G| = 1` ✓ **是**单位 ✓），而该满射**连 `R`-线性截面都没有** ✗（反驳步只用 `R`-线性 ＋ 截面条件 ✓）
+⟹ **投射性不可去** ✓；`hunit` 则是**平均步约去**的前提 ✓（非单位则 `c` 不存在 ✗）；
+**③** **不**对源侧 **`R[G]`-投射性**断言作任何声称 ✗（该断言在 `raw/` 内**仍无供给** ✗，§47／§52 ✓）。 -/
+theorem exists_galoisProjectiveSection_of_projective
+    (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+    (R S S' : Type u) [CommRing R] [CommRing S] [CommRing S']
+    [Algebra F R] [Algebra R S] [Algebra R S'] [Algebra F S] [Algebra F S']
+    [IsScalarTower F R S] [IsScalarTower F R S']
+    [MulSemiringAction G S] [MulSemiringAction G S']
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (hRG' : ∀ (g : G) (r : R) (t : S'), g • (r • t) = r • (g • t))
+    (hproj : Module.Projective R S')
+    (hunit : IsUnit (Fintype.card G : R))
+    (ψ : S →ₗ[R] S') (hψG : ∀ (g : G) (s : S), ψ (g • s) = g • ψ s)
+    (hψsurj : Function.Surjective ψ) :
+    ∃ δ : S' →ₗ[R] S, (∀ x : S', ψ (δ x) = x) ∧ (∀ (g : G) (x : S'), δ (g • x) = g • δ x) := by
+  let _instProj : Module.Projective R S' := hproj
+  let _instC : SMulCommClass G R S := ⟨hRG⟩
+  let u : Rˣ := hunit.unit
+  let c : R := ((u⁻¹ : Rˣ) : R)
+  have hc : c * (Fintype.card G : R) = 1 := hunit.val_inv_mul
+  obtain ⟨σ, hσ⟩ := ψ.exists_rightInverse_of_surjective
+    (LinearMap.range_eq_top_of_surjective ψ hψsurj)
+  have hσ' : ∀ x : S', ψ (σ x) = x := fun x => LinearMap.congr_fun hσ x
+  let δ : S' →ₗ[R] S := c • ∑ g : G, (actEnd hRG g⁻¹).comp (σ.comp (actEnd hRG' g))
+  have hδ : ∀ x : S', δ x = c • ∑ g : G, g⁻¹ • σ (g • x) := by
+    intro x
+    have hA : ∀ (g : G) (y : S), actEnd hRG g y = g • y := fun g y => rfl
+    have hA' : ∀ (g : G) (y : S'), actEnd hRG' g y = g • y := fun g y => rfl
+    simp only [δ, LinearMap.smul_apply, LinearMap.sum_apply, LinearMap.comp_apply, hA, hA']
+  have hψδ : ∀ x : S', ψ (δ x) = x := by
+    intro x
+    rw [hδ x, map_smul, map_sum]
+    have hterm : ∀ g : G, ψ (g⁻¹ • σ (g • x)) = x := by
+      intro g
+      rw [hψG g⁻¹ (σ (g • x)), hσ' (g • x), inv_smul_smul]
+    rw [Finset.sum_congr rfl (fun g _ => hterm g), Finset.sum_const, Finset.card_univ,
+      ← Nat.cast_smul_eq_nsmul R, smul_smul (M := R), hc, one_smul]
+  have hδG : ∀ (g₀ : G) (x : S'), δ (g₀ • x) = g₀ • δ x := by
+    intro g₀ x
+    have hreindex : (∑ g : G, g⁻¹ • σ (g • (g₀ • x)))
+        = ∑ k : G, g₀ • (k⁻¹ • σ (k • x)) := by
+      have h1 : ∀ g : G, g⁻¹ • σ (g • (g₀ • x))
+          = g₀ • ((g * g₀)⁻¹ • σ ((g * g₀) • x)) := by
+        intro g
+        rw [smul_smul (M := G) g g₀ x,
+          show g⁻¹ = g₀ * (g * g₀)⁻¹ by simp [mul_inv_rev]]
+        exact (smul_smul (M := G) g₀ ((g * g₀)⁻¹) (σ ((g * g₀) • x))).symm
+      calc ∑ g : G, g⁻¹ • σ (g • (g₀ • x))
+          = ∑ g : G, g₀ • ((g * g₀)⁻¹ • σ ((g * g₀) • x)) :=
+            Finset.sum_congr rfl (fun g _ => h1 g)
+        _ = ∑ k : G, g₀ • (k⁻¹ • σ (k • x)) :=
+            Equiv.sum_comp (Equiv.mulRight g₀) (fun k : G => g₀ • (k⁻¹ • σ (k • x)))
+    rw [hδ (g₀ • x), hδ x, hreindex, ← Finset.smul_sum]
+    exact (smul_comm g₀ c _).symm
+  exact ⟨δ, hψδ, hδG⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **调用点签名一致形** ✓（**第 255 轮** ✓）：绑定表与旧**用点** `exists_galoisProjectiveSection` ✓（`:344` ✓）
+逐位对齐 ✓，仅把该处的 **`h : GaloisProjectiveSectionHyp F G`** ✗ 换成 **`hproj` ＋ `hunit`** ✓
+（＝ 蓝图第 9 步 `SaltLem12_ABGV52:274` ✓ 的 `hproj` 输入按「预期用例」重接 ✓）。
+
+**⚠ 口径** ✓：`hgal'` ✓ 在本步**不被使用** ✗（机制只需投射性 ＋ `|G|` 可逆 ✓，见主定理 ✓）——
+保留它只为**与用点签名对齐** ✓（源侧调用处 `hgal'` 本就在上下文 ✓），
+并按 linter 惯例以 `_` 前缀标为**冗余假设** ✓（`linter.unusedVariables` ✓ 不报 ✓）。
+**🔴 不声称** ✗：同主定理三条 ✓ —— **不**重证无限制形 ✗／**不**声称去掉 `hproj`、`hunit` 后截面存在 ✗／
+**不**声称源侧 `R[G]`-投射性 ✗。 -/
+theorem exists_galoisProjectiveSection_of_galois_projective
+    (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+    (R S S' : Type u) [CommRing R] [CommRing S] [CommRing S']
+    [Algebra F R] [Algebra R S] [Algebra R S'] [Algebra F S] [Algebra F S']
+    [IsScalarTower F R S] [IsScalarTower F R S']
+    [MulSemiringAction G S] [MulSemiringAction G S']
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (hRG' : ∀ (g : G) (r : R) (t : S'), g • (r • t) = r • (g • t))
+    (_hgal' : IsGaloisWithGroup R S' G hRG')
+    (hproj : Module.Projective R S')
+    (hunit : IsUnit (Fintype.card G : R))
+    (ψ : S →ₗ[R] S') (hψG : ∀ (g : G) (s : S), ψ (g • s) = g • ψ s)
+    (hψsurj : Function.Surjective ψ) :
+    ∃ δ : S' →ₗ[R] S, (∀ x : S', ψ (δ x) = x) ∧ (∀ (g : G) (x : S'), δ (g • x) = g • δ x) :=
+  exists_galoisProjectiveSection_of_projective F G R S S' hRG hRG' hproj hunit ψ hψG hψsurj
+
+set_option maxHeartbeats 1000000 in
+/-- **`F = ℚ` 档推论（`hunit` 免假设）** ✓（**第 255 轮** ✓）：`R` 为 `ℚ`-代数时 `IsUnit (|G| : R)` ✓
+**自动成立** ✓ —— `(|G| : ℚ) ≠ 0` ✓（`Fintype.card_ne_zero` ✓）经 `algebraMap ℚ R` ✓ 搬入 ✓
+（`IsUnit.map` ✓ ＋ `map_natCast` ✓）⟹ **特征 0 档无需 `hunit`** ✓，即**源用例所在档** ✓
+（`|G|` 可逆 ✓）且该假设在该档**非空洞** ✓。
+
+**⚠ 宇宙档** ✗：本推论把 `R S S'` 钉在 `Type`（＝ `Type 0`，`ℚ` 自身所在档 ✓）——
+主定理为**单宇宙**绑定 ✓（同旧端点档 ✓，§52.2 ✓），故 `F` 与环**必须同档** ✗
+（实测：`R : Type u` 时取 `F := ℚ` **类型不匹配** ✗）；欲取任意宇宙档须把 `F` 独立成宇宙参数 ⚠（**未落** ✗）。
+**🔴 不声称** ✗：同主定理三条 ✓。 -/
+theorem exists_galoisProjectiveSection_of_projective_rat
+    (G : Type) [Group G] [Fintype G]
+    (R S S' : Type) [CommRing R] [CommRing S] [CommRing S']
+    [Algebra ℚ R] [Algebra R S] [Algebra R S'] [Algebra ℚ S] [Algebra ℚ S']
+    [IsScalarTower ℚ R S] [IsScalarTower ℚ R S']
+    [MulSemiringAction G S] [MulSemiringAction G S']
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (hRG' : ∀ (g : G) (r : R) (t : S'), g • (r • t) = r • (g • t))
+    (hproj : Module.Projective R S')
+    (ψ : S →ₗ[R] S') (hψG : ∀ (g : G) (s : S), ψ (g • s) = g • ψ s)
+    (hψsurj : Function.Surjective ψ) :
+    ∃ δ : S' →ₗ[R] S, (∀ x : S', ψ (δ x) = x) ∧ (∀ (g : G) (x : S'), δ (g • x) = g • δ x) := by
+  refine exists_galoisProjectiveSection_of_projective ℚ G R S S'
+    hRG hRG' hproj ?_ ψ hψG hψsurj
+  have hq : IsUnit ((Fintype.card G : ℕ) : ℚ) :=
+    isUnit_iff_ne_zero.mpr (Nat.cast_ne_zero.mpr Fintype.card_ne_zero)
+  have hmap : IsUnit (algebraMap ℚ R ((Fintype.card G : ℕ) : ℚ)) := hq.map (algebraMap ℚ R)
+  rwa [map_natCast] at hmap
+
+set_option maxHeartbeats 1000000 in
+/-- **非空洞探针（L1）** ✓：主定理的**两条新假设**在 `ℚ` 档**可同时实例化** ✓ ——
+`Module.Projective ℚ ℚ` ✓（`ℚ` 对自身投射 ✓）＋ `IsUnit (|PUnit| : ℚ)` ✓（`|PUnit| = 1` ✓）；
+**结论侧**的非空洞继承 `galoisProjectiveSectionHyp_data_nonempty` ✓（`δ = id` 档 ✓）。 -/
+theorem galoisProjectiveSectionProj_data_nonempty :
+    Nonempty (Module.Projective ℚ ℚ) ∧ IsUnit (Fintype.card PUnit : ℚ) :=
+  ⟨⟨inferInstance⟩, isUnit_iff_ne_zero.mpr (Nat.cast_ne_zero.mpr Fintype.card_ne_zero)⟩
+
+#print axioms exists_galoisProjectiveSection_of_projective
+#print axioms exists_galoisProjectiveSection_of_galois_projective
+#print axioms exists_galoisProjectiveSection_of_projective_rat
+#print axioms galoisProjectiveSectionProj_data_nonempty
+
 end ABGV52.BTier
