@@ -1421,3 +1421,13 @@ so the formalization now records that the crossed-product map and the action stu
 the group part.  Two practical points are recorded, one about which of these constructions require the group to be
 finite and one about the placement of generic lemmas inside the carrier-specific file.  Bijectivity of the
 crossed-product map is not claimed here.
+
+Round 303 records that the Artin-Schreier carrier is free of rank p over its coefficient ring, together with the
+explicit power basis given by the powers of the root.  The defining polynomial is first shown to be monic by
+combining the computation of its top coefficient with the degree computation of an earlier round, and the power basis
+is then obtained from the standard basis of a quotient by a monic polynomial, relabelled along the equality between
+the degree and the prime.  The rank statement is a direct consequence.  This is the common floor for the two bases
+that the explicit inverse of the crossed-product map will be written in, and it also feeds the module-theoretic rows
+of the paper in the cyclic case.  Two practical points are recorded: the relabelling of a basis requires the index
+equivalence in the direction the library expects, and an attempt to substitute the degree for the prime must be
+avoided because it rewrites the prime inside the defining polynomial as well.

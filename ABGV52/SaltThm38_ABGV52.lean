@@ -9059,4 +9059,57 @@ end DeltaAS302
 #print axioms delta_AS_single_one_apply
 
 
+/-! ### 4.91 **AS 载体的幂基与秩（`R`-自由、秩 `p`）**（第 303 轮）
+—— 款③ 显式逆的**基** ✓ 与 (1b)/(2a)/(2b) **模块行**的 C_p 档输入 ✓
+
+**落成三件** ✓✅：**(i)** **`aspoly_monic`** ✓（`ASpoly R p a` **首一** ✓，`p ≥ 2` ✓）；
+**(ii)** **`asCarrierBasis`** ✓✅：**幂基 `{1, y, …, y^{p−1}}`** ✓（`Module.Basis (Fin p) R (asCarrier R p a)` ✓，
+由 mathlib 的 `AdjoinRoot.powerBasisAux'` ✓ ＋ `finCongr` ✓ 重标号 ✓）；
+**(iii)** **`asCarrier_finrank`** ✓✅：**`Module.finrank R (asCarrier R p a) = p`** ✓。
+
+**⚠ 机制与工艺** ✓：**(i)** 由 **§4.87 的 `aspoly_natDegree`** ✓ ＋ 系数计算 ✓（`coeff p = 1` ✓）⟹ `leadingCoeff = 1` ✓；
+**(ii)** `AdjoinRoot.powerBasisAux' (hg : g.Monic) : Basis (Fin g.natDegree) R (AdjoinRoot g)` ✓ ＋ **`reindex (finCongr …)`** ✓；
+**(iii)** 由 `Module.finrank_eq_card_basis` ✓ ＋ `Fintype.card_fin` ✓ ＋ (i) ✓。
+**工艺** ✓（入 §5.1 ✓）：**(甲)** **`reindex` 的 `Equiv` 方向** ✗ —— 须**正序** `finCongr (natDegree = p)` ✓
+（`.symm` 报 "expected `natDegree = p`" ✓，实测 ✓）；**(乙)** **不可**用 `rw [← natDegree]` 改写目标 ✗ ——
+会把 `ASpoly R p a` 里的 `p` **一并改写** ✗（实测 "expected `asCarrier R (ASpoly R p a).natDegree a`" ✓）；
+正解 ＝ `finrank_eq_card_basis` 路线 ✓。
+
+**⚠ 意义** ✓：**(ii)** 是 **`{y^i ⊗ g}` 交叉积基** ✓ 与 **`{y^i · φ_g}` 自同态侧基** ✓ 的**共同底座** ✓
+⟹ 款③（`δ` 双射）的**显式逆**已在射程内 ✓；**(iii)** 同时供给 **(1b)/(2a)/(2b) 的 C_p 档** ✓。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗；**不**声称 `{φ_k root}` 是基 ✗（**只**落 `{1, y, …, y^{p−1}}` ✓）；
+**不**声称 `IsGaloisWithGroup` 无条件形 ✗；**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section ArtinSchreierBasis303
+
+/-- **AS 多项式首一** ✓（`p ≥ 2`）。 -/
+theorem aspoly_monic {R : Type*} [CommRing R] [Nontrivial R] {p : ℕ} (hp : 2 ≤ p) (a : R) :
+    (ASpoly R p a).Monic := by
+  show (ASpoly R p a).leadingCoeff = 1
+  rw [Polynomial.leadingCoeff, aspoly_natDegree (R := R) hp a, ASpoly, Polynomial.coeff_sub,
+    Polynomial.coeff_sub, Polynomial.coeff_X_pow_self,
+    Polynomial.coeff_X_of_ne_one (by omega : p ≠ 1),
+    Polynomial.coeff_C_of_ne_zero (by omega : p ≠ 0)]
+  norm_num
+
+/-- **AS 载体的幂基** ✓✅：`{1, y, …, y^{p−1}}` ✓。 -/
+noncomputable def asCarrierBasis {R : Type*} [CommRing R] [Nontrivial R] {p : ℕ} (hp : 2 ≤ p)
+    (a : R) : Module.Basis (Fin p) R (asCarrier R p a) :=
+  (AdjoinRoot.powerBasisAux' (aspoly_monic (R := R) hp a)).reindex
+    (finCongr (aspoly_natDegree (R := R) hp a))
+
+/-- **AS 载体的秩 ＝ `p`** ✓✅。 -/
+theorem asCarrier_finrank {R : Type*} [CommRing R] [Nontrivial R] {p : ℕ} (hp : 2 ≤ p) (a : R) :
+    Module.finrank R (asCarrier R p a) = p := by
+  rw [Module.finrank_eq_card_basis (AdjoinRoot.powerBasisAux' (aspoly_monic (R := R) hp a)),
+    Fintype.card_fin, aspoly_natDegree (R := R) hp a]
+
+end ArtinSchreierBasis303
+
+#print axioms aspoly_monic
+#print axioms asCarrierBasis
+#print axioms asCarrier_finrank
+
+
 end ABGV52
