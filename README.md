@@ -1060,3 +1060,15 @@ proved: faithful flatness implies injectivity of the structure map, so it cannot
 witness is the same Galois datum as before, taken unchanged.  Accordingly the rebuilt endpoint cannot
 drop the input, and the source's use case is not affected, because there injectivity is structural:
 the base ring sits inside the algebra.
+
+The two source statements have been reduced to named residuals, and one of them turned out to rest on
+a route that is empty.  For the second source statement the library now has: the shared ring-tier
+residual of the realisation clause, a reduction from that residual together with the source's
+construction side to the statement, and a proof that the statement's conclusion does not mention the
+ambient field, so the field quantifier and the rationality hypothesis are idle at this step.  For the
+first source statement, the ten wiring rows that had been blocked at file level are now produced
+mechanically, but a machine-checked judgement shows that the encoding used since an earlier round is
+unsatisfiable when the group is nontrivial: the hypothesis table of that route is empty, so no amount
+of wiring along it can reach the statement.  The repair is recorded and landed: the data should be
+read as a fixed transcendence basis of the invariant field, which the rationality hypothesis supplies
+directly, rather than as an adelic basis of the ambient field.

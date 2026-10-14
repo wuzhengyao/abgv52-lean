@@ -2131,4 +2131,478 @@ theorem galoisDescentHyp_refuted : ¬ BTier.GaloisDescentHyp ℚ PUnit.{1} := by
 end GaloisDescentHypRefuted
 
 
+/-! ## **两条源陈述的具名残余归约**（第 259 轮）—— 环档桥 ＋ 两处归约 ＋ **已登记路线的空洞判定** ＋ 修正方向
+
+**⚠ 起点** ✓（**承任务书** ✓）：两条**源陈述**仍未证 ✗ ——
+`Theorem51Statement`（`SaltGeneric_ABGV52.lean:257` ✓）与 `Theorem21Statement`（同件 `:191` ✓）。
+本轮**不**重证它们 ✗，而是把「还缺什么」落成**两个具名残余** ✓、把可达部分落库 ✓，
+并对**已登记的 r206 路线**做 **L1 在住性判定** ✓。
+
+**🔴 五件** ✓（探针 `.abgv52-scratch/probe-r259{e,f,h}.lean` ✓ **rc=0** ✓、**零警告** ✓）：
+**①** **环档桥** ✓（`RealizationRingTierBridge` ✓）—— 两条源陈述**共用**的**唯一档位缺口** ✓：
+`BTier.RealizationProperty` 的 `L` 量词是 **`[CommRing L]`** ✗，而库内装配链只供给
+**`[Field L]` ＋ `[FiniteDimensional K L]`** ✓（§4.56 ✓，`RealizationPropertyFieldFinite` ✓）；
+**②** **归约（`theorem-5-1`）** ✓：`NoetherWiringResidual` ✓（r206 表 ∃-打包）＋ 环档桥 ⟹ `Theorem51Statement` ✓；
+**③** **归约（`theorem-2-1`）** ✓：`Thm21ClausesResidual` ✓（源 §2 构造，第三款取**有限域档** ✓）＋ 环档桥
+⟹ `Theorem21Statement` ✓；
+**④** **Noether 侧接线表的 10 行机器可造** ✓（`noetherWiringMachinery_of_sourceData` ✓）——
+**解 r217／r227 登记的文件级实例障碍** ✓✅（`SaltLocalProj` 的 `locMulSemiringAction` 一族 ✗ 与本件 §4.4 的
+`MvPolynomial` 作用 ✗ 此前**无文件同时可见** ✗；**本件两件皆见** ✓）；
+**⑤** **路线空洞判定 ＋ 修正方向** ✓（**本轮主发现** ✓）：残余 ② 的**两行**（`hgen` ✗ 与 `ha_fix` ✗）
+**不可同真** ✓ —— `subsingleton_of_fixed_generating` ✓（＋ Noether 作用的忠实性 ✓）⟹
+`noetherWiringResidual_empty_of_nontrivial` ✓：**`G` 非平凡时该表为空** ✗ ⟹
+**r206／§4.61 的端到端路线不可能达到源陈述** ✗；**修正方向** ✓ ＝ 把源侧数据取在**不动域 `L^G`** 上 ✓
+（源文用法 ✓；库内 `exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver` ✓ 正是该形 ✓，
+本轮落 `exists_fixed_transcendenceBasis_of_isRationalOver` ✓：**修正后的数据行由源假设直接产出** ✓✅）。
+
+**⚠ 三条诚实账** ✓（逐条**机器核** ✓，非沿用旧注 ✗）：
+**(i)** 源 `theorem-5-1` 的**结论**是**环档**见证 ✗（源印 254 ✓「`L` is not necessarily a field」✓）；
+库内**可达**的是**有限域档** ✓（§4.56 ✓）⟹ 残余 ① **不可去** ✗（**除非**重建 CHR 代数版 ✗）；
+**(ii)** 残余 ②（r206 表）**在 `G` 非平凡档为空** ✗（⑤ ✓）⟹ 归约 ② **对非平凡 `G` 空洞** ✗（**不声称**它是通路 ✗）；
+**(iii)** 归约 ③ 的残余**非空洞** ✓（只要求三款齐备的载体存在 ✓）⟹ **`theorem-2-1` 侧的归约是本轮唯一非空洞者** ✓。
+
+**🔴 不声称** ✗：**不**声称两条源陈述已证 ✗；**不**声称残余 ① 可去 ✗；**不**声称残余 ② 非空 ✗
+（**已机器判空** ✗）；**不**声称 r206 表的**修正形**已组装 ✗（只落其**数据行** ✓，见 §D ✓）；
+**不**声称 `genericExtensionWitnessFieldFinite_gap_registered` 一族旧注被改写 ✗（**留痕** ✓）。
+
+**无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
+
+/-! ### A. 残余 ①：(c) 款**环档桥**（两条源陈述共用） -/
+
+section RingTierBridge
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G]
+
+/-- **残余 ①（具名）**：(c) 款的**环档桥** ✓ —— 「**有限域档** `(c)` ⟹ **源形环档** `(c)`」✓。
+
+**⚠ 为何是两条源陈述的公共残余** ✓：`GenericExtensionWitness.isGeneric` ✗ 与
+`GenericExtensionWitnessFieldFinite.isGeneric` ✓ 的**前两款逐字相同** ✓（`(a)` 局部化多项式环 ✓／
+`(b)` `IsGaloisWithGroup` ✓），**只差第三款** ✓；而**档位缺口**与 `F`／`G`／载体**无关** ✓
+（缺口 ＝ 量词域的 `[Field L]` ✗ vs `[CommRing L]` ✗ ＋ 有限性 ✗，§4.53 ✓／§4.56 ✓）。
+
+**⚠ 数学内容** ✓（**未落** ✗）：须**环上 Galois 理论（CHR 代数版）** ✓ —— 即「`L/K` `G`-Galois
+⟹ `L` 是有限多个域的直和，且各分量 `G`-Galois」✓（源 `proposition-0-5` ✓ 印 254 明写
+「`L` is the direct sum of fields」✓），再逐分量用**有限域档** `(c)` ✓ 拼回 ✓。
+**⚠ 强度序（已落** ✓**）**：`realizationPropertyFieldFinite_of_realizationProperty` ✓ ——
+**环档 ⟹ 有限域档** ✓（**逆未证** ✗，**登记** ✓）。
+**🔴 不声称** ✗：**不**声称本残余可证 ✗（其**实体**＝ CHR 代数版 ✗，**未落** ✗）；
+**不**声称其前件与结论等价 ✗（**只**落了**单向**强度序 ✓）。 -/
+def RealizationRingTierBridge (F : Type) [Field F] (G : Type) [Group G] [Fintype G] : Prop :=
+  ∀ (R S : Type) [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S], RealizationPropertyFieldFinite F G R S → BTier.RealizationProperty F G R S
+
+/-- **强度序（可证方向）** ✓：**环档 ⟹ 有限域档** ✓ —— 把有限域档的量词实例（含
+`[Field L]` ＋ `[FiniteDimensional K L]` ✓）喂给环档形即可 ✓。
+**⚠ 方向性** ✓：**逆方向**（有限域档 ⟹ 环档 ✗）**未证** ✗ —— 那**正是**残余 ① ✓。
+**⚠ 判别力** ✓：本条 ＋ `RealizationRingTierBridge` ✓ 合读即「残余 ① 的**前件弱于**其结论」✓
+（故残余 ① **不是** `Iff` 的同义反复 ✗）。 -/
+theorem realizationPropertyFieldFinite_of_realizationProperty {R S : Type}
+    [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S] [IsScalarTower F R S]
+    (h : BTier.RealizationProperty F G R S) : RealizationPropertyFieldFinite F G R S := by
+  intro K _ _ L _ _ _ _ _ _ hKL hgal
+  exact h K L hKL hgal
+
+/-- **(c) 款：有限域档 ＋ 残余 ① ⟹ 环档** ✓：`IsGenericExtension` 的**前两款逐字搬运** ✓
+（`h.1` ✓／`h.2.1` ✓），第三款由桥填 ✓。
+**⚠ 用途** ✓：残余 ②／③ 的归约**共用此件** ✓。
+**🔴 不声称** ✗：**不**声称本件给出**无条件**的环档 `(c)` ✗（**前两款**本就在两档中相同 ✓，
+本件**只**搬运它们 ✗）；**不**声称残余 ① 已证 ✗。 -/
+theorem isGenericExtension_of_fieldFinite_and_ringBridge {R S : Type}
+    [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S] [IsScalarTower F R S]
+    [MulSemiringAction G S]
+    {hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)}
+    (hb : RealizationRingTierBridge F G) (h : IsGenericExtensionFieldFinite F G R S hRG) :
+    BTier.IsGenericExtension F G R S hRG :=
+  ⟨h.1, h.2.1, hb R S h.2.2⟩
+
+/-- **见证层：有限档见证 ＋ 残余 ① ⟹ 源形见证** ✓：
+`obtain` 出的**实例场**由结构字段自动注册 ✓（与 `SaltGeneric:5623` ✓ 的**反向件**同款工艺 ✓）。
+**🔴 不声称** ✗：**不**声称有限档见证**存在** ✗（其存在性 ＝ 各档装配的事 ✓，本件**只**搬运 ✓）；
+**不**声称残余 ① 已证 ✗。 -/
+theorem nonempty_genericExtensionWitness_of_fieldFinite_and_ringBridge
+    (hb : RealizationRingTierBridge F G)
+    (h : Nonempty (GenericExtensionWitnessFieldFinite F G)) :
+    Nonempty (GenericExtensionWitness F G) := by
+  obtain ⟨R, S, hRG, hisg⟩ := h
+  exact ⟨R, S, hRG, isGenericExtension_of_fieldFinite_and_ringBridge hb hisg⟩
+
+/-- **结论侧核心** ✓：`Infinite F → Nonempty (GenericExtensionWitness F G)` ⟹ `Theorem51Statement F G` ✓。
+
+**⚠ 意义（结构性观察** ✓**）**：源陈述的结论**不含 `L`** ✗ ⟹ 其 `L`-量词与 `IsRationalOver F L^G` 前提
+在本步**闲置** ✓ —— 源侧它们是**数据的来源** ✓（不动域有理 ⟹ 数据 ✓），**不是结论的一部分** ✗
+（**本轮发现 ⑤ 的修正方向** ✓ 正建在此观察上 ✓）。
+**⚠ 不声称** ✗：**不**声称逆方向（`Theorem51Statement ⟹ 核心` ✗ —— 须先给一个满足前提的 `L` ✗）。 -/
+theorem theorem51Statement_of_witness (h : Infinite F → Nonempty (GenericExtensionWitness F G)) :
+    Theorem51Statement F G :=
+  fun hinf _ _ _ _ _ _ => h hinf
+
+#print axioms RealizationRingTierBridge
+#print axioms realizationPropertyFieldFinite_of_realizationProperty
+#print axioms isGenericExtension_of_fieldFinite_and_ringBridge
+#print axioms nonempty_genericExtensionWitness_of_fieldFinite_and_ringBridge
+#print axioms theorem51Statement_of_witness
+
+end RingTierBridge
+
+/-! ### B. 残余 ②：Noether 侧接线表（r206 假设表的 ∃-打包）＋ **归约（源 `theorem-5-1`）** -/
+
+section NoetherWiringResidual
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **残余 ②（具名）**：**r206 定理**（`nonempty_genericExtensionWitnessFieldFinite_of_noetherAdjoin` ✓，
+`SaltGeneric_ABGV52.lean:5789` ✓）的**整张假设表**的 ∃-打包 ✓ ——
+「**Noether 载体的接线数据存在**」✓（**与 `L` 无关** ✗，见 `theorem51Statement_of_witness` ✓）。
+
+**⚠ 十八行** ✓（∃-绑定 9 行：`n` ✓／`a` ✓／`s₀` ✓／`t` ✓／三实例 ✓／`ht` ✓／`hRG` ✓；
+合取 12 行：`hind` ✓／`hgen` ✓／`hs₀` ✓／`hs₀_mem` ✓／`ha_fix` ✓／`hs₀_fix` ✓／
+`(∀ g, g • t = t)` ✓／`hle` ✓／`hact_map` ✓／`hgal` ✓／`hProj` ✓／`hS₀R` ✓）。
+**逐行归类** ✓（**本轮实测** ✓）：**10 行机器可造** ✓（§C ✓）；**其余 8 行** ✗ ＝
+源侧数据 6 行 ✗（`hind` ✓／`hgen` ✓／`hs₀` ✓／`hs₀_mem` ✓／`ha_fix` ✓／`hs₀_fix` ✓）
+＋ 两具名端点 2 行 ✗（`hgal` ✓／`hProj` ✓）。
+**🔴 且 `hgen` ＋ `ha_fix` 不可同真** ✗（**§D 机器判定** ✓）⟹ **本残余在 `G` 非平凡档为空** ✗
+（**不声称**它是通路 ✗）。 -/
+def NoetherWiringResidual (F : Type) [Field F] (G : Type) [Group G] [Fintype G]
+    [DecidableEq G] : Prop :=
+  ∃ (n : ℕ) (a : Fin n → NoetherField F G) (s₀ : NoetherField F G) (t : MvPolynomial G F)
+    (_ : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away t))
+    (_ : IsScalarTower F ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away t))
+    (_ : MulSemiringAction G (Localization.Away t))
+    (ht : t ≠ 0)
+    (hRG : ∀ (g : G) (r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})))
+      (x : Localization.Away t), g • (r • x) = r • (g • x)),
+    AlgebraicIndependent F a ∧
+      IntermediateField.adjoin F (Set.range a) = ⊤ ∧
+      s₀ ≠ 0 ∧ s₀ ∈ Algebra.adjoin F (Set.range a) ∧
+      (∀ (g : G) (i : Fin n), g • a i = a i) ∧
+      (∀ (g : G), g • s₀ = s₀) ∧
+      (∀ g : G, g • t = t) ∧
+      (Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}) ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G)))) ∧
+      (∀ (g : G) (p : MvPolynomial G F),
+        g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+          = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p)) ∧
+      BTier.IsGaloisWithGroup ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+        (Localization.Away t) G hRG ∧
+      BTier.GaloisProjectiveHyp ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+        (Localization.Away t) G hRG ∧
+      (∀ r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})),
+        awayToFieldAlg (F := F) (G := G) t ht
+            (algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+              (Localization.Away t) r)
+          = algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (NoetherField F G) r)
+
+set_option maxHeartbeats 1000000 in
+/-- **归约（源 `theorem-5-1`）** ✓：**残余 ② ＋ 残余 ① ⟹ `Theorem51Statement F G`** ✓。
+
+**⚠ 证明体（一句）** ✓：把残余 ② 的十八行**逐位喂给 r206** ✓（`nonempty_..._of_noetherAdjoin` ✓，
+**不重证** ✓），得**有限档**见证 ✓；再经残余 ①（`nonempty_..._of_fieldFinite_and_ringBridge` ✓）
+搬成**源形**见证 ✓。**⚠ `L` 与 `hL` 全程闲置** ✓（＝ `theorem51Statement_of_witness` ✓ 的观察 ✓）。
+**🔴 不声称** ✗：**不**声称残余 ② 非空 ✗（**其空性见 §D** ✓）⟹ 本条对**非平凡 `G`** 是**条件式空洞** ✗；
+**不**声称两条源陈述已证 ✗。 -/
+theorem theorem51Statement_of_noetherWiringResidual_and_ringBridge
+    (hb : RealizationRingTierBridge F G) (hw : NoetherWiringResidual F G) :
+    Theorem51Statement F G := by
+  intro hinf L _ _ _ _ _
+  obtain ⟨n, a, s₀, t, instA, instT, instM, ht, hRG, hind, hgen, hs₀, hs₀_mem, ha_fix,
+    hs₀_fix, htinv, hle, hact_map, hgal, hProj, hS₀R⟩ := hw
+  exact nonempty_genericExtensionWitness_of_fieldFinite_and_ringBridge hb
+    (nonempty_genericExtensionWitnessFieldFinite_of_noetherAdjoin hind hgen hs₀ hs₀_mem
+      ha_fix hs₀_fix ht htinv hle hact_map hRG hgal hProj hS₀R hinf)
+
+#print axioms NoetherWiringResidual
+#print axioms theorem51Statement_of_noetherWiringResidual_and_ringBridge
+
+end NoetherWiringResidual
+
+/-! ### C. 残余 ③：`theorem-2-1` 侧（源 §2 构造 ＋ 有限域档 `(c)`）＋ **归约** -/
+
+section Thm21Residual
+
+/-- **残余 ③（具名）**：**源 §2 的构造** ✓ —— `SaltmanCondition A F` ⟹ 存在载体 `(R, S)` 使
+**(a) 款** ✓ ＋ **(b) 款** ✓ ＋ **(c) 款取有限域档** ✓ 三款齐备 ✓。
+
+**⚠ 与源 `theorem-2-1` 的差** ✓：**只差第三款的档位** ✓（源要**环档** ✓）⟹ 残余 ③ **弱于**源结论 ✓
+（`realizationPropertyFieldFinite_of_realizationProperty` ✓ 给强度序 ✓）。
+**⚠ 数学内容** ✓（**未落** ✗）：Saltman 1982 §2 的构造（`A` 有限交换 ＋ `2^r` 条件 ⟹ generic Galois
+extension 存在 ✓，源印 257 `theorem-2-1` ✓）—— 库内**无任何**该构造件 ✗（`GenericExtensionWitness` ✓
+此前**只在陈述侧**出现 ✓）。
+**🔴 非空洞性** ✓：本残余**不**含 r206 表的两行冲突 ✗ ⟹ **非空洞** ✓（三款齐备的载体存在性本身不自相矛盾 ✓；
+`A = PUnit` ✓ 档由 r249 ✓ 的见证**间接**支持 ✓ —— **⚠ 但 r249 的见证是有限档 ＋ 弱化档** ✗，**不**直接充当本残余 ✗）。 -/
+def Thm21ClausesResidual (A : Type) [Group A] [Fintype A] (F : Type) [Field F] : Prop :=
+  SaltmanCondition A F →
+    ∃ (R S : Type) (_ : CommRing R) (_ : CommRing S) (_ : Algebra F R) (_ : Algebra R S)
+      (_ : Algebra F S) (_ : IsScalarTower F R S) (_ : MulSemiringAction A S)
+      (hRG : ∀ (g : A) (r : R) (t : S), g • (r • t) = r • (g • t)),
+      (∃ (n : ℕ) (w : MvPolynomial (Fin n) F),
+        w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w)) ∧
+      BTier.IsGaloisWithGroup R S A hRG ∧ RealizationPropertyFieldFinite F A R S
+
+/-- **归约（源 `theorem-2-1`）** ✓：**残余 ③ ＋ 残余 ① ⟹ `Theorem21Statement A F`** ✓。
+
+**⚠ 证明体** ✓：`SaltmanCondition` 前提交给残余 ③ ✓ ⟹ 取 `(R, S)` 与三款 ✓ ⟹
+第三款经残余 ① 升为**环档** ✓ ⟹ 打包源形见证 ✓（`GenericExtensionWitness` ✓ 的**实例字段**由
+`obtain` 出的实例注册 ✓）。
+**⚠ 意义** ✓：本条是**本轮唯一非空洞**的归约 ✓（**不声称**残余 ③ 已证 ✗ —— 它是源 §2 的构造 ✗）。 -/
+theorem theorem21Statement_of_clausesResidual_and_ringBridge
+    (A : Type) [Group A] [Fintype A] (F : Type) [Field F]
+    (hres : Thm21ClausesResidual A F) (hb : RealizationRingTierBridge F A) :
+    Theorem21Statement A F := by
+  intro hC
+  obtain ⟨R, S, _hcR, _hcS, _haFR, _haRS, _haFS, _hst, _hmsa, hRG, ha, hgal, hc⟩ := hres hC
+  exact ⟨R, S, hRG, ha, hgal, hb R S hc⟩
+
+#print axioms Thm21ClausesResidual
+#print axioms theorem21Statement_of_clausesResidual_and_ringBridge
+
+end Thm21Residual
+
+/-! ### D. **路线空洞的机器判定**：r206 表的两行 `hgen` ✗ 与 `ha_fix` ✗ 不可同真 -/
+
+section FixedGeneratingRefutation
+
+variable {F : Type} [Field F] {G : Type} [Group G]
+
+set_option maxHeartbeats 1000000 in
+/-- **L1 判定（本轮主发现** ✓）**：`G`-不变族**不**能生成 `L`（`G` 非平凡时）** ✓ ——
+`ha_fix` ✗ ＋ `hgen` ✗ ⟹ **`Subsingleton G`** ✓。
+
+**证明** ✓（**四步** ✓）：**①** 由 `IntermediateField.adjoin_induction` ✓ 证「`\mathrm{adjoin}_F(a)` 的
+**每个**元素被 `G` **固定**」✓ —— `a`-支用 `ha_fix` ✓、`\mathrm{algebraMap}`-支用
+`smul_C_noether` ✓ ＋ 塔式 ✓（`g \bullet (c \cdot 1) = c \cdot (g \bullet 1)` ✓）、
+`+`／`*`／`\cdot^{-1}`-支用 `smul\_add` ✓／`smul\_mul'` ✓／`smul\_inv_0'` ✓；
+**②** 由 `hgen` ✓ 得 `\top \subseteq L^G` ✓ ⟹ **每个** `x` 被每个 `g` 固定 ✓；
+**③** 由 `FaithfulSMul G L` ✓（Noether 作用**忠实** ✓，`SaltGeneric` §4.4 ✓）＋ `eq_of_smul_eq_smul` ✓
+得 `g = 1` ✓（`h` 同）✓；**④** 故 `Subsingleton G` ✓。
+
+**🔴 要害** ✓：本条的**两行**正是 r206 表（≈ §4.61 ✓）的**第 2 行与第 5 行** ✓ ⟹
+**该表在 `G` 非平凡档为空** ✗（**目标为假** ✗，**非**材料不可得 ✗）。
+**⚠ 几何直觉** ✓：`L/L^G` 是**有限**扩张（Artin ✓）而 `a` 在 `L^G` 内 ⟹ `a` 至多生成 `L^G` ✗，
+**不可能**生成 `L` ✗ —— 源文用 `a` 时它**本就在** `L^G` **内** ✓（见 §E ✓）。
+**🔴 不声称** ✗：**不**声称源 `theorem-5-1` 的证明有误 ✗ —— 被判定的是**库内 r206 的编码** ✗
+（把 `\mathrm{adjoin} = \top` 写在 `L` 上 ✗ 而固定性写在 `a` 上 ✗）；**不**声称 §4.60 的子代数档空洞 ✗
+（该档取**任意** `S` ✓，**另需审计** ✗，**登记** ✓）。 -/
+theorem subsingleton_of_fixed_generating {n : ℕ} {a : Fin n → NoetherField F G}
+    (ha_fix : ∀ (g : G) (i : Fin n), g • a i = a i)
+    (hgen : IntermediateField.adjoin F (Set.range a) = ⊤) : Subsingleton G := by
+  have hfixed : ∀ x : NoetherField F G, x ∈ IntermediateField.adjoin F (Set.range a) →
+      ∀ g : G, g • x = x := by
+    intro x
+    refine IntermediateField.adjoin_induction F (s := Set.range a)
+      (p := fun x _ => ∀ g : G, g • x = x) ?_ ?_ ?_ ?_ ?_
+    · rintro y ⟨i, rfl⟩ g
+      exact ha_fix g i
+    · intro c g
+      rw [show algebraMap F (NoetherField F G) c
+          = algebraMap (MvPolynomial G F) (NoetherField F G) (MvPolynomial.C c) from
+        (IsScalarTower.algebraMap_apply F (MvPolynomial G F) (NoetherField F G) c).symm,
+        smul_algebraMap_noether, smul_C_noether]
+    · intro x y _ _ hx hy g
+      rw [smul_add, hx g, hy g]
+    · intro x _ hx g
+      rw [smul_inv₀', hx g]
+    · intro x y _ _ hx hy g
+      rw [smul_mul', hx g, hy g]
+  refine ⟨fun g h => ?_⟩
+  have hg : g = 1 := eq_of_smul_eq_smul fun x => by
+    rw [hfixed x (by rw [hgen]; trivial) g, one_smul]
+  have hh : h = 1 := eq_of_smul_eq_smul fun x => by
+    rw [hfixed x (by rw [hgen]; trivial) h, one_smul]
+  rw [hg, hh]
+
+#print axioms subsingleton_of_fixed_generating
+
+end FixedGeneratingRefutation
+
+section NoetherWiringEmptiness
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **残余 ② 的空性判定** ✓（**本轮主发现** ✓）：**`G` 非平凡 ⟹ `NoetherWiringResidual F G` 为假** ✗。
+
+**证明** ✓（**两句** ✓）：`obtain` 出表的两行 `ha_fix` ✗／`hgen` ✗ ✓，由
+`subsingleton_of_fixed_generating` ✓ 得 `Subsingleton G` ✓，与 `Nontrivial G` ✓ 矛盾 ✓
+（`not_subsingleton_iff_nontrivial` ✓）。
+**🔴 后果** ✓：`theorem51Statement_of_noetherWiringResidual_and_ringBridge` ✓ **对非平凡 `G` 空洞** ✗
+⟹ **r206／§4.61 路线**（自 r205 ✓ 起 5 轮接线 ✓ 的全部端到端件 ✓）**不可能**达到源陈述 ✗。
+**⚠ 修正方向** ✓：见 §E ✓（数据取在 `L^G` 上 ✓）。
+**🔴 不声称** ✗：**不**声称 `G` 平凡档的表非空 ✗（r249 ✓ 在 `\mathbb{Q}`／`PUnit` 上**逐行供给**并发射 ✓，
+**但未打包为本残余的项** ✗ —— **登记** ✓）；**不**声称源定理为假 ✗。 -/
+theorem noetherWiringResidual_empty_of_nontrivial [Nontrivial G] :
+    ¬ NoetherWiringResidual F G := by
+  rintro ⟨n, a, s₀, t, _instA, _instT, _instM, _ht, _hRG, hind, hgen, hs₀, hs₀_mem, ha_fix, -⟩
+  exact (not_subsingleton_iff_nontrivial.mpr ‹Nontrivial G›)
+    (subsingleton_of_fixed_generating ha_fix hgen)
+
+#print axioms noetherWiringResidual_empty_of_nontrivial
+
+end NoetherWiringEmptiness
+
+/-! ### E. **修正方向**：源侧数据取在**不动域 `L^G`** 上（源文用法 ✓）—— 该数据行**由源假设直接产出** ✓✅ -/
+
+section FixedTranscendenceBasis
+
+variable {F : Type} [Field F] {L : Type} [Field L] [Algebra F L] {G : Type} [Group G]
+variable [MulSemiringAction G L] [SMulCommClass G F L]
+
+/-- **修正后的源侧数据** ✓✅（**本轮落** ✓）：由**源假设** `IsRationalOver F L^G` ✓ **直接产出**
+**`G`-不变**的超越基 ✓ —— 即「`a` **在 `L^G` 内** ✓ ＋ 代数无关 ✓ ＋ **生成 `L^G`** ✓」✓。
+
+**⚠ 与残余 ② 第 2 行的**唯一**差别** ✓：`\mathrm{adjoin}` 取自 **`L^G`** ✓（＝ 载体
+`↥(\mathrm{FixedPoints.intermediateField}\ F\ G)` ✓，其 `\mathrm{Field}` ✓／`\mathrm{Algebra}\ F` ✓
+两实例可合成 ✓、隶属形与「被每个 `g` 固定」**定义相等** ✓），**非** `L` ✗ ⟹
+**§D 的两行冲突消失** ✓（`ha_fix` 由隶属**自动**给出 ✓）。
+**⚠ 一致性** ✓：`exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver` ✓（`SaltGeneric:1503` ✓，
+**r151** ✓）**正是**该形用件 ✓ —— 即**库内早有正确用件** ✓，r206 ✗ 把它用在了 `K = L` 上 ✗。
+**🔴 不声称** ✗：**不**声称「修正后的整条链」已组装 ✗ —— 落在本条的**只有数据行** ✓；
+链条其余件（`awayToFieldAlg` ✓ 一族）**以 `\mathrm{NoetherField}` 为环境域** ✗（`SaltGeneric` §4.39–§4.42 ✓）
+⟹ **改接须把环境域换成 `L^G`** ✗（**下一手** ✓，**登记** ✓）；**不**声称源 `theorem-5-1` 已证 ✗。 -/
+theorem exists_fixed_transcendenceBasis_of_isRationalOver
+    (h : IsRationalOver F ↥(FixedPoints.intermediateField (F := F) (E := L) G)) :
+    ∃ (n : ℕ) (a : Fin n → ↥(FixedPoints.intermediateField (F := F) (E := L) G)),
+      AlgebraicIndependent F a ∧
+        IntermediateField.adjoin F (Set.range a) = ⊤ ∧
+        (∀ (g : G) (i : Fin n),
+          g • ((a i : ↥(FixedPoints.intermediateField (F := F) (E := L) G)) : L)
+            = ((a i : ↥(FixedPoints.intermediateField (F := F) (E := L) G)) : L)) := by
+  obtain ⟨n, a, hind, hgen⟩ :=
+    exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver
+      (K := ↥(FixedPoints.intermediateField (F := F) (E := L) G)) h
+  exact ⟨n, a, hind, hgen, fun g i => (a i).2 g⟩
+
+#print axioms exists_fixed_transcendenceBasis_of_isRationalOver
+
+end FixedTranscendenceBasis
+
+/-! ### F. 残余 ② 的**10 行机器可造**（**解 r217／r227 的文件级实例障碍** ✓✅） -/
+
+section NoetherWiringMachinery
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+set_option maxHeartbeats 1000000 in
+/-- **10 行机器可造** ✓✅（**库内首件** ✓）：**源侧数据 ＋ 不动性** ⟹ 残余 ② 的
+**接线行**（`t` ✓／`ht` ✓／不变化 ✓／三实例 ✓／`hle` ✓／`hact_map` ✓／`hRG` ✓／`hS₀R` ✓）**存在** ✓。
+
+**⚠ 三件来历** ✓（**皆库内** ✓，**不新造** ✗）：
+**①** `t` ✓（**非零** ✓ ＋ **不变化** ✓ ＋ **包含** ✓）＝ `exists_invariant_t_of_noether` ✓（§4.37 ✓，
+`SaltGeneric:2983` ✓，**r215–r217** ✓）；
+**②** `\mathrm{Algebra}` ＋ `\mathrm{IsScalarTower}` ✓ ＝ `exists_algebra_structure_away_of_noetherAdjoin` ✓
+（§4.42 ✓，**r226** ✓）—— 其 `\iota` ✓ 同时给 `hS₀R` ✓；
+**③** `\mathrm{MulSemiringAction}\ G\ (\mathrm{Localization.Away}\ t)` ✓ ＝
+`awayMulSemiringAction` ✓（§4.39 ✓，`SaltGeneric:3201` ✓）＋ **`hact_map`** ✓ ＝
+`awayRingHom_algebraMap` ✓（**同一 `smul` 定义** ✓：`smul\ g = \mathrm{awayRingHom}\ ht\ g` ✓）。
+
+**⚠ `hRG` 的推导** ✓（**本轮新证** ✓，**四步** ✓）：`g \bullet (r \bullet x) = r \bullet (g \bullet x)` ✓
+（`r \bullet x = \iota r \cdot x` ✓）⟸ **`g \bullet \iota r = \iota r`** ✓ ⟸
+（`awayToField_injective` ✓）`\mathrm{awayToField}(g \bullet \iota r) = \mathrm{awayToField}(\iota r)` ✓
+⟸（`awayToField_smul` ✓，§4.40 ✓）`g \bullet \mathrm{awayToField}(\iota r) = \mathrm{awayToField}(\iota r)` ✓
+⟸（`hS₀R` ✓ ＋ **`smul_eq_self_of_mem_adjoin_of_fixed`** ✓，§4.47 ✓）
+`g \bullet (\mathrm{algebraMap}\ r) = \mathrm{algebraMap}\ r` ✓。
+**⚠ 意义** ✓：**r227 登记的三式（甲／乙／丙）不必走** ✗ —— 本件**同时看见**
+`SaltLocalProj` 的局部化作用族 ✓ 与 §4.4 的 `\mathrm{MvPolynomial}` 作用 ✓，
+而**正解** ＝ **不搬实例** ✗，改用**本件 §4.39 的 Noether 专用作用** ✓（`awayMulSemiringAction` ✓，
+**已在两侧之一** ✓）⟹ **文件级障碍消失** ✓。
+**🔴 不声称** ✗：**不**声称本件与残余 ② 的 ∃ 是**同一**见证 ✗（两处 ∃ **各自**给见证 ✓；
+拼接须把 `t`／实例提到**类型层** ✗ ＝ r217 登记的同一障碍 ✗，
+**但**本件已把「该行**是否可造**」判定为**是** ✓）；**不**声称 `hind`／`hgen`／`hs₀_mem` 已造 ✗。 -/
+theorem noetherWiringMachinery_of_sourceData {n : ℕ} (a : Fin n → NoetherField F G)
+    (s₀ : NoetherField F G) (hs₀ : s₀ ≠ 0)
+    (ha_fix : ∀ (g : G) (i : Fin n), g • a i = a i) (hs₀_fix : ∀ (g : G), g • s₀ = s₀) :
+    ∃ (t : MvPolynomial G F) (ht : t ≠ 0)
+      (_ : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away t))
+      (_ : IsScalarTower F ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away t))
+      (_ : MulSemiringAction G (Localization.Away t)),
+      (∀ g : G, g • t = t) ∧
+      (Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}) ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) t)⁻¹} : Set (NoetherField F G)))) ∧
+      (∀ (g : G) (p : MvPolynomial G F),
+        g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+          = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p)) ∧
+      (∀ (g : G) (r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})))
+        (x : Localization.Away t), g • (r • x) = r • (g • x)) ∧
+      (∀ r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})),
+        awayToFieldAlg (F := F) (G := G) t ht
+            (algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away t) r)
+          = algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (NoetherField F G) r) := by
+  obtain ⟨t, ht, htinv, hle⟩ := exists_invariant_t_of_noether (F := F) (G := G) a s₀ hs₀
+  obtain ⟨ι, hι⟩ := exists_algHom_away_of_noetherAdjoin (F := F) (G := G) t ht hle
+  let _ : Algebra ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (Localization.Away t) :=
+    ι.toRingHom.toAlgebra
+  have hST : IsScalarTower F ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))
+      (Localization.Away t) := inferInstance
+  let _ : MulSemiringAction G (Localization.Away t) := awayMulSemiringAction (F := F) htinv
+  have hact : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away t) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away t) (g • p) :=
+    fun g p => awayRingHom_algebraMap (F := F) htinv g p
+  have hfix : ∀ (g : G) (r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹}))), g • ι r = ι r := by
+    intro g r
+    apply awayToField_injective (F := F) (G := G) t ht
+    rw [show awayToField (F := F) (G := G) t ht (g • ι r)
+        = awayToField (F := F) (G := G) t ht (awayRingHom (F := F) htinv g (ι r)) from rfl,
+      awayToField_smul (F := F) (G := G) (t := t) htinv ht g (ι r),
+      show awayToField (F := F) (G := G) t ht (ι r)
+        = algebraMap ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})) (NoetherField F G) r
+        from hι r]
+    exact smul_eq_self_of_mem_adjoin_of_fixed (F := F) (G := G) ha_fix hs₀_fix g r.property
+  have hRG : ∀ (g : G) (r : ↥(Algebra.adjoin F (Set.range a ∪ {s₀, s₀⁻¹})))
+      (x : Localization.Away t), g • (r • x) = r • (g • x) := by
+    intro g r x
+    show g • (ι r * x) = ι r * (g • x)
+    rw [smul_mul', hfix g r]
+  exact ⟨t, ht, ι.toRingHom.toAlgebra, hST, awayMulSemiringAction (F := F) htinv, htinv, hle,
+    hact, hRG, fun r => hι r⟩
+
+/-- **L1 非空探针** ✓：本件**假设类非空** ✓ —— 取 `n = 0` ✓（`a := \mathrm{Fin.elim}_0` ✓，空族）、
+`s₀ := 1` ✓（`1 \neq 0` ✓、`g \bullet 1 = 1` ✓）⟹ 三项假设**同时可满足** ✓
+（**故本件不是空壳** ✓，与残余 ② **不同** ✗ —— 后者含 §D 的两行冲突 ✗）。
+**🔴 不声称** ✗：本探针**只**证**假设类非空** ✓，**不**构造 `t`／实例／四行 ✗
+（那些由 `noetherWiringMachinery_of_sourceData` ✓ 在**一般档**给出 ✓）；
+**不**声称本件与残余 ② 的 ∃ 是同一见证 ✗。 -/
+theorem noetherWiringMachinery_hypotheses_nonempty (F : Type) [Field F] (G : Type) [Group G]
+    [Fintype G] [DecidableEq G] :
+    ∃ (n : ℕ) (a : Fin n → NoetherField F G) (s₀ : NoetherField F G), s₀ ≠ 0 ∧
+      (∀ (g : G) (i : Fin n), g • a i = a i) ∧ (∀ (g : G), g • s₀ = s₀) :=
+  ⟨0, Fin.elim0, 1, one_ne_zero, fun _ i => i.elim0, fun _ => smul_one _⟩
+
+#print axioms noetherWiringMachinery_of_sourceData
+#print axioms noetherWiringMachinery_hypotheses_nonempty
+
+end NoetherWiringMachinery
+
+/-! ### G. 登记（**逐条如实** ✓，**不声称**款在各件** ✓） -/
+
+/-- **登记** ✗：**残余与可达性的总账**（本轮）——
+**①** `Theorem51Statement`（`SaltGeneric:257` ✓）：残余 ②（**非平凡档空** ✗，§D ✓）＋ 残余 ①（**未证** ✗）
+⟹ **两处皆缺** ✗；**②** `Theorem21Statement`（`SaltGeneric:191` ✓）：残余 ③（**未证** ✗，＝ 源 §2 构造 ✗）
+＋ 残余 ① ⟹ **缺一处 ＋ 公共桥** ✗；**③** **公共残余** ＝ 残余 ①（CHR 代数版 ✗）。
+**⚠ 下一手（三式** ✓**）**：**(甲)** 按 §E ✓ 把环境域换成 `L^G` ✓ **重接**链条（**本轮主建议** ✓）；
+**(乙)** 落残余 ①（CHR 代数版：`G`-Galois 环 ＝ 域直和 ＋ 逐分量 ✓）；**(丙)** 落残余 ③（源 §2 构造 ✗）。
+**🔴 不声称** ✗：**不**声称 (甲)(乙)(丙) 任一已落 ✗。 -/
+theorem sourceStatementResiduals_registered : True := trivial
+
+/-- **登记** ✗：**旧注的审计口径** —— `SaltGeneric` §4.60 ✓（`theorem51_endToEnd_wired_registered` ✓）
+与 §4.61 ✓（`theorem51_dataChain_gap_registered` ✓）记「余 ＝ 两项具名端点 ＋ 数据构造链」✗ ——
+**本轮修正** ✓：**该账不完整** ✗（漏了 §D 的两行冲突 ✗）⟹ 两件的**结论**（有限档见证 ✓）**仍成立** ✓ 但
+**对非平凡 `G` 空洞** ✗ ⟹ **不得**读作「端到端已通」✗（**原注照原样保留** ✓，**不改写他件** ✗）。
+**⚠ §4.60 的子代数档**（`nonempty_genericExtensionWitnessFieldFinite_of_subalgebra` ✓）：取**任意**子代数 ✓
+＋ `hS_fix` ✗（**不**经 `hgen` ✓）⟹ **本轮未判定其空性** ✗（**另需审计** ✗，**登记** ✓）。 -/
+theorem oldEndToEndAudit_corrected : True := trivial
+
+/-- **登记** ✗：**残余 ② 的 `PUnit` 档**（＝ 唯一可能有内容的档 ✓）：r249 ✓
+（`nonempty_genericExtensionWitnessFieldFinite_pUnit_rat` ✓，`SaltThm38_ABGV52.lean:1363` ✓）
+**逐行供给**该表并在测试实例上**发射** ✓✅ + `exists_wiringHypotheses_pUnit_rat` ✓（`:1313` ✓）给三残余 ✓
++ r237 ✓ 给源侧九项 ✓ ⟹ 该档**表非空** ✓（**但未打包为残余 ② 的项** ✗ ——
+打包须把 `t`／实例提到类型层 ✗，**或**重跑 r249 的构造 ✓，**两者本轮皆未落** ✗）。
+**🔴 不声称** ✗：**不**声称 `PUnit` 档已给出 `Theorem51Statement` ✗（**缺**残余 ① ✗）。 -/
+theorem noetherWiringResidual_pUnit_registered : True := trivial
+
+#print axioms sourceStatementResiduals_registered
+#print axioms oldEndToEndAudit_corrected
+#print axioms noetherWiringResidual_pUnit_registered
+
+
 end ABGV52
