@@ -9584,4 +9584,33 @@ end SupportSumUniv314
 #print axioms delta_sum_univ
 
 
+/-! ### 4.103 **全群和的单点分裂**（第 315 轮）—— §276.3 受阻点拆除 ✓
+
+**落成** ✓✅：**`sum_univ_split`** ✓✅：**`(∑_{g : G} f g) = f g₀ + ∑_{g ∈ univ.erase g₀} f g`** ✓
+（`[Fintype G]` ✓、`[DecidableEq G]` ✓）。
+
+**⚠ 工艺（一条，入 §5.1；本轮实测）** ✓：**`Finset.add_sum_erase` 须给足三参** ✓ ——
+写成 **`Finset.add_sum_erase Finset.univ f (Finset.mem_univ g₀)`** ✓ 即成立 ✓；
+而**省略参数**（`Finset.add_sum_erase _ _ _` ✓）在长证明中**实测不命中** ✗（§276.3 ✓）⟹ **凡分裂全群和，一律具名给全三参** ✓。
+
+**⚠ 用途** ✓：Dedekind 接线的**最后一件工具** ✓ —— 由 §4.102 的 `delta_sum_univ` ✓ 把
+`∑_{supp}` 换成 `∑_{G}` ✓，再用**本件**在 `g₀` 处分裂 ✓ ⟹ 乘 `s⁻¹` ✓ ⟹ 得
+`(g₀ • w) = -∑_{g ∈ univ.erase g₀} (s⁻¹ * coeff z g) * (g • w)` ✓ ⟹ 构造系数族 `d` ✓ 与 §4.99 **矛盾** ✓。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗；**不**声称 Dedekind 已接线 ✗（**工具齐备** ✓，**组合未收口** ✗）；
+**不**声称域档通道已通 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗。 -/
+
+section SumUnivSplit315
+
+/-- **全群和的单点分裂** ✓。 -/
+theorem sum_univ_split {S : Type*} [AddCommMonoid S] {G : Type*} [Fintype G] [DecidableEq G]
+    (f : G → S) (g₀ : G) :
+    (∑ g : G, f g) = f g₀ + ∑ g ∈ (Finset.univ.erase g₀), f g := by
+  rw [Finset.add_sum_erase Finset.univ f (Finset.mem_univ g₀)]
+
+end SumUnivSplit315
+
+#print axioms sum_univ_split
+
+
 end ABGV52

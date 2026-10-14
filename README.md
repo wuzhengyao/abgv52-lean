@@ -1532,3 +1532,11 @@ second factor, whereas the application needs one that changes with the group ele
 obstruction met while attempting the final assembly, namely that the library's lemmas for splitting a sum at a point
 are stated for sums displayed with an explicit index set, so the bound-variable notation must be converted before they
 apply; that conversion is the next step.  The Galois clause itself is not claimed here.
+
+Round 315 discharges the obstruction recorded in the previous round: the splitting of a sum over the whole group at a
+single point.  The statement is the expected one, that the total equals the value at the chosen point plus the sum over
+the remaining points, and the practical point is that the library's lemma has to be applied with its three arguments
+given explicitly; with the arguments elided it failed to match inside a longer proof, which is what produced the
+recorded obstruction.  Together with the previous rounds this completes the toolkit for the injectivity argument: the
+coefficient form of vanishing, the comparison between the support and the whole group, the splitting, the bridge from
+the action to algebra automorphisms, and the independence of a faithful family of automorphisms.
