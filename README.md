@@ -1145,3 +1145,16 @@ exactly the common input.  A mutant probe where each of five rows is replaced by
 fails inside the proofs, so the rows are load-bearing rather than decorative.  The ring-tier bridge
 remains open, and the degenerate carrier for it is now provably dead, so a refutation there needs a
 non-degenerate carrier instead.
+
+The two rows shared by the source statements have been reduced further.  Injectivity of the structure
+map now follows from a general criterion requiring only that the algebra have no zero divisors and
+that the group act faithfully, with both inputs supplied by construction on the source side, so that
+row is settled up to surjectivity.  The projectivity row has been replaced by two module-theoretic
+rows over the group ring, whose module structure is itself constructed here because the library had
+none: an action of the group algebra is built from the multiplicative action, its single-element
+formula is proved, and the scalar tower is verified, after which the earlier change-of-rings and
+Nakayama argument supplies the projectivity conclusion.  Non-emptiness is witnessed on the split
+Galois algebra for a non-trivial group, where both old rows hold, and a mutant probe in which each new
+row is replaced by a trivial statement fails inside the proof bodies.  What remains shared is
+surjectivity of the structure map together with finiteness and projectivity over the group ring, and
+the ring-tier bridge for the source-form witness.

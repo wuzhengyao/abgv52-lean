@@ -2135,4 +2135,389 @@ end GaloisProgeneratorInjNecessary
 #print axioms galoisFaithfulHyp_refuted_faithfullyFlat
 #print axioms galoisInjectiveSupply_refuted
 
+/-! ## δ 单射的 Dedekind 型判据 ＋ `R[G]`-模结构的构造 ＋ **两行残余的再归约**（第 266 轮）
+
+**⚠ 起点** ✓（承 r265 ✓）：`SaltThm38` §4.70 ✓ 把**源侧 generic object** 上的**有限域档**压到**两行** ✓
+（`δ` 双射 ✓／`hProj` ✓）。本轮**不证**这两行 ✗，而把**各自拆小** ✓ 并落**三件通用机器** ✓：
+**① `δ` 单射的 Dedekind 型判据** ✓（`injective_deltaToEndRingHom_of_noZeroDivisors` ✓）——
+**无零因子** ✓ ＋ **忠实作用** ✓ ⟹ `δ` **单射** ✓ ⟹ 第 ① 行**只剩满射** ✓（拆半具名：
+`bijective_deltaToEndRingHom_iff` ✓）；
+**② `R[G]`-模结构的构造** ✓（`monoidAlgebraModuleOfMulSemiringAction` ✓）—— 库内**此前无**该实例 ✗
+（§47 ✓ 记为「`Module (MonoidAlgebra R G) S` **不自动合成** ✗」，实测 `synthInstanceFailed` ✗），
+本轮经**泛性质**把它**造出** ✓，并给**单点作用式** ✓ 与**塔式** ✓；
+**③ `hProj` 的两行再归约** ✓（`galoisProjectiveHyp_of_monoidAlgebraRows` ✓）—— `hProj` ⟸ **`R[G]`-有限** ✓ ＋
+**`R[G]`-投射** ✓ ＋ `algebraMap` **单射** ✓（**逐字**复用 r257 ✓ 的换环＋Nakayama 路线 ✓，**不新证** ✗）。
+
+**⚠ 机制 ①（Dedekind 引理，四步** ✓**）**：
+**(0) 系数和公式** ✓（`deltaToEndRingHom_coeff_sum` ✓）：`δ x t = Σ_g (coeff g x) * (g • t)` ✓
+（对 `x` 归纳 ✓，`deltaToEndAdd_single` ✓ ＋ `Finset.sum_eq_single` ✓）；
+**(1) 反设** ✓：设 `δ x = 0` ✓，记 `c g := (coeff g x)` ✓ ⟹ `∀ t, Σ_g c g * (g • t) = 0` ✓；
+**(2) 支集基数强归纳** ✓：设支集 `A := {g | c g ≠ 0}` ✓（有限 ✓）。若 `A.card ≥ 2` ✓，取 `g₀ ≠ g₁` ✓
+（皆在 `A` 内 ✓）与**分离元** `t₀` ✓（`g₀ • t₀ ≠ g₁ • t₀` ✓ —— **存在性用忠实性** ✓：
+`FaithfulSMul.eq_of_smul_eq_smul` ✓ 的逆否 ✓）；令 `d g := c g * ((g • t₀) - (g₁ • t₀))` ✓ ⟹
+**`d` 仍满足同一关系** ✓（＝ 关系在 `t₀ * t` ✓ 处「减去 `(g₁ • t₀) *` 关系在 `t` ✓ 处」✓，
+`smul_mul'` ✓ ＋ `Finset.sum_sub_distrib` ✓ ＋ `Finset.mul_sum` ✓），而 `d g₁ = 0` ✓、`d g₀ ≠ 0` ✓
+（**无零因子** ✓：`mul_ne_zero` ✓ ＋ `sub_ne_zero.mpr` ✓）⟹ **支集严格变小** ✓（`Finset.card_erase_of_mem` ✓
+＋ `omega` ✓）⟹ 与归纳假设矛盾 ✓；若 `A.card = 1` ✓，取 `t = 1` ✓ 得 `c g₁ * (g₁ • 1) = c g₁ = 0` ✗ 矛盾 ✓。
+**(3) 收尾** ✓：`c = 0` ✓（逐点 ✓）⟹ `x = 0` ✓（`Finsupp.ext` ✓ ＋ `SkewMonoidAlgebra.coeff_inj` ✓）。
+
+**⚠ 机制 ②（`R[G]`-模结构，两步** ✓**）**：
+**(1) 环同态** ✓：`monoidAlgebraEndHom hRG : MonoidAlgebra R G →+* Module.End R S` ✓ 由**泛性质**
+`MonoidAlgebra.liftNCRingHom` ✓ 给出 ✓（`single g r ↦ r • actEnd hRG g` ✓），其**交换性条件恰为** `hRG` ✓
+（`r • (g • t) = g • (r • t)` ✓，逐点展开后即 `(hRG g r t).symm` ✓）；
+**(2) 模结构** ✓：`smul x s := φ x s` ✓ ⟹ 六条公理由 `map_mul` ✓／`map_one` ✓／`map_add` ✓／`map_zero` ✓
+**逐条**给出 ✓；**单点作用式** ✓ `(single g r) • x = r • (g • x)` ✓（`liftNCRingHom_single` ✓ ＋
+`Module.End.mul_apply` ✓）；**塔式** ✓ 由 `map_mul` ✓ ＋ 单点作用式 ✓。
+
+**⚠ 机制 ③（`hProj` 的两行，**不新证** ✗）**：`galoisProgeneratorHyp_of_projective_monoidAlgebra` ✓
+（r257 ✓）已把「`R[G]`-有限 ＋ `R[G]`-投射 ＋ `algebraMap` 单射 ⟹ 有限 ＋ 投射 ＋ 忠实平坦」落库 ✓，
+`galoisProgeneratorHyp_implies_galoisProjectiveHyp` ✓ 再降到 `hProj` ✓的**具名形** ✓ ⟹ 本条**只接线** ✓。
+
+**⚠ 工艺读数（本轮两条** ✓**）**：
+**① `R[G]`-模结构须显式构造** ✗（mathlib **无** 该实例 ✗）：正解 ＝ **泛性质 ＋ 手工 `Module` 字面量** ✓
+（**不用** `Module.compHom` ✗ —— 其内层纯量是 `Module.End R S` 的作用 ✓，本件为**可读性**取手工字面量 ✓）；
+**② `@[instance_reducible]`** ✓：类类型 `def` 的默认可约性诱警告 ✗（实测 `warn.classDefReducibility` ✓）⟹ 按 r264 ✓ 同款标注 ✓。
+
+**🔴 不声称** ✗：**不**声称 `R[G]`-**有限**／**投射**两行**已证** ✗（其数学内容 ＝ 源 `proposition-0-2(a)` ✓／
+`[CHR68]` p. 13 ✓ —— 该精确出处**仍不在 `raw/`** ✗（L37 已核 ✓））；**不**声称 `δ` **满射**已证 ✗；
+**不**声称**无零因子**假设可去 ✗（`G → K` 分裂代数档**非域** ✗ —— 其 `δ` 单射由 r264 ✓ 的**逐坐标**论证供给 ✓，
+**两条路线并存** ✓）；**不**声称本节的判据等价于经典 Dedekind 引理的**最一般形** ✗（本形要求 `S`
+**无零因子** ✓，且系数和公式按**有限群**求和 ✓）。
+**⚠ 分类（规则 17）** ✓：本轮**无**观测数据缺口 ✗；两项**未落**（`δ` 满射 ✓／`R[G]` 两行 ✓）**皆证明义务** ✓
+（**非**「可算未算」✗、**非**材料阻断 ✗）。
+**⚠ 判别力（L43）** ✓：变异件负例见 `.abgv52-scratch/probe-r266g.lean` ✓（**rc=1** ✓）——
+**M9** ＝ **删去** `[NoZeroDivisors S]` ✗ ⟹ `mul_ne_zero` ✓ **无从供给** ✗；**M11** ＝ **删去** `[FaithfulSMul G S]` ✗
+⟹ 分离元 `t₀` **无从构造** ✗（`FaithfulSMul.eq_of_smul_eq_smul` ✓ 无从供给 ✗）⟹ **两者皆编译失败** ✓；本节的**正例对照** ✓ ＝
+`deltaInjective_probe_rat_punit` ✓（判据**自己**给出单射 ✓）与 `galoisProjectiveHyp_rows_probe` ✓
+（四输入**同时可实例化** ✓）。 -/
+
+section DeltaCoeffSum266
+
+/-- **δ 的系数和公式（一般档）** ✓：`δ x t = Σ_g (coeff g x) * (g • t)` ✓ ——
+**逐点**给出 `deltaToEndRingHom` 在 `S`-基上的值 ✓（既有件 `ABGV52.deltaToEndRingHom_apply` ✓ 只覆盖
+**正则作用**档 ✗：`S = G → K` ✓，本件取**任意** `S` ✓）。 -/
+lemma deltaToEndRingHom_coeff_sum {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (x : SkewMonoidAlgebra S G) (t : S) :
+    deltaToEndRingHom hRG x t = ∑ g : G, x.coeff g * (g • t) := by
+  classical
+  induction x using SkewMonoidAlgebra.induction_on with
+  | zero => simp
+  | single g₀ s =>
+    change deltaToEndAdd hRG (SkewMonoidAlgebra.single g₀ s) t
+      = ∑ g : G, (SkewMonoidAlgebra.single g₀ s).coeff g * (g • t)
+    rw [deltaToEndAdd_single, Module.End.mul_apply]
+    change s * (g₀ • t) = ∑ g : G, (SkewMonoidAlgebra.single g₀ s).coeff g * (g • t)
+    rw [Finset.sum_eq_single g₀]
+    · rw [SkewMonoidAlgebra.coeff_single_apply, if_pos rfl]
+    · intro b _ hb
+      rw [SkewMonoidAlgebra.coeff_single_apply, if_neg (fun hc => hb hc.symm), zero_mul]
+    · intro hb; exact absurd (Finset.mem_univ g₀) hb
+  | add f h hf hh =>
+    rw [map_add, LinearMap.add_apply, hf, hh]
+    simp only [SkewMonoidAlgebra.coeff_add, Finsupp.add_apply, add_mul,
+      Finset.sum_add_distrib]
+
+end DeltaCoeffSum266
+
+section DeltaInjectiveDedekind
+
+variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+variable {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 Dedekind 型判据** ✓✅（**第 ③ 款的「单射」一半** ✓）：**无零因子** ✓ ＋ **忠实作用** ✓ ⟹
+**`δ` 单射** ✓ —— 即「不同自同构在无零因子环上**线性无关**」 ✓（机制四步见节头 ✓）。
+**⚠ 与源的关系（逐条，勿混** ✗**）** ✓：源 `proposition-0-5` ✓ 印 254 的 **(b)** 逐字为
+「The automorphisms in `G` are **algebraically independent** over `K`」✓（**代数无关** ✓，
+**强于**线性无关 ✗；引文与页码核见 `SaltGeneric` §4.53 ✓）—— 本件落的是其**线性无关款** ✓
+且**放弃域假设** ✓（改取**无零因子** ✓）⟹ **两向皆非逐字对应** ✗：(甲) 结论**弱于** (b) ✗
+（线性 ⟸ 代数 ✗）；(乙) 假设**宽于** (b) ✗（源 (b) 在 `R = K` **域**档 ✓）。**⚠ 用途** ✓：δ 的
+**单射一半**（**非**交叉相积同构 ✗ —— 后者是 (b) ＋ (c) 正规基 ✓ 在 §0／`lemma-5-2` 的**用点** ✓，
+**其环档版**在库内**未落** ✗）；
+**⚠ 边界** ✓（**如实** ✓）：**满射**一半**不在本件** ✗（＝ Galois 内容 ✓，见节头「不声称」✓）；
+**无零因子假设不可去** ✗（分裂代数档由别的路线供给 ✓）。 -/
+theorem injective_deltaToEndRingHom_of_noZeroDivisors [NoZeroDivisors S] [FaithfulSMul G S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    Function.Injective (deltaToEndRingHom hRG) := by
+  classical
+  have key : ∀ (c : G → S), (∀ t : S, ∑ g : G, c g * (g • t) = 0) → ∀ g, c g = 0 := by
+    have aux : ∀ n, ∀ (c : G → S), (∀ t : S, ∑ g : G, c g * (g • t) = 0) →
+        (Finset.univ.filter (fun g => c g ≠ 0)).card ≤ n → ∀ g, c g = 0 := by
+      intro n
+      induction n with
+      | zero =>
+        intro c _ hle g
+        by_contra hg
+        have hmem : g ∈ Finset.univ.filter (fun g => c g ≠ 0) := by
+          simp only [Finset.mem_filter, Finset.mem_univ, true_and]; exact hg
+        have hpos : 0 < (Finset.univ.filter (fun g => c g ≠ 0)).card :=
+          Finset.card_pos.mpr ⟨g, hmem⟩
+        omega
+      | succ n ih =>
+        intro c hc hle
+        by_cases hsmall : (Finset.univ.filter (fun g => c g ≠ 0)).card ≤ n
+        · exact ih c hc hsmall
+        · have hcard : 1 ≤ (Finset.univ.filter (fun g => c g ≠ 0)).card := by
+            have := Nat.lt_of_not_le hsmall; omega
+          obtain ⟨g₁, hg₁⟩ := Finset.card_pos.mp hcard
+          have hc₁ : c g₁ ≠ 0 := (Finset.mem_filter.mp hg₁).2
+          by_cases hsingle : Finset.univ.filter (fun g => c g ≠ 0) ⊆ {g₁}
+          · exfalso
+            have h1 : c g₁ * (g₁ • (1 : S)) = 0 := by
+              have h := hc 1
+              rw [Finset.sum_eq_single g₁] at h
+              · exact h
+              · intro b _ hb
+                have hbA : b ∉ Finset.univ.filter (fun g => c g ≠ 0) := by
+                  intro hmem
+                  exact hb (Finset.mem_singleton.mp (hsingle hmem))
+                have hcb : c b = 0 := by
+                  by_contra hne
+                  exact hbA (by
+                    simp only [Finset.mem_filter, Finset.mem_univ, true_and]; exact hne)
+                rw [hcb, zero_mul]
+              · intro hb; exact absurd (Finset.mem_univ g₁) hb
+            rw [smul_one, mul_one] at h1
+            exact hc₁ h1
+          · obtain ⟨g₀, hg₀A, hg₀not⟩ := Finset.not_subset.mp hsingle
+            have hg₀ne : g₀ ≠ g₁ := fun h =>
+              hg₀not (by rw [h]; exact Finset.mem_singleton_self g₁)
+            have hc₀ : c g₀ ≠ 0 := (Finset.mem_filter.mp hg₀A).2
+            have hsep : ∃ t₀ : S, g₀ • t₀ ≠ g₁ • t₀ := by
+              by_contra h
+              have h' : ∀ t : S, g₀ • t = g₁ • t := by
+                intro t
+                by_contra ht
+                exact h ⟨t, ht⟩
+              exact hg₀ne (FaithfulSMul.eq_of_smul_eq_smul h')
+            obtain ⟨t₀, ht₀⟩ := hsep
+            let d : G → S := fun g => c g * ((g • t₀) - (g₁ • t₀))
+            have hdrel : ∀ t : S, ∑ g : G, d g * (g • t) = 0 := by
+              intro t
+              have h1 := hc (t₀ * t)
+              have h2 := hc t
+              have h3 : ∀ g : G, d g * (g • t)
+                  = c g * (g • (t₀ * t)) - (g₁ • t₀) * (c g * (g • t)) := by
+                intro g
+                rw [smul_mul']
+                simp only [d]
+                ring
+              calc ∑ g : G, d g * (g • t)
+                  = ∑ g : G, (c g * (g • (t₀ * t))
+                      - (g₁ • t₀) * (c g * (g • t))) :=
+                    Finset.sum_congr rfl (fun g _ => h3 g)
+                _ = (∑ g : G, c g * (g • (t₀ * t)))
+                      - (g₁ • t₀) * (∑ g : G, c g * (g • t)) := by
+                    rw [Finset.sum_sub_distrib, Finset.mul_sum]
+                _ = 0 := by rw [h1, h2, mul_zero, sub_zero]
+            have hd₁ : d g₁ = 0 := by simp [d]
+            have hd₀ : d g₀ ≠ 0 := by
+              have h1 : (g₀ • t₀) - (g₁ • t₀) ≠ 0 := sub_ne_zero.mpr ht₀
+              exact mul_ne_zero hc₀ h1
+            have hdA : (Finset.univ.filter (fun g => d g ≠ 0)).card ≤ n := by
+              have hsub : Finset.univ.filter (fun g => d g ≠ 0)
+                  ⊆ (Finset.univ.filter (fun g => c g ≠ 0)).erase g₁ := by
+                intro g hg
+                have hgd : d g ≠ 0 := (Finset.mem_filter.mp hg).2
+                refine Finset.mem_erase.mpr ⟨?_, ?_⟩
+                · intro hgg
+                  exact hgd (by rw [hgg]; exact hd₁)
+                · refine Finset.mem_filter.mpr ⟨Finset.mem_univ g, ?_⟩
+                  intro hcz
+                  exact hgd (by simp only [d, hcz, zero_mul])
+              calc (Finset.univ.filter (fun g => d g ≠ 0)).card
+                  ≤ ((Finset.univ.filter (fun g => c g ≠ 0)).erase g₁).card :=
+                    Finset.card_le_card hsub
+                _ = (Finset.univ.filter (fun g => c g ≠ 0)).card - 1 :=
+                    Finset.card_erase_of_mem hg₁
+                _ ≤ n := by omega
+            exact absurd (ih d hdrel hdA g₀) hd₀
+    intro c hc
+    exact aux _ c hc le_rfl
+  intro x y hxy
+  have hδ0 : deltaToEndRingHom hRG (x - y) = 0 := by rw [map_sub, hxy, sub_self]
+  have hc : ∀ t : S, ∑ g : G, (x - y).coeff g * (g • t) = 0 := by
+    intro t
+    have h := congrFun (congrArg DFunLike.coe hδ0) t
+    rwa [deltaToEndRingHom_coeff_sum hRG (x - y) t] at h
+  have hzero : ∀ g : G, (x - y).coeff g = 0 := key _ hc
+  have hcoeff : (x - y).coeff = 0 := Finsupp.ext hzero
+  exact sub_eq_zero.mp (SkewMonoidAlgebra.coeff_inj.mp (by
+    rw [hcoeff, SkewMonoidAlgebra.coeff_zero]))
+
+end DeltaInjectiveDedekind
+
+/-! ### 266.2 `R[G]`-模结构的构造（第 266 轮） -/
+
+section MonoidAlgebraModule266
+
+variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+variable {G : Type*} [Group G] [MulSemiringAction G S]
+
+/-- **`R[G]`-作用** ✓：`single g r ↦ (x ↦ r • (g • x))` ✓（**泛性质** `MonoidAlgebra.liftNCRingHom` ✓；
+其**交换性条件恰为** `hRG` ✓ —— 见节头机制 ② ✓）。 -/
+def monoidAlgebraEndHom (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    MonoidAlgebra R G →+* Module.End R S :=
+  MonoidAlgebra.liftNCRingHom (algebraMap R (Module.End R S)) (actMonoidHom hRG)
+    (fun r g => by
+      show (algebraMap R (Module.End R S) r) * (actMonoidHom hRG g)
+        = (actMonoidHom hRG g) * (algebraMap R (Module.End R S) r)
+      ext t
+      change r • (g • t) = g • (r • t)
+      exact (hRG g r t).symm)
+
+/-- **单点值** ✓：`φ (single g r) x = r • (g • x)` ✓。 -/
+lemma monoidAlgebraEndHom_single
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) (g : G) (r : R) (x : S) :
+    monoidAlgebraEndHom hRG (MonoidAlgebra.single g r) x = r • (g • x) := by
+  rw [monoidAlgebraEndHom, MonoidAlgebra.liftNCRingHom_single, Module.End.mul_apply]
+  rfl
+
+/-- **🔴🔴 `R[G]`-模结构** ✓✅（**库内此前无该实例** ✗，§47 ✓）：`S` 经 `hRG` **成为 `R[G]`-模** ✓ ——
+`smul x s := φ x s` ✓ ⟹ 六条公理由 `φ` 的 `map_mul` ✓／`map_one` ✓／`map_add` ✓／`map_zero` ✓ **逐条**给出 ✓。
+**⚠ 可约性** ✓：`@[instance_reducible]` ✓（类类型 `def` 的默认标注会诱 `warn.classDefReducibility` ✗）。 -/
+@[instance_reducible] noncomputable def monoidAlgebraModuleOfMulSemiringAction
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    Module (MonoidAlgebra R G) S where
+  smul x s := monoidAlgebraEndHom hRG x s
+  one_smul s := by
+    show monoidAlgebraEndHom hRG 1 s = s
+    rw [map_one]; rfl
+  mul_smul x y s := by
+    show monoidAlgebraEndHom hRG (x * y) s
+      = monoidAlgebraEndHom hRG x (monoidAlgebraEndHom hRG y s)
+    rw [map_mul]; rfl
+  smul_zero x := by
+    show monoidAlgebraEndHom hRG x 0 = 0
+    exact map_zero _
+  smul_add x s t := by
+    show monoidAlgebraEndHom hRG x (s + t)
+      = monoidAlgebraEndHom hRG x s + monoidAlgebraEndHom hRG x t
+    exact map_add _ s t
+  add_smul x y s := by
+    show monoidAlgebraEndHom hRG (x + y) s
+      = monoidAlgebraEndHom hRG x s + monoidAlgebraEndHom hRG y s
+    rw [map_add]; rfl
+  zero_smul s := by
+    show monoidAlgebraEndHom hRG 0 s = 0
+    rw [map_zero]; rfl
+
+/-- **单点作用式（具名）** ✓：`(single g r) • x = r • (g • x)` ✓ ——
+即「构造出的 `R[G]`-结构与**给定的** `G`-作用及 `R`-纯量**逐点一致**」✓。 -/
+lemma monoidAlgebraModule_single_smul
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) (g : G) (r : R) (x : S) :
+    letI := monoidAlgebraModuleOfMulSemiringAction (G := G) hRG
+    (MonoidAlgebra.single g r) • x = r • (g • x) :=
+  monoidAlgebraEndHom_single hRG g r x
+
+/-- **塔式** ✓：`IsScalarTower R (MonoidAlgebra R G) S` ✓ —— `R`-纯量与 `R[G]`-纯量**相容** ✓
+（`map_mul` ✓ ＋ 单点作用式 ✓；**用点** ＝ 再归约件 `galoisProjectiveHyp_of_monoidAlgebraRows` ✓）。 -/
+lemma monoidAlgebraModule_isScalarTower
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    letI := monoidAlgebraModuleOfMulSemiringAction (G := G) hRG
+    IsScalarTower R (MonoidAlgebra R G) S := by
+  let _inst := monoidAlgebraModuleOfMulSemiringAction (G := G) hRG
+  refine ⟨fun r x s => ?_⟩
+  show monoidAlgebraEndHom hRG (r • x) s = r • (monoidAlgebraEndHom hRG x s)
+  rw [Algebra.smul_def, map_mul, Module.End.mul_apply]
+  rw [show algebraMap R (MonoidAlgebra R G) r = MonoidAlgebra.single (1 : G) r from rfl,
+    monoidAlgebraEndHom_single]
+  rw [one_smul]
+
+end MonoidAlgebraModule266
+
+/-! ### 266.3 两行的再归约 ＋ 探针（第 266 轮） -/
+
+section RowReductions266
+
+/-- 探针用的 `PUnit ↷ ℚ` **平凡作用** ✓（`PUnit` 的 `MulSemiringAction` **非 mathlib 实例** ✗，就地给出 ✓）。 -/
+local instance pUnitMSARatQ266 : MulSemiringAction PUnit.{1} ℚ where
+  smul _ x := x
+  one_smul _ := rfl
+  mul_smul _ _ _ := rfl
+  smul_zero _ := rfl
+  smul_add _ _ _ := rfl
+  smul_mul _ _ _ := rfl
+  smul_one _ := rfl
+
+/-- 同上的 `ℚ[PUnit]` 档 ✓。 -/
+local instance pUnitMSARatQ266' : MulSemiringAction PUnit.{1} (MonoidAlgebra ℚ PUnit.{1}) where
+  smul _ x := x
+  one_smul _ := rfl
+  mul_smul _ _ _ := rfl
+  smul_zero _ := rfl
+  smul_add _ _ _ := rfl
+  smul_mul _ _ _ := rfl
+  smul_one _ := rfl
+
+variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+variable {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+
+/-- **第 ① 行的拆半（具名）** ✓：`δ` **双射** ⟺ **单射** ∧ **满射** ✓ —— 供残余表**逐半**登记 ✓
+（`Function.Bijective` 即两款的合取 ✓，故本条为 `Iff.rfl` ✓；**具名**的用点 ＝ 把第 ① 行**换成两行** ✓）。 -/
+theorem bijective_deltaToEndRingHom_iff (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)) :
+    Function.Bijective (deltaToEndRingHom hRG)
+      ↔ Function.Injective (deltaToEndRingHom hRG)
+        ∧ Function.Surjective (deltaToEndRingHom hRG) :=
+  Iff.rfl
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 `hProj` 的两行再归约** ✓✅：**`R[G]`-有限** ✓ ＋ **`R[G]`-投射** ✓ ＋ `algebraMap` **单射** ✓ ⟹
+**`GaloisProjectiveHyp R S G hRG`** ✓ —— 即源 `proposition-0-2(a)` ✓ 的**具名形**在**预期用例**上
+由**两条模论行**供给 ✓（**逐字**复用 r257 ✓：`galoisProgeneratorHyp_of_projective_monoidAlgebra` ✓
+＋ `galoisProgeneratorHyp_implies_galoisProjectiveHyp` ✓；**不新证** ✗）。
+**⚠ 与现形之分** ✓：`GaloisProjectiveHyp` ✓ 的**无限制形已机器反驳** ✗（`galoisProjectiveHyp_refuted` ✓，r234 ✓）
+—— 本条的**四输入**（`R[G]`-模结构 ✓／塔式 ✓／有限 ✓／投射 ✓ ＋ 单射 ✓）**排除**该反例 ✓
+（`ℚ` 非 `ℤ`-有限 ✓：`not_moduleFinite_int_rat` ✓）。
+**🔴 不声称** ✗：**不**声称两行**已证** ✗（源 `[CHR68]` p. 13 ✓ **仍不在 `raw/`** ✗，§47／§52 ✓）；
+**不**声称本条的**四输入**在**任意**档可得 ✗。 -/
+theorem galoisProjectiveHyp_of_monoidAlgebraRows
+    [Module (MonoidAlgebra R G) S] [IsScalarTower R (MonoidAlgebra R G) S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    (hfin : Module.Finite (MonoidAlgebra R G) S)
+    (hproj : Module.Projective (MonoidAlgebra R G) S)
+    (hinj : Function.Injective (algebraMap R S)) :
+    GaloisProjectiveHyp R S G hRG :=
+  galoisProgeneratorHyp_implies_galoisProjectiveHyp R S G hRG
+    (galoisProgeneratorHyp_of_projective_monoidAlgebra R S G hRG hfin hproj hinj)
+
+set_option maxHeartbeats 1000000 in
+/-- **非空洞探针（L1 ＋ L19 正例对照）** ✓：判据 `injective_deltaToEndRingHom_of_noZeroDivisors` ✓
+在 `R = S = ℚ` ✓／`G = PUnit` ✓ 上**真的**给出**单射** ✓ —— **由判据本身导出** ✓
+（**不**用 `inferInstance` 兜底 ✗）⟹ 判据**能**发出**阳性**读数 ✓（L19 ✓）。 -/
+theorem deltaInjective_probe_rat_punit :
+    Function.Injective (deltaToEndRingHom (R := ℚ) (S := ℚ) (G := PUnit.{1})
+      (fun _ _ _ => rfl)) :=
+  injective_deltaToEndRingHom_of_noZeroDivisors (R := ℚ) (S := ℚ) (G := PUnit.{1})
+    (fun _ _ _ => rfl)
+
+set_option maxHeartbeats 1000000 in
+/-- **再归约的非空洞探针（L1）** ✓：`galoisProjectiveHyp_of_monoidAlgebraRows` ✓ 的**四输入**
+在 `R = ℚ` ✓／`G = PUnit` ✓／`S = ℚ[PUnit]` ✓（**正则模** ✓：`S` 对 `R[G]` 有限自由 ✓）上
+**同时可实例化** ✓ ⟹ 结论**真** ✓ —— 即**两行**的**假设类非空** ✓（L1 ✓；`|G| = 1` ✓ 的退化档 ✓，
+**非退化档**见 `SaltThm38` §4.71 ✓ 的 `rows_regularAction` ✓）。 -/
+theorem galoisProjectiveHyp_rows_probe :
+    GaloisProjectiveHyp ℚ (MonoidAlgebra ℚ PUnit.{1}) PUnit.{1}
+      (fun _ _ _ => rfl) :=
+  galoisProjectiveHyp_of_monoidAlgebraRows (R := ℚ) (S := MonoidAlgebra ℚ PUnit.{1})
+    (G := PUnit.{1}) (fun _ _ _ => rfl) inferInstance inferInstance (by
+      rw [← faithfulSMul_iff_algebraMap_injective]
+      infer_instance)
+
+end RowReductions266
+
+#print axioms deltaToEndRingHom_coeff_sum
+#print axioms injective_deltaToEndRingHom_of_noZeroDivisors
+#print axioms monoidAlgebraEndHom
+#print axioms monoidAlgebraEndHom_single
+#print axioms monoidAlgebraModuleOfMulSemiringAction
+#print axioms monoidAlgebraModule_single_smul
+#print axioms monoidAlgebraModule_isScalarTower
+#print axioms bijective_deltaToEndRingHom_iff
+#print axioms galoisProjectiveHyp_of_monoidAlgebraRows
+#print axioms deltaInjective_probe_rat_punit
+#print axioms galoisProjectiveHyp_rows_probe
+
 end ABGV52.BTier
