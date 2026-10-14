@@ -1449,3 +1449,12 @@ size the square of the prime, whereas the two statements of the source live over
 line goes through the field case, where the normal basis theorem is available in the library and was already used in
 an earlier round.  Three practical points are recorded about the transport, the direction of the rank lemma, and the
 instances the rank lemmas require.
+
+Round 306 computes the value of the crossed-product map on a single generator term, namely the coefficient times the
+group element applied to the argument.  This is the atomic case of the expansion of the map on a general element as a
+sum over the support of its coefficients, which is the first step of the injectivity argument for the crossed-product
+map in the field case: one evaluates at the translate of a normal basis element and concludes that all coefficients
+vanish by linear independence of the conjugates.  The expansion itself is not completed here; the round records that
+the intended decomposition of an element into single terms is blocked, together with the route that the next round
+should take, namely to prove it by injectivity of the coefficient map and then reduce to a statement about finitely
+supported functions.  Two rank computations for the dimension count were landed in the previous round.

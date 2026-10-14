@@ -9202,4 +9202,43 @@ end GaloisRankInputs305
 #print axioms end_finrank
 
 
+/-! ### 4.94 **`δ` 的点值形（生成元）**（第 306 轮）
+—— 域档款③ 的**单射**证明的第一步 ✓（系数展开的原子件 ✓）
+
+**落成** ✓✅：**`delta_single_apply`** ✓：`(δ (single g s)) w = s * (g • w)` ✓
+（**点值形** ✓，由 §4.90 的 `deltaToEndAdd_single` ✓ ＋ `Module.End.mul_apply` ✓ ＋ `rfl` ✓ 收口 ✓）。
+
+**⚠ 用途** ✓：域档 **`δ` 单射**的路线 ＝ **(甲)** **系数展开**
+`(δ z) w = ∑_{g ∈ supp z} (coeff z g) * (g • w)` ✓（**本轮落其原子件** ✓）；
+**(乙)** 在 `w = h⁻¹ • θ` ✓（**正规基** `b g = g • θ` ✓，mathlib `IsGalois.normalBasis` ✓）处取值 ✓；
+**(丙)** 由 `{g • θ}` 的**线性无关**（`b.linearIndependent` ✓）得 `coeff z (g h) = 0` ∀ `g h` ✓ ⟹ `z = 0` ✓；
+**(丁)** 秩相等（§4.93 ✓）＋ 单射 ⟹ **双射** ✓（域档 ✓）。
+
+**⚠ 本轮受阻（如实登记）** ✗：**(甲)** 的**展开**未收口 ✓ —— 关键步是**分解**
+`z = ∑_{g ∈ supp z} single g (coeff z g)` ✓；**本轮实测** ✗：`conv_lhs` ＋ `show … from ?_` 形**不成立** ✓
+（报 "There are unsolved goals" ✓）⟹ **下一手**用 **`SkewMonoidAlgebra.coeff_injective`** ✓（`apply` 后化为
+**Finsupp 等式** ✓，两侧由 `coeff` 的**加法性** ✓＋ `Finsupp` 的 `single`-展开引理 ✓ 收口 ✓）。
+
+**🔴 不声称** ✗：**不**声称系数展开已证 ✗；**不**声称款③ 已证 ✗；**不**声称域档通道已通 ✗；
+**不**声称 `IsGaloisWithGroup` 无条件形 ✗；**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section DeltaPointValue306
+
+open ABGV52.BTier
+
+/-- **`δ` 的点值形** ✓：`(δ (single g s)) w = s * (g • w)` ✓。 -/
+theorem delta_single_apply {R : Type*} [CommRing R] {S : Type*} [CommRing S] [Algebra R S]
+    {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (g : G) (s w : S) :
+    deltaToEndRingHom hRG (SkewMonoidAlgebra.single g s) w = s * (g • w) := by
+  show deltaToEndAdd hRG (SkewMonoidAlgebra.single g s) w = s * (g • w)
+  rw [deltaToEndAdd_single, Module.End.mul_apply]
+  rfl
+
+end DeltaPointValue306
+
+#print axioms delta_single_apply
+
+
 end ABGV52
