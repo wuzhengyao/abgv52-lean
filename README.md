@@ -1244,3 +1244,12 @@ and verifies the criterion directly by reindexing: the group-average vanishes on
 this carrier supplies no counterexample.  The main implication, that the registered hypotheses force the trace
 formula, remains open, and the trace formula itself is not claimed.
 
+Round 284 machine-checks the criterion to which the trace-formula gap reduces.  The multiplicative trace is
+shown to be linear in its second variable, the group average is shown to be fixed by the action, and the trace of
+that average is shown to be the group order times the trace.  From these, and assuming only that the basis rank
+equals the group order and that this order is cancellable, the trace formula is proved equivalent to the
+vanishing of the group average on the trace-zero submodule.  This shrinks the open implication to a single
+statement; the criterion is verified on the split carrier but is not yet forced by the registered hypotheses.
+The next round follows the published route: Saltman's normal-basis proposition for the field case and the trace
+identity for Galois field extensions already available in mathlib are to be used where they apply.
+

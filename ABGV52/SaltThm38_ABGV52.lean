@@ -7784,6 +7784,120 @@ theorem r283_r270MulTrace_smul (hRG : ∀ (g : G) (r : R) (x : S), g • (r • 
 
 end R283TraceInvariant
 
+/-! ##### 270.F **判据等价：迹公式 ⟺ `η` 在 `ker Tr` 上为零**（第 284 轮；T3 缺口收缩） -/
+
+section R284TraceCriterion
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/-- `r270MulTrace b` 在第二变元上**加法**性 ✓（经基桥 ＋ `LinearMap.trace` 的线性 ✓）。 -/
+lemma r284MulTrace_add (b : Module.Basis ι R S) (x y : S) :
+    r270MulTrace b (x + y) = r270MulTrace b x + r270MulTrace b y := by
+  rw [r283MulTrace_eq_linearMapTrace, r283MulTrace_eq_linearMapTrace,
+    r283MulTrace_eq_linearMapTrace, map_add (LinearMap.mul R S) x y,
+    map_add (LinearMap.trace R S)]
+
+/-- `r270MulTrace b` 在第二变元上**纯量**性 ✓（`smul_eq_mul` ✓）。 -/
+lemma r284MulTrace_smul (b : Module.Basis ι R S) (r : R) (x : S) :
+    r270MulTrace b (r • x) = r * r270MulTrace b x := by
+  rw [r283MulTrace_eq_linearMapTrace, r283MulTrace_eq_linearMapTrace,
+    map_smul (LinearMap.mul R S) r x,
+    map_smul (LinearMap.trace R S) r (LinearMap.mul R S x), smul_eq_mul]
+
+/-- `r270MulTrace b` 作 `R`-线性泛函 ✓（末步 `smul_eq_mul` 穿透 `R` 上的纯量形 ✓）。 -/
+noncomputable def r284MulTraceLinear (b : Module.Basis ι R S) : S →ₗ[R] R where
+  toFun := r270MulTrace b
+  map_add' := r284MulTrace_add b
+  map_smul' := fun r x => by
+    rw [r284MulTrace_smul]
+    rfl
+
+/-- `η z := ∑_g g • z` 是 `G`-固定元 ✓（`Finset.smul_sum` ✓ ＋ `← mul_smul` ✓ ＋
+`Equiv.sum_comp (Equiv.mulLeft h)` ✓）。 -/
+lemma r284_eta_fixed (h : G) (z : S) : h • (∑ g : G, g • z) = ∑ g : G, g • z := by
+  rw [Finset.smul_sum]
+  simp_rw [← mul_smul]
+  exact Equiv.sum_comp (Equiv.mulLeft h) (fun g : G => g • z)
+
+/-- **平均迹公式** ✓：`Tr_b (η z) = |G| · Tr_b z` ✓ —— 迹形式群不变（`r283_r270MulTrace_smul` ✓）
+沿有限和的直接推论 ✓。 -/
+lemma r284MulTrace_eta (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x))
+    (b : Module.Basis ι R S) (z : S) :
+    r270MulTrace b (∑ g : G, g • z) = (Fintype.card G : R) * r270MulTrace b z := by
+  change r284MulTraceLinear b (∑ g : G, g • z) = _
+  rw [map_sum]
+  simp only [r284MulTraceLinear, LinearMap.coe_mk, AddHom.coe_mk]
+  rw [Finset.sum_congr rfl (fun g _ => r283_r270MulTrace_smul hRG b g z),
+    Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+
+/-- **纯量算子的迹** ✓：`Tr_b (algebraMap r) = |ι| · r` ✓（纯量算子 ＝ `r • id` ✓，
+`trace id = |ι|` ✓ 经 `toMatrix` ＋ `trace_one` ✓）。 -/
+lemma r284MulTrace_algebraMap (b : Module.Basis ι R S) (r : R) :
+    r270MulTrace b (algebraMap R S r) = (Fintype.card ι : R) * r := by
+  rw [r283MulTrace_eq_linearMapTrace]
+  have hmul : LinearMap.mul R S (algebraMap R S r) = r • (LinearMap.id : S →ₗ[R] S) := by
+    ext x
+    rw [LinearMap.mul_apply', LinearMap.smul_apply, LinearMap.id_apply, Algebra.smul_def]
+  have htrace : LinearMap.trace R S (LinearMap.id : S →ₗ[R] S) = (Fintype.card ι : R) := by
+    rw [LinearMap.trace_eq_matrix_trace R b LinearMap.id, ← Module.End.one_eq_id,
+      LinearMap.toMatrix_one, Matrix.trace_one]
+  rw [hmul, map_smul (LinearMap.trace R S) r LinearMap.id, smul_eq_mul, htrace, mul_comm]
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴 判据等价（第 284 轮主结果）** ✓✅：在 `Fintype.card ι = Fintype.card G` ✓ 与
+`|G|` 可消（`hreg` ✓，形如 `|G| • a = 0 → a = 0` ✓）下：
+**迹公式 ⇔ `η` 在 `ker Tr_b` 上为零** ✓。
+**证** ✓：**(⟹)** 迹公式取 `Tr x = 0` ✓；**(⟸)** 令 `D := η z − algebraMap (Tr_b z)` ✓，先
+`Tr_b D = |G|·Tr_b z − |ι|·Tr_b z = 0` ✓（`r284MulTrace_eta` ＋ `r284MulTrace_algebraMap` ＋ `hcard` ✓）；
+再 `η D = |G| • D` ✓（`η(η z) = |G| • η z` ✓ ＋ `g` 固定纯量 ✓）；由 `hker` 得 `|G| • D = 0` ✓；
+`hreg` 收口 `D = 0` ✓。
+**⚠ 意义** ✓：**T3 的唯一缺口收缩为一条** —— 「登记表是否强制 `η|ker Tr = 0`」✓（见 §245.4 ✓）。
+**🔴 不声称** ✗：**不**声称 `η|ker Tr = 0` 成立 ✗；**不**声称登记表推出迹公式 ✗。 -/
+theorem r284_traceFormula_iff_eta_kerTrace
+    (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x))
+    (b : Module.Basis ι R S) (hcard : Fintype.card ι = Fintype.card G)
+    (hreg : ∀ a : S, Fintype.card G • a = 0 → a = 0) :
+    (∀ z : S, algebraMap R S (r270MulTrace b z) = ∑ g : G, g • z) ↔
+      (∀ x : S, r270MulTrace b x = 0 → (∑ g : G, g • x) = 0) := by
+  constructor
+  · intro hTr x hx
+    rw [← hTr x, hx, map_zero]
+  · intro hker z
+    set D : S := (∑ g : G, g • z) - algebraMap R S (r270MulTrace b z) with hD
+    have hDtr : r270MulTrace b D = 0 := by
+      change r284MulTraceLinear b D = 0
+      rw [hD, map_sub]
+      change r270MulTrace b (∑ g : G, g • z)
+        - r270MulTrace b (algebraMap R S (r270MulTrace b z)) = 0
+      rw [r284MulTrace_eta hRG b z, r284MulTrace_algebraMap, hcard]
+      exact sub_self _
+    have hDeta : (∑ g : G, g • D) = 0 := hker D hDtr
+    have hcalc : (∑ g : G, g • D) = (Fintype.card G : R) • D := by
+      rw [hD]
+      simp_rw [smul_sub]
+      rw [Finset.sum_sub_distrib]
+      have h1 : (∑ g : G, g • (∑ h : G, h • z))
+          = (Fintype.card G : R) • (∑ h : G, h • z) := by
+        rw [Finset.sum_congr rfl (fun g _ => r284_eta_fixed g z), Finset.sum_const,
+          Finset.card_univ]
+        exact (Nat.cast_smul_eq_nsmul (R := R) _ _).symm
+      have h2 : (∑ g : G, g • algebraMap R S (r270MulTrace b z))
+          = (Fintype.card G : R) • algebraMap R S (r270MulTrace b z) := by
+        rw [Finset.sum_congr rfl
+            (fun g _ => BTier.algebraMap_fixed_of_smulCommClass hRG g _),
+          Finset.sum_const, Finset.card_univ]
+        exact (Nat.cast_smul_eq_nsmul (R := R) _ _).symm
+      rw [h1, h2]
+    have hzero : (Fintype.card G : R) • D = 0 := by rw [← hcalc, hDeta]
+    have hzero' : Fintype.card G • D = 0 :=
+      (Nat.cast_smul_eq_nsmul (R := R) _ _).symm.trans hzero
+    have hD0 : D = 0 := hreg D hzero'
+    rw [hD] at hD0
+    exact (sub_eq_zero.mp hD0).symm
+
+end R284TraceCriterion
+
+
 
 /-- **`δ` 在求和上的取值式** ✓：`δ (∑_g single g (s g)) x = ∑_g s g · (g • x)` ✓
 （`map_sum` ✓ ＋ `LinearMap.sum_apply` ✓ ＋ `deltaToEndAdd_single` ✓）。 -/
@@ -7879,6 +7993,12 @@ end R270TraceUnimodular
 #print axioms r283_mul_smul_conj
 #print axioms r283MulTrace_eq_linearMapTrace
 #print axioms r283_r270MulTrace_smul
+#print axioms r284MulTrace_add
+#print axioms r284MulTrace_smul
+#print axioms r284_eta_fixed
+#print axioms r284MulTrace_eta
+#print axioms r284MulTrace_algebraMap
+#print axioms r284_traceFormula_iff_eta_kerTrace
 
 /-! #### 270.D **非空性（L1）**：分裂载体（**任意交换环** ✓）＋ 二次载体（迹公式**自动** ✓） -/
 
