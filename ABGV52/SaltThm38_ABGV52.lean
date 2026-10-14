@@ -38,6 +38,9 @@ import ABGV52.SaltLocalLift_ABGV52
 import ABGV52.SaltCor_ABGV52
 import Mathlib.RingTheory.Localization.InvSubmonoid
 import Mathlib.RingTheory.TensorProduct.Nontrivial
+import Mathlib.FieldTheory.Fixed
+import Mathlib.FieldTheory.Finite.Extension
+import Mathlib.NumberTheory.Zsqrtd.GaussianInt
 open TensorProduct MvPolynomial
 universe u
 noncomputable section
@@ -5415,5 +5418,673 @@ end DedekindPositiveControl
 theorem finiteFieldTier_genericObject_rows_rereduced_registered : True := trivial
 
 #print axioms finiteFieldTier_genericObject_rows_rereduced_registered
+/-! ### 4.72 **域档「`δ` 满射」的一般判据（抽象 `G`）** ＋ **有限 Galois 扩张档无条件落地**（第 267 轮）
+
+**⚠ 目标** ✓（承 §4.71 ✓ 与 `SaltGeneric` §4.53 ✓）：残余表第 **(1b)** 行 ＝ `δ` **满射** ✗。
+本轮落**两条**：**①** 域档的一般判据 ✓✅（把 (1b) 归约到**度数列** ✓）；**②** 有限 Galois 扩张档的
+**无条件**双射 ✓✅（`G := Gal(E/F)` ✓，度数列由 mathlib 供给 ✓）。
+
+**⚠ 机制（一句话）** ✓：`δ : Δ(S/K,G) → End_K(S)` 是**有限维 `K`-向量空间之间的 `K`-线性映射** ✓
+（线性性由 `G` **固定 `K`** 供给 ✓）——**单射** ✓（Dedekind 型判据 ✓，r266 ✓ 已落 ✓）
+＋ **两侧维数相等** ✓（左 ＝ `|G| · [S:K]` ✓，右 ＝ `[S:K]²` ✓）
+⟹ **满射** ✓（`LinearMap.injective_iff_surjective_of_finrank_eq_finrank` ✓）。
+**维数相等的充要条件** ＝ **`[S:K] = |G|`** ✓（`[S:K] > 0` ✓）⟹ **归约到一条基数等式** ✓。
+
+**⚠ 与源 `proposition-0-5(b)+(c)`（印 254 ✓，核见 `SaltGeneric` §4.53 ✓）的强度序** ✓（**逐向** ✓）：
+源 **(c)**（**正规基** ✓）**⟹** 度数列 ✓（正规基给出 `[L:K] = |G|` ✓）—— **本轮不证 (c)** ✗，
+而是把 (c) 的**用点**（度数列 ✓）**单独取用** ✓；源 **(b)**（自同构**代数无关** ✓）
+**在本轮路线中不被使用** ✗ —— 其角色（`δ` 单射 ✓）由**环档** Dedekind 判据 ✓
+（`injective_deltaToEndRingHom_of_noZeroDivisors` ✓，r266 ✓）**弱假设**地供给 ✓
+（**无零因子** ✓ ＋ **忠实** ✓，**不用**代数无关 ✗，**不用**域假设 ✗）。
+⟹ **强度序** ✓：**(甲) 源 `(b)` ⟹ 本轮的 `δ` 单射款** ✓（但**严格强于**它 ✗ —— 本条只需线性无关 ✓）；
+**(乙) 源 `(c)` ⟹ 本轮的度数列** ✓（**严格强于**它 ✗ —— 本条不需整组基 ✓）；
+**(丙) 本轮 ⟹ `δ` 满射（域档）** ✓；**(丁) 反向皆不成立** ✗（度数列 ⇏ 正规基 ✗——例：任一
+`[L:K] = |G|` 而 `G` 非全自同构群的档 ✓；线性无关 ⇏ 代数无关 ✗）。
+**⚠ 域假设不可去** ✓（**如实** ✓）：本条**要求 `K` 是域** ✗（`injective_iff_surjective_of_finrank_eq_finrank`
+是**线性代数**事实 ✓，须除环基 ✓）。**环档的同款归约**（`R` 一般 ✓ ＋ `[S:R] = |G|` ✓）
+**不成立** ✗ —— **机检反例见 §4.73** ✓（`ℤ[i]/ℤ` ✓：全部假设成立 ✓ 而 `δ` **非满射** ✗）。
+
+**⚠ 本轮所落（六条定理 ＋ 两件工具 ＋ 非空性实例** ✓**）**：
+**①** `finrank_fun_const` ✓／`finrank_skewMonoidAlgebra` ✓ —— 两条**维数工具** ✓；
+**②** `surjective_deltaToEndRingHom_of_finrank_eq_card` ✓✅ —— **第 (1b) 行的域档归约** ✓；
+**③** `bijective_deltaToEndRingHom_of_finrank_eq_card` ✓✅ —— 双射款 ✓；
+**④** `bijective_deltaToEndRingHom_of_isGalois` ✓✅ ＋ `surjective_deltaToEndRingHom_of_isGalois` ✓✅ ——
+**有限 Galois 扩张档** ✓（`G := E ≃ₐ[F] E` ✓，**无条件** ✓：`IsGalois.card_aut_eq_finrank` ✓
+供给度数列 ✓；**不用**正规基 ✗）—— **③ ＋ ④ 合起来** ＝ 源 `(b)+(c)` 的**用点**在**域档**落地 ✓
+（③ 取**抽象 `G`** ✓ 而度数列作**显式输入** ✓；④ 取 `G = Gal(E/F)` ✓ 而**无条件** ✓）；
+**⚠ 环档未落** ✗ 且**不能**由 ③ 直接搬 ✓（见 §4.73 ✓）；
+**⑤** `bijective_deltaToEndRingHom_regularAction` ✓✅ ＋ `surjective_deltaToEndRingHom_regularAction` ✓✅ ——
+**分裂／正则档具名** ✓（r264 ✓ 已落的内容 ✓，本轮**具名**为 (1b) 行形 ✓）；
+**⑥** 非空性（L1 ✓）：**非退化域档实例** ✓（`GF(4)/GF(2)` ✓：`|Gal| = 2` ✓）
+＋ **退化对照** ✓（`ℚ/ℚ` ＋ `PUnit` ✓）。
+
+**⚠ 分类（规则 17）** ✓：本轮**无**观测数据缺口 ✗、**无**「可算未算」✗ ——
+所落四条**皆为证明** ✓；**未落**的只剩**环档**（`R` **非域** ✗）✓，其障碍在 §4.73 ✓ **以机检反例**
+**定位** ✓（**非**材料阻断 ✗、**非**「仍开」的含糊登记 ✗）。
+**🔴 不声称** ✗：**不**声称**环档**（源接线档 `R = ↥(noetherFixedCarrier …)` ✗）的 (1b) 已落 ✗；
+**不**声称源 `(b)` ✓／`(c)` ✓ 已在库内接通 ✗；**不**声称两条源陈述已证 ✗；
+**不**声称 `R[G]`-两行（§4.71 (2a)／(2b) ✓）有任何进展 ✗。 -/
+
+namespace BTier
+
+/-! #### 4.72.1 工具：作用-纯量交换 ＋ 两条维数式 -/
+
+section SmulCommTools267
+
+variable {K : Type*} [CommSemiring K] {S : Type*} [Semiring S] [Algebra K S]
+variable {G : Type*} [Monoid G] [MulSemiringAction G S]
+
+/-- **作用与纯量交换** ✓：`G` **固定 `K` 的像** ✓ ⟹ `g • (k • s) = k • (g • s)` ✓ ——
+即 `δ` 的 `hRG` 输入 ✓ 由**固定性**供给 ✓（`k • s = algebraMap k * s` ✓ ＋ `smul_mul'` ✓）。
+**⚠ 用途** ✓：本件是**判据 ②** 的 `hRG` 来源 ✓；亦给 §4.72 的 `algEquiv_smul_comm` ✓ 作一般形 ✓。 -/
+lemma smul_comm_of_fixes_base
+    (hfix : ∀ (g : G) (k : K), g • algebraMap K S k = algebraMap K S k) :
+    ∀ (g : G) (k : K) (s : S), g • (k • s) = k • (g • s) := by
+  intro g k s
+  rw [Algebra.smul_def, Algebra.smul_def, smul_mul', hfix g k]
+
+end SmulCommTools267
+
+section FinrankTools267
+
+variable {K : Type*} [Field K] {S : Type*} [AddCommGroup S] [Module K S]
+variable {G : Type*} [Fintype G]
+
+/-- **维数工具 ①** ✓：`finrank_K (G → S) = |G| · [S:K]` ✓。
+**⚠ 路线** ✓：`Module.finrank_pi_fintype` ✓（**族**形 ✓，对 `G` 与 `S` 的宇宙**无**限制 ✓）
+＋ `Finset.sum_const` ✓。**⚠ 为何不走** `Module.finrank_finsupp` ✗：其 `ι` 与 `M` **同宇宙** ✗
+（实测 ✓，r264 ✓ 已记 ✓）⟹ 本条是**跨宇宙**形 ✓。 -/
+lemma finrank_fun_const [FiniteDimensional K S] :
+    Module.finrank K (G → S) = Fintype.card G * Module.finrank K S := by
+  rw [Module.finrank_pi_fintype K (M := fun _ : G => S)]
+  simp [Finset.sum_const, Finset.card_univ, smul_eq_mul]
+
+end FinrankTools267
+
+section FinrankSkew267
+
+variable {K : Type*} [Field K] {S : Type*} [CommRing S] [Algebra K S]
+variable {G : Type*} [Fintype G]
+
+/-- **维数工具 ②** ✓：`finrank_K Δ(S/K,G) = |G| · [S:K]` ✓ ——
+`coeffLinearEquiv` ✓（`Δ ≃ₗ (G →₀ S)` ✓）＋ `Finsupp.linearEquivFunOnFinite` ✓（`→` 形 ✓）
+＋ **维数工具 ①** ✓（**不**走 `Module.finrank_finsupp` ✗，宇宙限制同上 ✓）。 -/
+lemma finrank_skewMonoidAlgebra [FiniteDimensional K S] :
+    Module.finrank K (SkewMonoidAlgebra S G) = Fintype.card G * Module.finrank K S := by
+  rw [(SkewMonoidAlgebra.coeffLinearEquiv (S := K) (k := S) (G := G)).finrank_eq,
+    (Finsupp.linearEquivFunOnFinite K S G).finrank_eq]
+  exact finrank_fun_const
+
+end FinrankSkew267
+
+section GeneralCriterion267
+
+variable {K S : Type*} [Field K] [CommRing S] [Algebra K S]
+variable {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 双射款** ✓✅（同上一件的机制 ＋ r266 ✓ 的单射款 ✓）：结论形取
+`Function.Bijective` ✓ —— 即 `bijective_deltaToEndRingHom_iff` ✓（`GaloisAlgebra` §266 ✓）
+的**左端**在域档 ＋ 基数等式下落地 ✓。
+**⚠ 工艺** ✓：`δ` 的 `K`-**线性性须手工注册** ✗（`deltaToEndRingHom` 是**环**同态 ✓，
+mathlib 无「环同态 → 线性映射」的自动提升 ✗）—— 逐 `single` 归纳 ✓ ＋ `smul_mul_assoc` ✓；
+`Module.Finite K Δ` ✓ **亦须**由 `Module.Finite.equiv` ✓ ＋ `coeffLinearEquiv` ✓ **就地注册** ✗
+（mathlib **无** `SkewMonoidAlgebra` 的有限性实例 ✗，r264 ✓ 同款 ✓）。
+**🔴 不声称** ✗：同上一件 ✓。 -/
+theorem bijective_deltaToEndRingHom_of_finrank_eq_card
+    [FiniteDimensional K S] [NoZeroDivisors S] [FaithfulSMul G S]
+    (hfix : ∀ (g : G) (k : K), g • algebraMap K S k = algebraMap K S k)
+    (hcard : Module.finrank K S = Fintype.card G) :
+    Function.Bijective (deltaToEndRingHom (smul_comm_of_fixes_base hfix)) := by
+  classical
+  let _instFin : Module.Finite K (SkewMonoidAlgebra S G) :=
+    Module.Finite.equiv (SkewMonoidAlgebra.coeffLinearEquiv (S := K) (k := S) (G := G)).symm
+  have hsmul : ∀ (k : K) (x : SkewMonoidAlgebra S G),
+      deltaToEndRingHom (smul_comm_of_fixes_base hfix) (k • x)
+        = k • deltaToEndRingHom (smul_comm_of_fixes_base hfix) x := by
+    intro k x
+    induction x using SkewMonoidAlgebra.induction_on with
+    | zero => simp
+    | add x y hx hy => simp [hx, hy]
+    | single g a =>
+      rw [SkewMonoidAlgebra.smul_single]
+      change deltaToEndAdd (smul_comm_of_fixes_base hfix) (SkewMonoidAlgebra.single g (k • a))
+        = k • deltaToEndAdd (smul_comm_of_fixes_base hfix) (SkewMonoidAlgebra.single g a)
+      rw [deltaToEndAdd_single, deltaToEndAdd_single]
+      ext t
+      change (k • a) * (g • t) = k • (a * (g • t))
+      rw [smul_mul_assoc]
+  have hinj := injective_deltaToEndRingHom_of_noZeroDivisors (smul_comm_of_fixes_base hfix)
+  let δL : SkewMonoidAlgebra S G →ₗ[K] Module.End K S :=
+    { toFun := deltaToEndRingHom (smul_comm_of_fixes_base hfix)
+      map_add' := map_add _
+      map_smul' := hsmul }
+  have hinjL : Function.Injective δL := hinj
+  have hdim : Module.finrank K (SkewMonoidAlgebra S G)
+      = Module.finrank K (Module.End K S) := by
+    rw [finrank_skewMonoidAlgebra, Module.finrank_linearMap, hcard]
+  exact ⟨hinj, (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).mp hinjL⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 判据（第 (1b) 行的域档归约）** ✓✅：`K` **域** ✓ ＋ `S` **`K`-代数** ✓ ＋
+**有限维** ✓ ＋ **无零因子** ✓ ＋ `G` **忠实** ✓ ＋ `G` **固定 `K`** ✓ ＋
+**基数等式 `[S:K] = |G|`** ✓ ⟹ **`δ` 满射** ✓。
+**⚠ 机制** ✓（见节头 ✓）：`δ` 是 `K`-线性 ✓（其 `hRG` 由 `smul_comm_of_fixes_base` ✓ 供给 ✓）
+＋ 单射 ✓（Dedekind 型判据 ✓）＋ **两侧维数相等** ✓（工具 ② ✓ ＋ `Module.finrank_linearMap` ✓
+＋ 基数等式 ✓）⟹ 满射 ✓（`LinearMap.injective_iff_surjective_of_finrank_eq_finrank` ✓）。
+**⚠ 强度** ✓：**单射款**由 r266 ✓ 的**环档**判据供给 ✓（**弱于**源 `(b)` ✓）；
+**度数列**是本条**唯一的额外输入** ✓（**弱于**源 `(c)` ✓）—— 强度序见节头 ✓。
+**🔴 不声称** ✗：**不**声称环档（`R` 非域 ✗）同款成立 ✗（机检反例见 §4.73 ✓）；
+**不**声称度数列在源接线档可得 ✗。 -/
+theorem surjective_deltaToEndRingHom_of_finrank_eq_card
+    [FiniteDimensional K S] [NoZeroDivisors S] [FaithfulSMul G S]
+    (hfix : ∀ (g : G) (k : K), g • algebraMap K S k = algebraMap K S k)
+    (hcard : Module.finrank K S = Fintype.card G) :
+    Function.Surjective (deltaToEndRingHom (smul_comm_of_fixes_base hfix)) :=
+  (bijective_deltaToEndRingHom_of_finrank_eq_card (G := G) hfix hcard).2
+
+end GeneralCriterion267
+
+/-! #### 4.72.2 有限 Galois 扩张档（`G := Gal(E/F)`，**无条件**） -/
+
+section IsGalois267
+
+variable {F E : Type*} [Field F] [Field E] [Algebra F E]
+
+/-- **`Gal(E/F)` 与 `F`-纯量交换** ✓（判据的 `hRG` 输入 ✓）：`σ • (k • s) = k • (σ • s)` ✓
+（`AlgEquiv.smul_def` ✓ ＋ `AlgEquiv.commutes` ✓ ＋ `smul_mul'` ✓）。
+**⚠ 与 `smul_comm_of_fixes_base` 的关系** ✓：本条是其在 `Gal(E/F)` 档的**具名特例** ✓。 -/
+lemma algEquiv_smul_comm (σ : E ≃ₐ[F] E) (k : F) (s : E) : σ • (k • s) = k • (σ • s) := by
+  rw [Algebra.smul_def, Algebra.smul_def, smul_mul', AlgEquiv.smul_def, AlgEquiv.commutes]
+
+/-- **`Gal(E/F)` 固定 `F` 的像** ✓：`σ • algebraMap F E k = algebraMap F E k` ✓
+（`AlgEquiv.commutes` ✓）。 -/
+lemma algEquiv_fixes_base (σ : E ≃ₐ[F] E) (k : F) : σ • algebraMap F E k = algebraMap F E k := by
+  rw [AlgEquiv.smul_def, AlgEquiv.commutes]
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 有限 Galois 扩张档：`δ` 双射（无条件）** ✓✅：`E/F` **有限** ＋ **Galois** ✓ ⟹
+取 **`G := Gal(E/F) = E ≃ₐ[F] E`** ✓（mathlib **已有**实例：`MulSemiringAction` ✓ ＝
+`AlgEquiv.applyMulSemiringAction` ✓、`FaithfulSMul` ✓ ＝ `AlgEquiv.apply_faithfulSMul` ✓、
+`Fintype` ✓ ＝ `AlgEquiv.fintype` ✓）⟹ `δ` **双射** ✓。
+**⚠ 度数列的来源** ✓：**`IsGalois.card_aut_eq_finrank`** ✓（mathlib ✓：`Nat.card Gal(E/F) = [E:F]` ✓）
+＋ `Fintype.card_eq_nat_card` ✓ —— **不**经正规基 ✗。
+**⚠ 意义** ✓：本件把源 `(b)+(c)` 的**用点**（`δ` 双射 ✓）在**域档**落地 ✓，
+而**载体是抽象群作用** ✓（`G` ✓ ＋ `MulSemiringAction G E` ✓ ＋ `SkewMonoidAlgebra E G` ✓）——
+**不**用 mathlib 的 `L ≃ₐ[K] L`-**指标形**正规基定理 ✗ ⟹ `SaltGeneric` §4.53 ✓ 登记的
+「mathlib 正规基定理的指标形是 `L ≃ₐ[K] L` 而非抽象 `G`」✗ **在本档被绕过** ✓
+（**不用**正规基 ✓，只用 `IsGalois.card_aut_eq_finrank` ✓）。
+**⚠ 口径** ✓：本件的 `G` **取** `Gal(E/F)` ✓ —— **一般抽象 `G`**（不要求 `G = Gal` ✓）的档
+由 ③ ✓（`bijective_deltaToEndRingHom_of_finrank_eq_card` ✓）以**度数列作显式输入**供给 ✓。
+**⚠ 边界（如实）** ✓：**域假设不可去** ✗（`E` 须是域 ✓）；**源接线档的 `R` 非域** ✗ ⟹
+**本条不覆盖接线对** ✗（见 §4.73 ✓）。
+**🔴 不声称** ✗：**不**声称源 `(b)` ✓／`(c)` ✓ 已在库内证明 ✗；**不**声称接线档已落 ✗。 -/
+theorem bijective_deltaToEndRingHom_of_isGalois
+    [FiniteDimensional F E] [IsGalois F E] :
+    Function.Bijective (deltaToEndRingHom (R := F) (S := E) (G := E ≃ₐ[F] E)
+      (algEquiv_smul_comm (F := F) (E := E))) := by
+  classical
+  refine bijective_deltaToEndRingHom_of_finrank_eq_card (K := F) (S := E) (G := E ≃ₐ[F] E)
+    (hfix := algEquiv_fixes_base (F := F) (E := E)) ?_
+  rw [Fintype.card_eq_nat_card, IsGalois.card_aut_eq_finrank]
+
+set_option maxHeartbeats 1000000 in
+/-- **同上的满射款** ✓✅（供 (1b) 行**逐半**取用 ✓）。 -/
+theorem surjective_deltaToEndRingHom_of_isGalois
+    [FiniteDimensional F E] [IsGalois F E] :
+    Function.Surjective (deltaToEndRingHom (R := F) (S := E) (G := E ≃ₐ[F] E)
+      (algEquiv_smul_comm (F := F) (E := E))) :=
+  (bijective_deltaToEndRingHom_of_isGalois (F := F) (E := E)).2
+
+end IsGalois267
+
+#print axioms smul_comm_of_fixes_base
+#print axioms finrank_fun_const
+#print axioms finrank_skewMonoidAlgebra
+#print axioms surjective_deltaToEndRingHom_of_finrank_eq_card
+#print axioms bijective_deltaToEndRingHom_of_finrank_eq_card
+#print axioms algEquiv_smul_comm
+#print axioms algEquiv_fixes_base
+#print axioms bijective_deltaToEndRingHom_of_isGalois
+#print axioms surjective_deltaToEndRingHom_of_isGalois
+
+end BTier
+
+/-! #### 4.72.3 非空性：非退化域档实例 ＋ 退化对照 ＋ 分裂档具名 -/
+
+section NonemptyFieldTier267
+
+/-- **🔴🔴 非退化域档实例（L1）** ✓✅：`GF(4)/GF(2)` ✓（`E := FiniteField.Extension (ZMod 2) 2 2` ✓）
+上 `δ` **双射** ✓ —— **由判据本身导出** ✓（**不**用 `inferInstance` 兜底 ✗）。
+**⚠ 机制** ✓：`IsGalois (ZMod 2) E` ✓ ＋ `FiniteDimensional (ZMod 2) E` ✓（mathlib 实例 ✓）
+＋ `IsGalois.card_aut_eq_finrank` ✓（度数列 ＝ `2` ✓）。 -/
+theorem bijective_deltaToEndRingHom_gf4 :
+    Function.Bijective (BTier.deltaToEndRingHom (R := ZMod 2)
+      (S := FiniteField.Extension (ZMod 2) 2 2)
+      (G := FiniteField.Extension (ZMod 2) 2 2 ≃ₐ[ZMod 2] FiniteField.Extension (ZMod 2) 2 2)
+      (BTier.algEquiv_smul_comm (F := ZMod 2) (E := FiniteField.Extension (ZMod 2) 2 2))) :=
+  BTier.bijective_deltaToEndRingHom_of_isGalois (F := ZMod 2)
+    (E := FiniteField.Extension (ZMod 2) 2 2)
+
+/-- **该实例非退化** ✓（L1 ✓）：`[GF(4) : GF(2)] = 2` ✓ ⟹ `|G| = 2 ≥ 2` ✓
+（排除「判据只在 `|G| = 1` 上发射」✗）。 -/
+theorem finrank_gf4_over_gf2 :
+    letI := FiniteField.instAlgebraExtension (ZMod 2) 2 2
+    Module.finrank (ZMod 2) (FiniteField.Extension (ZMod 2) 2 2) = 2 :=
+  FiniteField.finrank_extension (ZMod 2) 2 2
+
+/-- **同上的群阶形** ✓：`|Gal(GF(4)/GF(2))| = 2` ✓。 -/
+theorem card_gal_gf4 :
+    letI := FiniteField.instAlgebraExtension (ZMod 2) 2 2
+    Fintype.card (FiniteField.Extension (ZMod 2) 2 2 ≃ₐ[ZMod 2]
+      FiniteField.Extension (ZMod 2) 2 2) = 2 :=
+  FiniteField.card_algEquiv_extension (ZMod 2) 2 2
+
+#print axioms bijective_deltaToEndRingHom_gf4
+#print axioms finrank_gf4_over_gf2
+#print axioms card_gal_gf4
+
+end NonemptyFieldTier267
+
+/-! #### 4.72.4 分裂／正则档（具名） ＋ 退化对照 -/
+
+section RegularActionNamed267
+
+variable {G : Type} [Group G] [Fintype G] {K : Type} [Field K]
+
+attribute [local instance] regularSMul regularMSA
+
+set_option maxHeartbeats 1000000 in
+/-- **分裂／正则档：`δ` 双射（具名）** ✓✅：`S = G → K` ✓（`G` **正则置换**作用于坐标 ✓）上
+`δ` **双射** ✓ —— 即 §4.71 ✓ 残余表第 **(1b)** 行的**分裂档见证** ✓（**具名**后可**单独**取用 ✓，
+不再只是 `rows_regularAction` ✓ 的合取支 ✓）。
+**⚠ 机制** ✓：r264 ✓ 已落 ✓（`isGaloisWithGroup_regularAction` ✓ 的第三款 ✓），**本件不重证** ✗。
+**⚠ 载体之别（如实** ✓**）**：本档 `S/R = (G → K)/K` ✓ **不是**接线的那一对 ✗
+（`↥S → Localization.Away T` ✗），且 `S` 在 `|G| ≥ 2` 时**不是域** ✗（有零因子 ✗，§4.67 ✓）
+⟹ **不覆盖 §4.72.2 的域档判据** ✓ 的假设类 ✗。
+**🔴 不声称** ✗：**不**声称本档是**接线档** ✗。 -/
+theorem bijective_deltaToEndRingHom_regularAction :
+    Function.Bijective (BTier.deltaToEndRingHom (regular_smul_comm (G := G) (K := K))) :=
+  (rows_regularAction (G := G) (K := K)).1
+
+set_option maxHeartbeats 1000000 in
+/-- **同上的满射款** ✓✅（供 (1b) 行**逐半**取用 ✓）。 -/
+theorem surjective_deltaToEndRingHom_regularAction :
+    Function.Surjective (BTier.deltaToEndRingHom (regular_smul_comm (G := G) (K := K))) :=
+  (rows_regularAction (G := G) (K := K)).1.2
+
+#print axioms bijective_deltaToEndRingHom_regularAction
+#print axioms surjective_deltaToEndRingHom_regularAction
+
+end RegularActionNamed267
+
+section RatPUnitProbe267
+
+/-- 探针用的 `PUnit ↷ ℚ` **平凡作用** ✓（`PUnit` 的 `MulSemiringAction` **非** mathlib 实例 ✗，就地给出 ✓；
+命名与 `GaloisAlgebra` §266 的 `pUnitMSARatQ266` ✓ 相区别 ✓）。 -/
+local instance pUnitMSARatQ267 : MulSemiringAction PUnit.{1} ℚ where
+  smul _ x := x
+  one_smul _ := rfl
+  mul_smul _ _ _ := rfl
+  smul_zero _ := rfl
+  smul_add _ _ _ := rfl
+  smul_mul _ _ _ := rfl
+  smul_one _ := rfl
+
+set_option maxHeartbeats 1000000 in
+/-- **退化档对照（L19 正例）** ✓✅：`S = K = ℚ` ✓／`G = PUnit` ✓ 上判据 ② **发射** ✓ ——
+即 `[S:K] = 1 = |G|` ✓ 的**退化**档 ✓，**由判据本身导出** ✓（**不**用 `inferInstance` 兜底 ✗）
+⟹ 判据**能**发出**阳性**读数 ✓（与 §4.72.3 的 `GF(4)` **非退化**档 ✓ **对照** ✓）。 -/
+theorem bijective_deltaToEndRingHom_rat_punit267 :
+    Function.Bijective (BTier.deltaToEndRingHom (R := ℚ) (S := ℚ) (G := PUnit.{1})
+      (fun _ _ _ => rfl)) :=
+  BTier.bijective_deltaToEndRingHom_of_finrank_eq_card (K := ℚ) (S := ℚ) (G := PUnit.{1})
+    (hfix := fun _ _ => rfl) (hcard := by simp)
+
+#print axioms bijective_deltaToEndRingHom_rat_punit267
+
+end RatPUnitProbe267
+
+/-! ### 4.73 **环档（`R` 非域）的「朴素归约」是假的** —— **机检反例**：`ℤ[i]/ℤ`（第 267 轮）
+
+**⚠ 被反驳的命题（形状锁定见 `NaiveRingTierReduction267` ✓）** ✗：把 §4.72 ✓ 的域档归约
+**逐字搬到环档** —— 即
+{`R` ✓、`S` **交换环** ✓、`R → S` ✓、`G` **有限忠实** ✓、`hRG` ✓、
+**`R` ⊆ `S^G`** ✓（**逐点固定** ✓）、**`R` ⊇ `S^G`** ✓（**不动环相等** ✓，**强于**源定义中的单向包含 ✓）、
+**`S` 无零因子** ✓、**`S` 对 `R` 有限自由** ✓（含**投射** ✓）、
+**`finrank_R S = |G|`** ✓、**`δ` 单射** ✓}
+⟹ **`δ` 满射**。
+**⚠ 注** ✓（**为何表里含 `S^G = R`** ✓）：源的 `IsGaloisWithGroup` ✓（`GaloisAlgebra` §0 ✓）只要求
+`R` 是 `S^G` 的**子代数** ✓；本表取了**更强**的**相等** ✓ ⟹ **否定更强的表** ＝ **更强的负面结论** ✓
+（反例**连不动环相等都满足** ✓）。
+**⚠ 本轮读数** ✓✅：**该命题为假** ✗ —— 反例 ＝ `R = ℤ` ✓、`S = ℤ[i] = ℤ√(-1)` ✓、
+`G = Multiplicative (ZMod 2)` ✓（**共轭**作用 ✓）。
+**⚠ 机制（为何坏在环档）** ✓：`ℤ[i]/ℤ` 的**迹形式**（`Tr = 1 + conj` ✓）**非幺模** ✗ ——
+`Tr(1) = 2` ✓、`Tr(i) = 0` ✓ ⟹ 迹像 ⊆ `2ℤ` ✗ ⟹ `2` 在 `ℤ[i]/ℤ` 中**分歧** ✓；
+而 §4.72 ✓ 的域档论证用的是**除环上的基数-维数**（`injective_iff_surjective_of_finrank_eq_finrank` ✓），
+它在环档**无对应物** ✗ —— **单射 ＋ 秩相等 ⇏ 满射** ✗（同一机制：`2 : ℤ → ℤ` ✓）。
+**⚠ 与源 `proposition-0-5` 的关系** ✓（**这是本轮最强的负面读数** ✓）：源 **(b)** ✓／**(c)** ✓
+**只在域档** ✓（「Turning to the case `R = K` is a field」✓，核见 `SaltGeneric` §4.53 ✓）；
+本反例说明**其环档版不能退化为「单射 ＋ 基数（＋ 不动环 ＋ 有限自由）」** ✗ —— 环档需要
+**额外的模论输入** ✓，例如源 `proposition-0-2(a)` ✓／`[CHR68]` p. 13 ✓ 一路
+（`R[G]`-有限／投射 ✓，对应 §4.71 ✓ 表的 **(2a)** ✓／**(2b)** 两行 ✓），或**迹形式的幺模性** ✓；
+**🔴 本件不判定**哪一条**充分** ✗ —— **只**证明**朴素表不充分** ✓（**不**声称环档为假 ✗）。
+**⚠ 强度序（如实** ✓**）**：**(甲)** 本条**不**触及 §4.72 ✓ 的**域档**判据 ✓（`K` 是域 ✓）；
+**(乙)** 本条**反驳**的是**朴素环档形** ✓（**其否定已机检** ✓），**不**反驳**任何**加了模论输入的环档形 ✓
+（源档是否成立**仍开** ✓ —— **本件不给正面结果** ✗）；**(丙)** 反例**满足**全部假设 ✓
+（含 `S` 对 `ℤ` **有限自由** ✓ 且 `finrank = |G| = 2` ✓ 且 `δ` **单射** ✓）：见 `ringTier_counterexample267` ✓。
+**⚠ 分类（规则 17）** ✓：本条是**证明**（**反射式** ✓：给出反例 ＋ 机检否定 ✓）——
+**非**观测数据 ✗、**非**「可算未算」✗、**非**材料阻断 ✗。 -/
+
+section RingTierCounterexample267
+
+/-- **被反驳命题的形状锁定** ✗（**不是**定理 ✓，**没有**证明 ✓ —— 其**否定**见下件 ✓；
+锁定用点 ＝ 使「本轮究竟反驳了哪张假设表」**可机械比对** ✓）。 -/
+def NaiveRingTierReduction267 : Prop :=
+  ∀ (R S : Type) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x)),
+    NoZeroDivisors S → FaithfulSMul G S →
+      (∀ (g : G) (r : R), g • algebraMap R S r = algebraMap R S r) →
+      (∀ x : S, (∀ g : G, g • x = x) → ∃ r : R, algebraMap R S r = x) →
+      Module.Finite R S → Module.Free R S → Module.Projective R S →
+      Module.finrank R S = Fintype.card G →
+      Function.Injective (BTier.deltaToEndRingHom hRG) →
+      Function.Surjective (BTier.deltaToEndRingHom hRG)
+
+/-- **`ZMod 2` 的元素只有两个** ✓（作用良定义性的穷尽工具 ✓；`decide` ✓，**非** `native_decide` ✗）。 -/
+lemma mul_zmod2_cases267 (g : Multiplicative (ZMod 2)) :
+    g = 1 ∨ g = Multiplicative.ofAdd 1 := by
+  revert g
+  decide
+
+/-- `(ofAdd 1)² = 1` ✓（`ZMod 2` 中 `1 + 1 = 0` ✓）。 -/
+lemma zmod2_gen_mul_self267 :
+    (Multiplicative.ofAdd (1 : ZMod 2) * Multiplicative.ofAdd 1)
+      = (1 : Multiplicative (ZMod 2)) := by decide
+
+/-- **共轭作用函数** ✓：`g ↦ (x ↦ x)` ✓（`g = 1` ✓）或 `g ↦ (x ↦ star x)` ✓（`g = ofAdd 1` ✓）。
+**⚠ 为何先给函数** ✗：`MulSemiringAction` 的字段证明**不能**展开**正在定义**的实例 ✗
+（实测：`simp` made no progress ✓）⟹ 先落**完成的函数** ✓，再逐条搬运 ✓。 -/
+def conjSmul267 (g : Multiplicative (ZMod 2)) (x : Zsqrtd (-1)) : Zsqrtd (-1) :=
+  if g = (1 : Multiplicative (ZMod 2)) then x else star x
+
+@[simp] lemma conjSmul267_one (x : Zsqrtd (-1)) : conjSmul267 1 x = x := rfl
+
+@[simp] lemma conjSmul267_gen (x : Zsqrtd (-1)) :
+    conjSmul267 (Multiplicative.ofAdd 1) x = star x := by
+  rw [conjSmul267, if_neg (by decide : ¬ (Multiplicative.ofAdd (1 : ZMod 2) = 1))]
+
+lemma conjSmul267_mul_smul (g h : Multiplicative (ZMod 2)) (x : Zsqrtd (-1)) :
+    conjSmul267 (g * h) x = conjSmul267 g (conjSmul267 h x) := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;> rcases mul_zmod2_cases267 h with rfl | rfl <;>
+    simp [conjSmul267_one, conjSmul267_gen, zmod2_gen_mul_self267, star_star]
+
+lemma conjSmul267_zero (g : Multiplicative (ZMod 2)) : conjSmul267 g 0 = 0 := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;> simp [conjSmul267_one, conjSmul267_gen]
+
+lemma conjSmul267_add (g : Multiplicative (ZMod 2)) (x y : Zsqrtd (-1)) :
+    conjSmul267 g (x + y) = conjSmul267 g x + conjSmul267 g y := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;> simp [conjSmul267_one, conjSmul267_gen]
+
+lemma conjSmul267_mul (g : Multiplicative (ZMod 2)) (x y : Zsqrtd (-1)) :
+    conjSmul267 g (x * y) = conjSmul267 g x * conjSmul267 g y := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;> simp [conjSmul267_one, conjSmul267_gen]
+
+lemma conjSmul267_one' (g : Multiplicative (ZMod 2)) : conjSmul267 g 1 = 1 := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;> simp [conjSmul267_one, conjSmul267_gen]
+
+/-- **忠实性** ✓（`star` **非**恒等 ✓：取 `x = √(-1)` ✓ 有 `star x = -x ≠ x` ✓）。 -/
+lemma conjSmul267_faithful (a b : Multiplicative (ZMod 2))
+    (hab : ∀ x : Zsqrtd (-1), conjSmul267 a x = conjSmul267 b x) : a = b := by
+  rcases mul_zmod2_cases267 a with rfl | rfl <;> rcases mul_zmod2_cases267 b with rfl | rfl
+  · rfl
+  · exfalso
+    have h := hab (Zsqrtd.sqrtd : Zsqrtd (-1))
+    simp only [conjSmul267_one, conjSmul267_gen] at h
+    exact absurd h (by decide)
+  · exfalso
+    have h := hab (Zsqrtd.sqrtd : Zsqrtd (-1))
+    simp only [conjSmul267_one, conjSmul267_gen] at h
+    exact absurd h.symm (by decide)
+  · rfl
+
+/-- 作用以 `SMul` 层落一次 ✓（供 `toSMul` **指名** ✓ —— **不**用 `letI` 链 ✗）。 -/
+local instance zmod2SMulGI267 : SMul (Multiplicative (ZMod 2)) (Zsqrtd (-1)) :=
+  ⟨conjSmul267⟩
+
+/-- **共轭作用** ✓（`G = Multiplicative (ZMod 2)` ✓ 作用于 `ℤ[i]` ✓，**局部实例** ✓：限本节 ✓）。 -/
+local instance zmod2MSAGI267 : MulSemiringAction (Multiplicative (ZMod 2)) (Zsqrtd (-1)) where
+  toSMul := zmod2SMulGI267
+  one_smul x := conjSmul267_one x
+  mul_smul g h x := conjSmul267_mul_smul g h x
+  smul_zero g := conjSmul267_zero g
+  smul_add g x y := conjSmul267_add g x y
+  smul_mul g x y := conjSmul267_mul g x y
+  smul_one g := conjSmul267_one' g
+
+local instance zmod2FaithfulGI267 : FaithfulSMul (Multiplicative (ZMod 2)) (Zsqrtd (-1)) where
+  eq_of_smul_eq_smul {a b} hab := conjSmul267_faithful a b fun x => hab x
+
+/-- **`ℤ`-纯量与作用交换** ✓（判据的 `hRG` ✓）：`star` 固定整数 ✓（`star_intCast` ✓）。 -/
+lemma conjSmul267_int_smul (g : Multiplicative (ZMod 2)) (z : ℤ) (x : Zsqrtd (-1)) :
+    conjSmul267 g ((z : Zsqrtd (-1)) * x) = (z : Zsqrtd (-1)) * conjSmul267 g x := by
+  rcases mul_zmod2_cases267 g with rfl | rfl
+  · simp [conjSmul267_one]
+  · rw [conjSmul267_gen, conjSmul267_gen, star_mul, star_intCast, mul_comm]
+
+lemma zmod2_smul_int_comm267 (g : Multiplicative (ZMod 2)) (z : ℤ) (x : Zsqrtd (-1)) :
+    g • (z • x) = z • (g • x) := by
+  rw [Algebra.smul_def, Algebra.smul_def]
+  exact conjSmul267_int_smul g z x
+
+/-- **`δ` 的两项展开式** ✓：`δ x y = (coeff 1 x) * y + (coeff (ofAdd 1) x) * star y` ✓ ——
+`G` 只有两个元素 ✓，故求和坍缩为两项 ✓（`induction_on` ✓ ＋ `deltaToEndAdd_single` ✓）。 -/
+lemma delta_form_zmod2 (x : SkewMonoidAlgebra (Zsqrtd (-1)) (Multiplicative (ZMod 2)))
+    (y : Zsqrtd (-1)) :
+    BTier.deltaToEndRingHom zmod2_smul_int_comm267 x y
+      = x.coeff 1 * y + x.coeff (Multiplicative.ofAdd 1) * star y := by
+  induction x using SkewMonoidAlgebra.induction_on with
+  | zero => simp
+  | add x z hx hz =>
+    rw [map_add, LinearMap.add_apply, hx, hz]
+    simp only [SkewMonoidAlgebra.coeff_add, Finsupp.add_apply, add_mul]
+    ring
+  | single g s =>
+    rw [show BTier.deltaToEndRingHom zmod2_smul_int_comm267
+        (SkewMonoidAlgebra.single g s)
+          = BTier.deltaToEndAdd zmod2_smul_int_comm267 (SkewMonoidAlgebra.single g s) from rfl,
+      BTier.deltaToEndAdd_single, Module.End.mul_apply]
+    rcases mul_zmod2_cases267 g with rfl | rfl
+    · change s * conjSmul267 1 y
+        = (SkewMonoidAlgebra.single 1 s).coeff 1 * y
+          + (SkewMonoidAlgebra.single 1 s).coeff (Multiplicative.ofAdd 1) * star y
+      rw [conjSmul267_one, SkewMonoidAlgebra.coeff_single_apply, if_pos rfl,
+        SkewMonoidAlgebra.coeff_single_apply,
+        if_neg (by decide : ¬ ((1 : Multiplicative (ZMod 2)) = Multiplicative.ofAdd 1))]
+      ring
+    · change s * conjSmul267 (Multiplicative.ofAdd 1) y
+        = (SkewMonoidAlgebra.single (Multiplicative.ofAdd 1) s).coeff 1 * y
+          + (SkewMonoidAlgebra.single (Multiplicative.ofAdd 1) s).coeff
+              (Multiplicative.ofAdd 1) * star y
+      rw [conjSmul267_gen, SkewMonoidAlgebra.coeff_single_apply,
+        if_neg (by decide : ¬ (Multiplicative.ofAdd (1 : ZMod 2) = 1)),
+        SkewMonoidAlgebra.coeff_single_apply, if_pos rfl]
+      ring
+
+/-- **`δ` 单射** ✓✅（**由 r266 ✓ 的判据供给** ✓，**不**重证 ✗）：`ℤ[i]` **无零因子** ✓
+＋ `G` **忠实** ✓ ⟹ 单射 ✓ —— 即反例的**前提之一由库内已落工具供给** ✓
+（**这正是反例的尖锐处** ✓：全部前提皆真 ✓ 而结论假 ✗）。 -/
+theorem zmod2_delta_injective267 :
+    Function.Injective (BTier.deltaToEndRingHom zmod2_smul_int_comm267) :=
+  BTier.injective_deltaToEndRingHom_of_noZeroDivisors
+    (R := ℤ) (S := Zsqrtd (-1)) (G := Multiplicative (ZMod 2)) zmod2_smul_int_comm267
+
+/-- **整数纯量被固定** ✓（`star` 固定整数 ✓）：`conjSmul267 g (r : ℤ[i]) = (r : ℤ[i])` ✓。 -/
+lemma conjSmul267_intCast (g : Multiplicative (ZMod 2)) (r : ℤ) :
+    conjSmul267 g ((r : ℤ) : Zsqrtd (-1)) = ((r : ℤ) : Zsqrtd (-1)) := by
+  rcases mul_zmod2_cases267 g with rfl | rfl
+  · exact conjSmul267_one _
+  · rw [conjSmul267_gen, star_intCast]
+
+/-- **`R` ⊆ `S^G`** ✓（`ℤ` 的像被 `G` **逐点固定** ✓）。 -/
+lemma fixed_algebraMap_gaussianInt267 (g : Multiplicative (ZMod 2)) (r : ℤ) :
+    g • algebraMap ℤ (Zsqrtd (-1)) r = algebraMap ℤ (Zsqrtd (-1)) r :=
+  conjSmul267_intCast g r
+
+/-- **`S^G` ⊆ `R`** ✓（**不动环相等** ✓ —— **强于**源定义的单向包含 ✓）：
+`x` 被**一切** `g` 固定 ✓ ⟹（取 `g = ofAdd 1` ✓）`star x = x` ✓ ⟹ `x.im = -x.im` ✓
+⟹ `2 * x.im = 0` ✓ ⟹ `x.im = 0` ✓（`omega` ✓）⟹ `x = (x.re : ℤ[i])` ✓。 -/
+lemma fixed_ring_gaussianInt267 (x : Zsqrtd (-1))
+    (hx : ∀ g : Multiplicative (ZMod 2), g • x = x) :
+    ∃ r : ℤ, algebraMap ℤ (Zsqrtd (-1)) r = x := by
+  have h : star x = x := hx (Multiplicative.ofAdd 1)
+  have him : x.im = 0 := by
+    have h2 : (star x).im = x.im := by rw [h]
+    rw [Zsqrtd.im_star] at h2
+    omega
+  exact ⟨x.re, by ext <;> simp [him]⟩
+
+/-- **反例的见证自同态** ✓：`x ↦ re x` ✓（即 `⟨u, v⟩ ↦ u` ✓）—— `ℤ`-线性 ✓。
+**⚠ 为何取它** ✓：迹形式给出的像 ⊆ `2ℤ`-型子格 ✓ ⟹ 「坐标读出」**不在** `δ` 的像内 ✓。 -/
+def reEnd267 : Module.End ℤ (Zsqrtd (-1)) where
+  toFun x := (x.re : Zsqrtd (-1))
+  map_add' x y := by simp
+  map_smul' z x := by
+    show ((z • x).re : Zsqrtd (-1)) = z • (x.re : Zsqrtd (-1))
+    rw [Algebra.smul_def, Zsqrtd.re_mul, Algebra.smul_def]
+    simp
+
+/-- `star (√(-1)) = -√(-1)` ✓。 -/
+lemma star_sqrtd267 : star (Zsqrtd.sqrtd : Zsqrtd (-1)) = -(Zsqrtd.sqrtd : Zsqrtd (-1)) := by
+  ext <;> simp
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 `δ` 非满射** ✓✅（**反例的核心** ✓）：设 `δ x = re` ✓，在 `y = 1` ✓ 与 `y = √(-1)` ✓
+两处取值 ✓ 得 `a + b = 1` ✓ 与 `(a - b) * √(-1) = 0` ✓（`a = coeff 1 x` ✓，`b = coeff (ofAdd 1) x` ✓）；
+由**无零因子** ✓ 与 `√(-1) ≠ 0` ✓ 得 `a = b` ✓ ⟹ `2 * a = 1` ✓（于 `ℤ[i]` 中 ✓）；
+取 `.re` ✓ 得 `2 * a.re = 1` ✓（`ℤ` 中 ✓）⟹ `omega` ✓ **矛盾** ✓。
+**⚠ 机制** ✓（**注：本行的机检证明不用以下刻画** ✗，它只作**为何失败**的说明 ✓）：像中元素皆为
+`a·id + b·conj` 形 ✓（`a, b ∈ ℤ[i]` ✓）⟹ 在 `ℤ`-基 `(1, i)` 下其**系数对**为 `(a + b, a - b)` ✓，
+满足 `c ≡ d (mod 2)` ✓（于 `ℤ[i]` 中 ✓，因 `c - d = 2b` ✓）；而 `re` 的系数对为 `(1, 0)` ✓，
+`1 ∉ 2ℤ[i]` ✗ ⟹ **不**在像内 ✓ ⟹ 非满射 ✓。
+**🔴 不声称** ✗：**不**声称环档（加了模论输入的形 ✓）为假 ✗ —— 本条只否**朴素形** ✓。 -/
+theorem not_surjective_deltaToEndRingHom_gaussianInt267 :
+    ¬ Function.Surjective (BTier.deltaToEndRingHom zmod2_smul_int_comm267) := by
+  intro hsurj
+  obtain ⟨x, hx⟩ := hsurj reEnd267
+  have h1 : BTier.deltaToEndRingHom zmod2_smul_int_comm267 x 1 = 1 := by
+    rw [hx]
+    rfl
+  have hi : BTier.deltaToEndRingHom zmod2_smul_int_comm267 x (Zsqrtd.sqrtd : Zsqrtd (-1))
+      = 0 := by
+    rw [hx]
+    rfl
+  rw [delta_form_zmod2] at h1 hi
+  simp only [mul_one, star_one] at h1
+  rw [star_sqrtd267] at hi
+  set a := x.coeff 1
+  set b := x.coeff (Multiplicative.ofAdd 1)
+  have hab : a = b := by
+    have h0 : (a - b) * (Zsqrtd.sqrtd : Zsqrtd (-1)) = 0 := by
+      rw [mul_neg, ← sub_eq_add_neg, ← sub_mul] at hi
+      exact hi
+    rcases mul_eq_zero.mp h0 with h | h
+    · exact sub_eq_zero.mp h
+    · exact absurd h (by decide)
+  have h2 : (2 : Zsqrtd (-1)) * a = 1 := by
+    have h1' : a + b = 1 := h1
+    rw [← hab] at h1'
+    rwa [two_mul]
+  have h3 : (2 * a).re = (1 : Zsqrtd (-1)).re := congrArg Zsqrtd.re h2
+  rw [Zsqrtd.re_mul] at h3
+  simp at h3
+  omega
+
+/-- **反例的秩** ✓：`ℤ[i] ≅ ℤ²` ✓（`ℤ`-线性等价 ✓：`x ↦ (re x, im x)` ✓）—— **有限自由** ✓ 且
+`finrank_ℤ ℤ[i] = 2` ✓。**⚠ 工艺** ✓：`Module.finrank_finsupp` ✓ 对 `ℤ[i]` **不可用** ✗
+（无基实例 ✗）⟹ 走**显式线性等价** ✓ ＋ `Module.finrank_prod` ✓。 -/
+def zsqrtdNegOneLinearEquiv267 : Zsqrtd (-1) ≃ₗ[ℤ] ℤ × ℤ where
+  toFun x := (x.re, x.im)
+  invFun p := ⟨p.1, p.2⟩
+  map_add' x y := by ext <;> simp
+  map_smul' z x := by
+    ext <;> simp [Algebra.smul_def, Zsqrtd.re_mul, Zsqrtd.im_mul]
+  left_inv x := by ext <;> rfl
+  right_inv p := by ext <;> rfl
+
+lemma moduleFinite_gaussianInt267 : Module.Finite ℤ (Zsqrtd (-1)) :=
+  Module.Finite.equiv zsqrtdNegOneLinearEquiv267.symm
+
+lemma moduleFree_gaussianInt267 : Module.Free ℤ (Zsqrtd (-1)) :=
+  Module.Free.of_equiv zsqrtdNegOneLinearEquiv267.symm
+
+-- 本节的 `Module.Free` 行以**局部实例**注册 ✓（供 `Module.Projective.of_free` ✓ 消费 ✓；
+-- **限本节** ✓，**不**污染全库实例表 ✓；**不**用 `letI` ✗）。
+attribute [local instance] moduleFree_gaussianInt267
+
+lemma finrank_gaussianInt267 : Module.finrank ℤ (Zsqrtd (-1)) = 2 := by
+  rw [zsqrtdNegOneLinearEquiv267.finrank_eq, Module.finrank_prod, Module.finrank_self]
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 机检反例（假设表逐条为真 ＋ 结论为假）** ✓✅：`R = ℤ` ✓／`S = ℤ[i]` ✓／
+`G = Multiplicative (ZMod 2)` ✓（共轭 ✓）上**同时**成立 ✓：
+**(i)** `S` **无零因子** ✓；**(ii)** 作用**忠实** ✓；**(iii)** `hRG` ✓；**(iv)** `δ` **单射** ✓
+（由 r266 ✓ 判据 ✓）；**(v)** `S` 对 `ℤ` **有限** ✓；**(vi)** **自由** ✓；
+**(vii)** **`finrank_ℤ S = |G| = 2`** ✓；**(viii)** `δ` **非满射** ✓
+—— **(i)--(vii) 全真而 (viii) 为真** ⟹ `NaiveRingTierReduction267` **假** ✗（下件 ✓）。
+**⚠ 意义（L1 ＋ L19** ✓**）**：本件同时是**判据的非空洞性对照** ✓（`δ` **单射**款在**非域**
+的**无零因子环** ✓ 上发射 ✓，与 §4.72.3 的域档 ✓ 分列 ✓）。 -/
+theorem ringTier_counterexample267 :
+    NoZeroDivisors (Zsqrtd (-1))
+      ∧ FaithfulSMul (Multiplicative (ZMod 2)) (Zsqrtd (-1))
+      ∧ (∀ (g : Multiplicative (ZMod 2)) (r : ℤ) (x : Zsqrtd (-1)),
+          g • (r • x) = r • (g • x))
+      ∧ (∀ (g : Multiplicative (ZMod 2)) (r : ℤ),
+          g • algebraMap ℤ (Zsqrtd (-1)) r = algebraMap ℤ (Zsqrtd (-1)) r)
+      ∧ (∀ x : Zsqrtd (-1), (∀ g : Multiplicative (ZMod 2), g • x = x) →
+          ∃ r : ℤ, algebraMap ℤ (Zsqrtd (-1)) r = x)
+      ∧ Function.Injective (BTier.deltaToEndRingHom zmod2_smul_int_comm267)
+      ∧ Module.Finite ℤ (Zsqrtd (-1))
+      ∧ Module.Free ℤ (Zsqrtd (-1))
+      ∧ Module.Projective ℤ (Zsqrtd (-1))
+      ∧ Module.finrank ℤ (Zsqrtd (-1)) = Fintype.card (Multiplicative (ZMod 2))
+      ∧ ¬ Function.Surjective (BTier.deltaToEndRingHom zmod2_smul_int_comm267) :=
+  ⟨inferInstance, inferInstance, zmod2_smul_int_comm267, fixed_algebraMap_gaussianInt267,
+    fixed_ring_gaussianInt267, zmod2_delta_injective267,
+    moduleFinite_gaussianInt267, moduleFree_gaussianInt267, inferInstance,
+    by rw [finrank_gaussianInt267, card_multiplicative_zmod_two],
+    not_surjective_deltaToEndRingHom_gaussianInt267⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 朴素环档归约的否定（形状锁定件的否定）** ✓✅。 -/
+theorem not_naiveRingTierReduction267 : ¬ NaiveRingTierReduction267 := by
+  intro h
+  obtain ⟨_, hfaith, hRG, hfix, hfixring, hinj, hfin, hfree, hproj, hrank, hnotsurj⟩ :=
+    ringTier_counterexample267
+  exact hnotsurj (h ℤ (Zsqrtd (-1)) (Multiplicative (ZMod 2)) hRG inferInstance hfaith
+    hfix hfixring hfin hfree hproj hrank hinj)
+
+#print axioms mul_zmod2_cases267
+#print axioms zmod2_gen_mul_self267
+#print axioms conjSmul267_mul_smul
+#print axioms conjSmul267_faithful
+#print axioms zmod2_smul_int_comm267
+#print axioms conjSmul267_intCast
+#print axioms fixed_algebraMap_gaussianInt267
+#print axioms fixed_ring_gaussianInt267
+#print axioms delta_form_zmod2
+#print axioms zmod2_delta_injective267
+#print axioms reEnd267
+#print axioms not_surjective_deltaToEndRingHom_gaussianInt267
+#print axioms zsqrtdNegOneLinearEquiv267
+#print axioms moduleFinite_gaussianInt267
+#print axioms moduleFree_gaussianInt267
+#print axioms star_sqrtd267
+#print axioms finrank_gaussianInt267
+#print axioms ringTier_counterexample267
+#print axioms not_naiveRingTierReduction267
+
+end RingTierCounterexample267
 
 end ABGV52

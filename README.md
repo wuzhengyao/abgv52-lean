@@ -1158,3 +1158,15 @@ Galois algebra for a non-trivial group, where both old rows hold, and a mutant p
 row is replaced by a trivial statement fails inside the proof bodies.  What remains shared is
 surjectivity of the structure map together with finiteness and projectivity over the group ring, and
 the ring-tier bridge for the source-form witness.
+
+Surjectivity of the structure map is now settled in the field tier, and the naive way of porting it
+to the ring tier is refuted.  In the field tier the argument needs only a cardinality equation, the
+dimension over the base field being the order of the group, and injectivity from the previous round;
+for a finite Galois extension that cardinatity is supplied by the standard degree count, so the
+statement becomes unconditional there, and an explicit non-degenerate example over a finite field
+witnesses it.  The ring tier is different: the obvious hypotheses, a domain with a faithful finite
+group action, the fixed ring equal to the base, finite freeness of rank the group order, and
+injectivity of the structure map, are all satisfied by the Gaussian integers over the integers with
+conjugation, where the structure map is nevertheless not surjective, as the trace form shows.  So the
+ring-tier row must be tied to the module-theoretic rows rather than deduced from injectivity and rank.
+The imports needed for the field-tier argument were added; nothing existing was changed.
