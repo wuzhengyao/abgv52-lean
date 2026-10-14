@@ -6873,4 +6873,496 @@ theorem qa_exists_trace_eq_one268_of_isUnit (h : IsUnit (b ^ 2 + 4 * a)) :
 
 end QuadraticRingTier268
 
+/-! ### 4.75 接线档的**迹形式幺模性**：一般档形状锁定件**被机检否决** ＋ 接线环上的**判别式障碍** ＋ `T` 的**加强机制**（第 269 轮）
+
+**⚠ 起点** ✓（承 §4.74 ✓）：第 268 轮把环档的**正确输入**锁定为**迹形式幺模性** ✓
+（`surjective_deltaToEndRingHom_quadratic268_iff` ✓，秩 2 档 `⟺` ✓），并把**一般档**的充分性
+**形状锁定**为 `TraceUnimodularSufficiency268` ✓（**未证** ✗）。本轮**攻接线档** ✓
+（`R = ↥(noetherFixedCarrier …)` ✓，`S = Localization.Away T` ✓），并为「局部化于 `T` 是否
+**正是**使判别式可逆的操作」给出机检读数 ✓。
+
+**🔴🔴 主结果 ①（**否决** ✗）：第 268 轮的形状锁定件**是假的** ✓**（`not_traceUnimodularSufficiency268` ✓）。
+**见证** ✓：`(R, S, G, tr) = (ℤ, QuadraticAlgebra ℤ 1 0, Multiplicative (ZMod 2), re)` ✓ ——
+**五条假设逐条机检落地** ✓（互异性 ✓）：`r269_tr_invariant` ✓（`G`-不变 ✓）、`r269_tr_symm` ✓（对称 ✓）、
+`r269_pairing_surj` ✓（配对**满** ✓，Gram ＝ 单位阵 ✓）、`Module.Finite` ✓（`inferInstance` ✓）、
+`r269_delta_inj` ✓（§4.74 单射判别 ✓）；**结论被否** ✓（`r269_witness_not_surjective` ✓，经 §4.74 的 `⟺` ✓：
+判别式 `0² + 4·1 = 4` **非单位** ✗）。**非空洞** ✓：载体 `ℤ[ω]/(ω²−1)` 上作用**非平凡** ✓（`ω ↦ −ω` ✓）
+且 `δ` **单射** ✓（作用「强忠实」✓）—— **不是**退化档 ✓。
+
+**🔴 主结果 ① 的**诊断**（**为什么假** ✓，**同一见证上**机检 ✓）：见证上**两条迹形式不同** ✓ ——
+**(甲)** `G`-**不变**泛函 `tr = re` 的配对 Gram 行列式 ＝ **`1`** ✓（`r269InvGram_det` ✓，**单位** ✓）；
+**(乙)** **乘法迹**（＝ §4.74 的 `QuadraticAlgebra.trace` ✓）的配对 Gram 行列式 ＝ **`4`** ✓
+（`r269_algGram_not_isUnit` ✓，**非单位** ✗）。⟹ 第 268 轮登记的假设「`tr` **`G`-不变**」**严格弱于** ✓
+它自己机检过的正确输入 ✓（乘法迹形式幺模 ⟺ `IsUnit (b²+4a)` ✓）⟹ 该形状锁定件**从来不是**
+§4.74 主定理的推广 ✗（**强度序** ✓：`G`-不变 ⟹ 乘法迹不变 ✓，**反向 ✗** —— 见证即反例 ✓）。
+
+**⚠ 主结果 ②（接线档障碍，机检 ✓）**：**接线环上（`C₂`／`ℚ` 档）迹形式幺模性对朴素选择是假的** ✗。
+模型 ✓：`S = ℚ[X₀,X₁][e₂^{-1}]` ✓（`r269S` ✓）、`e₁ = X₀+X₁` ✓、`e₂ = X₀X₁` ✓、
+判别式 `disc = e₁² − 4e₂ = (X₀−X₁)²` ✓（`r269_disc_eq` ✓）、接线环 `R = ℚ[e₁, e₂^{±1}] ⊆ S` ✓（`r269R` ✓）。
+**三件** ✓：**(a)** `disc` 在 `S` 中**非单位** ✓（`r269_disc_not_isUnit_S` ✓ —— 特化 `X₀,X₁ ↦ 1` ✓
+把 `disc` 打成 `0` ✓）；**(b)** 故 `disc` 在**任何**含它的子环（**特别地接线环** ✓）中**非单位** ✓
+（`r269_disc_not_isUnit_of_mem` ✓，**最强的「任意子环」形** ✓）；**(c)** 由 §4.74 的 `⟺` ✓
+得**秩 2 载体在接线环上 `δ` 非满射** ✓（`r269_wiring_delta_not_surjective` ✓）。
+**⚠ 读法** ✓：**(a)(b)(c) 三件皆机检** ✓；但**「模型里的 `T` ＝ `exists_invariant_t_of_noether` 的输出」**
+**不是**本件结论 ✗ —— 本件说的是：**接线形状**（`T ≠ 0` ✓ ＋ `G`-不变 ✓ ＋ 含分母 ✓）**本身不足** ✗，
+**判别式可逆是额外的算术条件** ✓。
+
+**✅ 主结果 ③（`T` 的加强：**充分机制** ＋ **非空性见证**，机检 ✓）**：
+**(机制)** ✓ `d ∣ T ⟹ IsUnit (algebraMap A (Localization.Away T) d)` ✓
+（`r269_isUnit_algebraMap_of_dvd` ✓，**一般交换环** ✓）—— 即**把判别式乘进 `T`** 正是使判别式
+可逆的操作 ✓✅（＝ 起点假设的**精确化** ✓）。**(见证)** ✓ `T ↦ T·disc` 后：`R' = ℚ[e₁, e₂^{±1}, disc^{-1}]` ✓
+（`r269R2` ✓）上 `disc` **是单位** ✓（`r269_discR2_isUnit` ✓，**逆元显式给** ✓）⟹ 迹形式**幺模** ✓ ⟹
+**秩 2 载体在 `R'` 上 `δ` 满射** ✓（`r269_strengthened_delta_surjective` ✓，经 §4.74 的 `⟸` ✓）。
+**⟹ 非空性** ✓：本路线的**假设与结论在同一实例上同时成立** ✓（**非空洞** ✓）。
+
+**⚠ 强度序（逐条，方向明确 ✓；**勿读作等价** ✗）**：
+
+| # | 输入 | 相对强度 | 状态 |
+|---|---|---|---|
+| ① | `G`-**不变**泛函 ＋ 其配对幺模（r268 登记件 ✓） | **严格弱于** ✓ ② | **已否决** ✗（**假** ✓） |
+| ② | **乘法迹**形式幺模 ＋ **秩 ＝ `\|G\|`** ✓（r269 登记件 ✓） | **正确形** ✓ | **未证** ✗（秩 2 档 ✓ ＝ §4.74 `⟺` ✓） |
+| ③ | `disc ∣ T`（接线档 ✓） | **充分** ✓ 于 ② 的**假设** ✓ | **已证** ✓（模型 ✓） |
+| ④ | 迹满射 ✗／`\|G\|` 可逆 ✗／`R[G]`-自由秩一 ✗ | 不足 ✗ | **§4.74 已否决** ✗ |
+
+**⚠ 分类（规则 17）** ✓：本轮**未落**项**只有一条** ✓ ＝ `TraceUnimodularSufficiency269` ✓
+（**证明义务** ✓：**非**观测数据 ✗、**非 (b) 类「可算未算」**✗ —— 它是经典定理 ✓
+（有限投射代数的判别式／可分 ⟹ Galois ✓，Auslander–Goldman／CHR ✓）而 **mathlib 内没有** ✗，
+**不是**任何「未打印的输出」✓）；**无**材料阻断登记 ✓；**无** (b) 类未算项 ✓
+（模型环上的判别式读数**已算完并落地** ✓）。
+
+**🔴 不声称** ✗：**不**声称 `TraceUnimodularSufficiency269` 成立 ✗；**不**声称一般接线档的 `disc`
+是 `MvPolynomial G F` 中的 `G`-不变多项式 ✗（`C₂`／`ℚ` 模型档 ✓ 成立：`disc = (X₀−X₁)²` ✓）；
+**不**声称源 `theorem-5-1` ✓／`theorem-2-1` ✓ 已证 ✗；**不**声称
+`exists_realizationPropertyFieldFinite_of_noetherFixedWiring_deltaSurj_and_rows` ✓ 的 `T`
+就是模型里的 `T = e₂` ✗；**不**声称第 268 轮的秩 2 主定理被重证 ✗（本件**只用**其 `⟺` ✓）。 -/
+
+/-! #### 269.A 一般档形状锁定件「`G`-不变迹泛函」被机检否决 -/
+
+open scoped QuadraticAlgebra
+
+section R269Witness
+
+attribute [local instance] qaMSA268
+
+/-- **`G`-不变迹泛函** ✓：`tr (a + bω) = a` ✓（`G = C₂` 经 `star` 作用 ✓，`star` 保持实部 ✓）。 -/
+def r269Tr : QuadraticAlgebra ℤ 1 0 →ₗ[ℤ] ℤ where
+  toFun z := z.re
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+/-- **`G`-不变迹形式的 Gram 矩阵** ✓（基 `(1, ω)` ✓，配对 `(x,y) ↦ tr (x·y)` ✓）。 -/
+def r269InvGram : Matrix (Fin 2) (Fin 2) ℤ :=
+  !![r269Tr 1, r269Tr (ω : QuadraticAlgebra ℤ 1 0);
+     r269Tr (ω : QuadraticAlgebra ℤ 1 0), r269Tr ((ω : QuadraticAlgebra ℤ 1 0) * ω)]
+
+/-- **假设 ①（`G`-不变）机检落地** ✓。 -/
+lemma r269_tr_invariant (g : Multiplicative (ZMod 2)) (x : QuadraticAlgebra ℤ 1 0) :
+    r269Tr (g • x) = r269Tr x := by
+  rcases mul_zmod2_cases267 g with rfl | rfl
+  · rfl
+  · rw [qaConj268_smul_def, qaConj268_gen]
+    show (star x).re = x.re
+    simp
+
+/-- **假设 ②（对称）机检落地** ✓。 -/
+lemma r269_tr_symm (x y : QuadraticAlgebra ℤ 1 0) :
+    r269Tr (x * y) = r269Tr (y * x) := by
+  show (x * y).re = (y * x).re
+  rw [QuadraticAlgebra.re_mul, QuadraticAlgebra.re_mul]
+  ring
+
+/-- **假设 ③（配对满）机检落地** ✓：`y := ⟨φ 1, φ ω⟩` ✓（该基下配对 Gram ＝ 单位阵 ✓）。 -/
+lemma r269_pairing_surj (φ : QuadraticAlgebra ℤ 1 0 →ₗ[ℤ] ℤ) :
+    ∃ y : QuadraticAlgebra ℤ 1 0, ∀ x : QuadraticAlgebra ℤ 1 0,
+      φ x = r269Tr (x * y) := by
+  refine ⟨⟨φ 1, φ ω⟩, fun x => ?_⟩
+  have hx : x = x.re • (1 : QuadraticAlgebra ℤ 1 0) + x.im • (ω : QuadraticAlgebra ℤ 1 0) := by
+    have h := QuadraticAlgebra.mk_eq_add_smul_omega (a := (1 : ℤ)) (b := (0 : ℤ)) x.re x.im
+    rw [Algebra.algebraMap_eq_smul_one] at h
+    rw [← h]
+  have hφ : φ x = x.re * φ 1 + x.im * φ ω := by
+    conv_lhs => rw [hx]
+    rw [map_add, map_smul, map_smul]
+    simp
+  rw [hφ]
+  show x.re * φ 1 + x.im * φ ω = (x * ⟨φ 1, φ ω⟩).re
+  rw [QuadraticAlgebra.re_mul]
+  ring
+
+/-- **假设 ⑤（`δ` 单射）机检落地** ✓（经 §4.74 的单射判别 ✓：`2ω` 非零因子 ✓）。 -/
+lemma r269_delta_inj :
+    Function.Injective (BTier.deltaToEndRingHom (R := ℤ) (S := QuadraticAlgebra ℤ 1 0)
+      (G := Multiplicative (ZMod 2)) (qaSmulComm268 (R := ℤ) (a := 1) (b := 0))) := by
+  rw [injective_deltaToEndRingHom_quadratic268_iff]
+  intro u hu
+  rw [qaMulQaDiff268_eq_zero_iff] at hu
+  have hre : u.re = 0 := by
+    have h := hu.2
+    simp only [zero_mul, add_zero] at h
+    omega
+  have him : u.im = 0 := by
+    have h := hu.1
+    simp only [mul_one, zero_mul, sub_zero] at h
+    omega
+  exact QuadraticAlgebra.ext hre him
+
+/-- **见证的判别式非单位** ✗：`0² + 4·1 = 4` ✓。 -/
+lemma r269_not_isUnit_four : ¬ IsUnit ((0 : ℤ) ^ 2 + 4 * 1) := by
+  have h4 : (0 : ℤ) ^ 2 + 4 * 1 = 4 := by norm_num
+  rw [h4]
+  intro hu
+  obtain ⟨y, hy, _⟩ := isUnit_iff_exists.mp hu
+  omega
+
+/-- **诊断 (甲)** ✓：同一载体上 **`G`-不变**迹形式的 Gram 行列式 ＝ **`1`** ✓（**单位** ✓）。 -/
+lemma r269InvGram_det : r269InvGram.det = 1 := by
+  rw [r269InvGram, Matrix.det_fin_two]
+  have h1 : r269Tr (1 : QuadraticAlgebra ℤ 1 0) = 1 := rfl
+  have h2 : r269Tr (ω : QuadraticAlgebra ℤ 1 0) = 0 := rfl
+  have h3 : r269Tr ((ω : QuadraticAlgebra ℤ 1 0) * ω) = 1 := by
+    rw [QuadraticAlgebra.omega_mul_omega_eq_mk]
+    rfl
+  rw [h1, h2, h3]
+  norm_num
+
+lemma r269_invGram_isUnit : IsUnit r269InvGram.det := by
+  rw [r269InvGram_det]
+  exact isUnit_one
+
+/-- **诊断 (乙)** ✓：同一载体上**乘法迹**形式（＝ §4.74 的 Gram ✓）的行列式 ＝ **`4`** ✓（**非单位** ✗）。 -/
+lemma r269_algGram_not_isUnit : ¬ IsUnit (qaGram268 (a := (1 : ℤ)) (b := 0)).det := by
+  rw [qaGram268_det]
+  exact r269_not_isUnit_four
+
+/-- **结论被否** ✓（经 §4.74 的 `⟺` ✓ 与判别式非单位 ✓）。 -/
+theorem r269_witness_not_surjective :
+    ¬ Function.Surjective (BTier.deltaToEndRingHom (R := ℤ) (S := QuadraticAlgebra ℤ 1 0)
+      (G := Multiplicative (ZMod 2)) (qaSmulComm268 (R := ℤ) (a := 1) (b := 0))) :=
+  fun h => r269_not_isUnit_four
+    ((qaTraceUnimodular268_iff (a := 1) (b := 0)).mp
+      ((surjective_deltaToEndRingHom_quadratic268_iff (a := 1) (b := 0)).mp h))
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 第 268 轮登记的一般档形状锁定件被机检否决** ✗：五条假设逐条落地 ✓（互异性 ✓）而结论假 ✗
+⟹ `¬ TraceUnimodularSufficiency268` ✓。**诊断** ✓：其假设「`tr` `G`-不变」严格弱于
+§4.74 机检过的正确输入 ✓（见 `r269_invGram_isUnit` ✓ ＋ `r269_algGram_not_isUnit` ✓）。 -/
+theorem not_traceUnimodularSufficiency268 : ¬ TraceUnimodularSufficiency268 := by
+  intro h
+  exact r269_witness_not_surjective
+    (h ℤ (QuadraticAlgebra ℤ 1 0) (Multiplicative (ZMod 2))
+      (qaSmulComm268 (R := ℤ) (a := 1) (b := 0)) r269Tr r269_tr_invariant r269_tr_symm
+      r269_pairing_surj (inferInstance : Module.Finite ℤ (QuadraticAlgebra ℤ 1 0))
+      r269_delta_inj)
+
+end R269Witness
+
+#print axioms r269InvGram_det
+#print axioms r269_invGram_isUnit
+#print axioms r269_algGram_not_isUnit
+#print axioms r269_witness_not_surjective
+#print axioms not_traceUnimodularSufficiency268
+
+/-! #### 269.B 接线档（`C₂`／`ℚ` 模型）：判别式非单位 ⟹ `δ` 非满射 -/
+
+section R269Wiring
+
+attribute [local instance] qaMSA268
+
+/-- **模型多项式环** ✓ `ℚ[X₀, X₁]` ✓。 -/
+abbrev r269A : Type := MvPolynomial (Fin 2) ℚ
+
+/-- `e₁ = X₀ + X₁` ✓（第一初等对称多项式 ✓）。 -/
+abbrev r269E1 : r269A := MvPolynomial.X 0 + MvPolynomial.X 1
+
+/-- `e₂ = X₀X₁` ✓。 -/
+abbrev r269E2 : r269A := MvPolynomial.X 0 * MvPolynomial.X 1
+
+/-- **判别式** ✓ `disc = e₁² − 4e₂` ✓。 -/
+abbrev r269Disc : r269A := r269E1 ^ 2 - 4 * r269E2
+
+/-- **模型 `S`** ✓：`ℚ[X₀,X₁][e₂^{-1}]` ✓（＝ 接线 `S = Localization.Away T` ✓ 的 `T = e₂` 档 ✓）。 -/
+abbrev r269S : Type := Localization.Away r269E2
+
+/-- **判别式的平方形** ✓：`e₁² − 4e₂ = (X₀ − X₁)²` ✓（＝ `x₁ − x₂` 的平方 ✓，`G`-不变 ✓）。 -/
+lemma r269_disc_eq : r269Disc = (MvPolynomial.X 0 - MvPolynomial.X 1) ^ 2 := by
+  unfold r269Disc r269E1 r269E2
+  ring
+
+/-- 特化 `X₀ ↦ 1`，`X₁ ↦ 1` ✓（把判别式打成 `0` ✓）。 -/
+def r269G : r269A →+* ℚ := MvPolynomial.eval (fun _ : Fin 2 => (1 : ℚ))
+
+lemma r269G_E2 : r269G r269E2 = 1 := by
+  unfold r269G r269E2
+  simp
+
+lemma r269G_unit : IsUnit (r269G r269E2) := by
+  rw [r269G_E2]
+  exact isUnit_one
+
+/-- 由局部化万有性延拓的特化同态 ✓ `S →+* ℚ` ✓。 -/
+def r269Spec : r269S →+* ℚ := IsLocalization.Away.lift r269E2 (g := r269G) r269G_unit
+
+lemma r269Spec_algebraMap (a : r269A) : r269Spec (algebraMap r269A r269S a) = r269G a :=
+  IsLocalization.Away.lift_eq r269E2 (g := r269G) r269G_unit a
+
+lemma r269Spec_disc : r269Spec (algebraMap r269A r269S r269Disc) = 0 := by
+  rw [r269Spec_algebraMap, r269_disc_eq]
+  unfold r269G
+  simp
+
+/-- **(a) 判别式在 `S` 中非单位** ✗（**机检** ✓：单位在同态下的像仍是单位 ✓，而像为 `0` ✓）。 -/
+theorem r269_disc_not_isUnit_S : ¬ IsUnit (algebraMap r269A r269S r269Disc) := by
+  intro hu
+  have h0 : IsUnit (r269Spec (algebraMap r269A r269S r269Disc)) := hu.map r269Spec
+  rw [r269Spec_disc] at h0
+  exact not_isUnit_zero h0
+
+/-- **接线环（模型）** ✓：`R = ℚ[e₁, e₂^{±1}] ⊆ S` ✓（与 `noetherFixedCarrier` ✓ 同形 ✓）。 -/
+abbrev r269R : Subalgebra ℚ r269S :=
+  Algebra.adjoin ℚ ({algebraMap r269A r269S r269E1, algebraMap r269A r269S r269E2,
+    IsLocalization.Away.invSelf (S := r269S) r269E2} : Set r269S)
+
+lemma r269_disc_mem : algebraMap r269A r269S r269Disc ∈ r269R := by
+  have h1 : algebraMap r269A r269S r269E1 ∈ r269R := Algebra.subset_adjoin (by simp)
+  have h2 : algebraMap r269A r269S r269E2 ∈ r269R := Algebra.subset_adjoin (by simp)
+  have h4 : (4 : r269S) ∈ r269R := Subalgebra.natCast_mem _ 4
+  have hEq : algebraMap r269A r269S r269Disc
+      = algebraMap r269A r269S r269E1 ^ 2 - 4 * algebraMap r269A r269S r269E2 := by
+    unfold r269Disc r269E1 r269E2
+    simp only [map_sub, map_pow, map_mul, map_ofNat]
+  rw [hEq]
+  exact sub_mem (pow_mem h1 2) (mul_mem h4 h2)
+
+/-- **(b) 判别式在**任何**含它的子环中非单位** ✗（**最强形** ✓：**特别地**接线环 ✓）。 -/
+theorem r269_disc_not_isUnit_of_mem {R' : Subalgebra ℚ r269S}
+    (hmem : algebraMap r269A r269S r269Disc ∈ R') :
+    ¬ IsUnit (⟨algebraMap r269A r269S r269Disc, hmem⟩ : ↥R') := by
+  intro hu
+  exact r269_disc_not_isUnit_S (hu.map (Subalgebra.val R'))
+
+def r269A1 : ↥r269R := ⟨algebraMap r269A r269S r269E1, Algebra.subset_adjoin (by simp)⟩
+
+def r269A2 : ↥r269R := ⟨algebraMap r269A r269S r269E2, Algebra.subset_adjoin (by simp)⟩
+
+def r269DiscR : ↥r269R := ⟨algebraMap r269A r269S r269Disc, r269_disc_mem⟩
+
+/-- **载体换算** ✓：接线档的 `x₁` 满足 `t² − e₁t + e₂ = 0` ✓ ⟹ `a = −e₂` ✓、`b = e₁` ✓
+（§4.74 参数口径 ✓；判别式 `b² + 4a = e₁² − 4e₂` ✓）。 -/
+lemma r269_discR_eq : r269A1 ^ 2 + 4 * (-r269A2) = r269DiscR := by
+  refine Subtype.ext ?_
+  show ((r269A1 : ↥r269R) : r269S) ^ 2 + 4 * (-((r269A2 : ↥r269R) : r269S))
+    = algebraMap r269A r269S r269Disc
+  rw [show ((r269A1 : ↥r269R) : r269S) = algebraMap r269A r269S r269E1 from rfl,
+    show ((r269A2 : ↥r269R) : r269S) = algebraMap r269A r269S r269E2 from rfl]
+  unfold r269Disc r269E1 r269E2
+  simp only [map_sub, map_pow, map_mul, map_ofNat]
+  ring
+
+theorem r269_wiring_disc_not_isUnit : ¬ IsUnit r269DiscR :=
+  r269_disc_not_isUnit_of_mem r269_disc_mem
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 接线环上（`C₂`／`ℚ` 档）`δ` 非满射** ✗（**机检** ✓）：判别式 `e₁² − 4e₂ = (X₀−X₁)²`
+在接线环中**非单位** ✗ ⟹ 迹形式**非**幺模 ✗ ⟹ `δ` 非满射 ✗（经 §4.74 的 `⟺` ✓）。
+**⚠ 读法** ✓：本件**不**声称模型里的 `T` 就是 `exists_invariant_t_of_noether` 的输出 ✗ ——
+本件说的是**接线形状本身不足** ✓。 -/
+theorem r269_wiring_delta_not_surjective :
+    ¬ Function.Surjective (BTier.deltaToEndRingHom (R := ↥r269R)
+      (S := QuadraticAlgebra ↥r269R (-r269A2) r269A1) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (R := ↥r269R) (a := -r269A2) (b := r269A1))) := by
+  intro h
+  refine r269_wiring_disc_not_isUnit ?_
+  rw [← r269_discR_eq]
+  exact (qaTraceUnimodular268_iff (R := ↥r269R) (a := -r269A2) (b := r269A1)).mp
+    ((surjective_deltaToEndRingHom_quadratic268_iff (R := ↥r269R) (a := -r269A2)
+      (b := r269A1)).mp h)
+
+end R269Wiring
+
+#print axioms r269_disc_eq
+#print axioms r269_disc_not_isUnit_S
+#print axioms r269_disc_not_isUnit_of_mem
+#print axioms r269_discR_eq
+#print axioms r269_wiring_disc_not_isUnit
+#print axioms r269_wiring_delta_not_surjective
+
+/-! #### 269.C `T` 的加强：`d ∣ T ⟹ d` 在 `A[T^{-1}]` 中可逆 -/
+
+section R269Strengthened
+
+variable {A : Type*} [CommRing A]
+
+/-- **✅ 加强机制（一般交换环）** ✓：`d ∣ T ⟹ algebraMap d` 在 `A[T^{-1}]` 中**可逆** ✓
+（逆元显式：`c · T^{-1}` ✓，`T = d·c` ✓）⟹ **把判别式乘进 `T`** 正是使其可逆的操作 ✓✅。 -/
+theorem r269_isUnit_algebraMap_of_dvd (d T : A) (h : d ∣ T) :
+    IsUnit (algebraMap A (Localization.Away T) d) := by
+  obtain ⟨c, rfl⟩ := h
+  have h1 : IsUnit (algebraMap A (Localization.Away (d * c)) d
+      * algebraMap A (Localization.Away (d * c)) c) := by
+    rw [← map_mul]
+    exact IsLocalization.Away.algebraMap_isUnit (d * c)
+  obtain ⟨u, hu1, hu2⟩ := isUnit_iff_exists.mp h1
+  refine isUnit_iff_exists.mpr ⟨algebraMap A (Localization.Away (d * c)) c * u, ?_, ?_⟩
+  · rw [← mul_assoc]; exact hu1
+  · calc (algebraMap A (Localization.Away (d * c)) c * u)
+          * algebraMap A (Localization.Away (d * c)) d
+        = u * (algebraMap A (Localization.Away (d * c)) d
+            * algebraMap A (Localization.Away (d * c)) c) := by ring
+      _ = 1 := by simpa only [map_mul] using hu2
+
+end R269Strengthened
+
+#print axioms r269_isUnit_algebraMap_of_dvd
+
+/-! #### 269.D 加强档：`T ↦ T·disc` ⟹ 迹形式幺模 ⟹ `δ` 满射（✅ 非空性见证） -/
+
+section R269Positive
+
+attribute [local instance] qaMSA268
+
+/-- **加强后的模型 `S'`** ✓：`ℚ[X₀,X₁][(e₂·disc)^{-1}]` ✓（＝ `T ↦ T·disc` ✓）。 -/
+abbrev r269S2 : Type := Localization.Away (r269E2 * r269Disc)
+
+/-- **判别式的显式逆** ✓：`disc^{-1} = e₂ · (e₂·disc)^{-1}` ✓ ∈ `S'` ✓。 -/
+def r269DiscInv : r269S2 :=
+  algebraMap r269A r269S2 r269E2
+    * IsLocalization.Away.invSelf (S := r269S2) (r269E2 * r269Disc)
+
+lemma r269_disc_mul_discInv : algebraMap r269A r269S2 r269Disc * r269DiscInv = 1 := by
+  have h := IsLocalization.Away.mul_invSelf (S := r269S2) (r269E2 * r269Disc)
+  rw [map_mul] at h
+  rw [← h]
+  unfold r269DiscInv
+  ring
+
+/-- **加强后的接线环** ✓：`R' = ℚ[e₁, e₂^{±1}, disc^{-1}]` ✓（`disc` 已在其中可逆 ✓）。 -/
+abbrev r269R2 : Subalgebra ℚ r269S2 :=
+  Algebra.adjoin ℚ ({algebraMap r269A r269S2 r269E1, algebraMap r269A r269S2 r269E2,
+    IsLocalization.Away.invSelf (S := r269S2) (r269E2 * r269Disc)} : Set r269S2)
+
+def r269A1' : ↥r269R2 := ⟨algebraMap r269A r269S2 r269E1, Algebra.subset_adjoin (by simp)⟩
+
+def r269A2' : ↥r269R2 := ⟨algebraMap r269A r269S2 r269E2, Algebra.subset_adjoin (by simp)⟩
+
+lemma r269_disc_mem2 : algebraMap r269A r269S2 r269Disc ∈ r269R2 := by
+  have h1 : algebraMap r269A r269S2 r269E1 ∈ r269R2 := Algebra.subset_adjoin (by simp)
+  have h2 : algebraMap r269A r269S2 r269E2 ∈ r269R2 := Algebra.subset_adjoin (by simp)
+  have h4 : (4 : r269S2) ∈ r269R2 := Subalgebra.natCast_mem _ 4
+  have hEq : algebraMap r269A r269S2 r269Disc
+      = algebraMap r269A r269S2 r269E1 ^ 2 - 4 * algebraMap r269A r269S2 r269E2 := by
+    unfold r269Disc r269E1 r269E2
+    simp only [map_sub, map_pow, map_mul, map_ofNat]
+  rw [hEq]
+  exact sub_mem (pow_mem h1 2) (mul_mem h4 h2)
+
+def r269DiscR2 : ↥r269R2 := ⟨algebraMap r269A r269S2 r269Disc, r269_disc_mem2⟩
+
+def r269DiscInvR2 : ↥r269R2 :=
+  ⟨r269DiscInv, mul_mem (Algebra.subset_adjoin (by simp)) (Algebra.subset_adjoin (by simp))⟩
+
+/-- **✅ 加强后判别式是单位** ✓（逆元显式 ✓）。 -/
+lemma r269_discR2_isUnit : IsUnit r269DiscR2 := by
+  refine isUnit_iff_exists.mpr ⟨r269DiscInvR2, ?_, ?_⟩
+  · refine Subtype.ext ?_
+    show ((r269DiscR2 : ↥r269R2) : r269S2) * ((r269DiscInvR2 : ↥r269R2) : r269S2) = 1
+    exact r269_disc_mul_discInv
+  · refine Subtype.ext ?_
+    show ((r269DiscInvR2 : ↥r269R2) : r269S2) * ((r269DiscR2 : ↥r269R2) : r269S2) = 1
+    rw [mul_comm]
+    exact r269_disc_mul_discInv
+
+lemma r269_discR2_eq : r269A1' ^ 2 + 4 * (-r269A2') = r269DiscR2 := by
+  refine Subtype.ext ?_
+  show ((r269A1' : ↥r269R2) : r269S2) ^ 2 + 4 * (-((r269A2' : ↥r269R2) : r269S2))
+    = algebraMap r269A r269S2 r269Disc
+  rw [show ((r269A1' : ↥r269R2) : r269S2) = algebraMap r269A r269S2 r269E1 from rfl,
+    show ((r269A2' : ↥r269R2) : r269S2) = algebraMap r269A r269S2 r269E2 from rfl]
+  unfold r269Disc r269E1 r269E2
+  simp only [map_sub, map_pow, map_mul, map_ofNat]
+  ring
+
+set_option maxHeartbeats 1000000 in
+/-- **✅✅ 非空性见证** ✓：接线环加强为 `R' = ℚ[e₁, e₂^{±1}, (e₁²−4e₂)^{-1}]` ✓ 后
+迹形式**幺模** ✓ ⟹ **秩 2 载体在 `R'` 上 `δ` 满射** ✓（经 §4.74 的 `⟸` ✓）。
+**⟹ 本路线假设与结论在同一实例上同时成立** ✓（**非空洞** ✓）。 -/
+theorem r269_strengthened_delta_surjective :
+    Function.Surjective (BTier.deltaToEndRingHom (R := ↥r269R2)
+      (S := QuadraticAlgebra ↥r269R2 (-r269A2') r269A1') (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (R := ↥r269R2) (a := -r269A2') (b := r269A1'))) := by
+  refine surjective_deltaToEndRingHom_quadratic268_of_isUnit (R := ↥r269R2)
+    (a := -r269A2') (b := r269A1') ?_
+  rw [r269_discR2_eq]
+  exact r269_discR2_isUnit
+
+end R269Positive
+
+#print axioms r269_disc_mul_discInv
+#print axioms r269_discR2_isUnit
+#print axioms r269_discR2_eq
+#print axioms r269_strengthened_delta_surjective
+
+/-! #### 269.E 修正形（登记，**未证** ✗） -/
+
+section R269Shape
+
+/-- **乘法迹** ✓（相对**显式基** `b` ✓）：`x ↦ trace (mul x)` 的矩阵迹 ✓
+（＝ `LinearMap.trace` 的显式基形 ✓，**不**需额外 mathlib 依赖 ✓）。 -/
+def r269MulTrace {R S : Type*} [CommRing R] [CommRing S] [Algebra R S] {n : ℕ}
+    (b : Module.Basis (Fin n) R S) (x : S) : R :=
+  Matrix.trace (Matrix.of fun i j => (b.repr (x * b j)) i)
+
+/-- **口径核验** ✓✅（**机检** ✓）：`n = 2` ✓、基取 `QuadraticAlgebra.basis a b`（＝ `(1, ω)` ✓）时，
+上述**乘法迹**恰好等于 §4.74 的 `QuadraticAlgebra.trace` ✓（乘法的矩阵
+`[[z.re, a·z.im], [z.im, z.re + b·z.im]]` ✓，迹 `2z.re + b·z.im` ✓）
+⟹ 修正形的**假设**在秩 2 档**就是** §4.74 已机检的输入 ✓（节头强度序 ② ✓）。 -/
+theorem r269MulTrace_quadratic {R : Type*} [CommRing R] (a b : R)
+    (z : QuadraticAlgebra R a b) :
+    r269MulTrace (QuadraticAlgebra.basis a b) z = QuadraticAlgebra.trace z := by
+  have hb0 : (QuadraticAlgebra.basis a b) 0 = (1 : QuadraticAlgebra R a b) := by
+    apply (QuadraticAlgebra.basis a b).repr.injective
+    rw [Module.Basis.repr_self]
+    ext i
+    fin_cases i <;> simp [QuadraticAlgebra.basis_repr_apply]
+  have hb1 : (QuadraticAlgebra.basis a b) 1 = (ω : QuadraticAlgebra R a b) := by
+    apply (QuadraticAlgebra.basis a b).repr.injective
+    rw [Module.Basis.repr_self]
+    ext i
+    fin_cases i <;> simp [QuadraticAlgebra.basis_repr_apply]
+  rw [r269MulTrace, QuadraticAlgebra.trace_def]
+  simp only [Matrix.trace, Matrix.diag_apply, Matrix.of_apply, Fin.sum_univ_two]
+  rw [hb0, hb1]
+  simp only [mul_one]
+  rw [QuadraticAlgebra.basis_repr_apply, QuadraticAlgebra.basis_repr_apply]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+  rw [QuadraticAlgebra.im_mul]
+  simp
+  ring
+
+/-- **修正形（登记 ✓，未证 ✗）**：把第 268 轮登记件里的「`G`-**不变**迹泛函」✗ 换成
+**乘法迹** ✓，并补**秩假设** `|G| = n` ✓。
+**⚠ 为什么必须补秩假设** ✓（**维数论证** ✓，非观测数据 ✓）：`δ` 是
+`S[G] → \mathrm{End}_R S` ✓ 的 `R`-线性映射 ✓，两侧秩分别为 `n·|G|` ✓ 与 `n²` ✓ ——
+满射要求 `n·|G| ≥ n²` ✓，故 `|G| < n` 档**必假** ✗（如 `S = ℚ(√2) × ℚ(√3)` ✓、`G = C₂` 换位 ✓：
+`n = 4` ✗ 而 `|G| = 2` ✗）。 -/
+def TraceUnimodularSufficiency269 : Prop :=
+  ∀ (R S : Type) [CommRing R] [CommRing S] [Algebra R S] (G : Type) [Group G] [Fintype G]
+    [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x)) {n : ℕ}
+    (b : Module.Basis (Fin n) R S),
+    Fintype.card G = n →
+    Function.Injective (BTier.deltaToEndRingHom hRG) →
+    (∀ φ : S →ₗ[R] R, ∃ y : S, ∀ x : S, φ x = r269MulTrace b (x * y)) →
+    Function.Surjective (BTier.deltaToEndRingHom hRG)
+
+/-- **登记** ✗：`TraceUnimodularSufficiency269` ✓ **未证** ✗（**证明义务** ✓，规则 17 ✓：
+经典定理 ✓（Auslander–Goldman／CHR ✓），**mathlib 内没有** ✗，**非**观测数据 ✗、**非** (b) 类 ✗）；
+其 **`n = 2`／基 `(1,ω)`** 档 ✓ ＝ §4.74 的 `⟺` ✓（**已机检** ✓，口径由 `r269MulTrace_quadratic` ✓ 供给，
+本件**不重证** ✗）。 -/
+theorem traceUnimodularSufficiency269_registered : True := trivial
+
+end R269Shape
+
+#print axioms r269MulTrace_quadratic
+#print axioms traceUnimodularSufficiency269_registered
+
 end ABGV52

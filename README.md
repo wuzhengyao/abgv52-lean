@@ -1184,3 +1184,16 @@ trace, invertibility of the group order, and freeness of rank one over the group
 of the group order and unimodularity are incomparable.  The general case for an arbitrary finite group
 is registered as a shape-locked obligation, and the module-theoretic rows over the group ring are
 untouched.
+
+The general shape registered last round for the ring tier is false, and this round settles the wiring
+pair as well.  The registered shape asked for a group-invariant trace functional whose pairing is
+unimodular; on the quadratic carrier with the group of order two that hypothesis holds while the
+conclusion fails, and the diagnosis is visible in the same witness: the invariant pairing is
+unimodular whereas the multiplication trace has determinant four.  So the correct input is
+unimodularity of the multiplication trace, which is what last round's equivalence actually used.  On
+the wiring model the discriminant is not a unit, and it stays a non-unit in every subring containing
+it, so surjectivity fails for the plain choice of the localising element; the repair is to multiply
+the discriminant into that element, and the mechanism is proved in general, with an explicit instance
+where the strengthened element makes the discriminant a unit and surjectivity follows.  What remains is
+the classical statement that unimodularity of the multiplication trace plus the rank condition gives
+surjectivity, which is registered and open.
