@@ -1028,3 +1028,13 @@ is again equivariant, the inverse of the group order supplying the normalisation
 statement keeps the Galois hypothesis for signature compatibility, documenting it as redundant, and a
 characteristic-zero corollary dispenses with the invertibility input, which holds automatically there.
 Neither the refuted unrestricted form nor the source's projectivity statement is claimed.
+
+The blueprint's step that consumed the section criterion has been rewired onto the rebuilt form.
+Since the old criterion is false, the two theorems that took it as an input now come in twins whose
+hypothesis is the pair of provable inputs instead: projectivity of the target algebra over the base
+ring, and invertibility of the group order there.  Their conclusions are verbatim those of the
+originals, and the section is supplied by the rebuilt statement of the preceding round.  One twin
+needs the projectivity input in a quantified form, because its conclusion is itself a statement about
+every pair at once; a second twin is stated over the rationals, where the invertibility input is
+automatic and hence dropped.  The originals are left in place, documented as resting on a refuted
+hypothesis and not to be used as before.

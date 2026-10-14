@@ -407,4 +407,210 @@ theorem isProjectiveObjectSymmetric_of_galoisHyps
 #print axioms isProjectiveObjectSymmetric_typeLock
 #print axioms isProjectiveObjectSymmetric_of_galoisHyps
 
+/-! ## 第 256 轮：本件两个用点的**重接孪生**（`Module.Projective R S'` ＋ `IsUnit (|G| : R)`）
+
+**为什么** ✓：本件有**两个用点** —— `symmetricAlgebra_lift_of_galoisProjectiveSection` ✓（`:272` ✓，
+用点 `:274` ／ `:297` ✓）与 `isProjectiveObjectSymmetric_of_galoisHyps` ✓（`:353` ✓，用点 `:355` ／ `:378` ✓）
+—— 二者都取**同一个假设** `(hproj : GaloisProjectiveSectionHyp F G)` ✗，而该**无限制端点**已在**第 250 轮
+机器反驳** ✗（`galoisProjectiveSectionHyp_refuted` ✓，`SaltThm38_ABGV52.lean:1582` ✓）⟹ **不能再作假设用** ✗。
+本节按**源的真实用例**把该假设**逐位换掉** ✓：`S'` 对 `R` **投射** ✓ ＋ `|G|` 在 `R` 中**可逆** ✓
+（重建处 = `ABGV52.GaloisAlgebra_ABGV52` 第 255 轮新增节 ✓，`:1604` 起 ✓）。
+
+**换法** ✓（**三条一一对应** ✓）：① `symmetricAlgebra_lift_of_galoisProjectiveSection` ✓ → `..._of_projective` ✓；
+② `isProjectiveObjectSymmetric_of_galoisHyps` ✓ → `..._of_projective` ✓；③ ①的 **`F = ℚ` 档** ✓ →
+`..._of_projective_rat` ✓（`hunit` **免假设** ✓）。
+
+**🔴 不声称** ✗（**四条** ✓）：
+① **原件保留** ✓ —— 上列两条具名定理**一字未改** ✓（**不删** ✓，留痕 ✓）；但**不声称**它们**现在仍可按
+原样使用** ✗（其假设 `GaloisProjectiveSectionHyp` ✗ 已**机器反驳** ✗）；
+② **不**对源侧 **`R[G]`-投射性**断言作任何声称 ✗（该断言在 `raw/` 内**仍无供给** ✗，`GaloisAlgebra_ABGV52` §47／§52 ✓）；
+③ **不**声称去掉 `hproj` 或去掉 `hunit` 后截面仍存在 ✗ —— 第 250 轮反例 ✓ **除 `hproj` 外全部中** ✓
+（`R = Polynomial ℚ` ✓、`S' = ℚ` ✓ 为 `G`-Galois ✓、`G = PUnit` ✓ 故 `|G| = 1` ✓ **是**单位 ✓），
+而该满射**连 `R`-线性截面都没有** ✗（反驳步只用 `R`-线性 ＋ 截面条件 ✓）⟹ **投射性不可去** ✓；
+`hunit` 则是**平均步约去**的前提 ✓（非单位则 `c` 不存在 ✗）；
+④ **不**声称 `GaloisFixedSubringHyp` ✓（②档的**另一输入** ✓，`:356` ✓）已被替换 ✗ —— 它**不在**本次换法内 ✓
+（**仍为具名输入** ✗、**仍待办** ✗；`galoisFixedSubringHyp_refuted` ✓ 只反驳**任意档** ✗，
+**预期用例**（`R → S` 单射 ✓）**未被反驳** ✓）。
+
+**重建处的调用点** ✓（**唯一** ✓）：三条孪生的截面**全部**由
+`ABGV52.GaloisAlgebra_ABGV52` 的 **`BTier.exists_galoisProjectiveSection_of_galois_projective`** ✓
+（`:1703` ✓ ＝ **`BTier.exists_galoisProjectiveSection_of_projective`** ✓ `:1639` ✓ ＋ **冗余** `_hgal'` ✓）
+供给 ✓（①②✓）；③ 档用 **`BTier.exists_galoisProjectiveSection_of_projective_rat`** ✓（`:1729` ✓）。
+即：**旧**用点 `BTier.exists_galoisProjectiveSection` ✗（`:344` ✗）的**签名一致**替代 ✓。
+
+**⚠ 输入的非空洞（L1）** ✓：两条新输入的**类型**在 `ℚ` 对处**可同时实例化** ✓
+（`Module.Projective ℚ ℚ` ✓ ＋ `IsUnit (|PUnit| : ℚ)` ✓，见 `galoisProjectiveSectionProj_data_nonempty` ✓
+`GaloisAlgebra_ABGV52.lean:1752` ✓）—— **⚠ 口径** ✓：该探针只证**输入类型非空** ✓，
+**不**证本节各孪生的**假设类**整体非空 ✗（那还需 `IsGaloisWithGroup` 侧的实例 ✓）。 -/
+
+/-- **用点 ① 的重接孪生** ✓（**第 256 轮** ✓）：把 `symmetricAlgebra_lift_of_galoisProjectiveSection` ✓
+（`:272` ✓）的假设 `(hproj : GaloisProjectiveSectionHyp F G)` ✗ **换成** ✓
+**`(hproj : Module.Projective R S')`** ✓ ＋ **`(hunit : IsUnit (Fintype.card G : R))`** ✓
+（＝该件**用点** `:274` ／ `:297` 的输入按「预期用例」重接 ✓）；**结论逐字不变** ✓
+（仍是「`φ` 沿 `ψ` 可提升」✓）。
+
+**⚠ 绑定表** ✓（**唯一变动** ✓）：`R S S'` 及其实例**前移** ✓ —— 新输入 `Module.Projective R S'` ✓
+**提到** `R`／`S'` ✓，故它们必须**先绑定** ✓（原件因 `GaloisProjectiveSectionHyp F G` ✗ 只提 `F`／`G` ✓
+而把 `R S S'` 排在 `hproj` **之后** ✓）；其余**逐位对应** ✓：`hRG` ✓／`hRG'` ✓／`hgal'` ✓／
+`ψ` ✓／`hψR` ✓／`hψG` ✓／`hψsurj` ✓／`V` ✓／`φ` ✓ 全部保留 ✓，**未加**任何其他假设 ✓
+（**不需** `hgal` ✓ —— 截面机制只用 `S'` 侧 ✓）。
+
+**证明** ✓（**机制与原件相同** ✓）：把 `ψ` 看成 `R`-线性映射 ✓（`IsScalarTower` ✓ ＋ `AlgHom.commutes` ✓）
+⟹ 由 **`BTier.exists_galoisProjectiveSection_of_galois_projective`** ✓
+（`GaloisAlgebra_ABGV52.lean:1703` ✓）得 `G`-等变 `R`-线性截面 `δ` ✓ ⟹ **`symLift_core`** ✓
+（本件 `:197` ✓）收口 ✓（两者在生成元 `ι v` 上一致 ✓ ＋ `algHom_ext` ✓）。
+**⚠ 与原件仅一行之差** ✓：原件 `:297` 写 `exists_galoisProjectiveSection F G hproj …` ✗；本件写
+`exists_galoisProjectiveSection_of_galois_projective F G R S S' hRG hRG' hgal' hproj hunit …` ✓；
+`symLift_core` 那一行**逐字相同** ✓。
+
+**🔴 不声称** ✗：见本节四条 ✓ —— 原件**保留** ✓ 但**不**声称可按原样使用 ✗／**不**声称源侧 `R[G]`-投射性 ✗／
+**不**声称去掉 `hproj`、`hunit` 后截面存在 ✗／**不**声称 `GaloisFixedSubringHyp` 已被替换 ✗。 -/
+theorem symmetricAlgebra_lift_of_galoisProjectiveSection_of_projective
+    (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+    (R S S' : Type u) [CommRing R] [CommRing S] [CommRing S']
+    [Algebra F R] [Algebra R S] [Algebra R S'] [Algebra F S] [Algebra F S']
+    [IsScalarTower F R S] [IsScalarTower F R S']
+    [MulSemiringAction G S] [MulSemiringAction G S']
+    (hproj : Module.Projective R S') (hunit : IsUnit (Fintype.card G : R))
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (hRG' : ∀ (g : G) (r : R) (t : S'), g • (r • t) = r • (g • t))
+    (hgal' : IsGaloisWithGroup R S' G hRG')
+    (ψ : S →ₐ[F] S')
+    (hψR : ∀ (r : R) (s : S), ψ (algebraMap R S r * s) = algebraMap R S' r * ψ s)
+    (hψG : ∀ (g : G) (s : S), ψ (g • s) = g • ψ s)
+    (hψsurj : Function.Surjective ψ)
+    (V : Type u) [AddCommMonoid V] [Module F V] [DistribMulAction G V] [SMulCommClass G F V]
+    (φ : SymmetricAlgebra F V →ₐ[F] S') :
+    ∃ μ : SymmetricAlgebra F V →ₐ[F] S, ∀ x, ψ (μ x) = φ x := by
+  -- 把 `F`-代数同态 `ψ` 看成 `R`-线性映射（经 `IsScalarTower` ＋ `AlgHom.commutes`）
+  let ψR : S →ₗ[R] S' :=
+    { toFun := ψ
+      map_add' := ψ.map_add
+      map_smul' := by
+        intro r s
+        rw [Algebra.smul_def, Algebra.smul_def]
+        exact hψR r s }
+  obtain ⟨δ, hδ, -⟩ :=
+    exists_galoisProjectiveSection_of_galois_projective F G R S S' hRG hRG' hgal' hproj hunit
+      ψR hψG hψsurj
+  exact symLift_core (F := F) (V := V) S S' ψ (δ.restrictScalars F) hδ φ
+
+/-- **用点 ② 的重接孪生** ✓（**第 256 轮** ✓）：把 `isProjectiveObjectSymmetric_of_galoisHyps` ✓
+（`:353` ✓）的假设 `(hproj : GaloisProjectiveSectionHyp F G)` ✗ **换成** ✓
+**`(hproj : ∀ (R S S' : Type u) [以原判据逐位同形的实例表] (hRG) (hRG'), IsGaloisWithGroup R S G hRG →
+IsGaloisWithGroup R S' G hRG' → Module.Projective R S')`** ✓ ＋
+**`(hunit : ∀ (R : Type u) [CommRing R] [Algebra F R], IsUnit (Fintype.card G : R))`** ✓；
+**结论逐字不变** ✓（`IsProjectiveObjectSymmetric F G V` ✓，`:309` ✓）。
+
+**⚠ 为何是 `∀`-形（该对处的输入）** ✓：本件的**结论** `IsProjectiveObjectSymmetric F G V` ✓
+**本身**是对 `R S S'`（连同 `hRG`／`hRG'`／两条 Galois 假设 ✓）的**全称** ✓ ⟹ 主定理所需的
+**每一对**上都得有 `Module.Projective R S'` ✓ —— 故**在每一对处**给出 ✓（＝「该对处的对应输入」读法 ✓）；
+这与**同件已有的** **`hfix`** ✓（`:356` ✓，**也是** `∀`-形具名输入 ✓）**同型** ✓。
+`hunit` ✓ 按**最小依赖**只提 `R` ✓（`IsUnit (|G| : R)` ✓ 不含 `S`／`S'` ✓）。
+**⚠ 绑定表** ✓：同 ① ✓（`R S S'` 及实例**前移** ✓）；其余假设**逐位对应** ✓。
+
+**证明** ✓：原件骨架**逐行保留** ✓（`hfixF` ✓ → `hSF` ✓ → `ψR` ✓ → **`symLift_core_equivariant`** ✓
+→ `exists_algebraMap_of_invariant` ✓）；**唯一替换** ✗ 在截面供给处 ✓ —— 原件 `:379` ✗ 写
+`exists_galoisProjectiveSection F G hproj …` ✗，本件写
+**`exists_galoisProjectiveSection_of_galois_projective F G R S S' hRG hRG' hgal'
+(hproj R S S' hRG hRG' hgal hgal') (hunit R) ψR hψG hψsurj`** ✓（`GaloisAlgebra_ABGV52.lean:1703` ✓）。
+**⚠ 口径** ✓：`hgal` ✓（`S` 侧 Galois ✓）在本机制的**截面步**不被使用 ✗，只作为 `hproj` 的**全称变元**传入 ✓。
+
+**🔴 不声称** ✗：见本节四条 ✓。 -/
+theorem isProjectiveObjectSymmetric_of_galoisHyps_of_projective
+    (F : Type u) [Field F] (G : Type u) [Group G] [Fintype G]
+    (hproj : ∀ (R S S' : Type u) [CommRing R] [CommRing S] [CommRing S']
+      [Algebra F R] [Algebra R S] [Algebra R S'] [Algebra F S] [Algebra F S']
+      [IsScalarTower F R S] [IsScalarTower F R S']
+      [MulSemiringAction G S] [MulSemiringAction G S']
+      (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+      (hRG' : ∀ (g : G) (r : R) (t : S'), g • (r • t) = r • (g • t)),
+      IsGaloisWithGroup R S G hRG → IsGaloisWithGroup R S' G hRG' → Module.Projective R S')
+    (hunit : ∀ (R : Type u) [CommRing R] [Algebra F R], IsUnit (Fintype.card G : R))
+    (hfix : ∀ (R S : Type u) [CommRing R] [CommRing S] [Algebra F R] [Algebra R S]
+      [Algebra F S] [IsScalarTower F R S] [MulSemiringAction G S]
+      (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)),
+      GaloisFixedSubringHyp R S G hRG)
+    (V : Type u) [AddCommMonoid V] [Module F V] [DistribMulAction G V] [SMulCommClass G F V] :
+    IsProjectiveObjectSymmetric F G V := by
+  intro R S S' _ _ _ _ _ _ _ _ _ _ _ _ hRG hRG' hgal hgal' ψ hψR hψG hψsurj φ hφG
+  have hfixF : ∀ (g : G) (c : F), g • algebraMap F S c = algebraMap F S c := by
+    intro g c
+    rw [IsScalarTower.algebraMap_apply F R S]
+    exact hgal.2.1 g (algebraMap F R c)
+  have hSF : ∀ (g : G) (c : F) (s : S), g • (c • s) = c • (g • s) := by
+    intro g c s
+    conv_lhs => rw [Algebra.smul_def]
+    rw [MulSemiringAction.smul_mul, hfixF g c, Algebra.smul_def]
+  let ψR : S →ₗ[R] S' :=
+    { toFun := ψ
+      map_add' := ψ.map_add
+      map_smul' := by
+        intro r s
+        rw [Algebra.smul_def, Algebra.smul_def]
+        exact hψR r s }
+  obtain ⟨δ, hδψ, hδG⟩ :=
+    exists_galoisProjectiveSection_of_galois_projective F G R S S' hRG hRG' hgal'
+      (hproj R S S' hRG hRG' hgal hgal') (hunit R) ψR hψG hψsurj
+  obtain ⟨μ, hμlift, hμeq⟩ := symLift_core_equivariant (F := F) (G := G) (V := V)
+    S S' hSF ψ (δ.restrictScalars F) hδψ hδG φ hφG
+  refine ⟨μ, hμlift, ?_⟩
+  intro x hx
+  exact exists_algebraMap_of_invariant (hfix R S hRG) hgal (fun g => by
+    rw [← hμeq g x, (mem_symInvariants.mp hx) g])
+
+/-- **用点 ① 的 `F = ℚ` 档孪生（`hunit` 免假设）** ✓（**第 256 轮** ✓）：① 的**特征 0 特化** ✓ ——
+`R` 为 `ℚ`-代数时 `IsUnit (|G| : R)` ✓ **自动成立** ✓（`(|G| : ℚ) ≠ 0` ✓ 经 `algebraMap ℚ R` ✓ 搬入 ✓：
+`IsUnit.map` ✓ ＋ `map_natCast` ✓），故**不必列 `hunit`** ✗；截面由
+**`BTier.exists_galoisProjectiveSection_of_projective_rat`** ✓（`GaloisAlgebra_ABGV52.lean:1729` ✓）供给 ✓。
+
+**⚠ 宇宙档** ✗（**实测** ✓）：① 的**原件**是**单宇宙**多态 ✓（`F R S S' V : Type u` ✓，`u` 由件首
+`universe u` ✓ 绑定 ✓，§52.2 同型 ✓）⟹ **`F := ℚ` 迫使 `u = 0`** ✗ —— 即**原件的宇宙档不容** ✓
+`F = ℚ` 与**该档任意**环同处 ✗（`ℚ : Type 0` 而 `R : Type u` 时**类型不匹配** ✗；重建处 `:1727` ✓ 有**同款实测** ✓）。
+故本档按**显式 `Type 0` 特化**落地 ✓：`G` ✓／`R S S'` ✓／`V` ✓ **全部**在 `Type`（＝`Type 0` ✓）✓，
+`SymmetricAlgebra ℚ V : Type 0` ✓（**实测** ✓）。
+
+**⚠ 冗余输入** ✓：`hgal'` ✓ 在本档**不被使用** ✗（截面供给 `..._of_projective_rat` ✓ **不收** `hgal'` ✓）
+—— 按 **linter 惯例**以 `_` 前缀标为**冗余** ✓（`_hgal'` ✓，`linter.unusedVariables` ✓ 不报 ✓），
+**保留**只为**与原件签名对齐** ✓（重建处的同名冗余输入见 `GaloisAlgebra_ABGV52.lean:1711` ✓）。
+
+**证明** ✓：与 ① 相同 ✓，唯截面供给换成
+`exists_galoisProjectiveSection_of_projective_rat G R S S' hRG hRG' hproj ψR hψG hψsurj` ✓
+（其内部**自动**消去 `hunit` ✓）。
+
+**🔴 不声称** ✗：见本节四条 ✓；②档的**对应 `ℚ` 形**本档**未落** ✗（**本任务只要求一条** ✓）。 -/
+theorem symmetricAlgebra_lift_of_galoisProjectiveSection_of_projective_rat
+    (G : Type) [Group G] [Fintype G]
+    (R S S' : Type) [CommRing R] [CommRing S] [CommRing S']
+    [Algebra ℚ R] [Algebra R S] [Algebra R S'] [Algebra ℚ S] [Algebra ℚ S']
+    [IsScalarTower ℚ R S] [IsScalarTower ℚ R S']
+    [MulSemiringAction G S] [MulSemiringAction G S']
+    (hproj : Module.Projective R S')
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (hRG' : ∀ (g : G) (r : R) (t : S'), g • (r • t) = r • (g • t))
+    (_hgal' : IsGaloisWithGroup R S' G hRG')
+    (ψ : S →ₐ[ℚ] S')
+    (hψR : ∀ (r : R) (s : S), ψ (algebraMap R S r * s) = algebraMap R S' r * ψ s)
+    (hψG : ∀ (g : G) (s : S), ψ (g • s) = g • ψ s)
+    (hψsurj : Function.Surjective ψ)
+    (V : Type) [AddCommMonoid V] [Module ℚ V] [DistribMulAction G V] [SMulCommClass G ℚ V]
+    (φ : SymmetricAlgebra ℚ V →ₐ[ℚ] S') :
+    ∃ μ : SymmetricAlgebra ℚ V →ₐ[ℚ] S, ∀ x, ψ (μ x) = φ x := by
+  let ψR : S →ₗ[R] S' :=
+    { toFun := ψ
+      map_add' := ψ.map_add
+      map_smul' := by
+        intro r s
+        rw [Algebra.smul_def, Algebra.smul_def]
+        exact hψR r s }
+  obtain ⟨δ, hδ, -⟩ :=
+    exists_galoisProjectiveSection_of_projective_rat G R S S' hRG hRG' hproj ψR hψG hψsurj
+  exact symLift_core (F := ℚ) (V := V) S S' ψ (δ.restrictScalars ℚ) hδ φ
+
+/-! ## 公理闸门（第 256 轮新增孪生） -/
+
+#print axioms symmetricAlgebra_lift_of_galoisProjectiveSection_of_projective
+#print axioms isProjectiveObjectSymmetric_of_galoisHyps_of_projective
+#print axioms symmetricAlgebra_lift_of_galoisProjectiveSection_of_projective_rat
+
 end ABGV52.BTier
