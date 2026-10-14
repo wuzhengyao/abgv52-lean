@@ -38,6 +38,7 @@ import ABGV52.SaltLocalLift_ABGV52
 import ABGV52.SaltCor_ABGV52
 import Mathlib.RingTheory.Localization.InvSubmonoid
 import Mathlib.RingTheory.TensorProduct.Nontrivial
+import Mathlib.LinearAlgebra.Trace
 import Mathlib.FieldTheory.Fixed
 import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
@@ -7712,6 +7713,78 @@ def r270MulTrace {ι : Type*} [Fintype ι] (b : Module.Basis ι R S) (x : S) : R
 theorem r270MulTrace_fin {n : ℕ} (b : Module.Basis (Fin n) R S) (x : S) :
     r270MulTrace b x = r269MulTrace b x := rfl
 
+/-! ##### 270.E **乘法迹的群不变性**（第 283 轮；T3 承重构件）
+
+**⚠ 接口实测** ✓（**步骤 ①**，**不得凭名猜** ✗；逐字见 `.abgv52-scratch/logs/recon-r283.txt` ✓）：
+本工程 `LinearMap.mul` 的 apply 引理名 ＝ **`LinearMap.mul_apply'`** ✓（**带撇号** ✓，`rfl` 型 ✓）；
+**`LinearMap.mul_apply`（无撇）库中不存在** ✗（`Unknown constant` ✓）。
+**⚠ 第四步的库层条件** ✗：`LinearMap.trace_conj'` ✓ 与 `LinearMap.trace_eq_matrix_trace` ✓
+**未被本模块传递 import** ✗ ⟹ 本节新增 `import Mathlib.LinearAlgebra.Trace` ✓（本件**唯一** import 增改 ✓）。
+
+**⚠ §244.2 ② 修正** ✗：其**字面形**（**无外层 `g •`** ✗）**为假** ✓ ——
+机器反例（`.abgv52-scratch/probe-r283.lean` ✓）：`R[C₃]` 上 `g = ofAdd 1` ✓、`x = δ₁` ✓、`y = δ_g` ✓。
+**⟹ 正确逐点形须带外层 `g •`** ✓（`r283_mul_smul_apply` ✓）。 -/
+
+section R283TraceInvariant
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+omit [Fintype G] in
+/-- **② 逐点形（修正版）** ✓：`((LinearMap.mul R S) (g • x)) y = g • (((LinearMap.mul R S) x) (g⁻¹ • y))` ✓
+（`(g•x)*y = g•(x·(g⁻¹•y))` ✓；`smul_mul'` ✓ ＋ `smul_inv_smul` ✓）。 -/
+lemma r283_mul_smul_apply (g : G) (x y : S) :
+    ((LinearMap.mul R S) (g • x)) y = g • (((LinearMap.mul R S) x) (g⁻¹ • y)) := by
+  rw [LinearMap.mul_apply', LinearMap.mul_apply', smul_mul', smul_inv_smul]
+
+omit [Fintype G] in
+/-- **`c_g : y ↦ g • y` 的 `R`-线性等价** ✓（承 probe-r281 ✓，rc=0 ✓；两处槽形修法见 §242 ✓）。 -/
+def r283ActEquiv (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x)) (g : G) :
+    S ≃ₗ[R] S where
+  toFun := fun y => g • y
+  invFun := fun y => g⁻¹ • y
+  left_inv := fun y => by change g⁻¹ • (g • y) = y; rw [← mul_smul, inv_mul_cancel, one_smul]
+  right_inv := fun y => by change g • (g⁻¹ • y) = y; rw [← mul_smul, mul_inv_cancel, one_smul]
+  map_add' := fun x y => by change g • (x + y) = g • x + g • y; rw [smul_add]
+  map_smul' := fun r y => hRG g r y
+
+omit [Fintype G] in
+/-- **③ 映射等式（共轭式）** ✓：`m_{g•x} = c_g ∘ m_x ∘ c_g⁻¹` ✓
+（`LinearEquiv.conj` ✓ 形，**直接喂** `LinearMap.trace_conj'` ✓）。 -/
+lemma r283_mul_smul_conj (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x))
+    (g : G) (x : S) :
+    (LinearMap.mul R S) (g • x) = (r283ActEquiv hRG g).conj ((LinearMap.mul R S) x) := by
+  ext y
+  rw [LinearEquiv.conj_apply, LinearMap.comp_apply, LinearMap.comp_apply]
+  change ((LinearMap.mul R S) (g • x)) y = g • (((LinearMap.mul R S) x) (g⁻¹ • y))
+  exact r283_mul_smul_apply (R := R) (S := S) g x y
+
+/-- **④a 基变换桥** ✓：`r270MulTrace b x = LinearMap.trace R S (m_x)` ✓
+（`LinearMap.trace_eq_matrix_trace` ✓ ＋ `LinearMap.toMatrix_apply` ✓ ＋ `LinearMap.mul_apply'` ✓）。
+**⚠ 工艺** ✓：`r270MulTrace` 的 `Matrix.of` 与 `LinearMap.toMatrix` **非 defeq** ✗ ⟹ 须显式矩阵等式 ✓。 -/
+lemma r283MulTrace_eq_linearMapTrace (b : Module.Basis ι R S) (x : S) :
+    r270MulTrace b x = LinearMap.trace R S (LinearMap.mul R S x) := by
+  rw [r270MulTrace]
+  have hmat : Matrix.of (fun i j => (b.repr (x * b j)) i)
+      = LinearMap.toMatrix b b (LinearMap.mul R S x) := by
+    ext i j
+    rw [LinearMap.toMatrix_apply]
+    simp only [Matrix.of_apply, LinearMap.mul_apply']
+  rw [hmat, ← LinearMap.trace_eq_matrix_trace R b (LinearMap.mul R S x)]
+
+omit [Fintype G] in
+/-- **④b 迹形式群不变（T3 承重构件）** ✓✅：`Tr_b (g • x) = Tr_b x` ✓ ——
+`LinearMap.trace_conj'` ✓ 的直接实例（`m_{g•x}` 与 `m_x` 共轭 ⟹ 迹不变 ✓）。 -/
+theorem r283_r270MulTrace_smul (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x))
+    (b : Module.Basis ι R S) (g : G) (x : S) :
+    r270MulTrace b (g • x) = r270MulTrace b x := by
+  rw [r283MulTrace_eq_linearMapTrace, r283MulTrace_eq_linearMapTrace,
+    r283_mul_smul_conj hRG g x]
+  exact LinearMap.trace_conj' (R := R) (M := S) (f := LinearMap.mul R S x)
+    (e := r283ActEquiv hRG g)
+
+end R283TraceInvariant
+
+
 /-- **`δ` 在求和上的取值式** ✓：`δ (∑_g single g (s g)) x = ∑_g s g · (g • x)` ✓
 （`map_sum` ✓ ＋ `LinearMap.sum_apply` ✓ ＋ `deltaToEndAdd_single` ✓）。 -/
 lemma r270_delta_sum_apply (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x))
@@ -7802,6 +7875,10 @@ end R270TraceUnimodular
 #print axioms r270_delta_sum_apply
 #print axioms r270_delta_surjective_of_traceFormula
 #print axioms r270_traceUnimodularSufficiency_of_traceFormula
+#print axioms r283_mul_smul_apply
+#print axioms r283_mul_smul_conj
+#print axioms r283MulTrace_eq_linearMapTrace
+#print axioms r283_r270MulTrace_smul
 
 /-! #### 270.D **非空性（L1）**：分裂载体（**任意交换环** ✓）＋ 二次载体（迹公式**自动** ✓） -/
 

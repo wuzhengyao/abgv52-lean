@@ -1227,3 +1227,20 @@ hypothesis interface of 4.12, the stable-rationality closure bricks, the lattice
 resolution hypothesis, and the regular-invariant Fischer hypothesis.  With this addition the file
 count, the mirror, `SHA256SUMS` and the gate table all agree at 122, and every module the gate
 compiles is tracked.
+
+Round 283 completes the five-step plan registered for the ring-tier trace formula and lands the load-bearing half
+of it.  The apply lemma for `LinearMap.mul` was measured rather than guessed: it is `LinearMap.mul_apply'` with a
+prime, while the unprimed `LinearMap.mul_apply` does not exist; the trace hooks `LinearMap.trace_conj'` and
+`LinearMap.trace_eq_matrix_trace` were not previously imported, so `Mathlib.LinearAlgebra.Trace` is now imported.
+The pointwise shape recorded in the plan omitted the outer group action on the right-hand side and is false as
+written; the corrected pointwise identity carries a `g •`, and the measured counterexample lives on the split
+carrier for the three-element group.  From the corrected pointwise form the conjugation identity
+`m_{g•x} = c_g ∘ m_x ∘ c_g⁻¹` is proved with the linear equivalence `c_g : y ↦ g • y`, and the basis-change
+bridge identifies the multiplicative trace `r270MulTrace` with the trace of multiplication as a linear map,
+yielding group invariance `Tr_b (g • x) = Tr_b x` as a direct instance of `LinearMap.trace_conj'`.  The
+rank-three probe on the split carrier for the three-element group instantiates the registered hypotheses
+(injectivity of the structure map over the rationals, unimodularity of the trace form, the trace formula itself)
+and verifies the criterion directly by reindexing: the group-average vanishes on the trace-zero submodule, so
+this carrier supplies no counterexample.  The main implication, that the registered hypotheses force the trace
+formula, remains open, and the trace formula itself is not claimed.
+
