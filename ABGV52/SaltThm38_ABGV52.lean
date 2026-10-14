@@ -8254,4 +8254,90 @@ end ArtinSchreierShift
 #print axioms as_shift_one
 
 
+/-! ### 4.79 **源 §1 载体（Artin–Schreier）落地 ＋ 移位自同态**（第 290 轮）
+—— 源 `theorem-1-2(a)` 的载体 `R{y^p − y − x}` 与其 `C_p`-作用生成端 ✓
+
+**源侧** ✓（**逐字** ✓，`raw/Saltman1982.tex:165–171` ✓，label `theorem-1-2` ✓）：
+「Let `F` be a field of characteristic a prime `p`. Set `R = F[x]` and **`S = R{y^p − y − x}`**」✓
+—— 其中 `R{y^p − y − a}` ＝ **`R[y]/(y^p − y − a)`** ✓（本节的 `asCarrier` ✓ 即其**逐字对应** ✓）。
+
+**落成四件** ✓✅：**(i)** **`asCarrier`** ✓；**(ii)** **`as_subst`** ✓（代入恒等式 ✓）；
+**(iii)** **`as_shift_mk`** ✓（`k^p = k` ⟹ 代入后 ∈ `(f)` ✓ —— **移位降入载体** ✓）；
+**(iv)** **`asShiftHom`** ✓✅（**载体上 `y ↦ y + k` 自同态** ✓ —— 源 `C_p`-作用的**生成端** ✓，
+经 `AdjoinRoot.lift` ✓ ＋ `Polynomial.hom_eval₂` ✓ 把 (iii) 搬入 ✓）。
+
+**⚠ 工艺（三条，入 §5.1）** ✓：**(甲)** **不必**在载体上造 `CharP` ✗ —— 代入计算**在 `R[X]` 内**完成 ✓
+（`charP_of_injective_algebraMap Polynomial.C_injective` ✓ 一行 ✓），再经 `mk` 降入 ✓（绕开
+「`AdjoinRoot` 档 `CharP` 不自动合成」✗）；**(乙)** **宿主作用域** ✗：本文件 `open … MvPolynomial` ✓
+⟹ 未限定的 `X`／`C`／`aeval` 会解析到 `MvPolynomial` 版本 ✗ ⟹ 多项式类新件**一律具名限定** ✓
+（`Polynomial.X`／`Polynomial.C`／`Polynomial.aeval` ✓）；**(丙)** **`Polynomial.aeval` 的推挤须显式 `rw` 链** ✓
+（`rw [map_sub, map_sub, map_pow, Polynomial.aeval_X, h1, Polynomial.aeval_C]` ✓ —— **`simp only` 组合不命中** ✗，
+实测两套皆失败 ✓），随后 `C (k^p − k)` 与 `algebraMap` 两处**形状换算** ✓ 才可 `ring` 收口 ✓。
+
+**⚠ 尚未落（下一手）** ✗：**(甲)** 移位**双射性** ✓（逆 ＝ 移位 `-k` ✓）⟹ **自同构** ✓；
+**(乙)** **`MulSemiringAction (Multiplicative (ZMod p)) asCarrier`** ✓；**(丙)** `IsGaloisWithGroup` 三款 ✗。
+
+**🔴 不声称** ✗：**不**声称源 `theorem-1-2` 已证 ✗；**不**声称移位是**自同构** ✗（**只**落**自同态** ✓）；
+**不**声称 `ZMod p`-作用已落 ✗；**不**声称 `IsGaloisWithGroup` 任何一款 ✗。 -/
+
+section ArtinSchreierCarrier290
+
+/-- **AS 载体** ✓（源 `R{y^p − y − a}` ✓）：`R[y]/(y^p − y − a)` ✓。 -/
+abbrev asCarrier (R : Type*) [CommRing R] (p : ℕ) (a : R) : Type _ :=
+  AdjoinRoot ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a)
+
+/-- **代入恒等式** ✓：`X ↦ X + C k` 把 `X^p − X − C a` 送到**自身加常数 `k^p − k`** ✓。 -/
+theorem as_subst {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p] (a k : R) :
+    Polynomial.aeval ((Polynomial.X : Polynomial R) + Polynomial.C k)
+        ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a)
+      = ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a)
+        + Polynomial.C (k ^ p - k) := by
+  let _inst : CharP (Polynomial R) p :=
+    charP_of_injective_algebraMap Polynomial.C_injective p
+  have h1 : ((Polynomial.X : Polynomial R) + Polynomial.C k) ^ p
+      = (Polynomial.X : Polynomial R) ^ p + Polynomial.C (k ^ p) := by
+    rw [add_pow_char, Polynomial.C_pow]
+  rw [map_sub, map_sub, map_pow, Polynomial.aeval_X, h1, Polynomial.aeval_C]
+  rw [show Polynomial.C (k ^ p - k) = Polynomial.C (k ^ p) - Polynomial.C k by rw [map_sub]]
+  rw [show algebraMap R (Polynomial R) a = Polynomial.C a from rfl]
+  ring
+
+/-- **移位降入载体** ✓：`k^p = k` 时，代入后的多项式落在 `(X^p − X − C a)` 中 ✓
+—— 即载体上 **`y ↦ y + k` 保持 AS 关系** ✓。 -/
+theorem as_shift_mk {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) :
+    AdjoinRoot.mk ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a)
+      (Polynomial.aeval ((Polynomial.X : Polynomial R) + Polynomial.C k)
+        ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a)) = 0 := by
+  rw [as_subst (p := p) a k]
+  rw [map_add, AdjoinRoot.mk_self, zero_add]
+  rw [show k ^ p - k = 0 by rw [hk, sub_self]]
+  simp
+
+/-- **移位自同态** ✓✅：**载体上 `y ↦ y + k`**（`k^p = k` ✓）—— 源 `C_p`-作用的**生成端** ✓
+（**只**落自同态 ✓；**自同构**（双射）未落 ✗）。 -/
+noncomputable def asShiftHom {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) : asCarrier R p a →+* asCarrier R p a :=
+  AdjoinRoot.lift (AdjoinRoot.of _) (AdjoinRoot.root _ + AdjoinRoot.of _ k) (by
+    have hgoal : Polynomial.eval₂
+        ((AdjoinRoot.mk ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a)).comp
+          (Polynomial.C : R →+* Polynomial R))
+        ((AdjoinRoot.mk ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a))
+          ((Polynomial.X : Polynomial R) + Polynomial.C k))
+        ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a) = 0 := by
+      rw [← Polynomial.hom_eval₂
+        (p := ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a))
+        (f := (Polynomial.C : R →+* Polynomial R))
+        (g := AdjoinRoot.mk ((Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a))
+        (x := (Polynomial.X : Polynomial R) + Polynomial.C k)]
+      exact as_shift_mk (p := p) a k hk
+    simpa only [AdjoinRoot.of, AdjoinRoot.root, RingHom.comp_apply, map_add] using hgoal)
+
+end ArtinSchreierCarrier290
+
+#print axioms as_subst
+#print axioms as_shift_mk
+#print axioms asShiftHom
+
+
 end ABGV52

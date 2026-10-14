@@ -1301,3 +1301,13 @@ statement is deliberately stated for an arbitrary commutative ring of characteri
 particular model of the carrier, so that any later construction of the carrier can consume it directly.  The
 carrier itself, the resulting action of the cyclic group, and the Galois clauses are not claimed here; this round
 lands the relation-preserving core only.
+
+Round 290 lands the source's Section 1 carrier for the Artin-Schreier case together with the shift endomorphism
+that generates its cyclic action.  The carrier is the algebra obtained by adjoining a root of X^p - X - a in
+characteristic p, and the shift sends that root to the root plus a scalar that is fixed by the p-th power map.  Two
+computations support it: substituting X + k into the defining polynomial changes it by the constant k^p - k, and
+that constant vanishes precisely for the p-th-power-fixed scalars, so the substitution descends to the carrier and
+yields an endomorphism.  Characteristic p is not installed on the carrier: the substitution is computed inside the
+polynomial ring, whose characteristic is inherited along the injective constant map, and the result is then pushed
+through the quotient map, which avoids the quotient-characteristic transfer entirely.  What is not claimed is that
+the shift is bijective, that the cyclic group acts, or any of the Galois clauses; the endomorphism alone is landed.
