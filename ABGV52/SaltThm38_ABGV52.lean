@@ -3242,4 +3242,272 @@ theorem noetherWiringResidualFixed_registered : True := trivial
 #print axioms noetherWiringResidualFixed_registered
 
 
+/-! ### P. **r261：`hgen` 的消费件** ✓ —— **相干引理**（数据行 ⟺ 源假设）＋ **加强归约** ✓
+
+**⚠ 本节缘起** ✓（**r260 登记的未落项** ✗，§O ✓ 的 **(iv)** ✓）：§J ✓ 的残余 ④
+（`NoetherWiringResidualFixed` ✓）第 2 行 `hgen` ✓（`\mathrm{adjoin}_F(\mathrm{range}\ a) = \top` ✓，
+**读在 `L^G`** ✓）在归约 ✓ 中**不被消费** ✗（归约的 `(a)` 款经 (乙) ② ✓ 产出 ✓，**无 `hgen` 形** ✓）。
+r260 ✓ 登记的候选件 ＝ `\mathrm{AlgebraicIndependent}\ F\ a` ✓ ＋ `\mathrm{adjoin} = \top` ✓
+`\Rightarrow \mathrm{IsRationalOver}\ F\ L^G` ✓ —— **本轮落** ✓✅（**判为真** ✓，**见 §P.1** ✓）。
+
+**⚠ 先定谓词** ✓（**同名两件取哪一件** ✓）：本链（`SaltThm38` ✓ ← `SaltGeneric` ✓）用的是
+**`SaltGeneric_ABGV52.lean:210`** ✓ 的 `\mathrm{IsRationalOver}` ✓ —— **基 `F`** ✓、
+右端 `K \simeq_F \mathrm{FractionRing}(\mathrm{MvPolynomial}\ (\mathrm{Fin}\ n)\ F)` ✓。
+**另一件同名者** ✗（`SaltRatOver_ABGV52.lean:72` ✓，**基 `L`** ✓、右端 `EM.rationalFunctionField L n` ✓）
+**不在本链的 import 闭包内** ✓（**本轮实测** ✓：`SaltThm38` ✓ 的闭包 38 件**不含** `SaltRatOver` ✓；
+后者**只**被 `ProcConsume` ✓ 引 ✓）—— **⚠ 登记** ✓：**两件同名** ✗ **分居两条不相交分支** ✓
+（**同时引二者即撞名** ✗）；**本件不动** ✗，**只登记** ✓。
+
+**⚠ 三条结果** ✓：**①** **相干引理** ✓（§P.2 ✓，**锐形** ✓：同构**取生成元个数 `n`** ✓）；
+**②** **双侧等价** ✓（§P.3 ✓：`\exists n\,a,\ \mathrm{hind} \wedge \mathrm{hgen}` ✓ ⟺
+`\mathrm{IsRationalOver}` ✓，**逆向 ＝ r151 ✓ 的
+`exists\_algebraicIndependent\_adjoin\_eq\_top\_of\_isRationalOver`** ✓）
+⟹ **残余 ④ 的数据行与源假设 `\mathrm{IsRationalOver}\ F\ L^G` ✓ 等价** ✓✅（§P.5 ✓）；
+**③** **加强归约** ✓（§P.7 ✓：残余 ④ ＋ 残余 ① ⟹ `\mathrm{Theorem51Statement}` ✓ **且**
+`\mathrm{IsRationalOver}\ F\ L^G` ✓ —— **`hgen` 在此被消费** ✓✅）。
+
+**🔴 后果（承重，如实登记** ✓**）**：由 **②** ✓，**残余 ④ 的数据行 ⟹ Noether 问题在 `G` 上为真** ✓
+（该 `L = F(x_\sigma)` ✓ 即 `\mathrm{NoetherField}` ✓，**与源 `theorem-5-1` ✓ 的 `L^G` ✓ 同一个** ✓）
+⟹ **残余 ④ 在「Noether 问题为假」的 `G` 上为假** ✗（源 `remark` ✓ 印 275 ✓ 逐字：
+「The **converse** of `theorem-5-1` is **false**. `C_{47}` has a generic extension over `Q`, but
+**Swan showed Noether's Problem false** for this group」✓ —— **⚠ 该外部结果本件未形式化** ✗
+⟹ **本节不声称 `C_{47}` 档为假** ✗，**只声称上述蕴含** ✓，**并把它登记为下一手的口径问题** ✓）。
+
+**🔴 不声称** ✗：**不**声称两条源陈述已证 ✗；**不**声称残余 ①（`RealizationRingTierBridge` ✓）已证 ✗；
+**不**声称残余 ④ 整体非空 ✗（**两项具名端点** ✓ 在探针之外 ✗）。 -/
+
+section HgenCoherence
+
+variable {F K : Type u} [Field F] [Field K] [Algebra F K]
+
+/-- **相干引理（**锐形**）** ✓✅：`a` 在 `F` 上**代数无关** ✓ ＋ 其**域 `adjoin` 为 `\top`** ✓ ⟹
+**`K \simeq_F F(t_1,\dots ,t_n)`** ✓ —— **⚠ 锐在 `n`** ✓：同构**取生成元个数** ✓
+（**不是**「某 `n`」✗；理由：`F(a_1,\dots ,a_n)` ✓ 由**代数无关** ✓ 直接同构于**变元的有理函数域** ✓）。
+**证明** ✓（**库内两件拼接** ✓，**不新造** ✗）：mathlib **`\mathrm{AlgebraicIndependent.aevalEquivField}`** ✓
+（`RingTheory/AlgebraicIndependent/Adjoin.lean:41` ✓）
+＝ `\mathrm{FractionRing}(\mathrm{MvPolynomial}\ \iota\ F) \simeq_F \uparrow(\mathrm{adjoin}_F(\mathrm{range}\ x))` ✓；
+再经 **`\mathrm{IntermediateField.equivOfEq}`** ✓（喂 `hgen` ✓）＋
+**`\mathrm{IntermediateField.topEquiv}`** ✓（`FieldTheory/IntermediateField/Adjoin/Defs.lean:239` ✓）收 ✓。
+**⚠ 用途** ✓：§P.5 ✓（源假设的回收 ✓）＋ §P.7 ✓（加强归约 ✓）。
+**🔴 不声称** ✗：**不**声称 `hgen` 可去 ✗（**去之则本式对一般的给定 `a` 为假** ✗ ——
+**判别力见证见 §P.8** ✓，**⚠ 只覆盖空族档** ✗，**非空族档登记为未落** ✗）。 -/
+theorem nonempty_algEquiv_fractionRing_of_algebraicIndependent_adjoin_eq_top {n : ℕ}
+    {a : Fin n → K} (hind : AlgebraicIndependent F a)
+    (hgen : IntermediateField.adjoin F (Set.range a) = ⊤) :
+    Nonempty (K ≃ₐ[F] FractionRing (MvPolynomial (Fin n) F)) :=
+  ⟨((hind.aevalEquivField.trans (IntermediateField.equivOfEq hgen)).trans
+    IntermediateField.topEquiv).symm⟩
+
+#print axioms nonempty_algEquiv_fractionRing_of_algebraicIndependent_adjoin_eq_top
+
+/-- **相干引理（`\exists`-形，即 r260 ✓ 登记的候选件** ✓✅**）**：**`\mathrm{IsRationalOver}\ F\ K`** ✓
+—— 本链 ✓ 的谓词档 ✓（`SaltGeneric:210` ✓）。
+**证明** ✓：**一行** ✓ —— 锐形 ✓ 喂 `n` ✓。 -/
+theorem isRationalOver_of_algebraicIndependent_adjoin_eq_top {n : ℕ} {a : Fin n → K}
+    (hind : AlgebraicIndependent F a) (hgen : IntermediateField.adjoin F (Set.range a) = ⊤) :
+    IsRationalOver F K :=
+  ⟨n, nonempty_algEquiv_fractionRing_of_algebraicIndependent_adjoin_eq_top hind hgen⟩
+
+#print axioms isRationalOver_of_algebraicIndependent_adjoin_eq_top
+
+/-- **双侧等价** ✓✅（**本节的**相干性**核心** ✓）：`\mathrm{IsRationalOver}\ F\ K` ✓ ⟺
+**存在**一代数无关族 ✓ 其**域 `adjoin` 为 `\top`** ✓。
+**证明** ✓（**两向各一件** ✓）：**⟸** ＝ 上件 ✓；**⟹** ＝ **r151 ✓ 的
+`exists\_algebraicIndependent\_adjoin\_eq\_top\_of\_isRationalOver`** ✓（`SaltGeneric:1503` ✓，
+**同构 ⟹ 取出变元族** ✓）—— **故两向皆库内既有件** ✓，本件**只连线** ✓。
+**⚠ 意义** ✓：**「`\mathrm{hind}` ＋ `\mathrm{hgen}`」这一对** ✓ **恰是源假设** ✓
+（**既不更强也不更弱** ✓）⟹ 残余 ④ 的数据 6 行 ✓ **不是**额外汇线 ✗（见 §P.5 ✓）。
+**🔴 不声称** ✗：**不**声称**单独**任一行等价于源假设 ✗（**两行缺一不可** ✗；
+**⚠ `hind` 不可去**：**见证**＝§P.8 ✓ **只覆盖空族** ✗；**`hgen` 不可去**：**本轮未落见证** ✗）。 -/
+theorem exists_algebraicIndependent_adjoin_eq_top_iff_isRationalOver :
+    (∃ (n : ℕ) (a : Fin n → K), AlgebraicIndependent F a ∧
+      IntermediateField.adjoin F (Set.range a) = ⊤) ↔ IsRationalOver F K :=
+  ⟨fun ⟨_, _, hind, hgen⟩ => isRationalOver_of_algebraicIndependent_adjoin_eq_top hind hgen,
+    exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver⟩
+
+#print axioms exists_algebraicIndependent_adjoin_eq_top_iff_isRationalOver
+
+/-- **L1 非空探针** ✓✅（**假设类非空** ✓ ＋ **本引理的正例对照** ✓）：**在 `F(t_1,\dots ,t_n)` 自身上**
+（`K := \mathrm{FractionRing}(\mathrm{MvPolynomial}\ (\mathrm{Fin}\ n)\ F)` ✓，**无条件** ✓）
+**同时给出一对满足两行的数据** ✓ **并**由**相干引理** ✓（**本件的证明确实调用它** ✓）**收回结论** ✓。
+**证明** ✓：**正向等价** ✓（`isRationalOver_self` ✓ ＋ **r151** ✓）给数据 ✓，再喂 §P.2 ✓。
+**⚠ 判别力** ✓：本件是**定理**（**非**断言 ✗）—— **若相干引理的任一行被改坏** ✗，**本件编译失败** ✓
+（**根因** ✓：`hind` ✓ 与 `hgen` ✓ **在此数据上都是真的** ✓，**且结论非平凡** ✓）。
+**🔴 不声称** ✗：**不**声称该数据族**唯一** ✗。 -/
+theorem exists_coherenceData_fractionRing (F : Type u) [Field F] (n : ℕ) :
+    ∃ (m : ℕ) (a : Fin m → FractionRing (MvPolynomial (Fin n) F)),
+      AlgebraicIndependent F a ∧ IntermediateField.adjoin F (Set.range a) = ⊤ ∧
+        IsRationalOver F (FractionRing (MvPolynomial (Fin n) F)) := by
+  obtain ⟨m, a, hind, hgen⟩ :=
+    exists_algebraicIndependent_adjoin_eq_top_of_isRationalOver (F := F)
+      (K := FractionRing (MvPolynomial (Fin n) F)) (isRationalOver_self F n)
+  exact ⟨m, a, hind, hgen,
+    isRationalOver_of_algebraicIndependent_adjoin_eq_top hind hgen⟩
+
+#print axioms exists_coherenceData_fractionRing
+
+end HgenCoherence
+
+section HgenCoherenceNoether
+
+variable {F : Type} [Field F] {G : Type} [Group G]
+
+/-- **相干引理的**不动域专用形** ✓✅**：数据取在 `L^G` ✓（`\mathrm{NoetherInvariantField}\ F\ G` ✓，§H ✓）——
+即 **§J ✓ 的残余 ④ 的**同两款载体** ✓（**归约所用的那两款** ✓）。
+**证明** ✓：**一行** ✓（一般档 ✓ 的直接用点 ✓，**不重证** ✗）。
+**⚠ 用途** ✓：§P.5 ✓／§P.6 ✓／§P.7 ✓ **三处** ✓。
+**🔴 不声称** ✗：**不**声称 `\mathrm{IsRationalOver}\ F\ L^G` 可证 ✗（**那正是 Noether 问题** ✓，
+**`G = C_{47}` ✓ 时为假** ✓ —— **⚠ 源侧** ✓，**本件未形式化** ✗）。 -/
+theorem isRationalOver_noetherInvariantField_of_algebraicIndependent_adjoin_eq_top {n : ℕ}
+    {a : Fin n → NoetherInvariantField F G} (hind : AlgebraicIndependent F a)
+    (hgen : IntermediateField.adjoin F (Set.range a) = ⊤) :
+    IsRationalOver F (NoetherInvariantField F G) :=
+  isRationalOver_of_algebraicIndependent_adjoin_eq_top hind hgen
+
+#print axioms isRationalOver_noetherInvariantField_of_algebraicIndependent_adjoin_eq_top
+
+/-- **残余 ④ 的数据行 ⟺ 源假设** ✓✅（**本轮的**主件** ✓**）：**源假设** `\mathrm{IsRationalOver}\ F\ L^G` ✓
+（**与 `Theorem51Statement` ✓ 的前提逐字同款** ✓）**⟺** **数据 6 行** ✓
+（`\exists n,a,s_0` ✓ ＋ `hind` ✓ ＋ `hgen` ✓ ＋ `s_0 \neq 0` ✓ ＋ `s_0 \in F[a]` ✓
+—— **即 r260 ✓ 的 `exists\_fixedWiringData\_of\_isRationalOver` ✓ 的整个右端** ✓）。
+**证明** ✓：**⟹** ＝ **r260 ✓ 的探针 ①** ✓（**原样** ✓，**不重证** ✗）；
+**⟸** ＝ **§P.4** ✓（**`hgen` 在此被消费** ✓✅；**⚠ `s_0` 两行不承重** ✓ —— `s_0 := 1` ✓ 即可满足 ✓）。
+**⚠ 意义** ✓（**解 r260 的未消费登记** ✓✅）：**数据行与源假设等价** ✓ ⟹
+`hgen` ✓ **既不可去** ✗ **也非多余** ✗ —— 它**正是源假设的域生成半** ✓
+（**§D ✓ 判定为空的那一款读法** ✗ 是**把源假设读错了域** ✗）。
+**🔴 不声称** ✗：**不**声称残余 ④ **整项**等价于源假设 ✗（**机器 6 行** ✓ 与**两项具名端点** ✓
+**不在**本件的右端 ✗ —— **端点是附加的** ✓；**「数据 ＋ 机器」由源假设可造** ✓ 见 r260 ✓ 的探针 ③ ✓）。 -/
+theorem isRationalOver_noetherInvariantField_iff_exists_fixedWiringData :
+    IsRationalOver F (NoetherInvariantField F G) ↔
+      ∃ (n : ℕ) (a : Fin n → NoetherInvariantField F G) (s₀ : NoetherInvariantField F G),
+        AlgebraicIndependent F a ∧ IntermediateField.adjoin F (Set.range a) = ⊤ ∧
+          s₀ ≠ 0 ∧ s₀ ∈ Algebra.adjoin F (Set.range a) :=
+  ⟨exists_fixedWiringData_of_isRationalOver,
+    fun ⟨_, _, _, hind, hgen, _, _⟩ =>
+      isRationalOver_noetherInvariantField_of_algebraicIndependent_adjoin_eq_top hind hgen⟩
+
+#print axioms isRationalOver_noetherInvariantField_iff_exists_fixedWiringData
+
+end HgenCoherenceNoether
+
+section HgenCoherenceResidual
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+/-- **残余 ④ ⟹ 源假设** ✓✅（**`hgen` 的第一处消费** ✓）：**残余 ④ 的第 1、2 两行** ✓
+（`hind` ✓ ＋ `hgen` ✓，**分别即 §P.4 的两条前提** ✓）**⟹** `\mathrm{IsRationalOver}\ F\ L^G` ✓。
+**证明** ✓：`\mathrm{obtain}` ✓ 出 18 行 ✓，**只喂第 1、2 行** ✓（**其余 16 行原样闲置** ✓，
+**不重证** ✗）＋ §P.4 ✓。
+**⚠ 意义（承重** ✓**）**：**残余 ④ 蕴含 Noether 问题在 `G` 上为真** ✓（`L^G` ✓ 即 Noether 构造 ✓）
+⟹ **它不是「比源假设更弱的一组机器行」** ✓，而是**把源假设写成了数据行** ✓✅。
+**🔴 不声称** ✗：**不**声称 `\mathrm{IsRationalOver}\ F\ L^G` 本身可证 ✗（**那是 Noether 问题** ✓）；
+**不**声称 `C_{47}` 档为假 ✗（**须 Swan 1969** ✓，**未形式化** ✗，**只登记口径** ✓）。 -/
+theorem isRationalOver_noetherInvariantField_of_noetherWiringResidualFixed
+    (hw : NoetherWiringResidualFixed F G) :
+    IsRationalOver F (NoetherInvariantField F G) := by
+  obtain ⟨n, a, _s₀, _t, _iA, _iT, _iM, _ht, _hRG, hind, hgen, _rest⟩ := hw
+  exact isRationalOver_noetherInvariantField_of_algebraicIndependent_adjoin_eq_top hind hgen
+
+#print axioms isRationalOver_noetherInvariantField_of_noetherWiringResidualFixed
+
+set_option maxHeartbeats 1000000 in
+/-- **加强归约** ✓✅（**`hgen` 的第二处消费，即 r260 归约的加强形** ✓）：**残余 ④ ＋ 残余 ① ⟹
+`\mathrm{Theorem51Statement}\ F\ G` **且** `\mathrm{IsRationalOver}\ F\ L^G`** ✓。
+**⚠ 与 r260 ✓ 的归约 ✓ 的关系** ✓（**原样保留** ✓，**只追加** ✓）：第一合取**就是** r260 ✓ 的归约 ✓
+（**不重证** ✗）；**新增的第二合取** ✓ **必须**消费 `hgen` ✓（**§P.6** ✓）—— 故本件**严格强于** r260 ✓ 的归约 ✓，
+且**把 r260 ✓ 登记的**未消费** ✗ 变成**已消费** ✓✅。
+**⚠ 为什么不在 r260 ✓ 的定理体里消费** ✗（**如实** ✓）：**只追加** ✓ 的约束下**不得改**旧定理 ✓；
+且 r260 ✓ 的**证明路**（(乙) ② ✓）**在数学上确实不需要** `hgen` ✗ ⟹ **旧定理无需修改** ✓：
+`hgen` 的**承重处**在于**它使数据行与源假设等价** ✓（§P.5 ✓），而**不是**在于旧的证明路 ✓。
+**🔴 不声称** ✗：**不**声称第二合取可去残余 ④ 的其余行 ✗；**不**声称源陈述已证 ✗
+（**残余 ①** ✓ 与**两项具名端点** ✓ **仍开** ✓）。 -/
+theorem theorem51Statement_and_isRationalOver_of_noetherWiringResidualFixed_and_ringBridge
+    (hb : RealizationRingTierBridge F G) (hw : NoetherWiringResidualFixed F G) :
+    Theorem51Statement F G ∧ IsRationalOver F (NoetherInvariantField F G) :=
+  ⟨theorem51Statement_of_noetherWiringResidualFixed_and_ringBridge hb hw,
+    isRationalOver_noetherInvariantField_of_noetherWiringResidualFixed hw⟩
+
+#print axioms theorem51Statement_and_isRationalOver_of_noetherWiringResidualFixed_and_ringBridge
+
+end HgenCoherenceResidual
+
+section HgenCoherenceDiscrimination
+
+/-- **判别力见证（`hind` 不蕴含 `hgen`）** ✓（**⚠ 只覆盖空族档** ✗，**如实登记** ✓）：
+在 `K = F(x)` ✓（`\mathrm{FractionRing}(\mathrm{MvPolynomial}\ (\mathrm{Fin}\ 1)\ F)` ✓）上取**空族** ✓
+（`a : \mathrm{Fin}\ 0 \to K` ✓）—— **`hind` 真** ✓（**空族恒代数无关** ✓，
+`algebraicIndependent_empty_type` ✓）**而 `\mathrm{adjoin}_F \emptyset = \bot \neq \top`** ✓
+（**`x` 不是常数** ✓：若 `x = \mathrm{algebraMap}\ c` ✓ 则 `X_0 = C\ c` ✗，
+**用 `\mathrm{eval}` 在 `1` 与 `0` 两点取值** ✓ 得 `c = 1` ✓ 与 `c = 0` ✓ ⟹ `1 = 0` ✗）。
+**⚠ 读数** ✓：**两行逻辑独立** ✓ ⟹ **§P.2 的两条前提缺一不可** ✓（**本件给的是「去 `hgen` 则结论无从谈起」的**
+实例** ✓ —— **不是**「去掉 `hgen` 后 §P.2 为假」的证明 ✗，**因为 `\mathrm{IsRationalOver}` 是 `\exists n` 形** ✓，
+**空族档下结论仍真** ✓）。
+**⚠ 未落** ✗（**下一手** ✓）：**非空族档**的见证 ✓（`K = F(x_0,x_1)` ✓、`a = (x_0)` ✓）须
+`x_1 \notin F(x_0)` ✓ —— **域档的 `\mathrm{option\_iff}`** ✓（**mathlib 只有子代数档** ✗，
+`RingTheory/AlgebraicIndependent/Transcendental.lean:101` ✓ 的 `\mathrm{adjoin}` ✓ 是**子代数** ✓）
+**或 `\mathrm{trdeg}` 论证** ✓，**本轮未落** ✗。
+**🔴 不声称** ✗：**不**声称 §P.2 的两条前提**不**能同时满足 ✗（**恰恰相反** ✓，§P.3 ✓ 的探针 ✓ 给出同时满足的一族 ✓）。 -/
+theorem exists_algebraicIndependent_not_adjoin_eq_top (F : Type u) [Field F] :
+    ∃ (a : Fin 0 → FractionRing (MvPolynomial (Fin 1) F)),
+      AlgebraicIndependent F a ∧ IntermediateField.adjoin F (Set.range a) ≠ ⊤ := by
+  refine ⟨fun i => i.elim0, algebraicIndependent_empty_type, ?_⟩
+  rw [Set.range_eq_empty, IntermediateField.adjoin_empty]
+  intro h
+  have hmem : algebraMap (MvPolynomial (Fin 1) F) (FractionRing (MvPolynomial (Fin 1) F))
+      (MvPolynomial.X 0) ∈ (⊥ : IntermediateField F (FractionRing (MvPolynomial (Fin 1) F))) := by
+    rw [h]; trivial
+  rw [IntermediateField.mem_bot] at hmem
+  obtain ⟨c, hc⟩ := hmem
+  have h2 : algebraMap (MvPolynomial (Fin 1) F) (FractionRing (MvPolynomial (Fin 1) F))
+      (MvPolynomial.C c) = algebraMap (MvPolynomial (Fin 1) F)
+        (FractionRing (MvPolynomial (Fin 1) F)) (MvPolynomial.X 0) := by
+    have hC : (algebraMap F (MvPolynomial (Fin 1) F)) c = MvPolynomial.C c := rfl
+    rw [← hC, ← IsScalarTower.algebraMap_apply F (MvPolynomial (Fin 1) F)
+      (FractionRing (MvPolynomial (Fin 1) F)) c]
+    exact hc
+  have h3 : (MvPolynomial.C c : MvPolynomial (Fin 1) F) = MvPolynomial.X 0 :=
+    IsFractionRing.injective (MvPolynomial (Fin 1) F)
+      (FractionRing (MvPolynomial (Fin 1) F)) h2
+  have h1 := congrArg (MvPolynomial.eval (fun _ : Fin 1 => (1 : F))) h3
+  have h0 := congrArg (MvPolynomial.eval (fun _ : Fin 1 => (0 : F))) h3
+  simp at h1 h0
+  exact one_ne_zero (h1.symm.trans h0)
+
+#print axioms exists_algebraicIndependent_not_adjoin_eq_top
+
+/-- **L1 非空探针（目标档：`\mathbb{Q}`／`\mathrm{PUnit}`，无条件** ✓✅**）**：
+`\mathrm{IsRationalOver}\ \mathbb{Q}\ L^{\mathrm{PUnit}}` ✓ —— **残余 ④ 的数据行在该档无条件可满足** ✓
+（**由 r260 ✓ 的探针 ②** ✓：**数据 6 行** ✓ **已无条件供给** ✓），**再经 §P.4** ✓ **收回源假设** ✓。
+**⚠ 意义** ✓：**§P.4 在目标载体的一个实例上被无条件实例化** ✓（**L1** ✓）——
+即 `G = \mathrm{PUnit}` ✓ 档的 Noether 问题为真 ✓（**`L^G = \top`** ✓，`L = F(x)` ✓ **有理** ✓）。
+**🔴 不声称** ✗：**不**声称一般 `G` 档成立 ✗。 -/
+theorem isRationalOver_noetherInvariantField_pUnit_rat :
+    IsRationalOver ℚ (NoetherInvariantField ℚ PUnit.{1}) := by
+  obtain ⟨_n, a, _s₀, hind, hgen, _hs₀, _hmem⟩ := exists_fixedWiringData_pUnit_rat
+  exact isRationalOver_noetherInvariantField_of_algebraicIndependent_adjoin_eq_top hind hgen
+
+#print axioms isRationalOver_noetherInvariantField_pUnit_rat
+
+end HgenCoherenceDiscrimination
+
+/-! ### Q. **登记（r261 总账，逐条如实）** -/
+
+/-- **登记** ✓：**r261 的总账** ——
+**(甲) 已落** ✓✅：**相干引理两式** ✓（**锐形** ✓（`n` 同 ✓）＋ `\exists`-形 ✓）＋
+**双侧等价** ✓（**逆向复用 r151** ✓）＋ **不动域专用形** ✓ ＋ **数据行 ⟺ 源假设** ✓（**主件** ✓）＋
+**残余 ④ ⟹ 源假设** ✓ ＋ **加强归约** ✓（**新增 `\mathrm{IsRationalOver}\ F\ L^G` 合取** ✓，
+**`hgen` 在此被消费** ✓✅）＋ **L1 探针两式** ✓（**一般档** ✓：`F(t_1,\dots ,t_n)` ✓ 上同时给数据与结论 ✓；
+**目标档** ✓：`\mathbb{Q}`／`\mathrm{PUnit}` ✓ **无条件** ✓）＋ **判别力见证一式** ✓（**空族档** ✓）。
+**⚠ 未落** ✗（**逐条，含理由** ✓）：**(i)** **非空族档的判别力见证** ✗（`x_1 \notin F(x_0)` ✓ 须
+**域档 `\mathrm{option\_iff}`** ✓ 或 `\mathrm{trdeg}` 论证 ✓，**mathlib 未给该形** ✗，**本轮实测** ✓）；
+**(ii)** **`C_{47}` 档的否证** ✗（须 **Swan 1969** ✓，**外部结果未形式化** ✗ —— **⚠ 口径问题** ✓：
+**由 §P.5 知** ✓ **残余 ④ 蕴含 Noether 问题为真** ✓ ⟹ **凡 Noether 问题为假的 `G`** ✓
+**残余 ④ 必假** ✗ ⟹ **该残余的正确用法是「在源假设之下」** ✓（**源 `theorem-5-1` ✓ 本就如此** ✓），
+**不得追求无条件证明** ✗）；**(iii)** r260 ✓ 的 **(i)** ✓（**两项具名端点与机器各行装进残余整项** ✗，
+**卡点已定位** ✓，**与本节无关** ✓）；**(iv)** 两条源陈述 ✓ **仍未证** ✗；**(v)** 残余 ① ✓ **仍开** ✗（**两路共享** ✓）。
+**🔴 不声称** ✗：**不**声称 (i)--(v) 任一已落 ✗；**不**声称两条源陈述已证 ✗；**不**声称残余 ④ 整体非空 ✗。 -/
+theorem hgenCoherence_registered : True := trivial
+
+#print axioms hgenCoherence_registered
+
 end ABGV52

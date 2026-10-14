@@ -1083,3 +1083,14 @@ generating hypothesis.  A non-emptiness probe supplies the whole data table and 
 rationality hypothesis, leaving only the two named Galois endpoints as unproved rows; an unconditional
 probe at the one-point group over the rationals is also landed.  The old route is left in place,
 documented as vacuous, and the ring-tier residual is still shared with the second source statement.
+
+The coherence lemma behind the rerouted residual is now proved, and it came with a strategic
+finding: the residual's data rows are equivalent to the source's rationality hypothesis, which is the
+Noether problem itself for the invariant field.  So the generating row is load-bearing rather than a
+bookkeeping row, and the residual must not be pursued unconditionally — for groups where the Noether
+problem fails it is false.  What landed: the sharp form identifying the invariant field with a
+rational function field on the same number of generators, its existential form, the two-sided
+equivalence, a strengthened reduction whose second conjunct consumes the generating row, a
+discrimination witness for the empty family, and two non-emptiness probes including an unconditional
+one at the one-point group over the rationals.  The old reduction is untouched, because its proof
+route genuinely does not need the generating row.
