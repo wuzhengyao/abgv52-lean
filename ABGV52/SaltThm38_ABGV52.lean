@@ -9465,4 +9465,48 @@ end DedekindRestriction311
 #print axioms algHom_linearIndependent_of_injective
 
 
+/-! ### 4.100 **`δ z = 0` 的点值刻画**（第 312 轮）
+—— Dedekind 接线的**入口件** ✓
+
+**落成** ✓✅：**`delta_eq_zero_iff`** ✓✅：
+**`δ z = 0 ⟺ ∀ w, ∑_{g ∈ supp z} (coeff z g) * (g • w) = 0`** ✓
+（**⟸** 由 §4.97 的 `delta_apply_sum` ✓ ＋ `Module.End.ext` ＋ `simp` ✓；**⟹** 由 `congrArg (· w)` ✓ ＋ `simpa` ✓）。
+
+**⚠ 用途** ✓：域档款③ 单射的**归一形** ✓ —— 此后只需处理**系数关系** ✓（不再涉及 `Module.End` ✓）：
+若某 `s := coeff z g₀ ≠ 0` ✓，则在**域** `S` 中乘 `s⁻¹` ✓（**须 `[Field S]`** ✓）得
+`∑_{g ∈ supp z} (-(s⁻¹ * coeff z g)) * (g • w) = 0` ✓，把 `g₀` 项分离 ✓ 即得
+**`g₀` 是其余 `g` 的 `S`-线性组合** ✗ ⟹ 与 §4.99 的 **Dedekind** ✓（**须**该族**单射** ＝ **忠实性** ✓）**矛盾** ✓。
+
+**⚠ 工艺** ✓：**(甲)** `Module.End.ext` ✓（`ext w` ✓）用于**反向** ✓；
+**(乙)** `congrArg (fun f : Module.End R S => f w)` ✓ ＋ `simpa [delta_apply_sum …]` ✓ 用于**正向** ✓
+（**`Module.End` 上无 `funext` 直接形** ✗，须给定类型的 `congrArg` ✓）。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗；**不**声称 Dedekind 已接线 ✗（**入口件已落** ✓）；
+**不**声称域档通道已通 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗。 -/
+
+section DeltaZeroIff312
+
+open ABGV52.BTier
+
+/-- **`δ z = 0` 的点值刻画** ✓。 -/
+theorem delta_eq_zero_iff {R : Type*} [CommRing R] {S : Type*} [CommRing S] [Algebra R S]
+    {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (z : SkewMonoidAlgebra S G) :
+    deltaToEndRingHom hRG z = 0 ↔
+      ∀ w : S, ∑ g ∈ z.support, z.coeff g * (g • w) = 0 := by
+  constructor
+  · intro hz w
+    have h := congrArg (fun f : Module.End R S => f w) hz
+    simpa [delta_apply_sum hRG z w] using h
+  · intro h
+    ext w
+    rw [delta_apply_sum hRG z w, h w]
+    simp
+
+end DeltaZeroIff312
+
+#print axioms delta_eq_zero_iff
+
+
 end ABGV52

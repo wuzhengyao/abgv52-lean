@@ -1509,3 +1509,11 @@ composed with the bridge landed in the previous round must declare the base ring
 and the elaboration of the independence statement is expensive enough that the heartbeat budget has to be raised
 substantially, which does not add warnings.  Injectivity of the crossed-product map and the Galois clause itself are
 not claimed here.
+
+Round 312 states the vanishing of the crossed-product map in coefficient form: the map sends an element to zero exactly
+when, for every argument, the sum of its coefficients against the translates of that argument vanishes.  The forward
+direction evaluates the endomorphism at an argument, and the backward direction rebuilds the endomorphism from its
+values.  This is the entry point of the independence argument, after which only relations among coefficients remain to
+be handled: if a coefficient were nonzero, dividing by it would exhibit one group element as a linear combination of
+the others over the extension, contradicting the independence engine landed in the previous round.  Two practical
+points are recorded about evaluating and rebuilding linear endomorphisms.
