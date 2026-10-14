@@ -1038,3 +1038,14 @@ needs the projectivity input in a quantified form, because its conclusion is its
 every pair at once; a second twin is stated over the rationals, where the invertibility input is
 automatic and hence dropped.  The originals are left in place, documented as resting on a refuted
 hypothesis and not to be used as before.
+
+The progenerator endpoint has been rebuilt on its expected use case, and the full triple goes
+through: finite generation, projectivity and faithful flatness over the base ring.  The inputs are
+those the source's argument uses: the algebra is a finitely generated projective module over the
+group ring, which has to be an explicit input because mathlib has no automatic module structure of
+the algebra over its group ring, together with the accompanying scalar tower and injectivity of the
+structure map.  Projectivity descends by change of rings, using that the group ring is finite free
+over the base; faithful flatness needs Nakayama driven by finite generation, because flatness plus
+injectivity alone is not enough, as localising the integers at two shows.  A companion theorem checks
+that the counterexample refuting the unrestricted form is excluded by the new inputs, and a
+non-emptiness probe witnesses the hypothesis class.

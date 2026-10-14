@@ -23,6 +23,7 @@ import Mathlib.LinearAlgebra.Dimension.Constructions
 import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
 import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+import Mathlib.RingTheory.Nakayama
 open CategoryTheory
 noncomputable section
 namespace ABGV52.BTier
@@ -1757,5 +1758,215 @@ theorem galoisProjectiveSectionProj_data_nonempty :
 #print axioms exists_galoisProjectiveSection_of_galois_projective
 #print axioms exists_galoisProjectiveSection_of_projective_rat
 #print axioms galoisProjectiveSectionProj_data_nonempty
+
+/-! ## 端点 ④ 的**预期用例重建形**：`R[G]`-投射 ＋ 有限 ＋ `algebraMap` 单射 ⟹ 三款（第 257 轮 ✓）
+
+**🔴 为何重建** ✓：端点 ④ `GaloisProgeneratorHyp` ✓（`:641` ✓）的**无限制形已被机器反驳** ✗
+（`galoisProgeneratorHyp_refuted` ✓，`:1288` ✓）—— 反例 `R = ℤ` ✓／`S = ℚ` ✓／`G = PUnit` ✓ 上
+**前件** `IsGaloisWithGroup ℤ ℚ PUnit hRG` **真** ✓（由 `galoisFixedSubringHyp_refuted` ✓ 供给 ✓），
+而**后件**首款 `Module.Finite ℤ ℚ` **假** ✗（`not_moduleFinite_int_rat` ✓）
+⟹ 「任意 `Algebra R S` 档」是**过宽口径** ✗（**目标为假** ✗，**非**材料不可得 ✗）。
+本节按**源 `[Sal78b]` 印 528 证明的预期用例**重建 ✓：`S` 是 `R[G]` 的**有限投射**模 ✓
+＋ `R → S` **单射** ✓（源侧该单射由 Galois 判据供给 ✓，本工程**未落** ✗ —— 迹路线见 `TraceRoute` ✓）。
+**⚠ 留痕** ✓：被反驳的**原样端点不删** ✗（定义 `:641` ✓ ＋ 反驳 `:1288` ✓ 均在册 ✓）。
+
+**机制** ✓（**换环** ✓，两步；皆已机器验证 ✓）：
+**① 沿 `R → R[G]` 下降** ✓：`MonoidAlgebra R G` 对 `R` **有限自由** ✓
+（`Fintype G` ✓ ＋ 标准基 `MonoidAlgebra.basis G R` ✓；实跑 `inferInstance` ✓ 四项全中 ✓：
+`Module.Finite` ✓／`Module.Free` ✓／`Module.Projective` ✓／`Module.Flat` ✓）
+⟹ **有限性** ✓ 由 `Module.Finite.trans` ✓ 得 ✓；**投射性** ✓ 由「`S` 是 `R[G]`-自由模的**收缩** ✓
+＋ `R[G]` 对 `R` **自由** ✓」得 ✓ —— 落为 `projective_of_projective_monoidAlgebra` ✓（**已落** ✓）。
+**② 忠实平坦** ✓：`Module.Projective R S` ✓ ⟹ `Module.Flat R S` ✓（`Module.Flat.of_projective` ✓），
+再以 **Nakayama** ✓ 由 `algebraMap` **单射** ✓ 得 `Module.FaithfullyFlat.mk` ✓ 所需的极大理想条件 ✓：
+`m • ⊤ = ⊤` ✓ ⟹ `∃ r, r - 1 ∈ m ∧ r • ⊤ = 0` ✓
+（`Submodule.exists_sub_one_mem_and_smul_eq_zero_of_fg_of_le_smul` ✓）
+⟹ `algebraMap r = r • 1 = 0` ✓ ⟹ `r = 0` ✓ ⟹ `1 ∈ m` ✓，与极大性矛盾 ✓。
+**🔴 为何本步**须**「有限」** ✗：**平坦 ＋ 单射不够** ✗ —— 标准例 ✓（**未机器验证** ✗）：
+`R = ℤ` ✓、`S = ℤ[1/2]` ✓：平坦 ✓、`algebraMap` 单射 ✓，然 `2` 在 `S` 中可逆 ✓
+⟹ `(2) • ⊤ = ⊤` ✗（**非忠实平坦** ✗）；
+本重建形取的是 `Module.Finite` ✓（由 ① 供给 ✓），故该缺口已封 ✓。
+**⚠ `|G|` 可逆性** ✓：源侧**迹／平均**所用 ✓（第 255 轮 ✓，`exists_galoisProjectiveSection_of_projective` ✓），
+**本换环路线不使用** ✗ ⟹ **不列入**本条输入 ✗（**如实登记** ✓）。
+**⚠ `IsGaloisWithGroup`** ✓：本路线**不使用** ✗（机制只需上述四条 ✓）；
+其**签名一致形** ✓ 见 `galoisProgeneratorHyp_of_projective_monoidAlgebra` ✓（结论**逐字**是端点 ④ 的 `Prop` ✓）。
+**⚠ 载体工艺** ✓：`Module (MonoidAlgebra R G) S` ✓ **不自动合成** ✗（§47 ✓，`:300–310` ✓）
+⟹ 按 r256 口径**作假设给出** ✓，并配 `IsScalarTower R (MonoidAlgebra R G) S` ✓
+（后者即「`R`-纯量与 `R[G]`-纯量相容」✓，是源侧 `hRG` ✓ 的**模层对应物** ✓）。
+**⚠ 不声称** ✗：**①** 被反驳的**无限制形不重证** ✗（`galoisProgeneratorHyp_refuted` ✓ **仍在册** ✓；
+本条的四条额外输入**排除**该反例 ✓：`ℚ` 非 `ℤ`-有限 ✓，见 `not_moduleFinite_int_rat` ✓）；
+**②** 源引 `[CHR68] p. 13` 的 **`R[G]`-投射性断言不作声称** ✗（该源在 `raw/` 内**无供给** ✗，§47／§52 ✓）
+—— 本条的 `hproj` ✓ 是**假设输入** ✓，**不是**源侧结论 ✗；
+**③** 源 `[Sal78b]` 印 528 的 **progenerator 断言不声称已重新导出** ✗
+（本条只证「**给定** `R[G]`-投射有限 ＋ 单射 ⟹ 三款」✓；「源侧 Galois ⟹ 上述四条输入」✗ **未落** ✗）。 -/
+
+section GaloisProgeneratorRebuilt
+
+variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+variable {G : Type*} [Group G] [Fintype G]
+
+set_option maxHeartbeats 1000000 in
+/-- **换环步（投射款）** ✓（**已落** ✓）：`S` 若对 `R[G]` **投射** ✓，则对 `R` **投射** ✓。
+**机制** ✓：`Module.Projective.iff_split` ✓ 把 `S` 写成某个 `R[G]`-**自由**模 `M` 的**收缩** ✓
+（`i : S →ₗ[R[G]] M` ✓／`s : M →ₗ[R[G]] S` ✓／`s ∘ i = id` ✓）；`M` 上的 `R`-模结构由
+`Module.compHom M (algebraMap R R[G])` ✓ **显式给出** ✗（**不自动合成** ✗ —— 实测
+`Module R M` 在 `[Algebra R R[G]] [Module R[G] M]` 档 `synthInstanceFailed` ✗），
+并**手证** `IsScalarTower R R[G] M` ✓（`Algebra.smul_def` ✓ ＋ `mul_smul` ✓）；
+`R[G]` 对 `R` **自由** ✓（实跑 `inferInstance` ✓）⟹ `Module.Free R M` ✓（`Module.Free.trans` ✓）
+⟹ `Module.Projective R M` ✓；`i`／`s` 的 `R`-线性由**定向重写**得 ✓
+（`IsScalarTower.algebraMap_smul` ✓ ＋ `map_smul` ✓）；末以 `Module.Projective.of_split` ✓ 收 ✓。
+**⚠ 不声称** ✗：**不**声称源的 `R[G]`-投射性断言（`hproj` ✓ 是**假设** ✓）；**不**声称本步可去掉
+`IsScalarTower` ✓（该假设正是两条 `R`-模结构对齐之处 ✓）。 -/
+theorem projective_of_projective_monoidAlgebra
+    (R S : Type*) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G]
+    [Module (MonoidAlgebra R G) S] [IsScalarTower R (MonoidAlgebra R G) S]
+    (hproj : Module.Projective (MonoidAlgebra R G) S) : Module.Projective R S := by
+  obtain ⟨M, _, _, hMfree, i, s, hsi⟩ :=
+    (Module.Projective.iff_split (R := MonoidAlgebra R G) (P := S)).mp hproj
+  let _instR : Module R M := Module.compHom M (algebraMap R (MonoidAlgebra R G))
+  let _towerR : IsScalarTower R (MonoidAlgebra R G) M :=
+    ⟨fun r a m => by rw [Algebra.smul_def, mul_smul]; rfl⟩
+  let _freeR : Module.Free R M := Module.Free.trans (R := R) (S := MonoidAlgebra R G) (M := M)
+  let _projR : Module.Projective R M := inferInstance
+  let i' : S →ₗ[R] M :=
+    { toFun := i
+      map_add' := i.map_add
+      map_smul' := fun r x => by
+        show i (r • x) = r • i x
+        rw [← IsScalarTower.algebraMap_smul (MonoidAlgebra R G) r x, i.map_smul]
+        rfl }
+  let s' : M →ₗ[R] S :=
+    { toFun := s
+      map_add' := s.map_add
+      map_smul' := fun r x => by
+        show s (r • x) = r • s x
+        rw [show r • x = algebraMap R (MonoidAlgebra R G) r • x from rfl, s.map_smul,
+          IsScalarTower.algebraMap_smul (MonoidAlgebra R G) r (s x)] }
+  exact Module.Projective.of_split i' s' (by
+    ext x
+    exact LinearMap.congr_fun hsi x)
+
+set_option maxHeartbeats 1000000 in
+/-- **主定理（端点 ④ 的预期用例重建形）** ✓（**第 257 轮** ✓）：`R[G]`-**投射** ✓ ＋
+`R[G]`-**有限** ✓ ＋ `algebraMap R S` **单射** ✓ ⟹ **同一三元组** ✓
+`Module.Finite R S` ✓ ∧ `Module.Projective R S` ✓ ∧ `Module.FaithfullyFlat R S` ✓ ——
+即源 `[Sal78b]` 印 528 的 **progenerator 断言**在**预期用例**上的**换环形** ✓。
+
+**逐位口径** ✓：**四**条输入各自的作用 ——
+**①** `[Module (MonoidAlgebra R G) S]` ✓：`R[G]`-模**结构本身** ✓（**不自动合成** ✗，§47 ✓）；
+**②** `[IsScalarTower R (MonoidAlgebra R G) S]` ✓：两条纯量作用**对齐** ✓（否则 `R`-线性无法从 `R[G]`-线性得 ✓）；
+**③** `hfin` ✓／`hproj` ✓：源侧 `[CHR68] p. 13` 断言的**用点形** ✓（源断言**未搬运** ✗，见下 ✓）；
+**④** `hinj` ✓：源侧由 Galois 判据供给 ✓（本工程**未落** ✗，`TraceRoute` ✓ 登记 ✓）。
+
+**结论三款逐一** ✓：**有限** ✓ ＝ `Module.Finite.trans` ✓（用 `R[G]` 有限 ✓）；
+**投射** ✓ ＝ `projective_of_projective_monoidAlgebra` ✓；**忠实平坦** ✓ ＝ `Module.Flat.of_projective` ✓
+＋ **Nakayama** ✓（`Submodule.exists_sub_one_mem_and_smul_eq_zero_of_fg_of_le_smul` ✓，见节头机制 ② ✓）。
+
+**🔴 不声称** ✗：**①** 被反驳的**无限制端点的实体不重证** ✗ —— `galoisProgeneratorHyp_refuted` ✓
+（`:1288` ✓，`R = ℤ` ✓／`S = ℚ` ✓／`G = PUnit` ✓）**仍然成立** ✓，
+本条与之**不矛盾** ✓（该反例中 `Module.Finite (MonoidAlgebra ℤ PUnit) ℚ` **假** ✗ ——
+`ℚ` 连 `ℤ`-有限都不是 ✓，`not_moduleFinite_int_rat` ✓）；
+**②** 源引 `[CHR68] p. 13` 的 **`R[G]`-投射性语句不作任何声称** ✗（`hproj` ✓ 是**假设** ✓）；
+**③** 源 `[Sal78b]` 印 528 的 **progenerator 断言不声称已重新导出** ✗ —— 缺的正是
+「`S/R` 为 `G`-Galois ⟹ `S` 对 `R[G]` **投射**且**有限**」✗ 与「`R → S` **单射**」✗ 两条**源侧供给** ✗
+（前者在 `raw/` 内**无供给** ✗，§47／§52 ✓；后者见 `TraceRoute` ✓ 的受阻清单 ✓）。
+**⚠ 附注** ✓：`IsGaloisWithGroup` ✓ 与 `|G|` 可逆性 ✓ **均未在本条出现** ✗（机制不需要 ✓，**非**遗漏 ✗）；
+其**签名一致形** ✓ 见下条 ✓。 -/
+theorem galoisProgenerator_of_projective_monoidAlgebra
+    (R S : Type*) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G]
+    [Module (MonoidAlgebra R G) S] [IsScalarTower R (MonoidAlgebra R G) S]
+    (hfin : Module.Finite (MonoidAlgebra R G) S)
+    (hproj : Module.Projective (MonoidAlgebra R G) S)
+    (hinj : Function.Injective (algebraMap R S)) :
+    Module.Finite R S ∧ Module.Projective R S ∧ Module.FaithfullyFlat R S := by
+  have hfinR : Module.Finite R S := Module.Finite.trans (MonoidAlgebra R G) S
+  have hprojR : Module.Projective R S :=
+    projective_of_projective_monoidAlgebra R S G hproj
+  refine ⟨hfinR, hprojR, ?_⟩
+  let _instFlat : Module.Flat R S := Module.Flat.of_projective
+  refine Module.FaithfullyFlat.mk fun m hm => ?_
+  intro htop
+  have hle : (⊤ : Submodule R S) ≤ m • ⊤ := htop.ge
+  obtain ⟨r, hr1, hr2⟩ :=
+    Submodule.exists_sub_one_mem_and_smul_eq_zero_of_fg_of_le_smul m ⊤
+      Module.Finite.fg_top hle
+  have h1 : r • (1 : S) = 0 := hr2 1 Submodule.mem_top
+  have h2 : r = 0 := by
+    refine hinj ?_
+    rw [map_zero, Algebra.algebraMap_eq_smul_one]
+    exact h1
+  have h3 : (1 : R) ∈ m := by
+    have := hr1
+    rw [h2, zero_sub] at this
+    simpa using neg_mem this
+  exact hm.ne_top (Ideal.eq_top_iff_one m |>.mpr h3)
+
+set_option maxHeartbeats 1000000 in
+/-- **签名一致形（端点 ④ 的 `Prop` 逐字）** ✓（**第 257 轮** ✓）：绑定表与端点 ④ 的定义 ✓（`:641` ✓）
+**逐位对齐** ✓，仅把**不可满足**的无限制前件 ✗ 换成**预期用例的四条输入** ✓
+（`R[G]`-模结构 ✓／相容 ✓／有限 ✓／投射 ✓）**加** `algebraMap` 单射 ✓；
+结论**逐字**是 `GaloisProgeneratorHyp R S G hRG` ✓ —— 即「**端点 ④ 在预期用例上成立**」✓
+（该 `Prop` 本身在**无限制档**仍为**假** ✗，`galoisProgeneratorHyp_refuted` ✓，**不矛盾** ✓）。
+**⚠ `hgal`（`IsGaloisWithGroup`）在此由 `fun _ =>` 消费** ✓ —— 机制**不使用**它 ✗
+（**非**疏漏 ✗：源侧该假设的作用是**供给**四条输入 ✓，而本形已把四条输入**直接列出** ✓）。
+**🔴 不声称** ✗：同主定理三条 ✓ —— **不**重证无限制形 ✗／**不**声称源侧 `R[G]`-投射性 ✗／
+**不**声称 `[Sal78b]` 印 528 的 progenerator 断言已重新导出 ✗。 -/
+theorem galoisProgeneratorHyp_of_projective_monoidAlgebra
+    (R S : Type*) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+    [Module (MonoidAlgebra R G) S] [IsScalarTower R (MonoidAlgebra R G) S]
+    (hfin : Module.Finite (MonoidAlgebra R G) S)
+    (hproj : Module.Projective (MonoidAlgebra R G) S)
+    (hinj : Function.Injective (algebraMap R S)) :
+    GaloisProgeneratorHyp R S G hRG :=
+  fun _ => galoisProgenerator_of_projective_monoidAlgebra R S G hfin hproj hinj
+
+set_option maxHeartbeats 1000000 in
+/-- **反例排除（与被反驳端点的兼容性）** ✓：`galoisProgeneratorHyp_refuted` ✓ 的反例档
+（`R = ℤ` ✓／`S = ℚ` ✓／`G = PUnit` ✓，`:1288` ✓）**不满足**本重建形的输入 ✓ ——
+对 `ℚ` 上**任意**兼容的 `ℤ[PUnit]`-模结构 ✓，`Module.Finite (MonoidAlgebra ℤ PUnit) ℚ` **假** ✗
+（否则 `Module.Finite.trans` ✓ 给出 `Module.Finite ℤ ℚ` ✗，与 `not_moduleFinite_int_rat` ✓ 矛盾 ✓）。
+**⚠ 意义** ✓：本重建形与第 235 轮的反驳**不冲突** ✓、**不改写**它 ✗ ——
+两者合读即「旧端点**过宽** ✗，其**预期用例**上的重建形**成立** ✓」✓。
+**⚠ 工艺读数** ✓：本条**不**用任何 `MonoidAlgebra ≅ ℤ` 的载体同构 ✗（该件**未落** ✗），
+只用 `Module.Finite.trans` ✓ —— 因输入侧的四条假设中已含 `IsScalarTower` ✓，塔式下行**足够** ✓。
+**🔴 不声称** ✗：**不**声称 `MonoidAlgebra ℤ PUnit ≃+* ℤ` ✓（**未落** ✗）；
+**不**声称 `IsGaloisWithGroup ℤ ℚ PUnit hRG` 的**唯一性** ✗。 -/
+theorem not_moduleFinite_monoidAlgebra_int_rat
+    [Module (MonoidAlgebra ℤ PUnit.{1}) ℚ] [IsScalarTower ℤ (MonoidAlgebra ℤ PUnit.{1}) ℚ] :
+    ¬ Module.Finite (MonoidAlgebra ℤ PUnit.{1}) ℚ :=
+  fun _h => not_moduleFinite_int_rat (Module.Finite.trans (MonoidAlgebra ℤ PUnit.{1}) ℚ)
+
+set_option maxHeartbeats 1000000 in
+/-- **非空洞探针（L1 ＋ L10①）** ✓：本重建形的**输入类非空** ✓ **且结论在该实例上真** ✓ ——
+取 `R = ℚ` ✓、`G = PUnit` ✓、`S = MonoidAlgebra ℚ PUnit` ✓（即 `R[G]` 的**正则模** ✓，
+`|G| = 1` ✓ 的平凡 Galois 档 ✓）：`S` 对 `R[G]` **有限自由** ✓
+（实跑 `inferInstance` ✓：`Module.Finite` ✓／`Module.Projective` ✓／`IsScalarTower` ✓），
+`algebraMap` **单射** ✓（`FaithfulSMul ℚ R[G]` ✓ 经 `faithfulSMul_iff_algebraMap_injective` ✓）；
+**结论由主定理导出** ✓（**不**用 `inferInstance` 兜底 ✗）。
+
+**⚠ 口径** ✓：本探针**强于** r233 一族的「数据层非空洞」✓ —— 它证的是
+**假设类非空** ✓（四条输入在该实例上可同时实例化 ✓）＋ **结论真** ✓。
+**⚠ 边界** ✓（**如实** ✓）：本实例**不是**接线的那一对 ✗（`↥S → Localization.Away T` ✗），
+亦**不是**源侧的域扩张档 ✗ ⟹ **接线假设表自身的非空性仍未核** ✗（下一手 ✓，同 r236 的边界 ✓）。
+**⚠ 不声称** ✗：同主定理三条 ✓。 -/
+theorem galoisProgenerator_of_projective_monoidAlgebra_nonempty :
+    Module.Finite ℚ (MonoidAlgebra ℚ PUnit.{1}) ∧
+      Module.Projective ℚ (MonoidAlgebra ℚ PUnit.{1}) ∧
+      Module.FaithfullyFlat ℚ (MonoidAlgebra ℚ PUnit.{1}) :=
+  galoisProgenerator_of_projective_monoidAlgebra ℚ (MonoidAlgebra ℚ PUnit.{1}) PUnit.{1}
+    (hfin := inferInstance) (hproj := inferInstance) (hinj := by
+      rw [← faithfulSMul_iff_algebraMap_injective]
+      infer_instance)
+
+end GaloisProgeneratorRebuilt
+
+#print axioms projective_of_projective_monoidAlgebra
+#print axioms galoisProgenerator_of_projective_monoidAlgebra
+#print axioms galoisProgeneratorHyp_of_projective_monoidAlgebra
+#print axioms not_moduleFinite_monoidAlgebra_int_rat
+#print axioms galoisProgenerator_of_projective_monoidAlgebra_nonempty
 
 end ABGV52.BTier
