@@ -1792,4 +1792,221 @@ end GaloisDescentHypTensorStep
 #print axioms not_nonempty_algEquiv_rat_of_mvPolynomial
 #print axioms galoisDescentHyp_tensorStep_registered
 
+/-! ## **⑥ 第二端点 `GaloisFiniteGenerationDescentHyp ℚ PUnit.{1}` 的机器反驳**（第 253 轮）
+
+**靶点** ✓：`BTier.GaloisFiniteGenerationDescentHyp ℚ PUnit.{1}` ✓（`GaloisAlgebra_ABGV52.lean:591` ✓）。
+**⚠ 位置** ✓：本文件**先于**家族文件 ✓，故 ⑥ 的判定件只能落在此处 ✓（同 §251／§252 两件 ✓）。
+
+**本轮落** ✓✅：① **结构引理** ✓ `mvPolynomial_algEquiv_adjoinR253` ✓
+（`R ≅ₐ[R₀] MvPolynomial τ R₀` ✓，`R₀ := ℚ[X_0,…,X_{n-1}]` ✓）；② **端点反驳** ✓
+`galoisFiniteGenerationDescentHyp_refuted` ✓ —— 即 **⑥ 的第二端点现形为假** ✗。
+**⚠ 不声称** ✗：**不**声称源 `[Sal78b]` 的下降陈述为假 ✗；**不**声称第一端点 `GaloisDescentHyp`
+已判定 ✗（其反驳**未落** ✗，见本条**不声称**款 ✓）。 -/
+
+section GaloisFiniteGenerationDescentHypRefuted
+
+/-- **反例实例的结构映射** ✓：`MvPolynomial ℕ ℚ → ℚ` 取**所有坐标 ＝ 1 的点** ✓（复用 §251 的档 ✓）。 -/
+noncomputable local instance instA253 : Algebra (MvPolynomial ℕ ℚ) ℚ :=
+  (MvPolynomial.aeval (fun _ : ℕ => (1 : ℚ))).toRingHom.toAlgebra
+
+/-- **反例实例的 `G`-作用** ✓：`G = PUnit.{1}` 的**平凡作用** ✓（复用 §251 的档 ✓）。 -/
+noncomputable local instance instMSA253 : MulSemiringAction PUnit.{1} ℚ :=
+  { smul := fun _ x => x
+    one_smul := fun _ => rfl
+    mul_smul := fun _ _ _ => rfl
+    smul_zero := fun _ => rfl
+    smul_add := fun _ _ _ => rfl
+    smul_mul := fun _ _ _ => rfl
+    smul_one := fun _ => rfl }
+
+/-! ### 1. 结构引理：`R ≅ₐ[R₀] MvPolynomial τ R₀` ✓ -/
+
+/-- **`τ`**：下标 **≥ `n`** 的变量集 ✓ —— 即 `R₀` **之外**的变量 ✓。 -/
+abbrev tauR253 (n : ℕ) := {m : ℕ // n ≤ m}
+
+/-- **`R₀ := ℚ[X_0,…,X_{n-1}]`** ✓：`R` 中**前 `n` 个变量**生成的 `ℚ`-子代数 ✓。 -/
+abbrev adjoinR253 (n : ℕ) : Subalgebra ℚ (MvPolynomial ℕ ℚ) :=
+  Algebra.adjoin ℚ (Set.range (fun i : Fin n => (MvPolynomial.X (i : ℕ) : MvPolynomial ℕ ℚ)))
+
+variable {n : ℕ}
+
+/-- **前 `n` 个变量属于 `R₀`** ✓（`i : Fin n` ✓）。 -/
+lemma X_mem_adjoinR253 (i : Fin n) :
+    (MvPolynomial.X (i : ℕ) : MvPolynomial ℕ ℚ) ∈ adjoinR253 n :=
+  Algebra.subset_adjoin ⟨i, rfl⟩
+
+/-- **前向映射** ✓：`MvPolynomial τ R₀ →ₐ[R₀] R` ✓（`X ⟨m,h⟩ ↦ X m` ✓，`τ`-变量保持 ✓）。 -/
+def toR253 : MvPolynomial (tauR253 n) ↥(adjoinR253 n) →ₐ[↥(adjoinR253 n)] MvPolynomial ℕ ℚ :=
+  MvPolynomial.aeval (fun m : tauR253 n => (MvPolynomial.X (m : ℕ) : MvPolynomial ℕ ℚ))
+
+/-- **回缩 `ρ`** ✓：`R →ₐ[ℚ] MvPolynomial τ R₀` ✓ —— **前 `n` 个变量送进系数环** ✓、
+**`τ`-变量保持** ✓。**用途** ✓：证 `toR253` **单** ✓（`ρ ∘ toR253 = id` ✓）。 -/
+def rhoR253 : MvPolynomial ℕ ℚ →ₐ[ℚ] MvPolynomial (tauR253 n) ↥(adjoinR253 n) :=
+  MvPolynomial.aeval (fun i : ℕ =>
+    if h : i < n then
+      MvPolynomial.C (⟨MvPolynomial.X i, X_mem_adjoinR253 ⟨i, h⟩⟩ : ↥(adjoinR253 n))
+    else MvPolynomial.X ⟨i, le_of_not_gt h⟩)
+
+/-- `ρ` 在**小变量**上的取值 ✓（`i < n` ✓）。 -/
+lemma rhoR253_X_lt (i : ℕ) (h : i < n) :
+    rhoR253 (MvPolynomial.X i)
+      = MvPolynomial.C (⟨MvPolynomial.X i, X_mem_adjoinR253 ⟨i, h⟩⟩ : ↥(adjoinR253 n)) := by
+  rw [rhoR253, MvPolynomial.aeval_X]; simp [h]
+
+/-- `ρ` 在 **`τ`-变量**上的取值 ✓（`n ≤ i` ✓）。 -/
+lemma rhoR253_X_ge (i : ℕ) (h : n ≤ i) :
+    rhoR253 (MvPolynomial.X i) = MvPolynomial.X (⟨i, h⟩ : tauR253 n) := by
+  rw [rhoR253, MvPolynomial.aeval_X]
+  simp [not_lt.mpr h]
+
+/-- `toR253` 在 **`τ`-变量**上的取值 ✓。 -/
+lemma toR253_X (m : tauR253 n) :
+    toR253 (MvPolynomial.X m) = (MvPolynomial.X (m : ℕ) : MvPolynomial ℕ ℚ) := by
+  rw [toR253, MvPolynomial.aeval_X]
+
+/-- `toR253` 在**常多项式**上的取值 ✓。 -/
+lemma toR253_C (a : ↥(adjoinR253 n)) :
+    toR253 (MvPolynomial.C a) = (a : MvPolynomial ℕ ℚ) :=
+  AlgHom.commutes toR253 a
+
+/-- **`ρ` 固定 `R₀`** ✓：`ρ a = C a` ✓（`a : ↥R₀` ✓；对 `a ∈ adjoin ℚ (range X)` 归纳 ✓）。 -/
+lemma rhoR253_fixes (a : ↥(adjoinR253 n)) :
+    rhoR253 (a : MvPolynomial ℕ ℚ) = MvPolynomial.C a := by
+  have key : ∀ x : MvPolynomial ℕ ℚ, ∀ (hx : x ∈ adjoinR253 n),
+      rhoR253 x = MvPolynomial.C (⟨x, hx⟩ : ↥(adjoinR253 n)) := by
+    intro x
+    refine Algebra.adjoin_induction
+      (p := fun x hx => rhoR253 x = MvPolynomial.C (⟨x, hx⟩ : ↥(adjoinR253 n))) ?_ ?_ ?_ ?_
+    · rintro x ⟨i, rfl⟩
+      rw [rhoR253_X_lt _ i.2]
+    · intro q
+      rw [AlgHom.commutes, MvPolynomial.C_eq_algebraMap,
+        IsScalarTower.algebraMap_apply ℚ ↥(adjoinR253 n) (MvPolynomial (tauR253 n) ↥(adjoinR253 n))]
+      exact congrArg MvPolynomial.C (Subtype.ext rfl)
+    · intro x y hx hy ihx ihy
+      rw [map_add, ihx, ihy]
+      exact (map_add MvPolynomial.C _ _).symm
+    · intro x y hx hy ihx ihy
+      rw [map_mul, ihx, ihy]
+      exact (map_mul MvPolynomial.C _ _).symm
+  exact key a a.2
+
+/-- **`ρ ∘ toR253 = id`** ✓（`MvPolynomial.induction_on` ✓：`C` 档 ✓／`+` 档 ✓／`*X` 档 ✓）。 -/
+lemma rhoR253_toR253 (x : MvPolynomial (tauR253 n) ↥(adjoinR253 n)) : rhoR253 (toR253 x) = x := by
+  induction x using MvPolynomial.induction_on with
+  | C a => rw [toR253_C, rhoR253_fixes]
+  | add p q hp hq => rw [map_add, map_add, hp, hq]
+  | mul_X p i hp =>
+    rw [map_mul, map_mul, hp]
+    have h2 : toR253 (MvPolynomial.X i) = (MvPolynomial.X (i : ℕ) : MvPolynomial ℕ ℚ) := toR253_X i
+    rw [h2, rhoR253_X_ge _ i.2]
+
+/-- **每个变量都在 `toR253` 的像里** ✓（`i < n` ✓ 取 `C ⟨X i,_⟩` ✓；`n ≤ i` ✓ 取 `X ⟨i,_⟩` ✓）。 -/
+lemma X_mem_toR253_range (i : ℕ) :
+    (MvPolynomial.X i : MvPolynomial ℕ ℚ) ∈ (toR253 (n := n)).range := by
+  rcases lt_or_ge i n with h | h
+  · exact ⟨MvPolynomial.C (⟨MvPolynomial.X i, X_mem_adjoinR253 ⟨i, h⟩⟩ : ↥(adjoinR253 n)),
+      toR253_C _⟩
+  · exact ⟨MvPolynomial.X (⟨i, h⟩ : tauR253 n), toR253_X ⟨i, h⟩⟩
+
+/-- **`toR253` 双射** ✓：**单** ✓ 由 `ρ ∘ toR253 = id` ✓；**满** ✓ 由 `adjoin_range_X` ✓
+（每个 `X i` 都在像里 ✓ ⟹ `⊤ = adjoin ℚ (range X) ≤ range` ✓）。 -/
+theorem toR253_bijective : Function.Bijective (toR253 (n := n)) := by
+  refine ⟨fun x y hxy => ?_, ?_⟩
+  · rw [← rhoR253_toR253 x, hxy, rhoR253_toR253 y]
+  · rw [← AlgHom.range_eq_top]
+    rw [eq_top_iff]
+    intro y _
+    have hy : y ∈ Algebra.adjoin ℚ (Set.range (MvPolynomial.X : ℕ → MvPolynomial ℕ ℚ)) := by
+      rw [MvPolynomial.adjoin_range_X]; trivial
+    have hle : Algebra.adjoin ℚ (Set.range (MvPolynomial.X : ℕ → MvPolynomial ℕ ℚ))
+        ≤ (toR253 (n := n)).range.restrictScalars ℚ :=
+      Algebra.adjoin_le (fun y hy => by
+        obtain ⟨i, rfl⟩ := hy
+        exact X_mem_toR253_range i)
+    exact hle hy
+
+/-- **结构引理** ✓✅（第 253 轮 ✓；**自造件** ✓）：**`R ≅ₐ[R₀] MvPolynomial τ R₀`** ✓ ——
+即 `MvPolynomial ℕ ℚ` 是**以 `R₀` 为系数环、`τ`-变量为自由变量**的多项式环 ✓
+（`R₀ := ℚ[X_0,…,X_{n-1}]` ✓、`τ := {m // n ≤ m}` ✓）。
+**证明** ✓：**`toR253`** ✓（`X ⟨m,h⟩ ↦ X m` ✓）**双射** ✓ —— **单** ✓ 由显式回缩 `ρ` ✓
+（`ρ ∘ toR253 = id` ✓）；**满** ✓ 由 `X i` 分两档落入像 ✓（`i < n` ✓ ／ `n ≤ i` ✓）
+＋ `MvPolynomial.adjoin_range_X` ✓。
+**用途** ✓：把 `S'' ⊗_{R''} R` 的**右因子**换成 `R₀ ⊗[ℚ] MvPolynomial τ ℚ` ✓，
+配 **`MvPolynomial.algebraTensorAlgEquiv`** ✓ 得 `MvPolynomial τ (S'' ⊗_{R''} R₀)` ✓。
+**⚠ 不声称** ✗：只声称**同构存在** ✓（不提自由基的具体写法 ✗）；**不**声称 `n` 最小 ✗。 -/
+theorem mvPolynomial_algEquiv_adjoinR253 (n : ℕ) :
+    Nonempty (MvPolynomial (tauR253 n) ↥(adjoinR253 n) ≃ₐ[↥(adjoinR253 n)] MvPolynomial ℕ ℚ) :=
+  ⟨AlgEquiv.ofBijective toR253 toR253_bijective⟩
+
+#print axioms mvPolynomial_algEquiv_adjoinR253
+
+/-! ### 2. 端点反驳 ✓ -/
+
+set_option maxHeartbeats 1000000 in
+/-- **⑥ 第二端点的反驳** ✓✅（第 253 轮）：**`¬ BTier.GaloisFiniteGenerationDescentHyp ℚ PUnit.{1}`** ✓。
+**反例实例** ✓：`F = ℚ` ✓、`G = PUnit.{1}` ✓、`R = MvPolynomial ℕ ℚ` ✓、`S = ℚ` ✓，
+结构映射 ＝ **全 1 点** ✓（`aeval (fun _ => 1)` ✓）、`G` **平凡作用** ✓。
+**证明骨架** ✓：设 `h` 为该端点 ✓，由 `exists_isGaloisWithGroup_mvPolynomial_allOnes` ✓ 取
+`R''`／`S''` ✓ 与 **`ℚ ≃ₐ[ℚ] S'' ⊗_{R''} R`** ✓；① **有限生成 ⟹ 像只涉及有限多变量** ✓
+（`exists_variables_bound_of_finiteType` ✓）⟹ `R'' → R` **过 `R₀`** ✓；② **结构引理** ✓
+（`mvPolynomial_algEquiv_adjoinR253` ✓）⟹ **`R ≅ₐ[R₀] MvPolynomial τ R₀`** ✓；③ **张量结合** ✓
+（`Algebra.TensorProduct.assoc` ✓）＋ **基变换** ✓（`MvPolynomial.algebraTensorAlgEquiv` ✓）
+⟹ **`S'' ⊗_{R''} R ≅ₐ[ℚ] MvPolynomial τ (S'' ⊗_{R''} R₀)`** ✓；④ **`τ ≠ ∅`** ✓（`n ≤ n` ✓）；
+**若 `T := S'' ⊗_{R''} R₀` 非平凡** ✓ ⟹ **`not_nonempty_algEquiv_rat_of_mvPolynomial`** ✓ 立得矛盾 ✓；
+**若 `T` 平凡** ✓ ⟹ `MvPolynomial τ T` **平凡** ✓ ⟹ **`ℚ` 平凡** ✗ 矛盾 ✓（两档皆闭 ✓）。
+**⚠ 不声称** ✗：**不**声称源 `[Sal78b]` 的下降陈述为假 ✗（本条只反驳**本工程 ⑥ 的具名端点** ✓）；
+**不**声称第一端点 `GaloisDescentHyp` 已判定 ✗（**同一反例实例**与同一骨架**逐字可搬** ✓，
+但其尾项为 `S ≃ₐ[F] S'' ⊗ R'' ⊗ R` 的**同形**①，**本轮未落** ✗，另立**余步** ✗）；
+**不**声称反例在 `G` 非单点档成立 ✗。 -/
+theorem galoisFiniteGenerationDescentHyp_refuted :
+    ¬ BTier.GaloisFiniteGenerationDescentHyp ℚ PUnit.{1} := by
+  intro h
+  obtain ⟨hRG, hgal⟩ := exists_isGaloisWithGroup_mvPolynomial_allOnes
+  obtain ⟨R'', hcR'', haR'', haR''R, hstR''R, hftR'', S'', hcS'', haS'', haR''S'',
+    hstR''S'', hmsa'', hRG'', hgal'', ⟨e⟩⟩ := h (MvPolynomial ℕ ℚ) ℚ hRG hgal
+  obtain ⟨n, hn⟩ := exists_variables_bound_of_finiteType R''
+    (IsScalarTower.toAlgHom ℚ R'' (MvPolynomial ℕ ℚ))
+  let R₀ : Subalgebra ℚ (MvPolynomial ℕ ℚ) := adjoinR253 n
+  let τ := tauR253 n
+  let ψ : R'' →ₐ[ℚ] MvPolynomial ℕ ℚ := IsScalarTower.toAlgHom ℚ R'' (MvPolynomial ℕ ℚ)
+  have hψ : ∀ x : R'', ψ x ∈ R₀ := hn
+  let ψ₀ : R'' →ₐ[ℚ] ↥R₀ := ψ.codRestrict R₀ hψ
+  let _instA : Algebra R'' ↥R₀ := ψ₀.toRingHom.toAlgebra
+  let _instST1 : IsScalarTower ℚ R'' ↥R₀ :=
+    IsScalarTower.of_algebraMap_eq (fun a => (ψ₀.commutes a).symm)
+  let _instST2 : IsScalarTower R'' ↥R₀ (MvPolynomial ℕ ℚ) :=
+    IsScalarTower.of_algebraMap_eq (fun a => rfl)
+  let _instSCC1 : SMulCommClass ℚ R'' ↥R₀ :=
+    ⟨fun a b c => by simp only [Algebra.smul_def]; ring⟩
+  let _instST3 : IsScalarTower R'' ↥R₀ (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ) := inferInstance
+  obtain ⟨θ⟩ := mvPolynomial_algEquiv_adjoinR253 n
+  let θD : MvPolynomial ℕ ℚ ≃ₐ[↥R₀] (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ) :=
+    θ.symm.trans (MvPolynomial.algebraTensorAlgEquiv (R := ℚ) (A := ↥R₀) (σ := τ)).symm
+  let θR'' : MvPolynomial ℕ ℚ ≃ₐ[R''] (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ) :=
+    AlgEquiv.restrictScalars R'' θD
+  let step1 : (S'' ⊗[R''] MvPolynomial ℕ ℚ) ≃ₐ[R'']
+      (S'' ⊗[R''] (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ)) :=
+    Algebra.TensorProduct.congr (AlgEquiv.refl : S'' ≃ₐ[R''] S'') θR''
+  let step2 : (S'' ⊗[R''] (↥R₀ ⊗[ℚ] MvPolynomial τ ℚ)) ≃ₐ[R'']
+      ((S'' ⊗[R''] ↥R₀) ⊗[ℚ] MvPolynomial τ ℚ) :=
+    (Algebra.TensorProduct.assoc (R := ℚ) (S := R'') (T := R'') (A := S'') (C := ↥R₀)
+      (D := MvPolynomial τ ℚ)).symm
+  let step3 : ((S'' ⊗[R''] ↥R₀) ⊗[ℚ] MvPolynomial τ ℚ) ≃ₐ[ℚ]
+      MvPolynomial τ (S'' ⊗[R''] ↥R₀) :=
+    (MvPolynomial.algebraTensorAlgEquiv (R := ℚ) (A := S'' ⊗[R''] ↥R₀) (σ := τ)).restrictScalars ℚ
+  have hcomp : ℚ ≃ₐ[ℚ] MvPolynomial τ (S'' ⊗[R''] ↥R₀) :=
+    e.trans (((step1.trans step2).restrictScalars ℚ).trans step3)
+  by_cases hT : Nontrivial (S'' ⊗[R''] ↥R₀)
+  · exact @not_nonempty_algEquiv_rat_of_mvPolynomial (S'' ⊗[R''] ↥R₀) _ _ hT τ
+      ⟨⟨n, le_rfl⟩⟩ ⟨hcomp.symm⟩
+  · have hTsub : Subsingleton (S'' ⊗[R''] ↥R₀) := not_nontrivial_iff_subsingleton.mp hT
+    let _instSub : Subsingleton (MvPolynomial τ (S'' ⊗[R''] ↥R₀)) := inferInstance
+    exact one_ne_zero (hcomp.injective (Subsingleton.elim (hcomp 1) (hcomp 0)))
+
+#print axioms galoisFiniteGenerationDescentHyp_refuted
+
+end GaloisFiniteGenerationDescentHypRefuted
+
+
 end ABGV52

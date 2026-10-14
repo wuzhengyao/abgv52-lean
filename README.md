@@ -982,3 +982,28 @@ products and the base change isomorphism identifying a tensor with a polynomial 
 in the library; the remaining work is transporting the algebra structure along the index splitting
 of the variable set, after which the step above applies verbatim to the tensor described as a
 polynomial extension over a nonempty set of variables.
+
+
+One endpoint remains: the other descent statement carries an extra tensor factor in its conclusion,
+so the same instance and skeleton apply only after that factor is accounted for, and nothing about
+it is claimed here.  Neither is anything claimed about the source's descent statement; only the
+project's named endpoint is refuted.
+
+The second of the two descent endpoints is now refuted.  The counterexample is the same instance as
+before: the polynomial ring in countably many variables mapping onto the rationals at the all-ones
+point, with the one-point group acting trivially.  Assuming the endpoint gives finitely generated
+data together with an isomorphism from the rationals to the tensor of the two algebras; finite
+generation forces the image of the small algebra into the subalgebra on finitely many variables, so
+the tensor factors through that subalgebra.  Two structural inputs finish the argument: the
+polynomial ring is isomorphic over that subalgebra to a polynomial ring in the remaining variables,
+proved by transporting along the index splitting with an explicit retraction, and the associativity
+of the tensor product combined with the base change isomorphism turns the tensor into a polynomial
+extension in the remaining variables over the base-changed factor.  That set of variables is
+nonempty, so the extension is never the rationals: if the base-changed factor is nontrivial the
+dimension step from the preceding round applies, and if it is trivial the extension is trivial and
+the rationals are not.
+
+One endpoint remains: the other descent statement carries an extra tensor factor in its conclusion,
+so the same instance and skeleton apply only after that factor is accounted for, and nothing about
+it is claimed here.  Neither is anything claimed about the source's descent statement; only the
+project's named endpoint is refuted.
