@@ -970,3 +970,15 @@ rewrites the tensor as a polynomial extension of the base change along that suba
 polynomial extension in nonempty many variables keeps its variables free; the tensor is therefore
 either zero or of dimension at least two over the rationals, and in neither case is it isomorphic to
 the rationals.  The refutation is accordingly not complete, and the endpoint is not yet decided.
+
+The fifth step of the descent refutation is now available.  A polynomial ring in a nonempty set of
+variables over a nontrivial algebra over the rationals is never isomorphic to the rationals as an
+algebra: an isomorphism would send the variable to some rational, and comparing coefficients of the
+corresponding monomial turns the transported equality into one between zero and one; the
+alternative, that the variable is sent to zero, is excluded by injectivity.
+
+What remains is the tensor half of the reduction.  The associativity isomorphism for algebra tensor
+products and the base change isomorphism identifying a tensor with a polynomial extension are both
+in the library; the remaining work is transporting the algebra structure along the index splitting
+of the variable set, after which the step above applies verbatim to the tensor described as a
+polynomial extension over a nonempty set of variables.

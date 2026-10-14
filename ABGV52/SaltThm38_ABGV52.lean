@@ -1733,4 +1733,63 @@ end GaloisDescentHypRefutation
 #print axioms exists_variables_bound_of_finiteType
 #print axioms galoisDescentHyp_reduction_registered
 
+
+/-! ## **⑥ 的余步 · 第 5 步（维数）落库**（第 252 轮）
+
+**⚠ 本轮落** ✓：§213.3 的**第 5 步**（**「`MvPolynomial τ T` 永不 `≅ ℚ`」** ✓）；
+**余** ✗：**第 2–4 步**（**张量结合** ✓ ＝ **`Algebra.TensorProduct.assoc`** ✓ **已实测在库** ✓；
+**`R ≅ MvPolynomial τ R₀` 的 `R₀`-代数搬运** ✗）。 -/
+
+section GaloisDescentHypTensorStep
+
+/-- **维数步（⑥ 反驳的第 5 步）** ✓✅（第 252 轮 ✓；**自造件** ✓）：**非平凡 `ℚ`-代数 `T`** ✓ 上
+**非空变量集 `σ`** ✓ 的**多项式环不 `≅ ℚ`** ✓ —— 即 **`¬ Nonempty (MvPolynomial σ T ≃ₐ[ℚ] ℚ)`** ✓。
+**⚠ 证明（两分支 ✓）** ✓：设 **`φ`** ✓ 为该同构 ✓、取 **`m : σ`** ✓；
+**若 `φ (X m) = 0`** ✓ ⟹ **`X m = 0`** ✗（**`φ.injective`** ✓ ＋ **`X_ne_zero`** ✓）矛盾 ✓；
+**若 `φ (X m) ≠ 0`** ✓ ⟹ **`X m = C (algebraMap ℚ T (φ (X m)))`** ✓（**`φ.commutes`** ✓）
+⟹ 取 **`coeff (single m 1)`** ✓ 两侧：**左 ＝ 1** ✓（**`coeff_X_same`** ✓）、**右 ＝ 0** ✓
+（**`coeff_C`** ✓ ＋ **`single m 1 ≠ 0`** ✓）⟹ **`1 = 0`** ✗（**`one_ne_zero`** ✓）。
+**⚠ 用途** ✓：**⑥ 的余步（张量／基变换）一旦把张量写成 `MvPolynomial τ T`（`τ` 非空 ✓）** ✓，
+本条**立即给出 ≇ ℚ** ✗ ⟹ **⑥ 两端点同时被反驳** ✗。 -/
+theorem not_nonempty_algEquiv_rat_of_mvPolynomial (T : Type) [CommRing T] [Algebra ℚ T]
+    [Nontrivial T] (σ : Type) [Nonempty σ] :
+    ¬ Nonempty (MvPolynomial σ T ≃ₐ[ℚ] ℚ) := by
+  classical
+  rintro ⟨φ⟩
+  obtain ⟨m⟩ := ‹Nonempty σ›
+  have hX : φ (MvPolynomial.X m) ≠ 0 := by
+    intro h
+    exact MvPolynomial.X_ne_zero m (φ.injective (by rw [h, map_zero]))
+  have hfix : MvPolynomial.X m
+      = MvPolynomial.C (algebraMap ℚ T (φ (MvPolynomial.X m))) := by
+    have hC : MvPolynomial.C (algebraMap ℚ T (φ (MvPolynomial.X m)))
+        = algebraMap ℚ (MvPolynomial σ T) (φ (MvPolynomial.X m)) := by
+      rw [MvPolynomial.C_eq_algebraMap, IsScalarTower.algebraMap_apply ℚ T (MvPolynomial σ T)]
+    apply φ.injective
+    rw [hC, φ.commutes]
+    simp only [Algebra.algebraMap_self, RingHom.id_apply]
+  have hc := congrArg (MvPolynomial.coeff (Finsupp.single m 1)) hfix
+  rw [MvPolynomial.coeff_X_same, MvPolynomial.coeff_C] at hc
+  have hne : ¬ (0 = Finsupp.single m 1) := by
+    intro h0
+    have h1 : (1 : ℕ) = 0 := Finsupp.single_eq_zero.mp h0.symm
+    exact one_ne_zero h1
+  rw [if_neg hne] at hc
+  exact one_ne_zero hc
+
+/-- **登记** ✗：**⑥ 反例余下的第 2–4 步** ✓ —— **张量结合 ＋ `R₀`-代数搬运 ＋ 基变换** ✗。
+**⚠ 已 `#check` 实测在库** ✓（**故非「须自造」** ✓）：**`Algebra.TensorProduct.assoc`** ✓
+（**`≃ₐ` 形** ✓）、**`MvPolynomial.algebraTensorAlgEquiv`** ✓、**`MvPolynomial.sumAlgEquiv`** ✓、
+**`MvPolynomial.renameEquiv`** ✓。
+**⚠ 余步的形** ✓：**像 ⊆ `R₀`** ✓ ⟹ **`S'' ⊗_{R''} R ≅ S'' ⊗_{R''} R₀ ⊗_{R₀} R`** ✓（结合 ✓）
+⟹ **`R ≅ₐ[R₀] MvPolynomial τ R₀`** ✓（**`τ := {m : ℕ // n ≤ m}`** ✓）⟹
+**`≅ MvPolynomial τ (S'' ⊗_{R''} R₀)`** ✓（基变换 ✓）⟹ **本条（第 5 步）给出 ≇ ℚ** ✗。
+**⚠ 不声称** ✗：**⑥ 未判定** ✗；**不**声称两端点为假 ✗。 -/
+theorem galoisDescentHyp_tensorStep_registered : True := trivial
+
+end GaloisDescentHypTensorStep
+
+#print axioms not_nonempty_algEquiv_rat_of_mvPolynomial
+#print axioms galoisDescentHyp_tensorStep_registered
+
 end ABGV52
