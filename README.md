@@ -1359,3 +1359,13 @@ parameter is blocked when it occurs inside a term whose proof argument depends o
 performed in non-dependent positions, or by simplification, which does handle such dependent positions, or at the
 level of functions; and the composition law as stated is oriented from the composite to the single shift, so the
 multiplication axiom consumes it with the opposite orientation.  The Galois clauses are not claimed here.
+
+Round 296 lands two of the three Galois clauses for the Artin-Schreier carrier.  The clause that the base is fixed is
+immediate from the computation that the shift fixes the coefficients, and is landed unconditionally.  The
+faithfulness clause is landed as a reduction: it suffices that the canonical map from the coefficient ring into the
+carrier is injective and that the prime field maps injectively into the coefficient ring, and the argument then reads
+the action off at the root, where the shift moves the root by the image of the group element, so triviality of the
+action forces that image to vanish.  Both remaining injectivity hypotheses are expected to be available in the
+intended applications, one from the carrier's presentation over a domain and one from the characteristic, and
+removing them is recorded as the next step.  The crossed-product clause and the Galois predicate as a whole are not
+claimed here.

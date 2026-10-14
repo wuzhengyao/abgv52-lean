@@ -8698,4 +8698,64 @@ end ArtinSchreierAction295
 #print axioms asCarrierMSA
 
 
+/-! ### 4.85 **AS 载体 `IsGaloisWithGroup` 的两款**（第 296 轮）
+—— 款② **无条件落库** ✓、款① **归约形落库** ✓（源 §0 判据 ✓）
+
+**落成两件** ✓✅：**(i)** **`asCarrier_smul_algebraMap`** ✓✅（**款②：不动基** ✓ —— `k • algebraMap r = algebraMap r` ✓，
+一行由 `asShiftH_of` ✓）；**(ii)** **`asCarrierMSA_faithful_of_injective`** ✓✅（**款①：忠实性归约** ✓ ——
+`of` 单射 ✓ ＋ 素域像单射 ✓ ⟹ `FaithfulSMul (Multiplicative (ZMod p)) (asCarrier R p a)` ✓）。
+
+**机制** ✓（**(ii)** ✓）：**在根上取值** ✓ —— `k • root = root + of (c k)` ✓（`asShiftH_root` ✓）⟹
+`of (c k) = 0` ✓（`congrArg (· - root)` ＋ `simpa` ✓）⟹ `c k = 0` ✓（`of` 单射 ✓）⟹ `k = 0` ✓（`ZMod.castHom` 单射 ✓）⟹ `k = 1` ✓。
+
+**⚠ 两条注入性前提的可得性（下一手）** ✓：**(甲)** `AdjoinRoot.of` 单射 ✓ —— 由
+`AdjoinRoot.of.injective_of_degree_ne_zero` ✓（须 `[IsDomain R]` ✓ ＋ `(ASpoly R p a).degree ≠ 0` ✓，
+后者由 `p ≥ 2` ＋ 首项系数 1 ✓）；**(乙)** `ZMod.castHom (dvd_refl p) R` 单射 ✓ —— 由 `CharP R p` ✓
+（ℤ 的核 ＝ `pℤ` ✓）⟹ **款① 可去条件化** ✓（**下一手** ✓）。
+
+**🔴 不声称** ✗：**不**声称款①的**无条件形**已证 ✗（**只**落**归约形** ✓，两条注入性前提**未在本件证明** ✗）；
+**不**声称款③（`δ` 双射）已证 ✗（**最难，下一手** ✓）；**不**声称 `IsGaloisWithGroup` 整体 ✗；**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section ArtinSchreierGaloisClauses296
+
+attribute [local instance] asCarrierMSA
+
+/-- **款②（不动基）** ✓✅：`k • algebraMap r = algebraMap r` ✓。 -/
+theorem asCarrier_smul_algebraMap {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) (k : Multiplicative (ZMod p)) (r : R) :
+    k • (algebraMap R (asCarrier R p a) r) = algebraMap R (asCarrier R p a) r := by
+  show asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+    (castHom_pow (p := p) (Multiplicative.toAdd k)) (algebraMap R (asCarrier R p a) r)
+    = algebraMap R (asCarrier R p a) r
+  rw [show algebraMap R (asCarrier R p a) r = AdjoinRoot.of (ASpoly R p a) r from rfl]
+  rw [asShiftH_of]
+
+/-- **款①（忠实性）归约形** ✓✅：`of` 单射 ＋ 素域像单射 ⟹ `FaithfulSMul` ✓（**在根上取值** ✓）。 -/
+theorem asCarrierMSA_faithful_of_injective {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R)
+    (hinf : Function.Injective (AdjoinRoot.of (ASpoly R p a)))
+    (hc : Function.Injective (ZMod.castHom (dvd_refl p) R)) :
+    FaithfulSMul (Multiplicative (ZMod p)) (asCarrier R p a) := by
+  rw [faithfulSMul_iff]
+  intro k hk
+  have hroot : asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+      (castHom_pow (p := p) (Multiplicative.toAdd k)) (AdjoinRoot.root (ASpoly R p a))
+      = AdjoinRoot.root (ASpoly R p a) := hk _
+  rw [asShiftH_root] at hroot
+  have hof : AdjoinRoot.of (ASpoly R p a)
+      (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k)) = 0 := by
+    have := congrArg (fun t => t - AdjoinRoot.root (ASpoly R p a)) hroot
+    simpa using this
+  have hzero : ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k) = 0 :=
+    hinf (by rw [hof, map_zero])
+  have h1 : Multiplicative.toAdd k = 0 := hc (by rw [hzero, map_zero])
+  have h2 : Multiplicative.toAdd (1 : Multiplicative (ZMod p)) = 0 := rfl
+  exact Multiplicative.toAdd.injective (by rw [h1, h2])
+
+end ArtinSchreierGaloisClauses296
+
+#print axioms asCarrier_smul_algebraMap
+#print axioms asCarrierMSA_faithful_of_injective
+
+
 end ABGV52
