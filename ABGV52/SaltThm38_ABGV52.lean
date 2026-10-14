@@ -8372,4 +8372,72 @@ end ArtinSchreierNegShift291
 #print axioms neg_pow_eq_neg
 
 
+/-! ### 4.81 **AS 载体移位的「具名义务」重述 ＋ 两条计算件**（第 292 轮）
+—— 解 §253.3 的受阻：展开 `asShiftHom` 时隐式类型卡住 ✓
+
+**问题** ✗（第 291 轮实测 ✓）：§4.79 的 `asShiftHom` 把 `eval₂` 义务写成**匿名 `by` 块** ✓
+⟹ 其两条计算件无法**句法匹配** `AdjoinRoot.lift_of`／`lift_root` ✗（`show` 展开时 `CommRing ?m` 卡住 ✗）。
+
+**解法** ✓✅（**本轮** ✓）：把义务**提为具名定理** `asShift_eval` ✓，并以它**重述**移位为 `asShiftH` ✓
+⟹ 两条计算件**各成一行** ✓（`AdjoinRoot.lift_of` ✓／`AdjoinRoot.lift_root` ✓ **直接命中** ✓）。
+
+**落成四件** ✓✅：**(i)** **`ASpoly`** ✓（载体多项式的具名形 ✓）；
+**(ii)** **`asShift_eval`** ✓（`eval₂` 义务具名 ✓ —— 内核与 §4.79 同 ✓：`Polynomial.hom_eval₂` ✓ ＋ `as_shift_mk` ✓）；
+**(iii)** **`asShiftH`** ✓（**具名义务版移位自同态** ✓，与 §4.79 的 `asShiftHom` **同值** ✓）；
+**(iv)** **`asShiftH_of`** ✓／**`asShiftH_root`** ✓（**两条计算件** ✓：固定系数 ✓／根 ↦ `root + k` ✓）。
+
+**⚠ 用途** ✓：**(iv)** 正是**双射性**（`Algebra.adjoin_induction` ✓ 或商环＋多项式外延 ✓）所需的**全部计算** ✓ ——
+**下一手**即由 (iv) 收口自同构 ✓（第 291 轮的受阻点**已拆除** ✓）。
+
+**🔴 不声称** ✗：**不**声称移位**已是自同构** ✗（**双射性仍未落** ✗ —— 现仅余**外延引理接线** ✓，
+计算件已备 ✓）；**不**声称 §4.79 的 `asShiftHom` 已删 ✗（**保留在册** ✓，与 `asShiftH` **同值** ✓）；
+**不**声称 `MulSemiringAction` 已落 ✗。 -/
+
+section ArtinSchreierShiftAPI292
+
+/-- AS 载体的定义多项式（具名）✓：`X^p − X − C a` ✓。 -/
+abbrev ASpoly (R : Type*) [CommRing R] (p : ℕ) (a : R) : Polynomial R :=
+  (Polynomial.X : Polynomial R) ^ p - Polynomial.X - Polynomial.C a
+
+/-- **`eval₂` 义务（具名）** ✓：`root + k` 满足载体的定义关系 ✓ —— 使 `lift_of`／`lift_root` **句法可匹配** ✓。 -/
+theorem asShift_eval {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) :
+    Polynomial.eval₂ (AdjoinRoot.of (ASpoly R p a))
+      (AdjoinRoot.root (ASpoly R p a) + AdjoinRoot.of (ASpoly R p a) k) (ASpoly R p a) = 0 := by
+  have hgoal : Polynomial.eval₂
+      ((AdjoinRoot.mk (ASpoly R p a)).comp (Polynomial.C : R →+* Polynomial R))
+      ((AdjoinRoot.mk (ASpoly R p a)) ((Polynomial.X : Polynomial R) + Polynomial.C k))
+      (ASpoly R p a) = 0 := by
+    rw [← Polynomial.hom_eval₂ (p := ASpoly R p a) (f := (Polynomial.C : R →+* Polynomial R))
+      (g := AdjoinRoot.mk (ASpoly R p a)) (x := (Polynomial.X : Polynomial R) + Polynomial.C k)]
+    exact as_shift_mk (p := p) a k hk
+  simpa only [AdjoinRoot.of, AdjoinRoot.root, RingHom.comp_apply, map_add] using hgoal
+
+/-- **具名义务版移位自同态** ✓（与 §4.79 的 `asShiftHom` **同值** ✓，但**义务具名** ⟹ 计算件可一行 ✓）。 -/
+noncomputable def asShiftH {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) : asCarrier R p a →+* asCarrier R p a :=
+  AdjoinRoot.lift (AdjoinRoot.of (ASpoly R p a))
+    (AdjoinRoot.root (ASpoly R p a) + AdjoinRoot.of (ASpoly R p a) k) (asShift_eval a k hk)
+
+/-- **计算件 ①** ✓：移位**固定系数** ✓。 -/
+theorem asShiftH_of {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) (r : R) :
+    asShiftH a k hk (AdjoinRoot.of (ASpoly R p a) r) = AdjoinRoot.of (ASpoly R p a) r :=
+  AdjoinRoot.lift_of (asShift_eval a k hk)
+
+/-- **计算件 ②** ✓：移位把根送到 `root + k` ✓。 -/
+theorem asShiftH_root {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) :
+    asShiftH a k hk (AdjoinRoot.root (ASpoly R p a))
+      = AdjoinRoot.root (ASpoly R p a) + AdjoinRoot.of (ASpoly R p a) k :=
+  AdjoinRoot.lift_root (asShift_eval a k hk)
+
+end ArtinSchreierShiftAPI292
+
+#print axioms asShift_eval
+#print axioms asShiftH
+#print axioms asShiftH_of
+#print axioms asShiftH_root
+
+
 end ABGV52

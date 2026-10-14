@@ -1320,3 +1320,12 @@ factors out of the p-th power and the defining relation collapses the rest.  The
 lets the shift by the negative serve as the inverse shift, and it is therefore recorded as the standing prerequisite
 for the automorphism that the next round is to assemble.  Nothing about bijectivity, the cyclic group action, or the
 Galois clauses is claimed here.
+
+Round 292 removes the obstruction recorded in the previous round to computing with the Artin-Schreier shift.  The
+obligation that the shifted root satisfies the defining relation was previously written as an anonymous proof term
+inside the definition of the shift, which made the two standard evaluation lemmas fail to match it syntactically.
+That obligation is now a named theorem, and the shift is restated in terms of it, so the two computations that the
+automorphism argument needs, namely that the shift fixes the coefficients and that it sends the root to the root
+plus one, become direct instances of the evaluation lemmas for adjoining a root.  The restated shift has the same
+value as the version landed earlier, which is kept for the record.  Bijectivity itself, the group action and the
+Galois clauses are not claimed here; what is landed is the pair of computations the bijectivity argument consumes.
