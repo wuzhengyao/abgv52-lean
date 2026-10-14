@@ -8592,4 +8592,110 @@ end ArtinSchreierCompLaw294
 #print axioms asShiftEquiv
 
 
+/-! ### 4.84 **AS 载体上的 `C_p`-作用（`MulSemiringAction`）**（第 295 轮）
+—— 源 `theorem-1-2(a)` 的**群作用** ✓（第 294 轮前置全部消费 ✓）
+
+**落成三件** ✓✅：**(i)** **`asShiftH_zero`** ✓（`φ_0 = id` ✓，同一外延二步 ✓）；
+**(ii)** **`asShiftHMSA_comp`** ✓✅（**群作用档复合律** ✓：参数取 `ZMod p` 的像 ✓ ⟹
+**参数换算落在非依赖位** ✓，绕开 `asShiftH a · (proof)` 的**依赖位重写** ✗）；
+**(iii)** **`asCarrierMSA`** ✓✅：**`MulSemiringAction (Multiplicative (ZMod p)) (asCarrier R p a)`** ✓
+—— **源 `C_p`-作用落库** ✓（`smul k x := φ_{c k} x` ✓；公理逐条 ✓）。
+
+**⚠ 工艺（三条，入 §5.1）** ✓：**(甲)** **依赖位重写** ✗ —— `asShiftH a t ht` 的证明项类型依赖 `t` ✓
+⟹ `rw` 报 **motive is not type correct** ✗（实测三处 ✓）；**解** ✓：**(甲1)** 把参数换算搬到**非依赖位** ✓
+（如 `of (·)` 内 ✓，见 (ii) 的 `X`-支 ✓）；**(甲2)** 用 **`simp only`** ✓（simp 对依赖位有专门策略 ✓，
+实测 `one_smul` 的 `c 0 = 0` 归一 ✓）；**(甲3)** `congrArg (fun f => f x)` ✓ 在**函数层**搬运 ✓。
+**(乙)** 复合律方向 ✗：`(φ_k.comp φ_l) x = φ_k (φ_l x)` ✓ 而 `mul_smul` 要 **`φ_{k*l} x = φ_k (φ_l x)`** ✓
+⟹ 须取 **`.symm`** ✓（实测 ✓）。**(丙)** 类实例须 **`@[instance_reducible]`** ✓（否则 `warn.classDefReducibility` ✗）。
+
+**🔴 不声称** ✗：**不**声称 `IsGaloisWithGroup` 任何一款 ✗（**下一手** ✓：忠实 ✓／不动环 ✓／`δ` 双射 ✓）；
+**不**声称源 `theorem-1-2` 已证 ✗；**不**声称残余 ①／③ 已证 ✗。 -/
+
+section ArtinSchreierAction295
+
+/-- **`φ_0 = id`** ✓（同一外延二步 ✓）。 -/
+theorem asShiftH_zero {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p] (a : R)
+    (h0 : (0 : R) ^ p = 0) : asShiftH a 0 h0 = RingHom.id (asCarrier R p a) := by
+  refine Ideal.Quotient.ringHom_ext (I := Ideal.span {ASpoly R p a}) ?_
+  refine Polynomial.ringHom_ext ?_ ?_
+  · intro r
+    show (asShiftH a 0 h0) ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r))
+      = (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)
+        = AdjoinRoot.of (ASpoly R p a) r from rfl]
+    rw [asShiftH_of]
+  · show (asShiftH a 0 h0) ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X))
+      = (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)
+        = AdjoinRoot.root (ASpoly R p a) from rfl]
+    rw [asShiftH_root, map_zero, add_zero]
+
+/-- **群作用档复合律** ✓：参数取 `ZMod p` 的像 ⟹ 参数换算落在**非依赖位** ✓。 -/
+theorem asShiftHMSA_comp {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) (k l : Multiplicative (ZMod p)) :
+    (asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+        (castHom_pow (p := p) (Multiplicative.toAdd k))).comp
+      (asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd l))
+        (castHom_pow (p := p) (Multiplicative.toAdd l)))
+      = asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd (k * l)))
+          (castHom_pow (p := p) (Multiplicative.toAdd (k * l))) := by
+  refine Ideal.Quotient.ringHom_ext (I := Ideal.span {ASpoly R p a}) ?_
+  refine Polynomial.ringHom_ext ?_ ?_
+  · intro r
+    show (asShiftH a _ (castHom_pow (p := p) (Multiplicative.toAdd k)))
+        ((asShiftH a _ (castHom_pow (p := p) (Multiplicative.toAdd l)))
+          ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)))
+      = (asShiftH a _ (castHom_pow (p := p) (Multiplicative.toAdd (k * l))))
+          ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r))
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.C r)
+        = AdjoinRoot.of (ASpoly R p a) r from rfl]
+    rw [asShiftH_of, asShiftH_of, asShiftH_of]
+  · show (asShiftH a _ (castHom_pow (p := p) (Multiplicative.toAdd k)))
+        ((asShiftH a _ (castHom_pow (p := p) (Multiplicative.toAdd l)))
+          ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)))
+      = (asShiftH a _ (castHom_pow (p := p) (Multiplicative.toAdd (k * l))))
+          ((Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X))
+    rw [show (Ideal.Quotient.mk (Ideal.span {ASpoly R p a})) (Polynomial.X)
+        = AdjoinRoot.root (ASpoly R p a) from rfl]
+    rw [asShiftH_root, map_add, asShiftH_root, asShiftH_of, asShiftH_root]
+    rw [add_assoc]
+    congr 1
+    rw [show ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd (k * l))
+        = ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k)
+          + ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd l) from by
+      rw [show Multiplicative.toAdd (k * l)
+          = Multiplicative.toAdd k + Multiplicative.toAdd l from rfl, map_add]]
+    rw [map_add]
+
+/-- **🔴 主结果** ✓✅：**AS 载体上的 `C_p`-作用** ✓（源 `theorem-1-2(a)` ✓）。 -/
+@[instance_reducible] noncomputable def asCarrierMSA {R : Type*} [CommRing R] {p : ℕ}
+    [Fact p.Prime] [CharP R p] (a : R) :
+    MulSemiringAction (Multiplicative (ZMod p)) (asCarrier R p a) where
+  smul k x := asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+    (castHom_pow (p := p) (Multiplicative.toAdd k)) x
+  one_smul x := by
+    show asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd 1))
+      (castHom_pow (p := p) (Multiplicative.toAdd 1)) x = x
+    simp only [show Multiplicative.toAdd (1 : Multiplicative (ZMod p)) = 0 from rfl, map_zero]
+    exact congrArg (fun f => f x) (asShiftH_zero a _)
+  mul_smul k l x := by
+    show asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd (k * l)))
+        (castHom_pow (p := p) (Multiplicative.toAdd (k * l))) x
+      = asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+          (castHom_pow (p := p) (Multiplicative.toAdd k))
+          (asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd l))
+            (castHom_pow (p := p) (Multiplicative.toAdd l)) x)
+    exact (congrArg (fun f => f x) (asShiftHMSA_comp a k l)).symm
+  smul_zero k := map_zero _
+  smul_add k x y := map_add _ x y
+  smul_mul k x y := map_mul _ x y
+  smul_one k := map_one _
+
+end ArtinSchreierAction295
+
+#print axioms asShiftH_zero
+#print axioms asShiftHMSA_comp
+#print axioms asCarrierMSA
+
+
 end ABGV52

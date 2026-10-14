@@ -1349,3 +1349,13 @@ shift by another is the shift by their sum, proved by the same two-step extensio
 coefficient case is that both sides fix the base and the root case reduces to associativity of the sum.  Finally the
 bijectivity of the previous round is packaged as a ring equivalence, so each shift is available as an automorphism
 rather than merely as a bijective homomorphism.  The action itself and the Galois clauses are not claimed here.
+
+Round 295 lands the cyclic action on the Artin-Schreier carrier.  Each element of the prime field acts by the shift
+by that element, the supply of shift parameters being the image of the cyclic group in the coefficient ring, whose
+elements satisfy the fixed-point equation by Fermat's theorem for the prime field.  The action axioms reduce to
+facts already established: the identity acts trivially, composition of shifts is the shift by the sum, and the
+remaining axioms are the ring-equivalence properties of the shift.  Two practical points are recorded.  Rewriting a
+parameter is blocked when it occurs inside a term whose proof argument depends on it, so parameter conversions are
+performed in non-dependent positions, or by simplification, which does handle such dependent positions, or at the
+level of functions; and the composition law as stated is oriented from the composite to the single shift, so the
+multiplication axiom consumes it with the opposite orientation.  The Galois clauses are not claimed here.
