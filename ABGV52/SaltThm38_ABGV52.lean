@@ -41,6 +41,7 @@ import Mathlib.RingTheory.TensorProduct.Nontrivial
 import Mathlib.FieldTheory.Fixed
 import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
+import Mathlib.Algebra.QuadraticAlgebra.Basic
 open TensorProduct MvPolynomial
 universe u
 noncomputable section
@@ -6086,5 +6087,790 @@ theorem not_naiveRingTierReduction267 : ¬ NaiveRingTierReduction267 := by
 #print axioms not_naiveRingTierReduction267
 
 end RingTierCounterexample267
+/-! ### 4.74 环档（`R` 非域）的**正确模论输入**：**迹形式幺模性** —— 二次代数族（第 268 轮）
+
+**⚠ 起点** ✓（承 §4.73 ✓）：第 267 轮**机检否决**了环档的**朴素归约** ✗（`NaiveRingTierReduction267` ✓：
+`ℤ ⊆ ℤ[i]` ＋ 忠实 ✓ ＋ 不动环相等 ✓ ＋ `S` 有限自由秩 `|G|` ✓ ＋ `δ` 单射 ✓ ⟹ `δ` 满射 ✗ —— **假** ✗）。
+本轮找**正确的**环档输入 ✓ 并给**机检**读数 ✓。
+
+**载体** ✓：`QuadraticAlgebra R a b` ✓（mathlib ✓：`ω² = a + bω` ✓，`R`-基 `(1, ω)` ✓，
+`star` ＝ 共轭 ✓，`trace` ✓／`norm` ✓），`G = Multiplicative (ZMod 2)` ✓ 经 `star` 作用 ✓。
+**⚠ 与 §4.73 的换算** ✓：本件参数 `(a, b)` 与 `(T, N)`（`α² = Tα − N` ✓）的关系为 `T = b` ✓、
+`N = -a` ✓ ⟹ **判别式** `T² − 4N = b² + 4a` ✓ ＝ 迹形式 Gram 行列式 ✓（`qaGram268_det` ✓）。
+
+**🔴🔴 主定理（机检 ✓✅，**双方向**）** ✓：`δ` **满射** ⟺ **迹形式（Gram 矩阵）幺模** ✓
+（`surjective_deltaToEndRingHom_quadratic268_iff` ✓）。**两方向的机制** ✓：
+**(⟸)** ✓ 单位 `2ω − b` ✓（其范数 ＝ `-(b² + 4a)` ✓，`qaNormQaDiff268` ✓）⟹ **显式预像** ✓；
+**(⟹)** ✓ 取 `R`-线性自同态 `z ↦ z.im` ✓ 的预像 ✓ ⟹ `2ω − b` 是**单位** ✓。
+
+**⚠ 强度序（逐条，方向明确 ✓；本轮的核心交付 ✓）**：
+
+| # | 命题 | 状态 | 机检依据 |
+|---|---|---|---|
+| ① | 迹形式幺模 ⟹ `δ` 满射 | **已证** ✓✅ | `surjective_deltaToEndRingHom_quadratic268_of_isUnit` ✓ |
+| ② | `δ` 满射 ⟹ 迹形式幺模 | **已证** ✓✅ | `isUnit_disc268_of_surjective_deltaToEndRingHom` ✓（①＋② ＝ `⟺` ✓） |
+| ③ | 迹形式幺模 ⟹ **迹满射**（`∃ s, trace s = 1`）| **已证** ✓✅ | `qa_exists_trace_eq_one268_of_isUnit` ✓（显式 `s = ⟨2ua, ub⟩` ✓，`u` ＝ 判别式的逆 ✓） |
+| ④ | 迹满射 ⟹ `δ` 满射 | **已否决** ✗ | 见证 ②：`ℤ[ω]/(ω² − ω + 2)` ✓（`trace ω = 1` ✓ 而 `δ` 非满射 ✓） |
+| ⑤ | `\|G\|` 在 `R` 中可逆 ⟹ `δ` 满射 | **已否决** ✗ | 见证 ③：`R = 𝔽₃[X]` ✓（`IsUnit (2 : R)` ✓ 而 `δ` 非满射 ✓） |
+| ⑥ | `R[G]`-**自由秩一** ⟹ `δ` 满射 | **已否决** ✗ | 见证 ②：正规基 `ω` ✓（`x ↦ x • ω` **双射** ✓）而 `δ` 非满射 ✓ |
+| ⑦ | `\|G\|` 可逆 与 迹形式幺模 | **不可比** ✗ | `(ℤ, a=0, b=1)`：幺模 ✓ 而 `2` 非单位 ✓；`(𝔽₃[X], a=X, b=0)`：`2` 可逆 ✓ 而 `X` 非单位 ✓ |
+
+⟹ **③＋④**：「迹满射」**严格弱于**「迹形式幺模」✓ 且**单独不足** ✓（源侧的
+「`∃ s, Tr s = 1`」形输入**被否决** ✗）；**⑤**：源侧 section-based 路线所依赖的
+「`|G|` 可逆」**单独不足** ✗；**⑥**：r266 ✓ 登记的 `R[G]`-模两行路线的**秩一自由**形**被否决** ✗
+（**⚠ 不等于**否决其**投射**形 ✗ —— 后者本轮**未判定** ✓）。
+
+**指引（L19 正例 ＋ L1 非空性）** ✓：**反例侧**三条 ✗（见证 ① 高斯 `ℤ[i]` ✓；见证 ② `ℤ[(1+√-7)/2]` ✓；
+见证 ③ `𝔽₃[X][ω]/(ω² − X)` ✓）；**非空性侧**两条 ✓✅：**分裂档** `(ℤ, a=0, b=1)`
+（`δ` **双射** ✓，`qa_split268_bijective` ✓）与**高斯档在 `ℚ` 上**（`δ` **双射** ✓，
+`qa_gaussianRat268_bijective` ✓ —— 与见证 ① 对照 ✓：**同一** `(a,b) = (-1,0)` ✓ 在 `ℤ` 上**非满射** ✗、
+在 `ℚ` 上**双射** ✓ ⟹ **判别式 `-4` 是否为单位**正是分界 ✓）。
+**⚠ 高斯档与 §4.73 载体的桥** ✓（**机检 ✓✅**）：本件载体在 `(ℤ, -1, 0)` 上满足 `ℤ[i]` 的定义关系 ✓
+（`ω² = -1` ✓，`qa_gaussian268_omega_sq` ✓；`star ω = -ω` ✓，`qa_gaussian268_star_omega` ✓），
+且**环同构** `qaGaussianIntEquiv268 : QuadraticAlgebra ℤ (-1) 0 ≃+* Zsqrtd (-1)` ✓ 与**共轭相容** ✓
+（`qaGaussianIntEquiv268_star` ✓）⟹ 与 §4.73 ✓ 的 `Zsqrtd (-1)` 载体是**同一对象** ✓
+（该侧结论 `not_surjective_deltaToEndRingHom_gaussianInt267` ✓ **不重证** ✗）。
+
+**🔴 一般档（任意有限 `G`）** ✓：充分性**形状锁定**为 `TraceUnimodularSufficiency268` ✓
+（`tr : S →ₗ[R] R` ✓ `G`-不变 ✓ 对称 ✓ ＋ **配对满** ✓ ＝ 迹形式幺模 ✓ ＋ `S` 对 `R` 有限 ✓
+＋ `δ` 单射 ⟹ `δ` 满射 ✓）—— **未证** ✗（登记 ✓，`traceUnimodularSufficiency268_registered` ✓）；
+本轮落的是其 **`G = C₂`／秩 2** 档 ✓（**且更强**：`⟺` ✓，**无需单射假设** ✓）。
+
+**⚠ 分类（规则 17）** ✓：本轮**未落**项**只有一条** ✓ ＝ `TraceUnimodularSufficiency268` ✓
+（**证明义务** ✓，**非**观测数据 ✗、**非 (b) 类「可算未算」**✗）—— **无 (b) 类未算项** ✓
+（高斯档与 §4.73 载体的**形式同构**本轮**已算完并落地** ✓：`qaGaussianIntEquiv268` ✓）。
+**🔴 不声称** ✗：**不**声称一般档成立 ✗；**不**声称 `R[G]`-**投射**形被否决 ✗；
+**不**声称两条源陈述已证 ✗；**不**声称 §4.73 的结论被重证 ✗。 -/
+
+section QuadraticRingTier268
+
+open scoped QuadraticAlgebra
+
+variable {R : Type*} [CommRing R]
+
+variable {R : Type*} [CommRing R]
+
+/-- 共轭作用 -/
+def qaConj268 (a b : R) (g : Multiplicative (ZMod 2)) (x : QuadraticAlgebra R a b) :
+    QuadraticAlgebra R a b := if g = 1 then x else star x
+
+variable {a b : R}
+
+@[simp] lemma qaConj268_one (x : QuadraticAlgebra R a b) : qaConj268 a b 1 x = x := rfl
+
+@[simp] lemma qaConj268_gen (x : QuadraticAlgebra R a b) :
+    qaConj268 a b (Multiplicative.ofAdd 1) x = star x := by
+  rw [qaConj268, if_neg (by decide : ¬ (Multiplicative.ofAdd (1 : ZMod 2) = 1))]
+
+lemma qaConj268_mul_smul (g h : Multiplicative (ZMod 2)) (x : QuadraticAlgebra R a b) :
+    qaConj268 a b (g * h) x = qaConj268 a b g (qaConj268 a b h x) := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;>
+    rcases mul_zmod2_cases267 h with rfl | rfl <;>
+    simp [qaConj268_one, qaConj268_gen, zmod2_gen_mul_self267, star_star]
+
+lemma qaConj268_zero (g : Multiplicative (ZMod 2)) : qaConj268 a b g 0 = 0 := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;> simp [qaConj268_one, qaConj268_gen]
+
+lemma qaConj268_add (g : Multiplicative (ZMod 2)) (x y : QuadraticAlgebra R a b) :
+    qaConj268 a b g (x + y) = qaConj268 a b g x + qaConj268 a b g y := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;> simp [qaConj268_one, qaConj268_gen]
+
+lemma qaConj268_mul (g : Multiplicative (ZMod 2)) (x y : QuadraticAlgebra R a b) :
+    qaConj268 a b g (x * y) = qaConj268 a b g x * qaConj268 a b g y := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;> simp [qaConj268_one, qaConj268_gen]
+
+lemma qaConj268_one' (g : Multiplicative (ZMod 2)) : qaConj268 a b g 1 = 1 := by
+  rcases mul_zmod2_cases267 g with rfl | rfl <;> simp [qaConj268_one, qaConj268_gen]
+
+local instance qaSMul268 : SMul (Multiplicative (ZMod 2)) (QuadraticAlgebra R a b) :=
+  ⟨qaConj268 a b⟩
+
+/-- 单点作用式 -/
+lemma qaConj268_smul_def (g : Multiplicative (ZMod 2)) (x : QuadraticAlgebra R a b) :
+    g • x = qaConj268 a b g x := rfl
+
+local instance qaMSA268 : MulSemiringAction (Multiplicative (ZMod 2)) (QuadraticAlgebra R a b) where
+  toSMul := qaSMul268
+  one_smul x := qaConj268_one x
+  mul_smul g h x := qaConj268_mul_smul g h x
+  smul_zero g := qaConj268_zero g
+  smul_add g x y := qaConj268_add g x y
+  smul_mul g x y := qaConj268_mul g x y
+  smul_one g := qaConj268_one' g
+
+lemma qaSmulComm268 : ∀ (g : Multiplicative (ZMod 2)) (r : R)
+    (x : QuadraticAlgebra R a b), g • (r • x) = r • (g • x) := by
+  intro g r x
+  rcases mul_zmod2_cases267 g with rfl | rfl
+  · simp
+  · rw [qaConj268_smul_def, qaConj268_gen, qaConj268_smul_def, qaConj268_gen]
+    apply QuadraticAlgebra.ext
+    · simp only [QuadraticAlgebra.re_star, QuadraticAlgebra.re_smul, QuadraticAlgebra.im_smul,
+        smul_eq_mul]
+      ring
+    · simp only [QuadraticAlgebra.im_star, QuadraticAlgebra.im_smul, smul_eq_mul]
+      ring
+
+/-- `trace (ω * ω)` -/
+lemma qaTraceOmegaSq268 : QuadraticAlgebra.trace (a := a) (b := b)
+    ((ω : QuadraticAlgebra R a b) * ω) = 2 * a + b ^ 2 := by
+  rw [QuadraticAlgebra.omega_mul_omega_eq_mk]
+  simp [QuadraticAlgebra.trace_def]
+  ring
+
+/-- Gram 矩阵 -/
+def qaGram268 (a b : R) : Matrix (Fin 2) (Fin 2) R :=
+  !![QuadraticAlgebra.trace (1 : QuadraticAlgebra R a b),
+     QuadraticAlgebra.trace (ω : QuadraticAlgebra R a b);
+     QuadraticAlgebra.trace (ω : QuadraticAlgebra R a b),
+     QuadraticAlgebra.trace ((ω : QuadraticAlgebra R a b) * ω)]
+
+lemma qaGram268_det : (qaGram268 a b).det = b ^ 2 + 4 * a := by
+  rw [qaGram268, Matrix.det_fin_two]
+  simp [qaTraceOmegaSq268]
+  ring
+
+/-- `2ω − b`（判别式载体） -/
+def qaDiff268 (a b : R) : QuadraticAlgebra R a b :=
+  (2 : QuadraticAlgebra R a b) * ω - algebraMap R (QuadraticAlgebra R a b) b
+
+lemma qaDiff268_def : qaDiff268 a b
+    = (2 : QuadraticAlgebra R a b) * ω - algebraMap R (QuadraticAlgebra R a b) b := rfl
+
+lemma qaNormQaDiff268 : QuadraticAlgebra.norm (qaDiff268 a b) = -(b ^ 2 + 4 * a) := by
+  rw [qaDiff268, QuadraticAlgebra.norm_def]
+  simp
+  ring
+
+lemma qaIsUnitQaDiff268 : IsUnit (qaDiff268 a b) ↔ IsUnit (b ^ 2 + 4 * a) := by
+  rw [QuadraticAlgebra.isUnit_iff_norm_isUnit, qaNormQaDiff268]
+  exact IsUnit.neg_iff _
+
+/-! #### `δ` 的两项展开式 -/
+
+/-- **`δ` 的两项展开式** ✓：`G` 只有两个元素 ✓，故求和坍缩为两项 ✓。 -/
+lemma qaDeltaForm268 (x : SkewMonoidAlgebra (QuadraticAlgebra R a b) (Multiplicative (ZMod 2)))
+    (t : QuadraticAlgebra R a b) :
+    BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b)) x t
+      = x.coeff 1 * t + x.coeff (Multiplicative.ofAdd 1) * star t := by
+  induction x using SkewMonoidAlgebra.induction_on with
+  | zero => simp
+  | add x z hx hz =>
+    rw [map_add, LinearMap.add_apply, hx, hz]
+    simp only [SkewMonoidAlgebra.coeff_add, Finsupp.add_apply, add_mul]
+    ring
+  | single g s =>
+    rw [show BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b))
+          (SkewMonoidAlgebra.single g s)
+        = BTier.deltaToEndAdd (qaSmulComm268 (a := a) (b := b))
+          (SkewMonoidAlgebra.single g s) from rfl,
+      BTier.deltaToEndAdd_single, Module.End.mul_apply]
+    rcases mul_zmod2_cases267 g with rfl | rfl
+    · change s * qaConj268 a b (1 : Multiplicative (ZMod 2)) t
+        = (SkewMonoidAlgebra.single 1 s).coeff 1 * t
+          + (SkewMonoidAlgebra.single 1 s).coeff (Multiplicative.ofAdd 1) * star t
+      rw [qaConj268_one, SkewMonoidAlgebra.coeff_single_apply, if_pos rfl,
+        SkewMonoidAlgebra.coeff_single_apply,
+        if_neg (by decide : ¬ ((1 : Multiplicative (ZMod 2)) = Multiplicative.ofAdd 1))]
+      ring
+    · change s * qaConj268 a b (Multiplicative.ofAdd 1) t
+        = (SkewMonoidAlgebra.single (Multiplicative.ofAdd 1) s).coeff 1 * t
+          + (SkewMonoidAlgebra.single (Multiplicative.ofAdd 1) s).coeff
+              (Multiplicative.ofAdd 1) * star t
+      rw [qaConj268_gen, SkewMonoidAlgebra.coeff_single_apply,
+        if_neg (by decide : ¬ (Multiplicative.ofAdd (1 : ZMod 2) = 1)),
+        SkewMonoidAlgebra.coeff_single_apply, if_pos rfl]
+      ring
+
+/-- **两个 `R`-线性自同态相等 ⟸ 在 `(1, ω)` 上相等** ✓。 -/
+lemma qaEndExt268 {f g : Module.End R (QuadraticAlgebra R a b)}
+    (h1 : f 1 = g 1) (hω : f (ω : QuadraticAlgebra R a b) = g ω) : f = g := by
+  refine LinearMap.ext fun z => ?_
+  have hz : z = z.re • (1 : QuadraticAlgebra R a b) + z.im • (ω : QuadraticAlgebra R a b) := by
+    have h := QuadraticAlgebra.mk_eq_add_smul_omega (a := a) (b := b) z.re z.im
+    rw [Algebra.algebraMap_eq_smul_one] at h
+    rw [← h]
+  rw [hz]
+  simp only [map_add, map_smul, h1, hω]
+
+/-- **共轭在 `ω` 上的取值** ✓：`star ω = b − ω` ✓。 -/
+lemma qaStarOmega268 : star (ω : QuadraticAlgebra R a b) = algebraMap R _ b - ω := by
+  rw [QuadraticAlgebra.star_eq, QuadraticAlgebra.trace_omega]
+
+/-- **`ω − star ω = 2ω − b`** ✓。 -/
+lemma qaOmegaSubStarOmega268 :
+    (ω : QuadraticAlgebra R a b) - star ω = qaDiff268 a b := by
+  rw [qaStarOmega268, qaDiff268]
+  ring
+
+/-- **`δ` 在两项元素上的取值** ✓。 -/
+lemma qaDeltaPair268 (u v : QuadraticAlgebra R a b) (t : QuadraticAlgebra R a b) :
+    BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b))
+      (SkewMonoidAlgebra.single 1 u
+        + SkewMonoidAlgebra.single (Multiplicative.ofAdd 1) v) t = u * t + v * star t := by
+  rw [qaDeltaForm268]
+  have hσ : (Multiplicative.ofAdd (1 : ZMod 2)) ≠ 1 := by decide
+  have hσ' : ¬ ((1 : Multiplicative (ZMod 2)) = Multiplicative.ofAdd 1) := by decide
+  simp [hσ, hσ']
+
+/-- **迹形式幺模** ✓。 -/
+def QaTraceUnimodular268 (a b : R) : Prop := IsUnit (qaGram268 a b).det
+
+theorem qaTraceUnimodular268_iff : QaTraceUnimodular268 a b ↔ IsUnit (b ^ 2 + 4 * a) := by
+  rw [QaTraceUnimodular268, qaGram268_det]
+
+lemma qaExistsMulEqOne268 (h : IsUnit (b ^ 2 + 4 * a)) :
+    ∃ y : QuadraticAlgebra R a b, y * qaDiff268 a b = 1 := by
+  have h2 : IsUnit (qaDiff268 a b) := (qaIsUnitQaDiff268 (a := a) (b := b)).mpr h
+  obtain ⟨y, _hy, hy'⟩ := isUnit_iff_exists.mp h2
+  exact ⟨y, hy'⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **正向（⟸）：迹形式幺模 ⟹ `δ` 满射** ✓：显式预像构造 ✓。 -/
+theorem surjective_deltaToEndRingHom_quadratic268_of_isUnit (h : IsUnit (b ^ 2 + 4 * a)) :
+    Function.Surjective (BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b))) := by
+  intro f
+  obtain ⟨y, hy⟩ := qaExistsMulEqOne268 (a := a) (b := b) h
+  have hu : y * (f ω + f 1 * (ω - algebraMap R _ b)) * qaDiff268 a b
+      = f ω + f 1 * (ω - algebraMap R _ b) := by
+    rw [mul_assoc, mul_comm (f ω + f 1 * (ω - algebraMap R _ b)) (qaDiff268 a b),
+      ← mul_assoc, hy, one_mul]
+  refine ⟨SkewMonoidAlgebra.single 1 (y * (f ω + f 1 * (ω - algebraMap R _ b)))
+    + SkewMonoidAlgebra.single (Multiplicative.ofAdd 1)
+        (f 1 - y * (f ω + f 1 * (ω - algebraMap R _ b))), ?_⟩
+  refine qaEndExt268 ?_ ?_
+  · rw [qaDeltaPair268]
+    simp only [mul_one, star_one]
+    ring
+  · rw [qaDeltaPair268, qaStarOmega268]
+    have key : y * (f ω + f 1 * (ω - algebraMap R _ b)) * ω
+        + (f 1 - y * (f ω + f 1 * (ω - algebraMap R _ b)))
+          * (algebraMap R _ b - ω)
+        = y * (f ω + f 1 * (ω - algebraMap R _ b)) * qaDiff268 a b
+          - f 1 * (ω - algebraMap R _ b) := by
+      rw [qaDiff268]
+      ring
+    rw [key, hu]
+    ring
+
+set_option maxHeartbeats 1000000 in
+/-- **反向（⟹）：`δ` 满射 ⟹ 迹形式幺模** ✓。 -/
+theorem isUnit_disc268_of_surjective_deltaToEndRingHom
+    (h : Function.Surjective (BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b)))) :
+    IsUnit (b ^ 2 + 4 * a) := by
+  obtain ⟨x, hx⟩ := h
+    ({ toFun := fun z => algebraMap R (QuadraticAlgebra R a b) z.im
+       map_add' := by intro p q; simp
+       map_smul' := by intro r p; simp [Algebra.smul_def] } :
+      Module.End R (QuadraticAlgebra R a b))
+  have h1 : x.coeff 1 + x.coeff (Multiplicative.ofAdd 1) = 0 := by
+    have hh := congrFun (congrArg DFunLike.coe hx) (1 : QuadraticAlgebra R a b)
+    rw [qaDeltaForm268] at hh
+    simpa using hh
+  have hω : x.coeff 1 * qaDiff268 a b = 1 := by
+    have hh := congrFun (congrArg DFunLike.coe hx) (ω : QuadraticAlgebra R a b)
+    rw [qaDeltaForm268, qaStarOmega268] at hh
+    have hcoe : x.coeff (Multiplicative.ofAdd 1) = -x.coeff 1 :=
+      eq_neg_of_add_eq_zero_left (by rw [add_comm]; exact h1)
+    have hh' : x.coeff 1 * ω + (-x.coeff 1) * (algebraMap R _ b - ω) = 1 := by
+      simpa [hcoe] using hh
+    have e : x.coeff 1 * ω + (-x.coeff 1) * (algebraMap R _ b - ω)
+        = x.coeff 1 * qaDiff268 a b := by
+      rw [qaDiff268]
+      ring
+    rw [e] at hh'
+    exact hh'
+  have hunit : IsUnit (qaDiff268 a b) :=
+    isUnit_iff_exists.mpr ⟨x.coeff 1, by rw [mul_comm]; exact hω, hω⟩
+  exact (qaIsUnitQaDiff268 (a := a) (b := b)).mp hunit
+
+set_option maxHeartbeats 1000000 in
+/-- **主定理：`δ` 满射 ⟺ 迹形式幺模** ✓✅。 -/
+theorem surjective_deltaToEndRingHom_quadratic268_iff :
+    Function.Surjective (BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b)))
+      ↔ QaTraceUnimodular268 a b :=
+  ⟨fun h => by rw [qaTraceUnimodular268_iff]; exact isUnit_disc268_of_surjective_deltaToEndRingHom h,
+   fun h => surjective_deltaToEndRingHom_quadratic268_of_isUnit (a := a) (b := b) (qaTraceUnimodular268_iff.mp h)⟩
+
+/-! #### 268.5 核判别 ＋ 单射判别 -/
+
+/-- **`δ x = 0` 的系数判别** ✓。 -/
+lemma qaDeltaEqZero268_iff
+    (x : SkewMonoidAlgebra (QuadraticAlgebra R a b) (Multiplicative (ZMod 2))) :
+    BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b)) x = 0
+      ↔ x.coeff 1 + x.coeff (Multiplicative.ofAdd 1) = 0
+        ∧ x.coeff 1 * qaDiff268 a b = 0 := by
+  have hσ : (Multiplicative.ofAdd (1 : ZMod 2)) ≠ 1 := by decide
+  have hσ' : ¬ ((1 : Multiplicative (ZMod 2)) = Multiplicative.ofAdd 1) := by decide
+  constructor
+  · intro hx
+    have h1 : x.coeff 1 + x.coeff (Multiplicative.ofAdd 1) = 0 := by
+      have hh := congrFun (congrArg DFunLike.coe hx) (1 : QuadraticAlgebra R a b)
+      rw [qaDeltaForm268] at hh
+      simpa using hh
+    refine ⟨h1, ?_⟩
+    have hω := congrFun (congrArg DFunLike.coe hx) (ω : QuadraticAlgebra R a b)
+    rw [qaDeltaForm268, qaStarOmega268] at hω
+    have hcoe : x.coeff (Multiplicative.ofAdd 1) = -x.coeff 1 :=
+      eq_neg_of_add_eq_zero_left (by rw [add_comm]; exact h1)
+    have e : x.coeff 1 * ω + x.coeff (Multiplicative.ofAdd 1) * (algebraMap R _ b - ω)
+        = x.coeff 1 * qaDiff268 a b := by
+      rw [hcoe, qaDiff268]
+      ring
+    rw [e] at hω
+    simpa using hω
+  · rintro ⟨h1, h2⟩
+    have hcoe : x.coeff (Multiplicative.ofAdd 1) = -x.coeff 1 :=
+      eq_neg_of_add_eq_zero_left (by rw [add_comm]; exact h1)
+    refine qaEndExt268 (f := BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b)) x)
+      (g := 0) ?_ ?_
+    · rw [qaDeltaForm268]
+      simpa using h1
+    · rw [qaDeltaForm268, qaStarOmega268]
+      have e : x.coeff 1 * ω + x.coeff (Multiplicative.ofAdd 1) * (algebraMap R _ b - ω)
+          = x.coeff 1 * qaDiff268 a b := by
+        rw [hcoe, qaDiff268]
+        ring
+      rw [e, h2]
+      rfl
+
+/-- **单射判别** ✓：`δ` 单射 ⟺ `2ω − b` **非零因子** ✓（＝**分离性**判据 ✓）。 -/
+theorem injective_deltaToEndRingHom_quadratic268_iff :
+    Function.Injective (BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b)))
+      ↔ ∀ u : QuadraticAlgebra R a b, u * qaDiff268 a b = 0 → u = 0 := by
+  have hσ : (Multiplicative.ofAdd (1 : ZMod 2)) ≠ 1 := by decide
+  have hσ' : ¬ ((1 : Multiplicative (ZMod 2)) = Multiplicative.ofAdd 1) := by decide
+  constructor
+  · intro hinj u hu
+    have hker : BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b))
+        (SkewMonoidAlgebra.single (1 : Multiplicative (ZMod 2)) u
+          + SkewMonoidAlgebra.single (Multiplicative.ofAdd 1) (-u)) = 0 := by
+      rw [qaDeltaEqZero268_iff]
+      constructor
+      · simp [SkewMonoidAlgebra.coeff_add, hσ, hσ']
+      · simp only [SkewMonoidAlgebra.coeff_add, Finsupp.add_apply,
+          SkewMonoidAlgebra.coeff_single_apply, hσ]
+        simpa using hu
+    have hz : SkewMonoidAlgebra.single (1 : Multiplicative (ZMod 2)) u
+        + SkewMonoidAlgebra.single (Multiplicative.ofAdd 1) (-u) = 0 :=
+      hinj (by rw [hker]; exact (map_zero _).symm)
+    have hc := congrArg (fun z => z.coeff 1) hz
+    simp only [SkewMonoidAlgebra.coeff_add, Finsupp.add_apply,
+      SkewMonoidAlgebra.coeff_single_apply, hσ, SkewMonoidAlgebra.coeff_zero,
+      Finsupp.zero_apply] at hc
+    simpa using hc
+  · intro hcond x y hxy
+    have hzero : BTier.deltaToEndRingHom (qaSmulComm268 (a := a) (b := b)) (x - y) = 0 := by
+      rw [map_sub, hxy, sub_self]
+    rw [qaDeltaEqZero268_iff] at hzero
+    have hc1 : (x - y).coeff 1 = 0 := hcond _ hzero.2
+    have hcσ : (x - y).coeff (Multiplicative.ofAdd 1) = 0 := by
+      have h := hzero.1
+      rw [hc1, zero_add] at h
+      exact h
+    have hcoeff : (x - y).coeff = 0 := Finsupp.ext fun g => by
+      rcases mul_zmod2_cases267 g with rfl | rfl
+      · exact hc1
+      · exact hcσ
+    exact sub_eq_zero.mp (SkewMonoidAlgebra.coeff_inj.mp (by
+      rw [hcoeff, SkewMonoidAlgebra.coeff_zero]))
+
+/-! #### 268.6 判别式元素的坐标式 -/
+
+/-- **`u * (2ω − b)` 的实部** ✓。 -/
+lemma qaMulQaDiff268_re (u : QuadraticAlgebra R a b) :
+    (u * qaDiff268 a b).re = 2 * a * u.im - b * u.re := by
+  simp [qaDiff268]
+  ring
+
+/-- **`u * (2ω − b)` 的虚部** ✓。 -/
+lemma qaMulQaDiff268_im (u : QuadraticAlgebra R a b) :
+    (u * qaDiff268 a b).im = 2 * u.re + b * u.im := by
+  simp [qaDiff268]
+  ring
+
+/-- **`u * (2ω − b) = 0` 的线性方程组形** ✓（单射判别各见证的公共工具 ✓）。 -/
+lemma qaMulQaDiff268_eq_zero_iff (u : QuadraticAlgebra R a b) :
+    u * qaDiff268 a b = 0 ↔
+      2 * a * u.im - b * u.re = 0 ∧ 2 * u.re + b * u.im = 0 := by
+  constructor
+  · intro h
+    exact ⟨by
+        have h' := congrArg QuadraticAlgebra.re h
+        rw [qaMulQaDiff268_re] at h'
+        simpa using h',
+      by
+        have h' := congrArg QuadraticAlgebra.im h
+        rw [qaMulQaDiff268_im] at h'
+        simpa using h'⟩
+  · rintro ⟨h1, h2⟩
+    apply QuadraticAlgebra.ext
+    · rw [qaMulQaDiff268_re]; exact h1
+    · rw [qaMulQaDiff268_im]; exact h2
+
+/-! #### 268.7 见证（L1 ＋ 反例） -/
+
+/-- **见证 ①：高斯整数档 `ℤ[i]`（`R = ℤ`，`a = −1`，`b = 0`）—— 迹形式**非**幺模** ✗。 -/
+theorem qa_gaussian268_not_isUnit : ¬ IsUnit ((0 : ℤ) ^ 2 + 4 * (-1)) := by
+  have h4 : (0 : ℤ) ^ 2 + 4 * (-1) = -4 := by norm_num
+  rw [h4]
+  intro hu
+  obtain ⟨y, hy, _⟩ := isUnit_iff_exists.mp hu
+  omega
+
+/-- **见证 ①′：`δ` 非满射** ✗（由主定理 ＋ 上件 ✓ —— **与 r267 的机检结论同调** ✓）。 -/
+theorem qa_gaussian268_not_surjective :
+    ¬ Function.Surjective (BTier.deltaToEndRingHom (R := ℤ)
+      (S := QuadraticAlgebra ℤ (-1) 0) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := -1) (b := 0))) := by
+  intro h
+  exact qa_gaussian268_not_isUnit ((qaTraceUnimodular268_iff (a := -1) (b := 0)).mp
+    ((surjective_deltaToEndRingHom_quadratic268_iff (a := -1) (b := 0)).mp h))
+
+/-- **见证 ②：`ℤ[ω]/(ω² − ω + 2)`（`R = ℤ`，`a = −2`，`b = 1`）—— 迹**满射**而迹形式非幺模** ✗。 -/
+theorem qa_sqrt7_268_trace_surjective :
+    ∃ s : QuadraticAlgebra ℤ (-2) 1, QuadraticAlgebra.trace s = 1 :=
+  ⟨ω, by rw [QuadraticAlgebra.trace_omega]⟩
+
+theorem qa_sqrt7_268_not_isUnit : ¬ IsUnit ((1 : ℤ) ^ 2 + 4 * (-2)) := by
+  have h7 : (1 : ℤ) ^ 2 + 4 * (-2) = -7 := by norm_num
+  rw [h7]
+  intro hu
+  obtain ⟨y, hy, _⟩ := isUnit_iff_exists.mp hu
+  omega
+
+theorem qa_sqrt7_268_not_surjective :
+    ¬ Function.Surjective (BTier.deltaToEndRingHom (R := ℤ)
+      (S := QuadraticAlgebra ℤ (-2) 1) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := -2) (b := 1))) := by
+  intro h
+  exact qa_sqrt7_268_not_isUnit ((qaTraceUnimodular268_iff (a := -2) (b := 1)).mp
+    ((surjective_deltaToEndRingHom_quadratic268_iff (a := -2) (b := 1)).mp h))
+
+/-- **见证 ②″：`δ` 单射** ✓（**分离性**判据 ✓：`2ω − 1` 非零因子 ✓）。 -/
+theorem qa_sqrt7_268_injective :
+    Function.Injective (BTier.deltaToEndRingHom (R := ℤ)
+      (S := QuadraticAlgebra ℤ (-2) 1) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := -2) (b := 1))) := by
+  rw [injective_deltaToEndRingHom_quadratic268_iff]
+  intro u hu
+  rw [qaMulQaDiff268_eq_zero_iff] at hu
+  have hy : u.im = 0 := by omega
+  have hx : u.re = 0 := by omega
+  ext <;> assumption
+
+/-! #### 268.8 正规基（`R[G]`-自由秩一）在见证 ② 上成立，而 `δ` 仍非满射 -/
+
+/-- `x • ω` 的坐标式（`a = −2`，`b = 1`）✓。 -/
+lemma qa_sqrt7_268_smul_omega :
+    letI := BTier.monoidAlgebraModuleOfMulSemiringAction (R := ℤ)
+      (S := QuadraticAlgebra ℤ (-2) 1) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := -2) (b := 1))
+    ∀ x : MonoidAlgebra ℤ (Multiplicative (ZMod 2)),
+      x • (ω : QuadraticAlgebra ℤ (-2) 1)
+        = algebraMap ℤ _ (x.coeff (Multiplicative.ofAdd 1))
+          + algebraMap ℤ _ (x.coeff 1 - x.coeff (Multiplicative.ofAdd 1)) * ω := by
+  let _inst := BTier.monoidAlgebraModuleOfMulSemiringAction (R := ℤ)
+    (S := QuadraticAlgebra ℤ (-2) 1) (G := Multiplicative (ZMod 2))
+    (qaSmulComm268 (a := -2) (b := 1))
+  intro x
+  have hx : x = MonoidAlgebra.single (1 : Multiplicative (ZMod 2)) (x.coeff 1)
+      + MonoidAlgebra.single (Multiplicative.ofAdd 1) (x.coeff (Multiplicative.ofAdd 1)) := by
+    rw [← MonoidAlgebra.coeff_inj]
+    ext g
+    rcases mul_zmod2_cases267 g with rfl | rfl <;>
+      simp [MonoidAlgebra.coeff_add]
+  conv_lhs => rw [hx]
+  rw [add_smul,
+    BTier.monoidAlgebraModule_single_smul (R := ℤ) (S := QuadraticAlgebra ℤ (-2) 1)
+      (G := Multiplicative (ZMod 2)) (qaSmulComm268 (a := -2) (b := 1)),
+    BTier.monoidAlgebraModule_single_smul (R := ℤ) (S := QuadraticAlgebra ℤ (-2) 1)
+      (G := Multiplicative (ZMod 2)) (qaSmulComm268 (a := -2) (b := 1))]
+  rw [one_smul, qaConj268_smul_def, qaConj268_gen, qaStarOmega268]
+  apply QuadraticAlgebra.ext <;> simp
+  all_goals ring
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 见证 ②‴：`S` 是 `R[G]`-自由秩一（正规基 `ω` ✓），而 `δ` 非满射** ✗ ——
+即 **`R[G]`-自由秩一 ⟹ `δ` 满射** 为**假** ✗（路线 β 的机检否决 ✓）。 -/
+theorem qa_sqrt7_268_normalBasis :
+    letI := BTier.monoidAlgebraModuleOfMulSemiringAction (R := ℤ)
+      (S := QuadraticAlgebra ℤ (-2) 1) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := -2) (b := 1))
+    Function.Bijective (fun x : MonoidAlgebra ℤ (Multiplicative (ZMod 2)) =>
+      x • (ω : QuadraticAlgebra ℤ (-2) 1)) := by
+  let _inst := BTier.monoidAlgebraModuleOfMulSemiringAction (R := ℤ)
+    (S := QuadraticAlgebra ℤ (-2) 1) (G := Multiplicative (ZMod 2))
+    (qaSmulComm268 (a := -2) (b := 1))
+  constructor
+  · intro x y hxy
+    change x • (ω : QuadraticAlgebra ℤ (-2) 1) = y • ω at hxy
+    rw [qa_sqrt7_268_smul_omega, qa_sqrt7_268_smul_omega] at hxy
+    have h1 : x.coeff (Multiplicative.ofAdd 1) = y.coeff (Multiplicative.ofAdd 1) := by
+      have h := congrArg QuadraticAlgebra.re hxy
+      simpa using h
+    have h2 : x.coeff 1 - x.coeff (Multiplicative.ofAdd 1)
+        = y.coeff 1 - y.coeff (Multiplicative.ofAdd 1) := by
+      have h := congrArg QuadraticAlgebra.im hxy
+      simpa using h
+    have h3 : x.coeff 1 = y.coeff 1 := by omega
+    rw [← MonoidAlgebra.coeff_inj]
+    ext g
+    rcases mul_zmod2_cases267 g with rfl | rfl
+    · exact h3
+    · exact h1
+  · intro z
+    refine ⟨MonoidAlgebra.single (1 : Multiplicative (ZMod 2)) (z.re + z.im)
+      + MonoidAlgebra.single (Multiplicative.ofAdd 1) z.re, ?_⟩
+    change (MonoidAlgebra.single (1 : Multiplicative (ZMod 2)) (z.re + z.im)
+      + MonoidAlgebra.single (Multiplicative.ofAdd 1) z.re) •
+        (ω : QuadraticAlgebra ℤ (-2) 1) = z
+    rw [qa_sqrt7_268_smul_omega]
+    have hc1 : (MonoidAlgebra.single (1 : Multiplicative (ZMod 2)) (z.re + z.im)
+        + MonoidAlgebra.single (Multiplicative.ofAdd 1) z.re).coeff 1 = z.re + z.im := by
+      simp [MonoidAlgebra.coeff_add]
+    have hcσ : (MonoidAlgebra.single (1 : Multiplicative (ZMod 2)) (z.re + z.im)
+        + MonoidAlgebra.single (Multiplicative.ofAdd 1) z.re).coeff
+          (Multiplicative.ofAdd 1) = z.re := by
+      simp [MonoidAlgebra.coeff_add]
+    rw [hc1, hcσ, show z.re + z.im - z.re = z.im by ring]
+    apply QuadraticAlgebra.ext <;> simp
+
+/-! #### 268.9 非空性见证（假设成立 ＋ 结论成立） -/
+
+/-- **非空性 ①：分裂档 `ω² = ω`（`R = ℤ`，`a = 0`，`b = 1`）—— 迹形式幺模** ✓。 -/
+theorem qa_split268_isUnit : IsUnit ((1 : ℤ) ^ 2 + 4 * 0) := by
+  norm_num
+
+theorem qa_split268_surjective :
+    Function.Surjective (BTier.deltaToEndRingHom (R := ℤ)
+      (S := QuadraticAlgebra ℤ 0 1) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := 0) (b := 1))) :=
+  (surjective_deltaToEndRingHom_quadratic268_iff (a := 0) (b := 1)).mpr
+    ((qaTraceUnimodular268_iff (a := 0) (b := 1)).mpr qa_split268_isUnit)
+
+theorem qa_split268_injective :
+    Function.Injective (BTier.deltaToEndRingHom (R := ℤ)
+      (S := QuadraticAlgebra ℤ 0 1) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := 0) (b := 1))) := by
+  rw [injective_deltaToEndRingHom_quadratic268_iff]
+  intro u hu
+  rw [qaMulQaDiff268_eq_zero_iff] at hu
+  have hx : u.re = 0 := by omega
+  have hy : u.im = 0 := by omega
+  ext <;> assumption
+
+theorem qa_split268_bijective :
+    Function.Bijective (BTier.deltaToEndRingHom (R := ℤ)
+      (S := QuadraticAlgebra ℤ 0 1) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := 0) (b := 1))) :=
+  ⟨qa_split268_injective, qa_split268_surjective⟩
+
+/-- **非空性 ②：高斯档在 `ℚ` 上（`R = ℚ`）—— 迹形式幺模** ✓（`−4 ∈ ℚ^×` ✓）。 -/
+theorem qa_gaussianRat268_bijective :
+    Function.Bijective (BTier.deltaToEndRingHom (R := ℚ)
+      (S := QuadraticAlgebra ℚ (-1) 0) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := -1) (b := 0))) := by
+  have hU : IsUnit (((0 : ℚ)) ^ 2 + 4 * (-1)) := by
+    rw [show ((0 : ℚ)) ^ 2 + 4 * (-1) = -4 by norm_num]
+    exact isUnit_iff_ne_zero.mpr (by norm_num)
+  refine ⟨?_, (surjective_deltaToEndRingHom_quadratic268_iff (a := -1) (b := 0)).mpr
+    ((qaTraceUnimodular268_iff (a := -1) (b := 0)).mpr hU)⟩
+  rw [injective_deltaToEndRingHom_quadratic268_iff]
+  intro u hu
+  rw [qaMulQaDiff268_eq_zero_iff] at hu
+  have hy : u.im = 0 := by linarith [hu.1]
+  have hx : u.re = 0 := by linarith [hu.2]
+  ext <;> assumption
+
+/-! #### 268.10 见证 ③：`|G|` 可逆**不足** —— `R = 𝔽₃[X]` -/
+
+/-- **见证 ③（`a`）：`2` 在 `𝔽₃[X]` 中可逆** ✓（`2 = −1` ✓）。 -/
+theorem qa_f3x268_isUnit_two : IsUnit (2 : Polynomial (ZMod 3)) := by
+  have h2 : (2 : Polynomial (ZMod 3)) = Polynomial.C (2 : ZMod 3) :=
+    (Polynomial.C_eq_natCast 2).symm
+  have h3 : (2 : ZMod 3) = -1 := by decide
+  rw [h2, h3, Polynomial.C_neg, Polynomial.C_1]
+  exact isUnit_neg_one
+
+/-- **见证 ③（`b`）：判别式 `X` 在 `𝔽₃[X]` 中非单位** ✗。 -/
+theorem qa_f3x268_not_isUnit_disc :
+    ¬ IsUnit ((0 : Polynomial (ZMod 3)) ^ 2 + 4 * Polynomial.X) := by
+  have hd : (0 : Polynomial (ZMod 3)) ^ 2 + 4 * Polynomial.X = Polynomial.X := by
+    have h4 : (4 : Polynomial (ZMod 3)) = 1 := by
+      rw [show (4 : Polynomial (ZMod 3)) = Polynomial.C (4 : ZMod 3) from
+        (Polynomial.C_eq_natCast 4).symm]
+      rw [show (4 : ZMod 3) = 1 by decide, Polynomial.C_1]
+    rw [h4]
+    simp
+  rw [hd]
+  intro hu
+  obtain ⟨p, hp, _⟩ := isUnit_iff_exists.mp hu
+  have h0 : (0 : ZMod 3) = 1 := by
+    have hh := congrArg (fun q : Polynomial (ZMod 3) => q.coeff 0) hp
+    rw [Polynomial.coeff_X_mul_zero, Polynomial.coeff_one_zero] at hh
+    exact hh
+  exact zero_ne_one h0
+
+/-- **见证 ③（`c`）：`δ` 单射** ✓（分离性判据 ✓：`2ω` 非零因子 ✓）。 -/
+theorem qa_f3x268_injective :
+    Function.Injective (BTier.deltaToEndRingHom (R := Polynomial (ZMod 3))
+      (S := QuadraticAlgebra (Polynomial (ZMod 3)) Polynomial.X 0) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := Polynomial.X) (b := 0))) := by
+  rw [injective_deltaToEndRingHom_quadratic268_iff]
+  intro u hu
+  rw [qaMulQaDiff268_eq_zero_iff] at hu
+  have h2 : (2 : Polynomial (ZMod 3)) ≠ 0 := by
+    intro h
+    have hh : (2 : ZMod 3) = 0 := by
+      have := congrArg (fun q : Polynomial (ZMod 3) => q.coeff 0) h
+      simpa using this
+    exact absurd hh (by decide)
+  have hX : (Polynomial.X : Polynomial (ZMod 3)) ≠ 0 := Polynomial.X_ne_zero
+  have hre : u.re = 0 := by
+    have h := hu.2
+    simp only [zero_mul, add_zero] at h
+    exact (mul_eq_zero.mp h).resolve_left h2
+  have him : u.im = 0 := by
+    have h := hu.1
+    simp only [zero_mul, sub_zero] at h
+    rcases mul_eq_zero.mp h with h' | h'
+    · exact absurd h' (mul_ne_zero h2 hX)
+    · exact h'
+  exact QuadraticAlgebra.ext hre him
+
+/-- **🔴🔴 见证 ③：`|G| = 2` **可逆** ✓（`IsUnit (2 : 𝔽₃[X])` ✓）而 `δ` **非满射** ✗** ——
+即「`|G|` 在 `R` 中可逆」**不足以**推出 `δ` 满射 ✗。 -/
+theorem qa_f3x268_not_surjective :
+    ¬ Function.Surjective (BTier.deltaToEndRingHom (R := Polynomial (ZMod 3))
+      (S := QuadraticAlgebra (Polynomial (ZMod 3)) Polynomial.X 0) (G := Multiplicative (ZMod 2))
+      (qaSmulComm268 (a := Polynomial.X) (b := 0))) := by
+  intro h
+  exact qa_f3x268_not_isUnit_disc
+    ((qaTraceUnimodular268_iff (a := Polynomial.X) (b := 0)).mp
+      ((surjective_deltaToEndRingHom_quadratic268_iff (a := Polynomial.X) (b := 0)).mp h))
+
+/-! #### 268.11 高斯档的**定义关系**（与 r267 载体同构的机检依据） -/
+
+/-- **`ω² = −1`** ✓（`ℤ[i]` 的乘法表 ✓）。 -/
+theorem qa_gaussian268_omega_sq :
+    (ω : QuadraticAlgebra ℤ (-1) 0) * ω = -1 := by
+  rw [QuadraticAlgebra.omega_mul_omega_eq_algebraMap]
+  norm_num
+
+/-- **`star ω = −ω`** ✓（复共轭 ✓）。 -/
+theorem qa_gaussian268_star_omega :
+    star (ω : QuadraticAlgebra ℤ (-1) 0) = -ω := by
+  rw [qaStarOmega268]
+  norm_num
+
+/-- **🔴 高斯见证与 §4.73 载体的**环同构**（机检 ✓✅）：`QuadraticAlgebra ℤ (-1) 0 ≃+* Zsqrtd (-1)`
+（坐标恒等 ✓，因 `(-1) + 0·ω` 与 `√(-1)²` 的乘法表逐字一致 ✓）。 -/
+def qaGaussianIntEquiv268 : QuadraticAlgebra ℤ (-1) 0 ≃+* Zsqrtd (-1) where
+  toFun z := ⟨z.re, z.im⟩
+  invFun z := ⟨z.re, z.im⟩
+  left_inv z := rfl
+  right_inv z := rfl
+  map_add' z w := by ext <;> simp
+  map_mul' z w := by
+    apply Zsqrtd.ext
+    · simp only [Zsqrtd.re_mul, QuadraticAlgebra.re_mul]
+    · simp only [Zsqrtd.im_mul, QuadraticAlgebra.im_mul]
+      ring
+
+/-- **同构与共轭相容** ✓：`star`（本族 ✓）↔ `Zsqrtd.star`（§4.73 ✓）✓。 -/
+theorem qaGaussianIntEquiv268_star (z : QuadraticAlgebra ℤ (-1) 0) :
+    qaGaussianIntEquiv268 (star z) = star (qaGaussianIntEquiv268 z) := by
+  apply Zsqrtd.ext
+  · simp only [qaGaussianIntEquiv268, QuadraticAlgebra.re_star, Zsqrtd.star_mk,
+      RingEquiv.coe_mk, Equiv.coe_fn_mk]
+    ring
+  · simp only [qaGaussianIntEquiv268, QuadraticAlgebra.im_star, Zsqrtd.star_mk,
+      RingEquiv.coe_mk, Equiv.coe_fn_mk]
+
+/-! #### 268.12 一般档（任意有限 `G`）：迹形式幺模性的**充分性** —— 形状锁定（未证） -/
+
+/-- **一般档的充分性陈述（形状锁定）** ✗：`tr : S →ₗ[R] R` 为 `G`-**不变** ✓ 的**对称** ✓ 迹泛函，
+其**配对 `(x,y) ↦ tr (x*y)` 满** ✓（＝**迹形式幺模** ✓）＋ `S` 对 `R` **有限** ✓ ＋ `δ` **单射** ✓
+⟹ `δ` **满射** ✓。
+**⚠ 身份** ✓：本条是**猜想形**（**未证** ✗）—— 其 **`G = C₂`／秩 2 档**已由
+`surjective_deltaToEndRingHom_quadratic268_iff` ✓（**第 268 轮** ✓）机检落地 ✓（**该档无需单射假设** ✓，
+`⟺` 成立 ✓）；**一般档未证** ✗。 -/
+def TraceUnimodularSufficiency268 : Prop :=
+  ∀ (R S : Type) [CommRing R] [CommRing S] [Algebra R S] (G : Type) [Group G] [Fintype G]
+    [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x))
+    (tr : S →ₗ[R] R),
+    (∀ (g : G) (x : S), tr (g • x) = tr x) →
+    (∀ x y : S, tr (x * y) = tr (y * x)) →
+    (∀ φ : S →ₗ[R] R, ∃ y : S, ∀ x : S, φ x = tr (x * y)) →
+    Module.Finite R S →
+    Function.Injective (BTier.deltaToEndRingHom (R := R) (S := S) (G := G) hRG) →
+    Function.Surjective (BTier.deltaToEndRingHom (R := R) (S := S) (G := G) hRG)
+
+/-- **登记** ✗：`TraceUnimodularSufficiency268` ✓ **未证** ✗（**一般档** ✓）；本轮已落的是
+其 **`G = C₂`／秩 2 档**（**且更强**：`⟺` ✓，`surjective_deltaToEndRingHom_quadratic268_iff` ✓）＋
+**三条弱化路线的机检否决** ✓（迹满射 ✗／`|G|` 可逆 ✗／`R[G]`-自由秩一 ✗）。 -/
+theorem traceUnimodularSufficiency268_registered : True := trivial
+
+/-- **强度序（已证 ✓）：迹形式幺模 ⟹ **迹满射**（`∃ s, trace s = 1`）** ✓ —— 显式见证
+`s = ⟨2ua, ub⟩`（`u` ＝ `b² + 4a` 的逆 ✓）：`trace s = 4ua + b²u = u (b² + 4a) = 1` ✓。
+**⚠ 用点** ✓：本条把「迹形式幺模」与**更弱**的「迹满射」**严格分开** ✓（反向 ✗ 由
+`qa_sqrt7_268_trace_surjective` ✓ ＋ `qa_sqrt7_268_not_surjective` ✓ 否决 ✓）。 -/
+theorem qa_exists_trace_eq_one268_of_isUnit (h : IsUnit (b ^ 2 + 4 * a)) :
+    ∃ s : QuadraticAlgebra R a b, QuadraticAlgebra.trace s = 1 := by
+  obtain ⟨u, hu, _⟩ := isUnit_iff_exists.mp h
+  have h1 : u * (b ^ 2 + 4 * a) = 1 := by rw [mul_comm]; exact hu
+  refine ⟨⟨2 * u * a, u * b⟩, ?_⟩
+  rw [QuadraticAlgebra.trace_def]
+  show 2 * (2 * u * a) + b * (u * b) = 1
+  rw [← h1]
+  ring
+
+/-! #### 268.13 公理门（逐条） -/
+
+#print axioms qaConj268_mul_smul
+#print axioms qaSmulComm268
+#print axioms qaTraceOmegaSq268
+#print axioms qaGram268_det
+#print axioms qaNormQaDiff268
+#print axioms qaIsUnitQaDiff268
+#print axioms qaDeltaForm268
+#print axioms qaEndExt268
+#print axioms qaStarOmega268
+#print axioms qaDeltaPair268
+#print axioms qaTraceUnimodular268_iff
+#print axioms qaExistsMulEqOne268
+#print axioms surjective_deltaToEndRingHom_quadratic268_of_isUnit
+#print axioms isUnit_disc268_of_surjective_deltaToEndRingHom
+#print axioms surjective_deltaToEndRingHom_quadratic268_iff
+#print axioms qaDeltaEqZero268_iff
+#print axioms injective_deltaToEndRingHom_quadratic268_iff
+#print axioms qaMulQaDiff268_eq_zero_iff
+#print axioms qa_gaussian268_not_isUnit
+#print axioms qa_gaussian268_not_surjective
+#print axioms qa_gaussian268_omega_sq
+#print axioms qa_gaussian268_star_omega
+#print axioms qaGaussianIntEquiv268
+#print axioms qaGaussianIntEquiv268_star
+#print axioms qa_exists_trace_eq_one268_of_isUnit
+#print axioms qa_sqrt7_268_trace_surjective
+#print axioms qa_sqrt7_268_not_isUnit
+#print axioms qa_sqrt7_268_not_surjective
+#print axioms qa_sqrt7_268_injective
+#print axioms qa_sqrt7_268_smul_omega
+#print axioms qa_sqrt7_268_normalBasis
+#print axioms qa_split268_isUnit
+#print axioms qa_split268_surjective
+#print axioms qa_split268_injective
+#print axioms qa_split268_bijective
+#print axioms qa_gaussianRat268_bijective
+#print axioms qa_f3x268_isUnit_two
+#print axioms qa_f3x268_not_isUnit_disc
+#print axioms qa_f3x268_injective
+#print axioms qa_f3x268_not_surjective
+#print axioms traceUnimodularSufficiency268_registered
+
+end QuadraticRingTier268
 
 end ABGV52

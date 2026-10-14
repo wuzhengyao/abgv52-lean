@@ -1170,3 +1170,17 @@ injectivity of the structure map, are all satisfied by the Gaussian integers ove
 conjugation, where the structure map is nevertheless not surjective, as the trace form shows.  So the
 ring-tier row must be tied to the module-theoretic rows rather than deduced from injectivity and rank.
 The imports needed for the field-tier argument were added; nothing existing was changed.
+
+The correct module-theoretic input for the ring tier has been found and pinned exactly.  On the
+quadratic carrier, where the group of order two acts by conjugation, surjectivity of the structure map
+is equivalent to unimodularity of the trace form, that is, to the discriminant being a unit; one
+direction gives an explicit preimage from the unit formed by twice the generator minus the trace, the
+other reads the discriminant off the preimage of the coefficient projection, and no injectivity
+hypothesis is needed.  The Gaussian integers are the failing case and are identified with the previous
+round's carrier by an explicit ring isomorphism compatible with conjugation, while the same quadratic
+data over the rationals, and the split case over the integers, satisfy the hypothesis and the
+conclusion.  Three weaker candidate inputs are refuted by explicit witnesses: surjectivity of the
+trace, invertibility of the group order, and freeness of rank one over the group ring.  Invertibility
+of the group order and unimodularity are incomparable.  The general case for an arbitrary finite group
+is registered as a shape-locked obligation, and the module-theoretic rows over the group ring are
+untouched.
