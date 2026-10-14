@@ -1401,3 +1401,13 @@ ingredients were landed in previous rounds, so the argument is a direct composit
 recorded: a hypothesis stated for a function is not beta-reduced, so rewriting with the evaluation lemmas requires
 restating it first in applied form.  The independence of the conjugates, the crossed-product clause itself, and the
 Galois predicate as a whole are not claimed here.
+
+Round 301 supplies the compatibility hypothesis of the Galois criterion for the Artin-Schreier action and assembles
+the criterion from its parts.  The action is given by algebra automorphisms, so it commutes with the scalars of the
+base ring, which is exactly the hypothesis that the criterion takes as an explicit parameter; the proof reduces that
+commutation to multiplicativity of the shift together with the earlier computation that the shift fixes the
+coefficients.  With the fixed-base clause and the unconditional faithfulness clause already in place, the criterion
+for the carrier therefore follows as soon as the crossed-product clause is available, and that assembly is recorded
+as a theorem whose only hypothesis is precisely that remaining clause.  Two practical points are recorded: the
+scalar action must be unfolded by rewriting with the algebra scalar law rather than by definitional unfolding, and the
+criterion lives in a nested namespace, so it must be referenced by its qualified name.

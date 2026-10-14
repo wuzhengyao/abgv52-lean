@@ -8923,4 +8923,59 @@ end ArtinSchreierConjugates300
 #print axioms asShiftH_root_injective
 
 
+/-! ### 4.89 **`hRG` 兼容性 ＋ `IsGaloisWithGroup` 组装**（第 301 轮）
+—— 款① ＋ 款② ＋ 兼容性 **组装为源判据** ✓（**只余款③** ✓）
+
+**落成两件** ✓✅：**(i)** **`asCarrier_hRG`** ✓✅：`∀ g r t, g • (r • t) = r • (g • t)` ✓
+（**源 `IsGaloisWithGroup` 的显式参数** ✓ —— AS 作用由 **`R`-代数自同构**给出 ✓，故与 `R`-纯量交换 ✓）；
+**(ii)** **`asCarrier_isGaloisWithGroup_of_delta`** ✓✅：**款① ＋ 款② ＋ `hRG` ⟹ `IsGaloisWithGroup`** ✓
+（**条件：款③** ✓ —— **源判据的组装已就位** ✓）。
+
+**机制** ✓：**(i)** `R`-纯量即 `algebraMap` 乘法 ✓ ⟹ 由 **`map_mul`** ✓ ＋ **§4.81 的 `asShiftH_of`** ✓
+（移位固定系数 ✓）收口 ✓；**(ii)** 直接填源判据的**三款** ✓（前两款 ＝ §4.87 ✓ ＋ §4.85 ✓）。
+
+**⚠ 工艺（两条，入 §5.1）** ✓：**(甲)** `r • t` 的 `algebraMap` 展开**不是 defeq** ✗（`Algebra.smul_def` ✓ 是**定理** ✗）
+⟹ 须先 **`rw [Algebra.smul_def, Algebra.smul_def]`** ✓ 再 `show` ✓（实测 `show` 直写报 "not definitionally equal" ✗）；
+**(乙)** 源判据在 **`ABGV52.BTier`** 命名空间 ✓ ⟹ 引用须**限定**（`ABGV52.BTier.deltaToEndRingHom` ✓／
+`ABGV52.BTier.IsGaloisWithGroup` ✓）—— 未限定会报 **unknown identifier** 并被 `autoImplicit` 误读为隐式变量 ✗。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗（**以假设形式入 (ii)** ✓ —— **这正是本轮的"余量"** ✓）；
+**不**声称 `IsGaloisWithGroup` **无条件成立** ✗；**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section ArtinSchreierGaloisAssembly301
+
+attribute [local instance] asCarrierMSA
+
+/-- **`hRG` 兼容性** ✓：AS 作用与 `R`-纯量交换 ✓（作用由 `R`-代数自同构给出 ✓）。 -/
+theorem asCarrier_hRG {R : Type*} [CommRing R] [IsDomain R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R) :
+    ∀ (g : Multiplicative (ZMod p)) (r : R) (t : asCarrier R p a),
+      g • (r • t) = r • (g • t) := by
+  intro k r t
+  rw [Algebra.smul_def, Algebra.smul_def]
+  show asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+      (castHom_pow (p := p) (Multiplicative.toAdd k))
+      (algebraMap R (asCarrier R p a) r * t)
+    = algebraMap R (asCarrier R p a) r
+      * asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+        (castHom_pow (p := p) (Multiplicative.toAdd k)) t
+  rw [map_mul]
+  congr 1
+  rw [show algebraMap R (asCarrier R p a) r = AdjoinRoot.of (ASpoly R p a) r from rfl]
+  rw [asShiftH_of]
+
+/-- **组装** ✓：款① ＋ 款② ＋ `hRG` ⟹ **`IsGaloisWithGroup`** ✓（**条件：款③** ✓）。 -/
+theorem asCarrier_isGaloisWithGroup_of_delta {R : Type*} [CommRing R] [IsDomain R] {p : ℕ}
+    [Fact p.Prime] [CharP R p] (a : R)
+    (hdelta : Function.Bijective (ABGV52.BTier.deltaToEndRingHom (asCarrier_hRG a))) :
+    ABGV52.BTier.IsGaloisWithGroup R (asCarrier R p a) (Multiplicative (ZMod p))
+      (asCarrier_hRG a) :=
+  ⟨asCarrierMSA_faithful_of_isDomain a, asCarrier_smul_algebraMap a, hdelta⟩
+
+end ArtinSchreierGaloisAssembly301
+
+#print axioms asCarrier_hRG
+#print axioms asCarrier_isGaloisWithGroup_of_delta
+
+
 end ABGV52
