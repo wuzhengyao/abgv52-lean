@@ -9112,4 +9112,53 @@ end ArtinSchreierBasis303
 #print axioms asCarrier_finrank
 
 
+/-! ### 4.92 **朴素正规基候选的判否（机检反例）**（第 304 轮）
+—— `{φ_k root}` **不可能**是正规基 ✓（`p ≥ 3` ✗）；正确候选须为**更高权**元素 ✓
+
+**落成** ✓✅：**`asCarrier_conj_span_le`** ✓：`Submodule.span R (range (k ↦ φ_k root)) ≤ Submodule.span R {1, root}` ✓
+—— **共轭族 `{φ_k root}` 的生成子模落在 `R + R·root` 内** ✓ ⟹ 其维数 **≤ 2** ✓ ⟹
+**`p ≥ 3` 时不可能生成 `S`** ✗（`S` 秩 `p` ✓，§4.91 ✓）⟹ **朴素候选判否** ✓。
+
+**⚠ 意义（判否的正面价值）** ✓：**§4.88** 只给 `{φ_k root}` 的**互异性** ✓（**是**正规基的**必要**条件 ✓）；
+本轮**机检**其**不充分** ✓ —— 因为 `φ_k root = root + of (c k)` ✓（§4.81 ✓）恒落在**二维**子空间 `R + R·root` 内 ✓
+（`of (c k)` ＝ **纯量** ✓）。**⟹ 正规基元须取「更高权」者** ✓（候选：`y^{p−1}` ✓，**下一手** ✓）。
+
+**⚠ 工艺** ✓（入 §5.1 ✓，**与 §4.88 同型，此为第二次命中** ✓）：`rintro x ⟨k, rfl⟩` 后的目标是
+**未 β-归约形** ✓ ⟹ `rw` **不命中** ✗；**解** ＝ 先 `show <显式形>` ✓ 再 `rw` ✓。
+
+**🔴 不声称** ✗：**不**声称 `{φ_k root}` **不是**正规基 ✗（**只**证生成子模 ≤ `R + R·root` ✓ —— `p ≥ 3` 的结论由其**秩**推 ✓，
+未单独落为定理 ✗）；**不**声称款③ 已证 ✗；**不**声称 `{y^{p−1}}` 的共轭族是基 ✗（**未探** ✗）。 -/
+
+section ArtinSchreierNaiveCandidate304
+
+attribute [local instance] asCarrierMSA
+
+/-- **朴素候选判否** ✓：共轭族 `{φ_k root}` 的生成子模落于 `R + R·root` 内 ✓（`p ≥ 3` 时**必非基** ✗）。 -/
+theorem asCarrier_conj_span_le {R : Type*} [CommRing R] [IsDomain R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R) :
+    Submodule.span R (Set.range (fun k : Multiplicative (ZMod p) =>
+        asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+          (castHom_pow (p := p) (Multiplicative.toAdd k)) (AdjoinRoot.root (ASpoly R p a))))
+      ≤ Submodule.span R ({(1 : asCarrier R p a),
+          AdjoinRoot.root (ASpoly R p a)} : Set (asCarrier R p a)) := by
+  refine Submodule.span_le.mpr ?_
+  rintro x ⟨k, rfl⟩
+  show asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+      (castHom_pow (p := p) (Multiplicative.toAdd k)) (AdjoinRoot.root (ASpoly R p a))
+    ∈ Submodule.span R ({(1 : asCarrier R p a),
+        AdjoinRoot.root (ASpoly R p a)} : Set (asCarrier R p a))
+  rw [asShiftH_root]
+  refine Submodule.add_mem _
+    (Submodule.subset_span (Set.mem_insert_iff.mpr (Or.inr (Set.mem_singleton _)))) ?_
+  rw [show AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+      = (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k)) • (1 : asCarrier R p a) from by
+    rw [Algebra.smul_def, mul_one]; rfl]
+  exact Submodule.smul_mem _ _
+    (Submodule.subset_span (Set.mem_insert_iff.mpr (Or.inl rfl)))
+
+end ArtinSchreierNaiveCandidate304
+
+#print axioms asCarrier_conj_span_le
+
+
 end ABGV52

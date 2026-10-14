@@ -1431,3 +1431,11 @@ that the explicit inverse of the crossed-product map will be written in, and it 
 of the paper in the cyclic case.  Two practical points are recorded: the relabelling of a basis requires the index
 equivalence in the direction the library expects, and an attempt to substitute the degree for the prime must be
 avoided because it rewrites the prime inside the defining polynomial as well.
+
+Round 304 rules out the naive candidate for a normal basis of the Artin-Schreier carrier.  The conjugates of the root
+are pairwise distinct, which was established two rounds earlier, but they all lie in the two-dimensional span of the
+unit and the root, because the shift moves the root by a scalar.  As the carrier is free of rank p, they therefore
+cannot form a basis as soon as the prime exceeds two, and a normal basis element has to be sought among elements of
+higher weight; the top power of the root is the natural candidate.  The round thus converts a plausible but wrong
+guess into a machine-checked statement, so that no later round can quietly rely on it, and it records a repetition of
+a practical point about beta-reduction that was met once before.
