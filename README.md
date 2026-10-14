@@ -1106,3 +1106,16 @@ generation over the base, matching the source's own finiteness consequence, and 
 proved unconditionally for one-point groups.  Finally the two source statements now reduce without the
 ring-tier bridge at all: the ring-tier clause is absorbed into a carrier-shaped residual, and the
 conditions under which the bridge was previously assumed are recorded.
+
+The ring-tier bridge has been refuted rather than proved, and the encoding obstacle that blocked the
+refutation last round is gone.  The witness: take the base ring and the algebra both equal to the base
+field, the intermediate field equal to the base field, and the target the zero ring.  The finite-field
+tier hypothesis holds there, while the ring-tier conclusion fails, because the library's Galois
+predicate accepts the zero ring for a one-point group whereas the tensor of the field with itself over
+itself is nontrivial.  To make that argument typecheck the realisation property was re-encoded with
+its algebra structures as explicit data instead of instance bindings, and the two encodings are proved
+equivalent in both directions, so the refutation transfers back to the original form.  Consequently
+the bridge is dead for one-point groups, and the corrected finite-tier-to-ring-tier statement, which
+adds non-triviality and finite generation, is exactly the form that survives.  The remaining case is
+non-singleton groups, where the zero ring is excluded by faithfulness and another degenerate target is
+needed.

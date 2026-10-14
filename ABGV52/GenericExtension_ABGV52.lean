@@ -675,6 +675,105 @@ theorem liftingPropertyEG_of_isGenericObjectEG_stronger_typeLock
         GaloisBaseChangeHyp R S T G hRG hR'G),
       LiftingPropertyEG F G) := rfl
 
+/-! ## **`RealizationProperty` 的显式实例形**（r263：去 `letI` 重编码 ✓）
+
+**⚠ 问题形状** ✓（r262 实测 ✓，探针 `.abgv52-scratch/probe-r262k.lean` ✓）：旧形
+`RealizationProperty` ✓ 的结论把 `Algebra R K` ✓ 绑定为
+`letI : Algebra R K := φ.toRingHom.toAlgebra` ✓（**遮蔽** ✓）——
+在 `R = K = S = F` 档该结论的实例出现**两个候选** ✗（`instAlgebra` ✗ 与 `leftAlgebra` ✗），
+而取非平凡底域时张量的 `Semiring`／`Algebra K` 实例在遮蔽语境下**不可合成** ✗。
+**处置** ✓（**不改旧形** ✗ —— 改 `def` 会打断全部消费者 ✗）：**另立显式实例形** ✓，
+把该 `Algebra R K` ✓ 提为 `∃`-绑定变元 `A` ✓ ⟹ 张量的实例成为**显式项** ✓，
+下游可用 `@TensorProduct` ✓ 指名 ⟹ 退化目标的反驳（`SaltThm38_ABGV52` §4.65 ✓）可行 ✓。 -/
+
+/-- **显式实例形** ✓（`RealizationProperty` ✓ 的**去 `letI`** 重编码 ✓）：与旧形**同体** ✓，
+唯把结论中由 `letI` **遮蔽** ✓ 的 `Algebra R K` ✓ 提为 `∃`-绑定变元 `A` ✓，
+并要求其环同态**等于** `φ.toRingHom` ✓（旧形由 `φ.toRingHom.toAlgebra` **定义性**给出 ✓，
+新形把这一步换成**命题** ✓）。
+**⚠ 强度序** ✓：**两向皆可证** ✓ —— 旧 ⟹ 新（取 `A := φ.toRingHom.toAlgebra` ✓，
+兼容性为 `rfl` ✓）与 新 ⟹ 旧（`algebra_ext_of_algebraMap_eq` ✓ ＋ 沿等式搬运见证 ✓）
+⟹ **两编码等价** ✓✅。
+**🔴 不声称** ✗：**不**声称二者**定义相等** ✗（旧形的实例是 `φ`-**诱导项** ✓、
+新形的是**变元** `A` ✓，只是**命题相等** ✓）；**不**声称新形使旧形的缺陷消失 ✗ ——
+缺陷（零环属环档量词域 ✓、不属域档 ✓）**在两边同样存在** ✓（§4.65 ✓ 正是用新形把它**反驳**掉 ✓）。 -/
+def RealizationPropertyExplicit (F : Type*) [Field F] (G : Type*) [Group G] [Fintype G]
+    (R S : Type*) [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] : Prop :=
+  ∀ (K : Type) [Field K] [Algebra F K]
+    (L : Type) [CommRing L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+    [MulSemiringAction G L]
+    (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+    IsGaloisWithGroup K L G hKL →
+      ∃ (φ : R →ₐ[F] K) (A : Algebra R K),
+        (@Algebra.algebraMap R K _ _ A : R →+* K) = φ.toRingHom ∧
+        let _inst : Algebra R K := A
+        Nonempty (L ≃ₐ[K] (TensorProduct R K S))
+
+/-- **外形锁** ✓（`rfl` 型 ✓）：显式实例形与**展开体逐字相同** ✓ —— 任一 binder 被删／被移／
+被换回 `letI` ✗ 即编译失败 ✓（与 `RealizationPropertyFieldFinite.shape` ✓ 同款工艺 ✓）。 -/
+theorem RealizationPropertyExplicit.shape {F : Type*} [Field F] {G : Type} [Group G] [Fintype G]
+    {R S : Type*} [CommRing R] [CommRing S] [Algebra F R] [Algebra R S] [Algebra F S]
+    [IsScalarTower F R S] :
+    (RealizationPropertyExplicit F G R S)
+      = (∀ (K : Type) [Field K] [Algebra F K]
+          (L : Type) [CommRing L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+          [MulSemiringAction G L]
+          (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+          IsGaloisWithGroup K L G hKL →
+            ∃ (φ : R →ₐ[F] K) (A : Algebra R K),
+              (@Algebra.algebraMap R K _ _ A : R →+* K) = φ.toRingHom ∧
+              let _inst : Algebra R K := A
+              Nonempty (L ≃ₐ[K] (TensorProduct R K S))) :=
+  rfl
+
+/-- **旧形 ⟹ 显式形** ✓（**可证方向** ✓✅）：取 `A := φ.toRingHom.toAlgebra` ✓
+（兼容性 `A.algebraMap = φ.toRingHom` 为 `rfl` ✓），见证逐字搬运 ✓。
+**⚠ 用途** ✓：本件使**旧形的反驳**可由**新形的反驳**经**逆否**得到 ✓
+（`SaltThm38_ABGV52` §4.65 的 `not_realizationProperty_self_of_subsingleton` ✓）。 -/
+theorem realizationPropertyExplicit_of_realizationProperty {F : Type} [Field F] {G : Type}
+    [Group G] [Fintype G] {R S : Type} [CommRing R] [CommRing S] [Algebra F R] [Algebra R S]
+    [Algebra F S] [IsScalarTower F R S] (h : RealizationProperty F G R S) :
+    RealizationPropertyExplicit F G R S := by
+  intro K _ _ L _ _ _ _ _ hKL hgal
+  obtain ⟨φ, hφ⟩ := h K L hKL hgal
+  exact ⟨φ, φ.toRingHom.toAlgebra, rfl, hφ⟩
+
+/-- **显式形 ⟹ 旧形** ✓（**逆向** ✓✅，故两编码**等价** ✓）：由兼容性
+`A.algebraMap = φ.toRingHom` ✓ 得 `A = φ.toRingHom.toAlgebra` ✓
+（`algebra_ext_of_algebraMap_eq` ✓ —— `smul` 由 `algebraMap` 决定 ✓），
+再沿该等式**搬运**见证 ✓（`Eq.rec` ✓；实例作**显式项** ✓ ⟹ 搬运不触发实例合成歧义 ✓）。 -/
+theorem realizationProperty_of_realizationPropertyExplicit {F : Type} [Field F] {G : Type}
+    [Group G] [Fintype G] {R S : Type} [CommRing R] [CommRing S] [Algebra F R] [Algebra R S]
+    [Algebra F S] [IsScalarTower F R S] (h : RealizationPropertyExplicit F G R S) :
+    RealizationProperty F G R S := by
+  intro K _ _ L _ _ _ _ _ hKL hgal
+  obtain ⟨φ, A, hv, hP⟩ := h K L hKL hgal
+  refine ⟨φ, ?_⟩
+  have hAA : A = φ.toRingHom.toAlgebra := by
+    apply algebra_ext_of_algebraMap_eq
+    intro x
+    rw [hv]
+    rfl
+  exact hAA ▸ hP
+
+/-- **亚单 ⟹ 无非平凡代数同构** ✓（**反驳的桥引理** ✓）：`L` 亚单 ✓（如**零环** ✓）、
+`T` 非平凡 ✓ ⟹ **不存在** `K`-代数同构 `L ≃ₐ[K] T` ✓ ——
+由 `Equiv` 的双射性把亚单性搬到 `T` ✓，与非平凡性矛盾 ✓。
+**⚠ 工艺** ✓：两 `Algebra` 实例作**显式变元** ✓（**非** instance binder ✓）⟹
+下游应用时由 **unify** ✓（对齐具体张量实例 ✓）而非 **synth** ✗ 决定，
+这是 §4.65 反驳能穿过 `letI` 遮蔽的关键 ✓（`linter.unusedVariables` 由 `let _inst` 命名规避 ✓）。 -/
+theorem not_nonempty_algEquiv_of_subsingleton_of_nontrivial {K L T : Type*} [CommSemiring K]
+    [Semiring L] [Semiring T] (aL : Algebra K L) (aT : Algebra K T)
+    (hL : Subsingleton L) (hT : Nontrivial T) :
+    ¬ Nonempty (@AlgEquiv K L T _ _ _ aL aT) := by
+  let _instAL : Algebra K L := aL
+  let _instAT : Algebra K T := aT
+  let _instSubL : Subsingleton L := hL
+  rintro ⟨e⟩
+  have hsub : Subsingleton T := e.toEquiv.surjective.subsingleton
+  obtain ⟨a, b, hab⟩ := hT
+  exact hab (hsub.elim a b)
+
 /-! ## 公理闸门 -/
 
 #print axioms mvPolynomial_lift_of_surjective
@@ -703,5 +802,10 @@ theorem liftingPropertyEG_of_isGenericObjectEG_stronger_typeLock
 #print axioms isGenericExtension_typeLock
 #print axioms isGenericExtension_data_nonempty
 #print axioms isGenericExtension_gap_registered
+#print axioms RealizationPropertyExplicit
+#print axioms RealizationPropertyExplicit.shape
+#print axioms realizationPropertyExplicit_of_realizationProperty
+#print axioms realizationProperty_of_realizationPropertyExplicit
+#print axioms not_nonempty_algEquiv_of_subsingleton_of_nontrivial
 
 end ABGV52.BTier

@@ -37,6 +37,7 @@ import ABGV52.SaltLocalProj_ABGV52
 import ABGV52.SaltLocalLift_ABGV52
 import ABGV52.SaltCor_ABGV52
 import Mathlib.RingTheory.Localization.InvSubmonoid
+import Mathlib.RingTheory.TensorProduct.Nontrivial
 open TensorProduct MvPolynomial
 universe u
 noncomputable section
@@ -3829,5 +3830,149 @@ theorem ringTierBridge_residual_registered : True := trivial
 #print axioms ringTierBridge_residual_registered
 
 end CarrierShapedResiduals
+
+
+/-! ### 4.65 **残余 ①（环档桥）的机器反驳**（r263 ✓：`Subsingleton G` 档 ✓；见证 ＝ **零环** ✓）
+
+**⚠ 起点** ✓（承 r262 §4.63／§4.64 ✓）：残余 ①（`RealizationRingTierBridge` ✓，**原形** ✓）
+当时**既未证也未驳** ✗ —— 反驳路线卡在**编码层** ✗（`RealizationProperty` 结论里的
+`letI` 遮蔽使张量实例不可指名 ✗，探针 `probe-r262k` ✓ 可复现 ✓）。
+**本轮处置** ✓：在**不触碰旧 `def`** ✗ 的前提下另立**显式实例形** ✓
+（`GenericExtension_ABGV52` 的 `RealizationPropertyExplicit` ✓，两向强度序皆已证 ✓
+⟹ 与旧形**等价** ✓），再在**该形**上做退化目标反驳 ✓✅，最后经**逆否**回到**源形环档** ✓。 -/
+
+section RingTierBridgeRefuted
+
+variable {F : Type} [Field F]
+
+set_option maxHeartbeats 1000000 in
+/-- **有限域档在自身上成立（`G` 亚单档）** ✓✅：`L` 域 ＋ `|G| = 1` ✓ ⟹ 秩定理给 `[L : K] = 1` ✓
+⟹ `L ≅ K` ✓（`nonempty_algEquiv_of_finrank_eq_one` ✓），再与 `F ⊗_F K ≅ K` ✓ 复合 ✓。
+**⚠ 地位** ✓：本件是**反驳的「前件为真」那一半** ✓ —— 反驳 `RealizationRingTierBridge F G` ✓ 须
+「**有限域档**在 `(R, S) = (F, F)` 上**真** ✓」（本件 ✓）＋「**环档**在**同载体**上**假** ✗」
+（`not_realizationProperty_self_of_subsingleton` ✓）。
+**⚠ 与 r262 件的关系** ✓：`realizationPropertyFieldFinite_self_trivialGroup` ✓（`G = PUnit` 专用 ✓）
+**一字不动** ✓；本件是其 `Subsingleton G` 推广 ✓（`Fintype.card G = 1` 由亚单性算出 ✓）。 -/
+theorem realizationPropertyFieldFinite_self_of_subsingleton {G : Type} [Group G] [Fintype G]
+    (hG : Subsingleton G) : RealizationPropertyFieldFinite F G F F := by
+  intro K _ _ L _ _ _ _ _ _ hKL hgal
+  refine ⟨Algebra.ofId F K, ?_⟩
+  let _inst : Algebra F K := (Algebra.ofId F K).toRingHom.toAlgebra
+  have hcard : Fintype.card G = 1 := by
+    have h1 : Fintype.card G ≤ 1 := Fintype.card_le_one_iff.mpr (fun a b => hG.elim a b)
+    have h0 : 0 < Fintype.card G := Fintype.card_pos
+    omega
+  have hfin : Module.finrank K L = 1 := by
+    rw [BTier.finrank_eq_card_of_isGaloisWithGroup hKL hgal, hcard]
+  obtain ⟨e⟩ := nonempty_algEquiv_of_finrank_eq_one (K := K) (L := L) hfin
+  have h1 : K ≃ₐ[K] (TensorProduct F K F) := (Algebra.TensorProduct.rid F K K).symm
+  exact ⟨e.trans h1⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴 退化目标反驳（显式实例形）** ✓✅：`G` 亚单 ⟹ `RealizationPropertyExplicit F G F F` **假** ✗。
+**⚠ 见证（逐项）** ✓：`R = S = F` ✓／`K = F` ✓／`L ＝ 零环` ✓（取 `PUnit` ✓，其环结构即零环 ✓）；
+`G` 在 `L` 上的作用取**平凡** ✓（`Subsingleton G` ⟹ 唯一 ✓；本件就地给出该 `MulSemiringAction` ✓）。
+**⚠ 两件输入** ✓：① **前件为真** ✓：零环是**库内合法**的 `G`-Galois 目标 ✓
+（`isGaloisWithGroup_zeroRing_of_subsingleton` ✓ —— 正是 r262 定位的**根因** ✓）；
+② **结论为假** ✗：`∃φ A` 给出的张量 `F ⊗[F] F` ✓ **非平凡** ✓
+（`Algebra.TensorProduct.nontrivial_of_algebraMap_injective_of_isDomain` ✓：`F` 是域 ⟹
+`A.algebraMap` 单射 ✓）而 `L` **亚单** ✓ ⟹ 由
+`not_nonempty_algEquiv_of_subsingleton_of_nontrivial` ✓ 得**无** `F`-代数同构 ✓ ⟹ 矛盾 ✓。
+**⚠ 关键工艺** ✓（**正是 r262 卡住处** ✓）：张量的两个 `Module` 实例以 `@TensorProduct` ✓ **指名** ✓
+—— 左槽 `@Algebra.toModule F F _ _ A` ✓（`φ`-诱导 ✓）、右槽 `@Algebra.toModule F F _ _ (Algebra.id F)` ✓
+（环境实例 ✓）；桥引理的两个 `Algebra` 实例作**显式变元** ✓ ⟹ 由 **unify**（对齐具体张量实例 ✓）
+而非 **synth** 决定 ✓。
+**🔴 不声称** ✗：**不**声称 `G` **非**亚单档的反驳 ✗ —— 零环在 `G` 非平凡时**不是** `G`-Galois ✓
+（`FaithfulSMul` 款即排除 ✓），故该档须另找退化目标 ✓（见文末登记 (丙) ✓）。 -/
+theorem not_realizationPropertyExplicit_self_of_subsingleton {G : Type} [Group G] [Fintype G]
+    (hG : Subsingleton G) : ¬ BTier.RealizationPropertyExplicit F G F F := by
+  intro h
+  let _instMSA : MulSemiringAction G PUnit.{1} :=
+    { smul := fun _ _ => PUnit.unit
+      one_smul := fun _ => rfl
+      mul_smul := fun _ _ _ => rfl
+      smul_zero := fun _ => rfl
+      smul_add := fun _ _ _ => rfl
+      smul_mul := fun _ _ _ => rfl
+      smul_one := fun _ => rfl }
+  have hKL : ∀ (g : G) (r : F) (t : PUnit.{1}), g • (r • t) = r • (g • t) :=
+    fun _ _ _ => Subsingleton.elim _ _
+  have hgal : BTier.IsGaloisWithGroup F PUnit.{1} G hKL :=
+    isGaloisWithGroup_zeroRing_of_subsingleton (G := G) (K := F) hG hKL
+  obtain ⟨_, A, _, hP⟩ := h F PUnit.{1} hKL hgal
+  have hnt : Nontrivial (@TensorProduct F _ F F _ _ (@Algebra.toModule F F _ _ A)
+      (@Algebra.toModule F F _ _ (Algebra.id F))) :=
+    @Algebra.TensorProduct.nontrivial_of_algebraMap_injective_of_isDomain F F F _ _ _
+      A (Algebra.id F) (RingHom.injective _) (RingHom.injective _) _ _
+  exact BTier.not_nonempty_algEquiv_of_subsingleton_of_nontrivial (K := F) (L := PUnit.{1})
+    (T := @TensorProduct F _ F F _ _ (@Algebra.toModule F F _ _ A)
+      (@Algebra.toModule F F _ _ (Algebra.id F))) _ _ inferInstance hnt hP
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴 退化目标反驳（源形环档）** ✓✅：由显式实例形 ＋ **旧 ⟹ 新** ✓
+（`BTier.realizationPropertyExplicit_of_realizationProperty` ✓）的**逆否** ✓ 得旧形为假 ✗。
+**⚠ 意义** ✓：**源形**（＝两条源陈述所用之档 ✓）本身在 `G` 亚单档**不成立** ✗ ——
+故「有限域档 ⟹ 环档」**不可**作为无条件桥 ✗。 -/
+theorem not_realizationProperty_self_of_subsingleton {G : Type} [Group G] [Fintype G]
+    (hG : Subsingleton G) : ¬ BTier.RealizationProperty F G F F :=
+  fun h => not_realizationPropertyExplicit_self_of_subsingleton (F := F) hG
+    (BTier.realizationPropertyExplicit_of_realizationProperty h)
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 本轮主结论：残余 ①（原形环档桥）在 `Subsingleton G` 档被机器反驳** ✓✅：
+`RealizationRingTierBridge F G` ＝ 「有限域档 ⟹ 环档」✓，本件给**反例三件套** ✓ ——
+载体 `(R, S) = (F, F)` ✓、前件 `RealizationPropertyFieldFinite F G F F` ✓（上件 ✓）、
+结论 `BTier.RealizationProperty F G F F` ✓ **假** ✗（上件 ✓）。
+**⚠ 档位** ✓：`G` **亚单** ✓（＝源侧「秩 1」档 ✓；零环恰是库内判据在此档**多收**的目标 ✗）。
+**⚠ 后果** ✓：旧归约链中**以环档桥为假设者** ✗（`RealizationRingTierBridge F G` ✓）
+在 `G` 亚单档**不可实例化** ✗ ⟹ 该路线在平凡群档**终结** ✗；
+**修正形** ✓（`RealizationRingTierBridgeFinite` ✓）**不退** ✓✅（其亚单档已证 ✓，
+且本反驳**解释了**为何须加 `[Nontrivial L]` ✓／`[Module.Finite K L]` ✓ 两前提 ✓）。
+**🔴 不声称** ✗：**不**声称 `G` **非**亚单档的桥已驳 ✗（见文末登记 ✓）；**不**声称两条源陈述已证 ✗。 -/
+theorem not_realizationRingTierBridge_of_subsingleton {G : Type} [Group G] [Fintype G]
+    (hG : Subsingleton G) : ¬ RealizationRingTierBridge F G := by
+  intro hb
+  exact not_realizationProperty_self_of_subsingleton (F := F) hG
+    (hb F F (realizationPropertyFieldFinite_self_of_subsingleton (F := F) hG))
+
+/-- **推论（平凡群档）** ✓：`G = PUnit`（＝**平凡群** ✓）时环档桥被驳 ✗。 -/
+theorem not_realizationRingTierBridge_trivialGroup :
+    ¬ RealizationRingTierBridge F PUnit.{1} :=
+  not_realizationRingTierBridge_of_subsingleton (F := F) (G := PUnit.{1})
+    (inferInstance : Subsingleton PUnit.{1})
+
+/-- **登记** ✓：**残余 ①（`RealizationRingTierBridge` ✓ **原形** ✓）的终态** ——
+**(甲) 已落** ✓✅：**机器反驳** ✓（`Subsingleton G` 档 ✓，本轮 ✓）—— 见证 ＝ **零环** ✓
+（**前件真** ✓：`realizationPropertyFieldFinite_self_of_subsingleton` ✓；
+**结论假** ✗：`not_realizationProperty_self_of_subsingleton` ✓）；**显式实例形** ✓
+＋ **两向强度序** ✓（`GenericExtension_ABGV52` ✓ ⟹ 两编码**等价** ✓✅）。
+**(乙) 后果（逐条）** ✓：**(i)** 旧归约链中**以环档桥为假设者** ✗ ——
+`thm21RingTierResidual_of_clausesResidual_and_ringBridge` ✓／
+`isGenericExtension_of_fieldFinite_and_ringBridge` ✓／
+`nonempty_genericExtensionWitness_of_fieldFinite_and_ringBridge` ✓ ——
+在 `G` 亚单档**不可实例化** ✗（其假设已假 ✓）⟹ 该路线在平凡群档**终结** ✗；
+**⚠ 与 r262 一致** ✓：修正方向本就落在**载体形残余** ✓（`Thm21RingTierResidual` ✓／
+`NoetherRingTierResidual` ✓，**不含**环档桥 ✓）⟹ **两条源陈述的归约不受影响** ✓✅；
+**(ii)** **修正形** ✓（`RealizationRingTierBridgeFinite` ✓：量词加 `[Nontrivial L]` ✓ ＋
+`[Module.Finite K L]` ✓）**不退** ✓✅ —— `realizationRingTierBridgeFinite_of_subsingleton` ✓ 已在册 ✓，
+且本反驳**恰好解释了**为何须加该两前提 ✓（零环被排除 ✓）；**(iii)** 域档前件在载体上**非空** ✓
+（r262 ✓ `realizationPropertyFieldFinite_self_trivialGroup` ✓）⟹ 本反驳**非空洞** ✓✅。
+**(丙) 未落** ✗（**逐条，含理由** ✓）：**(iv)** **`G` 非亚单档的反驳** ✗ —— 零环不是 `G`-Galois ✓
+（`FaithfulSMul` 款 ✓）⟹ 候选退化目标 ＝ **分裂 `G`-Galois 代数** ✓ `K^G` ✓（正则置换作用 ✓；
+`|G| ≥ 2` 时 `K^G ≇ K` ✓ 由**幂等元计数** ✓：域只有 `0, 1` 两个幂等元 ✓ 而 `K^G` 有 `|G|` 个 ✓）
+—— 须先落 `IsGaloisWithGroup K (K^G) G` ✓（δ 双射 ＝ 维数计数 ＋ 单射 ✓），**库内未落** ✗；
+**(v)** 两条源陈述 ✓ **仍未证** ✗。
+**🔴 不声称** ✗：**不**声称 `G` 非亚单档的桥已驳 ✗；**不**声称原形**一般档**的真值已定 ✗
+（**只**判亚单档为**假** ✓）；**不**声称两条源陈述已证 ✗。 -/
+theorem ringTierBridge_refuted_registered : True := trivial
+
+#print axioms realizationPropertyFieldFinite_self_of_subsingleton
+#print axioms not_realizationPropertyExplicit_self_of_subsingleton
+#print axioms not_realizationProperty_self_of_subsingleton
+#print axioms not_realizationRingTierBridge_of_subsingleton
+#print axioms not_realizationRingTierBridge_trivialGroup
+#print axioms ringTierBridge_refuted_registered
+
+end RingTierBridgeRefuted
 
 end ABGV52
