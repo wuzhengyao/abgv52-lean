@@ -1210,3 +1210,20 @@ finite group, arbitrary rank and arbitrary commutative base ring, the preimage b
 explicitly from trace-dual elements; neither the rank hypothesis nor injectivity is needed.  The one
 remaining obligation is whether the registered hypotheses imply that trace formula, and the split
 carrier witnesses the new hypotheses over an arbitrary commutative ring.
+
+The twelve modules that the file manifest above lists by name only are now under version control.
+They were already compiled as part of the development and already covered by `SHA256SUMS` and by the
+gate's 122-item table, but they existed only in the working tree, so no commit recorded them and no
+diff could show a change to them; the modules are `TateTrivial_ABGV52.lean`,
+`TateLayer_ABGV52.lean`, `Superlattice_ABGV52.lean`, `SuperlatticeClass_ABGV52.lean`,
+`SubgroupPerm_ABGV52.lean`, `StableRationalBricks_ABGV52.lean`, `RetractCrit_ABGV52.lean`,
+`NotRetract_ABGV52.lean`, `NotRetractChallenge_ABGV52.lean`, `LatticeHyp_ABGV52.lean`,
+`HypRefute_ABGV52.lean` and `FischerRegular_ABGV52.lean`.  Four of them carry the flasque layer, the
+permutation-lattice-to-flasque gap, the trivial-group and trivial-module flasque instances and the
+refutations of the two flasque hypotheses as first stated; two carry the multiplicity arithmetic of
+the superlattice classification and its orbit-multiplicity interface; the non-retract-rationality
+chain of 4.13 and its independent restatement are two more; the remaining four are the named
+hypothesis interface of 4.12, the stable-rationality closure bricks, the lattice form of the flasque
+resolution hypothesis, and the regular-invariant Fischer hypothesis.  With this addition the file
+count, the mirror, `SHA256SUMS` and the gate table all agree at 122, and every module the gate
+compiles is tracked.
