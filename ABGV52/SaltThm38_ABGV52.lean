@@ -8758,4 +8758,50 @@ end ArtinSchreierGaloisClauses296
 #print axioms asCarrierMSA_faithful_of_injective
 
 
+/-! ### 4.86 **款① 去条件化（第一步：素域像单射）**（第 298 轮）
+—— §258.2(乙) 落库 ✓：款① 的两条前提**去掉一条** ✓
+
+**落成两件** ✓✅：**(i)** **`zmod_castHom_injective`** ✓✅（**素域像单射** ✓：
+`Function.Injective (ZMod.castHom (dvd_refl p) R)` ✓ —— 由 `CharP R p` ＋ `p` 素 ✓）；
+**(ii)** **`asCarrierMSA_faithful_of_ofInjective`** ✓✅（**款① 单前提形** ✓：只需 `of` 单射 ✓，
+素域像单射已由 (i) 供给 ✓）。
+
+**机制** ✓（(i) ✓）：**`ZMod p` 是域** ✓ ⟹ 任意 `ZMod p →+* R`（`R` **非平凡** ✓）**单射** ✓（`RingHom.injective` ✓）；
+**`R` 非平凡** ✓ 由 `CharP R p` ＋ `p` 素 ✓ —— 取 `n = 1` ✓，用
+**`CharP.cast_eq_zero_iff R p 1 : (1:R) = 0 ↔ p ∣ 1`** ✓ ＋ **`Nat.Prime.not_dvd_one`** ✓。
+
+**⚠ 工艺（一条，入 §5.1）** ✓：**"零环中 `(n:R) = 0` 对一切 `n` 成立"** ✓ ⟹ **不得**用"`(p:R) = 0` 与 `p ≠ 0` 矛盾"证非平凡 ✗
+（第 297 轮探针的**首版错误** ✓，实测 ✓）；**正解** ＝ 取 `n = 1` ✓（`p ∣ 1` 与 `p` 素矛盾 ✓）。
+
+**🔴 不声称** ✗：**不**声称款①的**无条件形**已证 ✗（**尚余 `of` 单射** ✓ 一条前提 —— **下一手** ✓：
+`AdjoinRoot.of.injective_of_degree_ne_zero` ✓ ＋ `degree ≠ 0` ✓）；**不**声称款③（`δ` 双射）已证 ✗；
+**不**声称 `IsGaloisWithGroup` 整体 ✗。 -/
+
+section ArtinSchreierFaithful298
+
+attribute [local instance] asCarrierMSA
+
+/-- **素域像单射** ✓：`ZMod p →+* R` 单射（`CharP R p`、`p` 素、`R` 非平凡 ✓）。 -/
+theorem zmod_castHom_injective {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p] :
+    Function.Injective (ZMod.castHom (dvd_refl p) R) := by
+  let _inst : Nontrivial R := by
+    rw [← not_subsingleton_iff_nontrivial]
+    intro h
+    have h1 : (1 : R) = 0 := Subsingleton.elim 1 0
+    exact (Fact.out : Nat.Prime p).not_dvd_one
+      ((CharP.cast_eq_zero_iff R p 1).mp (by simpa using h1))
+  exact (ZMod.castHom (dvd_refl p) R).injective
+
+/-- **款①（忠实）单前提形** ✓✅：只需 `of` 单射 ✓（素域像单射由 `zmod_castHom_injective` ✓ 供给）。 -/
+theorem asCarrierMSA_faithful_of_ofInjective {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R) (hinf : Function.Injective (AdjoinRoot.of (ASpoly R p a))) :
+    FaithfulSMul (Multiplicative (ZMod p)) (asCarrier R p a) :=
+  asCarrierMSA_faithful_of_injective a hinf (zmod_castHom_injective (p := p) (R := R))
+
+end ArtinSchreierFaithful298
+
+#print axioms zmod_castHom_injective
+#print axioms asCarrierMSA_faithful_of_ofInjective
+
+
 end ABGV52

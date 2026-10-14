@@ -1369,3 +1369,14 @@ action forces that image to vanish.  Both remaining injectivity hypotheses are e
 intended applications, one from the carrier's presentation over a domain and one from the characteristic, and
 removing them is recorded as the next step.  The crossed-product clause and the Galois predicate as a whole are not
 claimed here.
+
+Round 298 removes one of the two hypotheses that the faithfulness clause of the previous round was stated under.
+The map from the prime field into the coefficient ring is injective whenever the coefficient ring has characteristic
+the prime in question: the prime field is a field, so a ring homomorphism out of it is injective as soon as the
+target is nontrivial, and nontriviality follows because otherwise one would be zero and hence divisible by the prime.
+The faithfulness clause is then restated with the injectivity of the canonical map into the carrier as its only
+hypothesis, the prime-field injection being supplied by the new lemma.  Two practical notes are recorded: the
+nontriviality of a ring in prime characteristic must be extracted from the element one rather than from the
+characteristic element, since in the zero ring every natural number vanishes; and the instance of nontriviality has
+to be registered as a local instance for the field argument to apply.  The remaining hypothesis, the injectivity of
+the canonical map into the carrier, is not addressed here.
