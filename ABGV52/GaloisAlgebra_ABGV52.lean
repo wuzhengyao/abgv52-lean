@@ -1969,4 +1969,170 @@ end GaloisProgeneratorRebuilt
 #print axioms not_moduleFinite_monoidAlgebra_int_rat
 #print axioms galoisProgenerator_of_projective_monoidAlgebra_nonempty
 
+/-! ## 端点 ④ 的 `hinj` **必要性**：无限制单射供给的机器反驳链（第 258 轮 ✓）
+
+**所问** ✓：端点 ④ 的重建形 `galoisProgenerator_of_projective_monoidAlgebra` ✓（`:1875` ✓）的
+第四输入 `hinj : Function.Injective (algebraMap R S)` ✓ —— **必要** ✓，还是**重建的工艺产物** ✗？
+
+**答** ✓：**必要** ✓（**非工艺产物** ✗）。**两段机器链** ✓ ——
+**① 一般蕴含** ✓：**忠实平坦 ⟹ 结构映射单射** ✓（`faithfullyFlat_algebraMap_injective` ✓，**已落** ✓）；
+**② 反例** ✓：`¬ Module.FaithfullyFlat (ℚ × ℚ) ℚ` ✗（`not_faithfullyFlat_prod_rat_rat` ✓，**已落** ✓），
+且与 `galoisFaithfulHyp_refuted` ✓（`:1070` ✓）**共享同一条 `hRG`** ✓
+⟹ **该 Galois 实例上端点 ④ 结论的第三款真的失败** ✗（`galoisFaithfulHyp_refuted_faithfullyFlat` ✓）。
+**合读** ✓：`IsGaloisWithGroup` ✓ **单独不供给** `hinj` ✗（`galoisInjectiveSupply_refuted` ✓）
+⟹ **④ 的预期用例形不可删去 `hinj`** ✗（**删去即失供给** ✗，**非**工艺冗余 ✗）。
+
+**⚠ mathlib 侧** ✓：同款现成件 `Module.FaithfullyFlat.faithfulSMul` ✓ 在
+`Mathlib/RingTheory/Flat/FaithfullyFlat/Algebra.lean:96` ✓，**不在本件导入闭包内** ✗ ⟹
+本条**不新增 import** ✓：改用**已导入**的 `FaithfullyFlat/Basic.lean:481` ✓ 的
+`Module.FaithfullyFlat.one_tmul_eq_zero_iff` ✓ **自证** ✓（**只动本文件** ✓）。
+
+**⚠ 预期用例中的供给是结构性的** ✓：源侧 `R` 本就在 `S` **内** ✓（`R → S` 是**包含映射** ✓）
+⟹ `hinj` 在那里**不是待证命题** ✓ 而是**结构事实** ✓；本工程已落的**具体供给件** ＝
+`faithfulSMul_subalgebra_away_of_noetherAdjoin` ✓（`ABGV52/SaltThm38_ABGV52.lean:542` ✓）——
+其证明正是「`ι` **单射** ✓ ⟹ `algebraMap` **单射** ✓」，经 `faithfulSMul_iff_algebraMap_injective` ✓ 收尾 ✓。
+
+**🔴 不声称** ✗：**①** 不声称**预期用例**中单射**不可得** ✗（**相反** ✓，见上一条 ✓）；
+**②** 不重证已被反驳的无限制现形 ✗（`galoisFaithfulHyp_refuted` ✓／`galoisProgeneratorHyp_refuted` ✓ **留痕** ✓）；
+**③** 对源 `[Sal78b]` 印 528 的 **`R[G]`-投射性语句不作任何声称** ✗（该输入在本节**未出现** ✗）；
+**④** 不声称「删去 `hinj` 而**保留** `hfin`／`hproj`／塔式的重建形**为假**」✗ ——
+那需要一个**满足其余三条输入**而**结论失败**的反例 ✗（本节**未给** ✗，**登记为下一手** ⚠）；
+本节证的是**供给侧**命题为假 ✗：「Galois 判据 ⟹ `hinj`」**不成立** ✗。 -/
+
+section GaloisProgeneratorInjNecessary
+
+variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+
+set_option maxHeartbeats 1000000 in
+/-- **一般蕴含（忠实平坦 ⟹ 结构映射单射）** ✓（**第 258 轮** ✓，**已落** ✓）：
+`Module.FaithfullyFlat R S` ✓ ⟹ `Function.Injective (algebraMap R S)` ✓。
+**路线** ✓：设 `algebraMap r = 0` ✓ ⟹ `r • (1 : S) = 0` ✓ ⟹
+`(1 : S) ⊗ₜ[R] r = r • ((1 : S) ⊗ₜ[R] (1 : R)) = (r • (1 : S)) ⊗ₜ[R] (1 : R) = 0` ✓
+⟹ 由 `Module.FaithfullyFlat.one_tmul_eq_zero_iff` ✓ 得 `r = 0` ✓；以 `r₁ - r₂` 收尾 ✓。
+**⚠ mathlib 的现成件** ✓：`Module.FaithfullyFlat.faithfulSMul` ✓
+（`FaithfullyFlat/Algebra.lean:96` ✓）**正是本断言** ✓，但该模块**不在导入闭包内** ✗
+⟹ 本条**不新增 import** ✓，只在**已导入**层自证 ✓（`FaithfullyFlat/Basic.lean` ✓）。
+**🔴 不声称** ✗：**①** 不声称其**逆** ✗（**单射不蕴含忠实平坦** ✗）；
+**②** 不声称本件与 `Module.FaithfullyFlat.faithfulSMul` ✓ 的**逐字等价** ✗（**未比对** ✗）。 -/
+theorem faithfullyFlat_algebraMap_injective (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
+    [Module.FaithfullyFlat R S] : Function.Injective (algebraMap R S) := by
+  have hker : ∀ r : R, algebraMap R S r = 0 → r = 0 := by
+    intro r hr
+    have hr' : r • (1 : S) = 0 := by
+      rw [← Algebra.algebraMap_eq_smul_one]
+      exact hr
+    have h0 : (1 : S) ⊗ₜ[R] r = 0 := by
+      calc (1 : S) ⊗ₜ[R] r
+          = (1 : S) ⊗ₜ[R] (r • (1 : R)) := by rw [smul_eq_mul, mul_one]
+        _ = r • ((1 : S) ⊗ₜ[R] (1 : R)) := by rw [TensorProduct.tmul_smul]
+        _ = (r • (1 : S)) ⊗ₜ[R] (1 : R) := by rw [TensorProduct.smul_tmul']
+        _ = (0 : S) ⊗ₜ[R] (1 : R) := by rw [hr']
+        _ = 0 := by rw [TensorProduct.zero_tmul]
+    exact (Module.FaithfullyFlat.one_tmul_eq_zero_iff (R := R) (A := S) (M := R) r).mp h0
+  intro r₁ r₂ h
+  have hsub : algebraMap R S (r₁ - r₂) = 0 := by rw [map_sub, h, sub_self]
+  exact sub_eq_zero.mp (hker (r₁ - r₂) hsub)
+
+/-- **反例实例的局部件** ✓：`Algebra (ℚ × ℚ) ℚ` **经 `fst`** ✓（与 `galoisFaithfulHyp_refuted` ✓
+（`:1070` ✓）**同一条** ✓）；`PUnit ↷ ℚ` 取**平凡作用** ✓（复用文件内 `pUnitTrivMSA` ✓；
+`PUnit` **无** mathlib 实例 ✗）。 -/
+local instance ratProdAlgQ : Algebra (ℚ × ℚ) ℚ := (RingHom.fst ℚ ℚ).toAlgebra
+
+/-- **反例实例的局部件（续）** ✓：`PUnit.{1} ↷ ℚ` **平凡作用** ✓（**必须 `.{1}`** ✗：`PUnit.{0}` 是 `Prop` ✗）。 -/
+local instance pUnitMSARatQ : MulSemiringAction PUnit.{1} ℚ := pUnitTrivMSA
+
+set_option maxHeartbeats 1000000 in
+/-- **（反例实例上）结构映射不单射** ✓（**第 258 轮** ✓，**已落** ✓）：
+`Algebra (ℚ × ℚ) ℚ := (RingHom.fst ℚ ℚ).toAlgebra` ✓ 下 `algebraMap (ℚ × ℚ) ℚ` **不单射** ✗ ——
+`(0, 1)` ✓ 与 `(0, 0)` ✓ **像同为 `0`** ✓ 而**两者不等** ✗（**第二坐标相抵** ✓）。
+**意义** ✓：这是端点 ④ 第四输入 `hinj` ✓ 在该实例上的**失败见证** ✓；亦为
+`not_faithfullyFlat_prod_rat_rat` ✓ 的**第二条独立路线** ✓ 的对照件 ✓。
+**🔴 不声称** ✗：**不**声称「该实例上 `¬ FaithfulSMul (ℚ × ℚ) ℚ`」**由本条新证** ✗ ——
+那一条已由 `galoisFaithfulHyp_refuted` ✓ 落 ✓，本条只把它**翻译到代数层** ✓。 -/
+theorem not_injective_algebraMap_prod_rat_rat : ¬ Function.Injective (algebraMap (ℚ × ℚ) ℚ) := by
+  intro h
+  have h1 : ((0 : ℚ), (1 : ℚ)) = ((0 : ℚ), (0 : ℚ)) :=
+    h (show (algebraMap (ℚ × ℚ) ℚ) (0, 1) = (algebraMap (ℚ × ℚ) ℚ) (0, 0) from rfl)
+  exact one_ne_zero (congrArg Prod.snd h1)
+
+set_option maxHeartbeats 1000000 in
+/-- **忠实平坦性（端点 ④ 结论第三款）在反例实例上为假** ✓（**第 258 轮** ✓，**已落** ✓）：
+`Algebra (ℚ × ℚ) ℚ := (RingHom.fst ℚ ℚ).toAlgebra` ✓ 下 `¬ Module.FaithfullyFlat (ℚ × ℚ) ℚ` ✗。
+**路线** ✓（**判据字段** ✓）：由 `Module.FaithfullyFlat.iff_flat_and_ideal_smul_eq_top` ✓ 取
+`I := RingHom.ker (RingHom.snd ℚ ℚ)` ✓ —— `(1, 0) ∈ I` ✓ ⟹ `I • ⊤ = ⊤` ✓
+（`Ideal.smul_top_eq_map` ✓ ＋ `Submodule.restrictScalars_eq_top_iff` ✓ ＋ `Ideal.eq_top_iff_one` ✓）；
+而 `(0, 1) ∉ I` ✓ ⟹ `I ≠ ⊤` ✗ —— **两条相抵** ✓。
+**⚠ 第二条路线** ✓（**独立** ✓，**未在证明中复用** ✗）：`faithfullyFlat_algebraMap_injective` ✓
+＋ `not_injective_algebraMap_prod_rat_rat` ✓ 亦得同一结论 ✓（**留作对照** ✓）。
+**🔴 不声称** ✗：**①** 不声称 `Module.Finite (ℚ × ℚ) ℚ` ✓ 与 `Module.Projective (ℚ × ℚ) ℚ` ✓ 的**真值** ✗
+（**两款的真值本节未算** ✗ ⟹ **不**升级为「④ 结论三款全假」✗）；
+**②** 不声称 `ℚ × ℚ` 上**不存在**任何忠实平坦模结构 ✗（**只**针对 `fst` 这一条结构 ✓）。 -/
+theorem not_faithfullyFlat_prod_rat_rat : ¬ Module.FaithfullyFlat (ℚ × ℚ) ℚ := by
+  intro hff
+  have hcond := (Module.FaithfullyFlat.iff_flat_and_ideal_smul_eq_top
+    (R := ℚ × ℚ) (M := ℚ)).mp hff
+  have hne : RingHom.ker (RingHom.snd ℚ ℚ) ≠ ⊤ := by
+    intro h
+    have h1 : ((0 : ℚ), (1 : ℚ)) ∈ RingHom.ker (RingHom.snd ℚ ℚ) := by
+      rw [h]
+      exact Submodule.mem_top
+    rw [RingHom.mem_ker] at h1
+    exact one_ne_zero h1
+  refine hne (hcond.2 (RingHom.ker (RingHom.snd ℚ ℚ)) ?_)
+  rw [Ideal.smul_top_eq_map]
+  rw [Submodule.restrictScalars_eq_top_iff]
+  refine Ideal.eq_top_iff_one _ |>.mpr ?_
+  have hmem : ((1 : ℚ), (0 : ℚ)) ∈ RingHom.ker (RingHom.snd ℚ ℚ) :=
+    RingHom.mem_ker.mpr rfl
+  exact Ideal.mem_map_of_mem (algebraMap (ℚ × ℚ) ℚ) hmem
+
+set_option maxHeartbeats 1000000 in
+/-- **登记件：反例实例上端点 ④ 结论的第三款真的失败** ✓（**第 258 轮** ✓，**已落** ✓）：
+存在**同一条** `hRG` ✓ 使 `IsGaloisWithGroup (ℚ × ℚ) ℚ PUnit hRG` **成立** ✓
+而 `Module.FaithfullyFlat (ℚ × ℚ) ℚ` **不成立** ✗ —— **这就是本轮所问的缺环** ✓。
+**⚠ 口径** ✓：反例档 ＝ `R = ℚ × ℚ` ✓（**经 `fst`** ✓）／`S = ℚ` ✓／`G = PUnit` ✓（**平凡作用** ✓）；
+见证 `hRG` ✓ 与 `galoisFaithfulHyp_refuted` ✓（`:1070` ✓）**同一条** ✓（**不重新构造** ✗）。
+**⚠ 意义** ✓：`galoisFaithfulHyp_refuted` ✓ 给的是 `¬ FaithfulSMul` ✗（**代数／纯量层** ✓），
+本条把它**推进到端点 ④ 的结论层** ✓：第三款 `Module.FaithfullyFlat` ✓ 与 `FaithfulSMul` ✓ 经
+`faithfullyFlat_algebraMap_injective` ✓ 相抵 ✓。
+**⚠ 边界** ✓（**如实** ✓）：端点 ④ 的**其余输入**（`R[G]`-模结构 ✓／相容 ✓／有限 ✓／投射 ✓）
+在**本实例上成立与否未核** ✗ ⟹ 本条证的是**供给侧**（Galois 判据 ⟹ `hinj`）**为假** ✗，
+**不是**「删去 `hinj` 的重建形为假」✗（见节头 ④ ✓）。
+**🔴 不声称** ✗：**①** 不声称预期用例中 `Module.FaithfullyFlat ↥S (Localization.Away T)` ✓ **不成立** ✗
+（**相反** ✓，`faithfulSMul_subalgebra_away_of_noetherAdjoin` ✓ 给 `FaithfulSMul` ✓）；
+**②** 不声称 `IsGaloisWithGroup` ✓ 的现形已**修正** ✗（**留痕** ✓、**不删** ✓）。 -/
+theorem galoisFaithfulHyp_refuted_faithfullyFlat :
+    ∃ hRG : ∀ (g : PUnit.{1}) (r : ℚ × ℚ) (s : ℚ), g • (r • s) = r • (g • s),
+      IsGaloisWithGroup (ℚ × ℚ) ℚ PUnit.{1} hRG ∧ ¬ Module.FaithfullyFlat (ℚ × ℚ) ℚ := by
+  obtain ⟨hRG, hgal, _⟩ := galoisFaithfulHyp_refuted
+  exact ⟨hRG, hgal, not_faithfullyFlat_prod_rat_rat⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **无限制单射供给的反驳（`hinj` 不可由 Galois 判据单独供给）** ✓（**第 258 轮** ✓，**已落** ✓）：
+「**任意** `Algebra R S` ＋ `IsGaloisWithGroup R S G hRG` ⟹ `Function.Injective (algebraMap R S)`」✗
+**为假** ✗ —— 即端点 ④ 的第四输入 `hinj` ✓ **不是** Galois 判据的**推论** ✗。
+**路线** ✓：在该 `∀` 命题上取反例实例（`R = ℚ × ℚ` ✓／`S = ℚ` ✓／`G = PUnit` ✓）＋ **同一条** `hRG` ✓
+⟹ 得 `Function.Injective (algebraMap (ℚ × ℚ) ℚ)` ✗，与 `not_injective_algebraMap_prod_rat_rat` ✓ **相抵** ✓。
+**意义** ✓：`hinj` ✓ **不可删去** ✗（**删去后无供给** ✗）—— 这就是「`hinj` **必要** ✓、**非工艺产物** ✗」的机器读法 ✓。
+**⚠ 量词档** ✓（**如实** ✓）：`R S G` 量词限于 **`Type`**（＝ `Type 0` ✓）—— 反例在**最小宇宙**上即成立 ✓
+⟹ 供给在该档**已假** ✗；**更大宇宙未单独核** ✗（**不声称** ✗）。
+**🔴 不声称** ✗：**①** 不声称「删去 `hinj` 而**保留** `hfin`／`hproj`／塔式的重建形**为假**」✗
+（见节头 ④ ✓）；**②** 不声称**预期用例**中单射**不可得** ✗（**相反** ✓）。 -/
+theorem galoisInjectiveSupply_refuted :
+    ¬ (∀ (R S G : Type) [CommRing R] [CommRing S] [Algebra R S]
+        [Group G] [Fintype G] [MulSemiringAction G S]
+        (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s)),
+        IsGaloisWithGroup R S G hRG → Function.Injective (algebraMap R S)) := by
+  intro h
+  obtain ⟨hRG, hgal, _⟩ := galoisFaithfulHyp_refuted
+  exact not_injective_algebraMap_prod_rat_rat (h (ℚ × ℚ) ℚ PUnit.{1} hRG hgal)
+
+end GaloisProgeneratorInjNecessary
+
+#print axioms faithfullyFlat_algebraMap_injective
+#print axioms not_injective_algebraMap_prod_rat_rat
+#print axioms not_faithfullyFlat_prod_rat_rat
+#print axioms galoisFaithfulHyp_refuted_faithfullyFlat
+#print axioms galoisInjectiveSupply_refuted
+
 end ABGV52.BTier

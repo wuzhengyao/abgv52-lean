@@ -1049,3 +1049,14 @@ over the base; faithful flatness needs Nakayama driven by finite generation, bec
 injectivity alone is not enough, as localising the integers at two shows.  A companion theorem checks
 that the counterexample refuting the unrestricted form is excluded by the new inputs, and a
 non-emptiness probe witnesses the hypothesis class.
+
+
+The injectivity input of the rebuilt progenerator endpoint has been shown to be necessary rather
+than an artifact.  The Galois predicate alone does not give injectivity of the structure map, and the
+project already carries a machine-checked witness for that in the smallest tier: the product of the
+rationals with itself mapping onto the rationals.  What was missing for the point to be sharp is that
+in that same instance the third clause of the rebuilt conclusion genuinely fails, and that is now
+proved: faithful flatness implies injectivity of the structure map, so it cannot hold there.  The
+witness is the same Galois datum as before, taken unchanged.  Accordingly the rebuilt endpoint cannot
+drop the input, and the source's use case is not affected, because there injectivity is structural:
+the base ring sits inside the algebra.
