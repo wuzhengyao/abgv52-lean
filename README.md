@@ -1311,3 +1311,12 @@ yields an endomorphism.  Characteristic p is not installed on the carrier: the s
 polynomial ring, whose characteristic is inherited along the injective constant map, and the result is then pushed
 through the quotient map, which avoids the quotient-characteristic transfer entirely.  What is not claimed is that
 the shift is bijective, that the cyclic group acts, or any of the Galois clauses; the endomorphism alone is landed.
+
+Round 291 supplies the missing prerequisite for turning the Artin-Schreier shift into an automorphism: the set of
+scalars fixed by the p-th power map is closed under negation.  The argument splits on the parity of the prime.  For
+p equal to two the square of the negative equals the square of the original, which the defining relation turns back
+into the original, while characteristic two identifies the negative with the original; for odd p the sign simply
+factors out of the p-th power and the defining relation collapses the rest.  The negation closure is exactly what
+lets the shift by the negative serve as the inverse shift, and it is therefore recorded as the standing prerequisite
+for the automorphism that the next round is to assemble.  Nothing about bijectivity, the cyclic group action, or the
+Galois clauses is claimed here.

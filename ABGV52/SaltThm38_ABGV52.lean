@@ -8340,4 +8340,36 @@ end ArtinSchreierCarrier290
 #print axioms asShiftHom
 
 
+/-! ### 4.80 **AS 移位的逆元前提**（第 291 轮）
+—— 素域元对取负封闭 ✓（**移位逆元 `asShiftHom a (-k)` 的存在性前提** ✓）
+
+**用途** ✓：把 `asShiftHom a k hk` 变成**自同构**需要逆元 `asShiftHom a (-k) …` ✓，
+而后者要求 `(-k)^p = -k` ✓ —— 本条即该前提 ✓（**素域元集对取负封闭** ✓）。
+
+**证** ✓（两档，源出 `Nat.Prime.eq_two_or_odd'` ✓）：
+**(i)** `p = 2` ✓：`(-k)^2 = (-1)^2 · k^2 = k` ✓ 而 `char 2` 给出 `-k = k` ✓（`CharTwo.neg_eq` ✓）；
+**(ii)** `p` **奇** ✓：`(-k)^p = (-1)^p · k^p = (-1)·k = -k` ✓（`Odd.neg_one_pow` ✓）。
+**⚠ 与 §4.78／§4.79 的关系** ✓：§4.78 落**位移核**（`as_shift` ✓）、§4.79 落**载体 ＋ 自同态**（`asShiftHom` ✓），
+本条补**自同构**所需的逆元前提 ✓。
+
+**🔴 不声称** ✗：**不**声称移位**已是自同构** ✗（**双射性未落** ✗ —— 其两条计算件
+（`asShiftHom_of` ✓／`asShiftHom_root` ✓）与 `Algebra.adjoin_induction` 路线**本轮实测受阻** ✗，见 §253 ✓）；
+**不**声称 `MulSemiringAction` 已落 ✗。 -/
+
+section ArtinSchreierNegShift291
+
+/-- **素域元对取负封闭** ✓：`k^p = k` ⟹ `(-k)^p = -k` ✓（移位逆元的存在性前提 ✓）。 -/
+theorem neg_pow_eq_neg {R : Type*} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p] {k : R}
+    (hk : k ^ p = k) : (-k) ^ p = -k := by
+  rcases (Fact.out : Nat.Prime p).eq_two_or_odd' with h2 | hodd
+  · subst h2
+    rw [neg_pow, hk, show (-1 : R) ^ 2 = 1 by norm_num, one_mul, CharTwo.neg_eq]
+  · rw [neg_pow, hk, hodd.neg_one_pow]
+    ring
+
+end ArtinSchreierNegShift291
+
+#print axioms neg_pow_eq_neg
+
+
 end ABGV52
