@@ -1391,3 +1391,13 @@ landed earlier, two of the three Galois clauses are therefore in place; the cros
 here, and the Galois predicate is not claimed as a whole.  Two practical points are recorded about the degree
 computation, concerning the top-degree term of the upper bound and the coercion of the natural number degree into the
 type with an adjoined bottom element.
+
+Round 300 establishes that the conjugates of the root of the Artin-Schreier polynomial are pairwise distinct, which
+is the injective half of the crossed-product clause.  The shift by a group element sends the root to the root plus
+the image of that element, so equality of two conjugates forces the two images to be equal; injectivity of the
+canonical map from the coefficient ring into the carrier turns that into equality of the two images in the
+coefficient ring, and injectivity of the prime-field map turns that into equality of the group elements.  All three
+ingredients were landed in previous rounds, so the argument is a direct composition of them.  One practical point is
+recorded: a hypothesis stated for a function is not beta-reduced, so rewriting with the evaluation lemmas requires
+restating it first in applied form.  The independence of the conjugates, the crossed-product clause itself, and the
+Galois predicate as a whole are not claimed here.

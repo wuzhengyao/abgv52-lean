@@ -8869,4 +8869,58 @@ end ArtinSchreierFaithfulUncond299
 #print axioms asCarrierMSA_faithful_of_isDomain
 
 
+/-! ### 4.88 **根的共轭两两不同（款③ 的单射半）**（第 300 轮）
+—— `k ↦ φ_k(root)` **单射** ✓ ⟹ **`p` 个两两不同的共轭** ✓（正规基候选 `{φ_k root}` ✓ 的**独立性前提** ✓）
+
+**落成** ✓✅：**`asShiftH_root_injective`** ✓：
+`Function.Injective (fun k : Multiplicative (ZMod p) => φ_{c k} (root))` ✓（`[IsDomain R]` ✓）。
+
+**机制（三步，全部消费已落件 ✓）** ✓：**(i)** `φ_k root = root + of (c k)` ✓（**§4.81 的 `asShiftH_root`** ✓）⟹
+相等给 `of (c k) = of (c l)` ✓（`congrArg (· − root)` ＋ `simpa` ✓）；**(ii)** `of` **单射** ✓
+（**§4.87 的 `aspoly_degree_ne_zero`** ✓ ＋ `of.injective_of_degree_ne_zero` ✓）⟹ `c k = c l` ✓；
+**(iii)** `c = ZMod.castHom (dvd_refl p) R` **单射** ✓（**§4.86 的 `zmod_castHom_injective`** ✓）⟹ `k = l` ✓。
+
+**⚠ 工艺（一条，入 §5.1）** ✓：函数式的**应用在假设里是未 β-归约形** ✗ ⟹ `rw … at h` **不命中** ✗
+（实测 "Did not find an occurrence of the pattern" ✓）；**解** ✓：先 `have h' : <显式两应用相等> := h` ✓（defeq 即 β-归约 ✓）再 `rw … at h'` ✓。
+
+**⚠ 意义** ✓：这是 **款③（`δ` 双射）** 的**单射半** ✓ —— 共轭集合 `{φ_k root}` 有 **`p` 个互异元** ✓，
+正是**正规基**（源 `proposition-0-5(c)` ✓）的候选 ✓；**余**：把 `{φ_k root}` 的**独立性/生成性**接上 `δ` ✓。
+
+**🔴 不声称** ✗：**不**声称 `{φ_k root}` 是**正规基** ✗（**线性无关未证** ✗）；**不**声称款③ 已证 ✗；
+**不**声称 `IsGaloisWithGroup` 整体 ✗；**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section ArtinSchreierConjugates300
+
+attribute [local instance] asCarrierMSA
+
+/-- **根的共轭两两不同** ✓：`k ↦ φ_k(root)` 单射 ✓（**款③ 的单射半** ✓）。 -/
+theorem asShiftH_root_injective {R : Type*} [CommRing R] [IsDomain R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R) :
+    Function.Injective (fun k : Multiplicative (ZMod p) =>
+      asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+        (castHom_pow (p := p) (Multiplicative.toAdd k))
+        (AdjoinRoot.root (ASpoly R p a))) := by
+  have hof : Function.Injective (AdjoinRoot.of (ASpoly R p a)) :=
+    AdjoinRoot.of.injective_of_degree_ne_zero
+      (aspoly_degree_ne_zero (R := R) (Fact.out : Nat.Prime p).two_le a)
+  intro k l hkl
+  have hkl' : asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+      (castHom_pow (p := p) (Multiplicative.toAdd k)) (AdjoinRoot.root (ASpoly R p a))
+      = asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd l))
+        (castHom_pow (p := p) (Multiplicative.toAdd l))
+        (AdjoinRoot.root (ASpoly R p a)) := hkl
+  rw [asShiftH_root, asShiftH_root] at hkl'
+  have h1 : AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+      = AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd l)) := by
+    have := congrArg (fun t => t - AdjoinRoot.root (ASpoly R p a)) hkl'
+    simpa using this
+  have h2 : ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k)
+      = ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd l) := hof h1
+  exact Multiplicative.toAdd.injective (zmod_castHom_injective (p := p) (R := R) h2)
+
+end ArtinSchreierConjugates300
+
+#print axioms asShiftH_root_injective
+
+
 end ABGV52
