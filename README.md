@@ -1524,3 +1524,11 @@ practical point is that the library's lemma for shrinking a sum infers its two i
 equality has to be stated in the direction the library expects before it can be used.  With this bridge the injectivity
 argument has all its pieces: the coefficient form of vanishing, the extension to the whole group, the bridge from the
 action to algebra automorphisms, and the independence of a faithful family of automorphisms.
+
+Round 314 generalizes the support-to-group sum comparison of the previous round to an arbitrary summand vanishing
+outside the support, and specializes it to the shape the independence argument needs, where the second factor varies
+with the group element.  The general form also shows why the earlier statement was not sufficient: it had a constant
+second factor, whereas the application needs one that changes with the group element.  The round records the
+obstruction met while attempting the final assembly, namely that the library's lemmas for splitting a sum at a point
+are stated for sums displayed with an explicit index set, so the bound-variable notation must be converted before they
+apply; that conversion is the next step.  The Galois clause itself is not claimed here.

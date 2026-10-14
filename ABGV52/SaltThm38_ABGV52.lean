@@ -9545,4 +9545,43 @@ end DeltaSumAll313
 #print axioms delta_sum_all
 
 
+/-! ### 4.102 **支撑和 ＝ 全群和（最一般形 ＋ `(g • w)` 档）**（第 314 轮）
+—— Dedekind 接线的**求和归一（一般化 §4.101）** ✓
+
+**落成两件** ✓✅：**(i)** **`skew_sum_univ`** ✓✅：`(∑_{g ∈ supp z} f g) = ∑_{g : G} f g` ✓（**只要 `f` 在支撑外为零** ✓
+—— **最一般形** ✓，§4.101 仅是其 `f g = coeff z g * w` 特例 ✓）；
+**(ii)** **`delta_sum_univ`** ✓✅：`(∑_{g ∈ supp z} coeff z g * (g • w)) = ∑_{g : G} coeff z g * (g • w)` ✓
+—— **Dedekind 接线所需形** ✓（**§4.101 不够用** ✗：其第二因子是**常数** ✓ 而此处是 `g • w` ✓ **随 `g` 变** ✗）。
+
+**⚠ 本轮受阻（如实登记）** ✗：**求和分裂** —— 拟用 `Finset.add_sum_erase`／`Finset.sum_erase_add` ✓ 在 `g₀` 处分裂
+`∑_{g : G} coeff z g * (g • w)` ✓；**实测两者皆不命中** ✗（报 "Did not find an occurrence of the pattern" ✓，
+其模式为 `∑ x ∈ s.erase a, f x (+|前置) f a` ✓ 而目标为**绑定记法** `∑ g, …` ✓）⟹ **下一手**：先把它**改写成
+`∑ g ∈ (Finset.univ : Finset G), …`** ✓（`show` 或 `rfl` 形 ✓）再分裂 ✓，或改用 `Finset.sum_eq_add_sum_diff_singleton` ✓。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗；**不**声称 Dedekind 已接线 ✗（**求和归一已备** ✓，**分裂未收口** ✗）；
+**不**声称域档通道已通 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗。 -/
+
+section SupportSumUniv314
+
+open ABGV52.BTier
+
+/-- **支撑和 ＝ 全群和** ✓（最一般形 ✓）。 -/
+theorem skew_sum_univ {S : Type*} [CommRing S] {G : Type*} [Group G] [Fintype G]
+    (z : SkewMonoidAlgebra S G) (f : G → S) (hf : ∀ g, g ∉ z.support → f g = 0) :
+    (∑ g ∈ z.support, f g) = ∑ g : G, f g :=
+  Finset.sum_subset (Finset.subset_univ z.support) (fun g _ hg => hf g hg)
+
+/-- **`(g • w)` 档** ✓：Dedekind 接线所需形 ✓。 -/
+theorem delta_sum_univ {S : Type*} [CommRing S] {G : Type*} [Group G] [Fintype G]
+    [MulSemiringAction G S] (z : SkewMonoidAlgebra S G) (w : S) :
+    (∑ g ∈ z.support, z.coeff g * (g • w)) = ∑ g : G, z.coeff g * (g • w) :=
+  skew_sum_univ z _ (fun g hg => by
+    rw [show z.coeff g = 0 from by simpa [Finsupp.mem_support_iff] using hg, zero_mul])
+
+end SupportSumUniv314
+
+#print axioms skew_sum_univ
+#print axioms delta_sum_univ
+
+
 end ABGV52
