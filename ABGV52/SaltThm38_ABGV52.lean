@@ -1230,4 +1230,307 @@ theorem away_adjoin_pUnit_rat_instance_gap_registered : True := trivial
 
 #print axioms away_adjoin_pUnit_rat_instance_gap_registered
 
+section
+
+noncomputable local instance instMSA : MulSemiringAction PUnit.{1}
+    (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) where
+  smul _ x := x
+  one_smul _ := rfl
+  mul_smul _ _ _ := rfl
+  smul_zero _ := rfl
+  smul_add _ _ _ := rfl
+  smul_mul _ _ _ := rfl
+  smul_one _ := rfl
+
+noncomputable local instance instAlg : Algebra ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+      algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit))
+    ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit),
+        (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))⁻¹}))
+    (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) :=
+  (awayAlgEquivAdjoin_pUnit_rat).symm.toRingHom.toAlgebra
+
+set_option maxHeartbeats 1000000 in
+/-- **(B) 实例化** ✓✅（第 249 轮 ✓；**§199.5(i) 的最后一件** ✓）：**接线对上 `hδ` 成立** ✓ ——
+即 **`IsGaloisWithGroup ↥S (Localization.Away X) PUnit hRG`** ✓（**平凡作用档** ✓，**任意 `hRG`** ✓）。
+**⚠ 组装（**§210.3 通道兑现** ✓）**：**节级 `noncomputable local instance instMSA`** ✓（**平凡作用** ✓，
+**须 `noncomputable`** ✓ —— 局部化的环结构非计算性 ✓）＋ **节级 `noncomputable local instance instAlg`** ✓
+（**`Algebra ↥S S' := (awayAlgEquivAdjoin_pUnit_rat).symm.toRingHom.toAlgebra`** ✓）；
+**结论不含 `letI`** ✓ ⟹ **既无 `linter.style.haveILetI`** ✗（**上轮受阻点** ✓）
+**亦无「goal 变函数型」** ✗（**`intro` 绑错** ✓）。
+**⚠ 证明** ✓：**r247 通用件** ✓ ＋ **`algebraMap ↥S S' = e.symm.toRingHom`** ✓（**`rfl`** ✓）
+⟹ **`e.symm.surjective`** ✓。
+**⚠ 意义** ✓：**§199.5(i) 的三件齐** ✓（**`Finite ∧ Projective`** ✓ ＝ r246 ✓；**`hδ`** ✓ ＝ 本条 ✓）
+⟹ **余下只是把它们装进 wiring 的 ∃-形** ✓（**下一手** ✓）。
+**⚠ 不声称** ✗：**装配未落** ✗；**接线假设表整体非空未核** ✗。 -/
+theorem isGaloisWithGroup_away_adjoin_pUnit_rat
+    (hRG : ∀ (g : PUnit.{1})
+      (r : ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))
+      ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit),
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹})))
+      (s : Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)),
+      g • (r • s) = r • (g • s)) :
+    BTier.IsGaloisWithGroup
+      ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))
+      ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit),
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹}))
+      (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ))
+      PUnit.{1} hRG := by
+  refine isGaloisWithGroup_of_subsingleton_of_surjective_algebraMap (G := PUnit.{1}) ?_ hRG
+  have h : (algebraMap ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))
+      ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit),
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹}))
+      (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)))
+      = (awayAlgEquivAdjoin_pUnit_rat).symm.toRingHom := rfl
+  rw [h]
+  exact (awayAlgEquivAdjoin_pUnit_rat).symm.surjective
+
+set_option maxHeartbeats 1000000 in
+/-- **接线假设表的 Galois 侧整体非空** ✓✅（第 249 轮 ✓；**自造件** ✓；**§199.5(i) 收口** ✓）：
+在 **wiring 的对**（`↥S` ＝ `ℚ[a, s₀, s₀⁻¹]` ✓ 与 `S'` ＝ `Localization.Away X` ✓；**结构与 r246／r249 同** ✓）上，
+**残余三项 `hRG`** ✓／**`hδ`（`δ` 双射 ✓）**／**`hProj`（＝ `GaloisProjectiveHyp` ✓）同时可满足** ✓。
+**⚠ 三件来历** ✓：**`hRG`** ✓ ＝ **平凡作用档** ✓（`Subsingleton.elim` ＋ **`one_smul`** ✓）；
+**`hδ`** ✓ ＝ **r249 件第三款** ✓（`isGaloisWithGroup_away_adjoin_pUnit_rat` ✓，**通用件即 §209.2** ✓）；
+**`hProj`** ✓ ＝ **r246 件** ✓（`finite_projective_away_adjoin_pUnit_rat` ✓ —— `GaloisProjectiveHyp` **是蕴含式** ✓，
+故 **`fun _ =>` 即得** ✓ ⟹ **§6 余项「`hProj` 整条组装」✗ 至此落** ✓）。
+**⚠ 与 r237 的关系** ✓：**r237** ✓ 给**源侧九项**（`a` ✓／`s₀` ✓／`T` ✓／`hind` ✓／`hgen` ✓／…／`hle` ✓，
+**∃-形** ✓）；本条给**其余三项** ✓ ⟹ **两者合读 ＝ 接线假设表整体非空** ✓（**§199.5(i) 收口** ✓）。
+**⚠ 不声称** ✗：**源 `theorem-5-1`／`theorem-2-1` 未证** ✗；**接线结论本身的推导见下一件** ✓。 -/
+theorem exists_wiringHypotheses_pUnit_rat :
+    ∃ (hRG : ∀ (g : PUnit.{1})
+      (r : ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))
+      ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit),
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹})))
+      (x : Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)),
+      g • (r • x) = r • (g • x)),
+      Function.Bijective (BTier.deltaToEndRingHom hRG) ∧
+      BTier.GaloisProjectiveHyp
+        ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+          algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))
+        ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit),
+            (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit))⁻¹}))
+        (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ))
+        PUnit.{1} hRG := by
+  let hRG : ∀ (g : PUnit.{1})
+      (r : ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))
+      ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit),
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹})))
+      (x : Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)),
+      g • (r • x) = r • (g • x) :=
+    fun g r x => by rw [Subsingleton.elim g 1, one_smul, one_smul]
+  exact ⟨hRG, (isGaloisWithGroup_away_adjoin_pUnit_rat hRG).2.2,
+    fun _ => finite_projective_away_adjoin_pUnit_rat⟩
+
+set_option maxHeartbeats 1000000 in
+/-- **接线在测试实例上发射** ✓✅（第 249 轮 ✓；**自造件** ✓）：**把三件装进 wiring 的 ∃-形** ✓ ——
+**`Nonempty (GenericExtensionWitnessFieldFinite ℚ PUnit.{1})`** ✓（**r231 归约形** ✓ 被**完整消费** ✓）。
+**⚠ 假设表逐项供给** ✓：**源侧** ✓ `hind` ✓／`hgen` ✓／`hs₀` ✓／`hs₀_mem` ✓／`ha_fix` ✓／`hs₀_fix` ✓／
+`hinf` ✓（**证据与 r237 同** ✓ —— **`algebraicIndependent_X`** ✓ ＋ **`adjoin_range_X`** ✓ ＋
+**`div_surjective`** ✓）；**wiring 侧** ✓ `T = X` ✓／`hT` ✓／`hTinv` ✓／`hle` ✓／**三实例** ✓／
+**`hact`** ✓／**`hRG`** ✓／**`hgal`** ✓／**`hProj`** ✓／**`hS₀R`** ✓。
+**⚠ 工艺读数（**须入纪律** ✓；**三版实测** ✗）**：**`hact` 在平凡作用档下 ＝ `g • p = p`** ✗ ——
+**该式用 `one_smul` 写不出** ✗（**实体档 `PUnit.instSMul_mathlib` 与 Noether 作用档不同一** ✗，
+**`rw` 匹配失败** ✗；**注册局部 `MulSemiringAction` 亦不解** ✗）⟹ **改走 `noetherRingHom`** ✓：
+**`noetherRingHom ℚ PUnit g = 1`** ✓（**单点** ✓ ＋ **`map_one`** ✓）＋ **`congrArg`** ✓ 得 ✓（**全库首用** ✓）。
+**⚠ 意义** ✓（**L1 的最强形** ✓）：**接线定理的假设表不空** ✓ **且其结论真的产出** ✓ ⟹ **接线非空壳** ✓。
+**⚠ 不声称** ✗：**源 `theorem-5-1`／`theorem-2-1` 未证** ✗；**本件只到有限档见证数据** ✓
+（**弱化档 ＋ 有限档** ✓，`GenericExtensionWitnessFieldFinite` 口径 ✓）。 -/
+theorem nonempty_genericExtensionWitnessFieldFinite_pUnit_rat :
+    Nonempty (GenericExtensionWitnessFieldFinite ℚ PUnit.{1}) := by
+  let x : NoetherField ℚ PUnit.{1} :=
+    algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+      (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)
+  have hX : AlgebraicIndependent ℚ (fun _ : PUnit.{1} => x) := by
+    rw [algebraicIndependent_iff]
+    intro p hp
+    have h1 : (MvPolynomial.aeval (fun _ : PUnit.{1} => x)) p
+        = algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          ((MvPolynomial.aeval MvPolynomial.X) p) :=
+      MvPolynomial.aeval_algebraMap_apply (NoetherField ℚ PUnit.{1}) MvPolynomial.X p
+    rw [MvPolynomial.aeval_X_left_apply] at h1
+    rw [h1] at hp
+    exact IsFractionRing.injective _ _ (by rw [hp, map_zero])
+  have hind : AlgebraicIndependent ℚ (fun _ : Fin 1 => x) :=
+    hX.comp (fun _ : Fin 1 => PUnit.unit) (fun a b _ => Subsingleton.elim a b)
+  have hset : Set.range (fun _ : Fin 1 => x) = {x} := by
+    ext y
+    constructor
+    · rintro ⟨i, rfl⟩
+      exact Set.mem_singleton x
+    · intro hy
+      exact ⟨0, (Set.mem_singleton_iff.mp hy).symm⟩
+  have hgen : IntermediateField.adjoin ℚ (Set.range (fun _ : Fin 1 => x)) = ⊤ := by
+    rw [hset]
+    refine le_antisymm le_top ?_
+    have hcomap : Subalgebra.comap
+        (IsScalarTower.toAlgHom ℚ (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}))
+        (IntermediateField.adjoin ℚ {x}).toSubalgebra = ⊤ := by
+      refine top_unique ?_
+      rw [← MvPolynomial.adjoin_range_X (R := ℚ) (σ := PUnit.{1})]
+      refine Algebra.adjoin_le ?_
+      rintro _ ⟨g, rfl⟩
+      rw [Subsingleton.elim g PUnit.unit]
+      show IsScalarTower.toAlgHom ℚ (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit) ∈ (IntermediateField.adjoin ℚ {x}).toSubalgebra
+      exact (IntermediateField.subset_adjoin ℚ ({x} : Set (NoetherField ℚ PUnit.{1})))
+        (Set.mem_singleton x)
+    intro y _
+    obtain ⟨p, q, _hq, heq⟩ := IsFractionRing.div_surjective (MvPolynomial PUnit.{1} ℚ) y
+    have hmem : ∀ r : MvPolynomial PUnit.{1} ℚ,
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1}) r
+          ∈ IntermediateField.adjoin ℚ ({x} : Set (NoetherField ℚ PUnit.{1})) := by
+      intro r
+      exact (Subalgebra.mem_comap _ _ _).mp (by rw [hcomap]; trivial)
+    rw [← heq]
+    exact div_mem (hmem p) (hmem q)
+  have hxne : x ≠ 0 := by
+    intro h0
+    have h1 : algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit) = 0 := by
+      rw [show algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (MvPolynomial.X PUnit.unit) = x from rfl, h0]
+    have h2 : (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ) = 0 :=
+      IsFractionRing.injective (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+        (by rw [h1, map_zero])
+    exact MvPolynomial.X_ne_zero PUnit.unit h2
+  have hmem : x ∈ Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 => x)) := by
+    rw [hset]
+    exact Algebra.subset_adjoin (Set.mem_singleton x)
+  have hle : Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 => x) ∪ {x, x⁻¹}) ≤
+      Subalgebra.restrictScalars ℚ
+        (Algebra.adjoin (MvPolynomial PUnit.{1} ℚ)
+          ({(algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+              (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ))⁻¹}
+            : Set (NoetherField ℚ PUnit.{1}))) := by
+    rw [hset]
+    refine Algebra.adjoin_le ?_
+    rintro y (hy | hy)
+    · rw [Set.mem_singleton_iff.mp hy]
+      exact Subalgebra.algebraMap_mem _
+        (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)
+    · rcases hy with rfl | rfl
+      · exact Subalgebra.algebraMap_mem _
+          (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)
+      · exact (Algebra.subset_adjoin (R := MvPolynomial PUnit.{1} ℚ)
+          (Set.mem_singleton _))
+  have hRG : ∀ (g : PUnit.{1})
+      (r : ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))
+      ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit),
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹})))
+      (y : Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)),
+      g • (r • y) = r • (g • y) := by
+    intro g r y
+    rw [Subsingleton.elim g 1, one_smul, one_smul]
+  have hS0R : ∀ r : ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+        algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+          (MvPolynomial.X PUnit.unit))
+      ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit),
+          (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+            (MvPolynomial.X PUnit.unit))⁻¹})),
+      awayToFieldAlg (F := ℚ) (G := PUnit.{1})
+          (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)
+          (MvPolynomial.X_ne_zero PUnit.unit)
+          (algebraMap ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+              algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))
+            ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit),
+                (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit))⁻¹}))
+            (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) r)
+        = algebraMap ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+              algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))
+            ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit),
+                (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit))⁻¹}))
+            (NoetherField ℚ PUnit.{1}) r := by
+    intro r
+    have h2 : awayAlgEquivAdjoin_pUnit_rat (awayAlgEquivAdjoin_pUnit_rat.symm r) = r :=
+      awayAlgEquivAdjoin_pUnit_rat.apply_symm_apply r
+    calc awayToFieldAlg (F := ℚ) (G := PUnit.{1})
+          (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)
+          (MvPolynomial.X_ne_zero PUnit.unit)
+          (algebraMap ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+              algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))
+            ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit),
+                (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit))⁻¹}))
+            (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)) r)
+        = awayToFieldAlg (F := ℚ) (G := PUnit.{1})
+            (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)
+            (MvPolynomial.X_ne_zero PUnit.unit)
+            (awayAlgEquivAdjoin_pUnit_rat.symm r) := rfl
+      _ = (awayAlgEquivAdjoin_pUnit_rat (awayAlgEquivAdjoin_pUnit_rat.symm r)
+            : NoetherField ℚ PUnit.{1}) := rfl
+      _ = (r : NoetherField ℚ PUnit.{1}) := by rw [h2]
+      _ = algebraMap ↥(Algebra.adjoin ℚ (Set.range (fun _ : Fin 1 =>
+              algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                (MvPolynomial.X PUnit.unit))
+            ∪ {algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit),
+                (algebraMap (MvPolynomial PUnit.{1} ℚ) (NoetherField ℚ PUnit.{1})
+                  (MvPolynomial.X PUnit.unit))⁻¹}))
+            (NoetherField ℚ PUnit.{1}) r := rfl
+  exact nonempty_genericExtensionWitnessFieldFinite_of_noetherAdjoin
+    (F := ℚ) (G := PUnit.{1}) (a := fun _ : Fin 1 => x) (s₀ := x)
+    (t := (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ))
+    hind hgen hxne hmem
+    (fun g i => by rw [smul_algebraMap_noether, smul_X_noether,
+      congrArg MvPolynomial.X (Subsingleton.elim (g * PUnit.unit) PUnit.unit)])
+    (fun g => by rw [smul_algebraMap_noether, smul_X_noether,
+      congrArg MvPolynomial.X (Subsingleton.elim (g * PUnit.unit) PUnit.unit)])
+    (MvPolynomial.X_ne_zero PUnit.unit)
+    (fun g => by rw [smul_X_noether,
+      congrArg MvPolynomial.X (Subsingleton.elim (g * PUnit.unit) PUnit.unit)])
+    hle
+    (fun (g : PUnit.{1}) (p : MvPolynomial PUnit.{1} ℚ) => by
+      have h1 : noetherRingHom ℚ PUnit.{1} g = 1 := by
+        rw [Subsingleton.elim g 1, map_one]
+      have key := congrArg
+        (fun e : MvPolynomial PUnit.{1} ℚ ≃+* MvPolynomial PUnit.{1} ℚ => e p) h1
+      exact (congrArg (algebraMap (MvPolynomial PUnit.{1} ℚ)
+        (Localization.Away (MvPolynomial.X PUnit.unit : MvPolynomial PUnit.{1} ℚ)))
+        key).symm)
+    hRG (isGaloisWithGroup_away_adjoin_pUnit_rat hRG)
+    (fun _ => finite_projective_away_adjoin_pUnit_rat) hS0R (inferInstance : Infinite ℚ)
+
+end
+#print axioms isGaloisWithGroup_away_adjoin_pUnit_rat
+#print axioms exists_wiringHypotheses_pUnit_rat
+#print axioms nonempty_genericExtensionWitnessFieldFinite_pUnit_rat
+
 end ABGV52

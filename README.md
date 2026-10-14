@@ -911,3 +911,26 @@ a section-level local instance meets the noncomputability of the localization's 
 which a noncomputable marker should address but which was not pursued further.  The route for the
 next round is recorded in the statement itself.
 
+
+The last input is now instantiated on the wiring's pair.  The route registered in the preceding
+round works as recorded: both the trivial action and the algebra structure induced by the
+isomorphism are declared as local instances at section level, marked noncomputable because the
+localization's ring structure is, and the conclusion mentions no instance binding; the predicate
+then follows from the general lemma together with surjectivity of the isomorphism, and the
+compatibility clause is taken as a parameter so that no instance has to be bound in the statement.
+
+With the two clauses of finiteness and projectivity from three rounds ago, the three pieces needed
+for non-emptiness of the wiring's hypothesis table are not only in place but assembled.  On the pair
+the wiring is run on, the compatibility clause is witnessed, the crossed-product map is bijective,
+and the projectivity predicate holds, so the table is non-empty; feeding those three entries into
+the wiring's existential form then yields the witness field data, so the wiring fires on this
+instance rather than being non-vacuous on paper only.
+
+One process reading is worth recording.  The compatibility clause between the source action and the
+action on the localization cannot be written with `one_smul` under the trivial action: the trivial
+instance of the one-point group and the action induced from the Noether action are different
+instances, so the rewrite matches no occurrence, and registering the induced action locally does not
+repair the mismatch either.  The clause is obtained instead by evaluating the Noether ring
+homomorphism at the group's single element, where it is the identity, and transporting the resulting
+equality along `congrArg`.
+
