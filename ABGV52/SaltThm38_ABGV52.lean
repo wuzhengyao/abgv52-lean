@@ -8804,4 +8804,69 @@ end ArtinSchreierFaithful298
 #print axioms asCarrierMSA_faithful_of_ofInjective
 
 
+/-! ### 4.87 **款①（忠实性）无条件形**（第 299 轮）
+—— 源 §0 判据的**忠实性一款落在 AS 载体上** ✓（`[IsDomain R]` 下 ✓，即源的 `R = F[x]` ✓ 设定 ✓）
+
+**落成三件** ✓✅：**(i)** **`aspoly_natDegree`** ✓（`(ASpoly R p a).natDegree = p` ✓，`p ≥ 2` ✓）；
+**(ii)** **`aspoly_degree_ne_zero`** ✓（次数非零 ✓）；**(iii)** **`asCarrierMSA_faithful_of_isDomain`** ✓✅：
+**`FaithfulSMul (Multiplicative (ZMod p)) (asCarrier R p a)`** ✓ —— **款① 无条件形** ✓（`[IsDomain R]` ✓）。
+
+**机制** ✓：**(i)** 用**系数**（`coeff p = 1 ≠ 0` ✓，`le_natDegree_of_ne_zero` ✓）＋**次数上界**（`natDegree_sub_le` ✓／
+`natDegree_add_le` ✓／`natDegree_X_pow` ✓／`natDegree_X_le` ✓／`natDegree_C` ✓）双向夹 ✓；
+**(ii)** 由 (i) ✓（`degree_eq_natDegree` ✓ ＋ `≠ 0` ✓）；**(iii)** 由 §4.86 的**单前提形** ✓ ＋
+`AdjoinRoot.of.injective_of_degree_ne_zero` ✓（**恰是 `[IsDomain R]` ＋ 次数非零** ✓）收口 ✓。
+
+**⚠ 工艺（两条，入 §5.1）** ✓：**(甲)** 上界支的**第一项须 `rw [Polynomial.natDegree_X_pow]`** ✗（写成 `le_rfl` ✗ 会报
+"expected `(X^p).natDegree ≤ p`" ✓）；**(乙)** `(↑p : WithBot ℕ) ≠ 0` 型目标 ✗ 用 **`exact_mod_cast`** ✓
+（`omega`／`WithBot.coe_ne_zero` 皆实测不可 ✓）。
+
+**🔴 不声称** ✗：**不**声称款③（`δ` 双射）已证 ✗（**最难，下一手** ✓）；**不**声称 `IsGaloisWithGroup` **整体**已证 ✗
+（**三款中两款在册** ✓）；**不**声称源 `theorem-1-2` 已证 ✗；**不**声称残余 ①／③ 已证 ✗。 -/
+
+section ArtinSchreierFaithfulUncond299
+
+attribute [local instance] asCarrierMSA
+
+/-- **AS 多项式的次数** ✓：`(X^p − X − C a).natDegree = p` ✓（`p ≥ 2`）。 -/
+theorem aspoly_natDegree {R : Type*} [CommRing R] [Nontrivial R] {p : ℕ} (hp : 2 ≤ p) (a : R) :
+    (ASpoly R p a).natDegree = p := by
+  have hp0 : p ≠ 0 := by omega
+  have hp1 : p ≠ 1 := by omega
+  refine le_antisymm ?_ (Polynomial.le_natDegree_of_ne_zero ?_)
+  · rw [ASpoly, sub_sub]
+    refine le_trans (Polynomial.natDegree_sub_le _ _)
+      (max_le ?_ (le_trans (Polynomial.natDegree_add_le _ _) (max_le ?_ ?_)))
+    · rw [Polynomial.natDegree_X_pow]
+    · exact le_trans Polynomial.natDegree_X_le (by omega)
+    · rw [Polynomial.natDegree_C]; omega
+  · rw [ASpoly, Polynomial.coeff_sub, Polynomial.coeff_sub, Polynomial.coeff_X_pow_self,
+      Polynomial.coeff_X_of_ne_one hp1, Polynomial.coeff_C_of_ne_zero hp0]
+    norm_num
+
+/-- **AS 多项式的次数非零** ✓。 -/
+theorem aspoly_degree_ne_zero {R : Type*} [CommRing R] [Nontrivial R] {p : ℕ} (hp : 2 ≤ p)
+    (a : R) : (ASpoly R p a).degree ≠ 0 := by
+  have hne : ASpoly R p a ≠ 0 := by
+    intro h
+    have := aspoly_natDegree (R := R) hp a
+    rw [h, Polynomial.natDegree_zero] at this
+    omega
+  rw [Polynomial.degree_eq_natDegree hne, aspoly_natDegree (R := R) hp a]
+  exact_mod_cast (show p ≠ 0 by omega)
+
+/-- **🔴 款①（忠实性）无条件形** ✓✅：`[IsDomain R]` 下 AS 载体的 `C_p`-作用忠实 ✓。 -/
+theorem asCarrierMSA_faithful_of_isDomain {R : Type*} [CommRing R] [IsDomain R] {p : ℕ}
+    [Fact p.Prime] [CharP R p] (a : R) :
+    FaithfulSMul (Multiplicative (ZMod p)) (asCarrier R p a) :=
+  asCarrierMSA_faithful_of_ofInjective a
+    (AdjoinRoot.of.injective_of_degree_ne_zero
+      (aspoly_degree_ne_zero (R := R) (Fact.out : Nat.Prime p).two_le a))
+
+end ArtinSchreierFaithfulUncond299
+
+#print axioms aspoly_natDegree
+#print axioms aspoly_degree_ne_zero
+#print axioms asCarrierMSA_faithful_of_isDomain
+
+
 end ABGV52

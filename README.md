@@ -1380,3 +1380,14 @@ nontriviality of a ring in prime characteristic must be extracted from the eleme
 characteristic element, since in the zero ring every natural number vanishes; and the instance of nontriviality has
 to be registered as a local instance for the field argument to apply.  The remaining hypothesis, the injectivity of
 the canonical map into the carrier, is not addressed here.
+
+Round 299 makes the faithfulness clause for the Artin-Schreier carrier unconditional.  The remaining hypothesis was the
+injectivity of the canonical map from the coefficient ring into the carrier, which holds as soon as the defining
+polynomial has nonzero degree.  That degree is computed here by squeezing: the coefficient of the top power is one,
+which bounds the degree from below, while the degree of a difference and of a sum is bounded by the maximum of the
+degrees of the terms, which bounds it from above.  Nonvanishing of the degree then follows, and the injectivity of
+the canonical map is available over a domain, which is exactly the source's setting.  With the fixed-base clause
+landed earlier, two of the three Galois clauses are therefore in place; the crossed-product clause is not addressed
+here, and the Galois predicate is not claimed as a whole.  Two practical points are recorded about the degree
+computation, concerning the top-degree term of the upper bound and the coercion of the natural number degree into the
+type with an adjoined bottom element.
