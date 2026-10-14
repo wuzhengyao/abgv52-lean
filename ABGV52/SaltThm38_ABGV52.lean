@@ -9509,4 +9509,40 @@ end DeltaZeroIff312
 #print axioms delta_eq_zero_iff
 
 
+/-! ### 4.101 **系数和扩到全 `G`**（第 313 轮）
+—— Dedekind 接线的**第二入口件** ✓
+
+**落成** ✓✅：**`delta_sum_all`** ✓✅：对 `z : SkewMonoidAlgebra S G` ✓，
+**`(∑_{g ∈ supp z} coeff z g * w) = 0 ⟹ (∑_{g : G} coeff z g * w) = 0`** ✓
+（**支撑外系数为零** ✓ ⟹ 补零不改变和 ✓）。
+
+**⚠ 用途** ✓：§4.100 给出的是**支撑上的和** ✓，而 §4.99 的 **Dedekind** ✓ 需要**全 `G` 上的和** ✓
+（系数族 `G → S` ✓）⟹ 本件正是二者的**桥** ✓。
+
+**⚠ 工艺（一条，入 §5.1）** ✓：**`Finset.sum_subset` 的方向** ✗ —— 其 `s₁`／`s₂` 由**目标**推断 ✓，
+而 `h₁` 须写成 **`s₁ ⊆ s₂`** ✓；目标为 `∑_{univ} = ∑_{supp}` 时它会要求 **`univ ⊆ supp`** ✗（**假** ✗，实测 ✓）；
+**解** ✓：把等式**写成反向**（`∑_{supp} = ∑_{univ}` ✓）并给出 `Finset.subset_univ` ✓，收尾用 **`rw [← h1, h]`** ✓。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗；**不**声称 Dedekind 已接线 ✗（**两件入口已备** ✓）；
+**不**声称域档通道已通 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗。 -/
+
+section DeltaSumAll313
+
+open ABGV52.BTier
+
+/-- **系数和扩到全 `G`** ✓（支撑外系数为零 ✓）。 -/
+theorem delta_sum_all {S : Type*} [CommRing S] {G : Type*} [Group G] [Fintype G]
+    (z : SkewMonoidAlgebra S G) :
+    ∀ w : S, (∑ g ∈ z.support, z.coeff g * w) = 0 → ∑ g : G, z.coeff g * w = 0 := by
+  intro w h
+  have h1 : (∑ g ∈ z.support, z.coeff g * w) = ∑ g : G, z.coeff g * w :=
+    Finset.sum_subset (Finset.subset_univ z.support) (fun g _ hg => by
+      rw [show z.coeff g = 0 from by simpa [Finsupp.mem_support_iff] using hg, zero_mul])
+  rw [← h1, h]
+
+end DeltaSumAll313
+
+#print axioms delta_sum_all
+
+
 end ABGV52

@@ -1517,3 +1517,10 @@ values.  This is the entry point of the independence argument, after which only 
 be handled: if a coefficient were nonzero, dividing by it would exhibit one group element as a linear combination of
 the others over the extension, contradicting the independence engine landed in the previous round.  Two practical
 points are recorded about evaluating and rebuilding linear endomorphisms.
+
+Round 313 extends the coefficient relation from the support of an element to the whole group, which is the form the
+independence engine consumes.  Terms outside the support vanish, so adjoining them does not change the sum; the only
+practical point is that the library's lemma for shrinking a sum infers its two index sets from the goal, so the
+equality has to be stated in the direction the library expects before it can be used.  With this bridge the injectivity
+argument has all its pieces: the coefficient form of vanishing, the extension to the whole group, the bridge from the
+action to algebra automorphisms, and the independence of a faithful family of automorphisms.
