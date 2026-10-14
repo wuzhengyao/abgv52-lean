@@ -9426,4 +9426,43 @@ end ActionAsAlgEquiv310
 #print axioms actionAlgEquiv
 
 
+/-! ### 4.99 **Dedekind 引理的限制形**（第 311 轮）
+—— 域档款③ 单射的**独立性引擎** ✓（§272.1 纠正后的正路 ✓）
+
+**落成** ✓✅：**`algHom_linearIndependent_of_injective`** ✓✅：设 `L` 为**域** ✓（`[CommRing L] [IsDomain L]` ✓）、
+`f : ι → (L →ₐ[K] L)` **单射** ✓ ⟹ **`LinearIndependent L (fun i => (f i).toLinearMap)`** ✓
+—— 即 **`f` 的像在 `L` 上线性无关** ✓（**强形** ✓，系数取 `L` ✓）。
+
+**机制** ✓：mathlib 的 **Dedekind 引理** ✓ `linearIndependent_algHom_toLinearMap (K L L) :
+LinearIndependent L AlgHom.toLinearMap` ✓（**全部** `K`-代数同态 ✓，索引型可无限 ✓）
+＋ **`LinearIndependent.comp`** ✓（以单射 `f` 限制到有限指标型 `ι` ✓）。
+
+**⚠ 工艺（两条，入 §5.1；均本轮实测）** ✓：
+**(甲)** **实例路径** ✗：`actionAlgEquiv` 以 **`[CommRing R]`** 声明 ✓ ⟹ 与之复合的引理**也须**用 `[CommRing K]` ✓
+（用 `[CommSemiring K]`／`[Field L]` 会报 "Application type mismatch … algebraMap …" ✗，实测 ✓）；
+**(乙) 心跳** ✗：`LinearIndependent L (fun i => …toLinearMap)` 的 elaboration **极贵** ✓
+（**200000 ✗／800000 ✗ 皆耗尽** ✓，实测 ✓）⟹ 须 **`set_option maxHeartbeats 4000000 in`** ✓（**不增警告** ✓）。
+
+**⚠ 用途** ✓：域档款③ 的**单射**：`δ z = 0` ✓ ⟹（§4.97 ✓）`∀ w, ∑_g (coeff z g) * (g • w) = 0` ✓；
+若某 `coeff z g₀ ≠ 0` ✓ 则乘 `(coeff z g₀)⁻¹`（**须 `[Field L]`** ✓）⟹ **`g₀` 成为其余 `g` 的 `L`-线性组合** ✗
+⟹ 与**本件** ✓（取 `f := fun g => actionAlgEquiv hfix g` ✓，**须该族单射** ＝ **忠实性** ✓）**矛盾** ✓。
+
+**🔴 不声称** ✗：**不**声称款③ 已证 ✗；**不**声称 Dedekind 通道已接线 ✗（**引擎已落** ✓）；
+**不**声称域档通道已通 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗。 -/
+
+section DedekindRestriction311
+
+set_option maxHeartbeats 4000000 in
+/-- **Dedekind 引理的限制形** ✓：单射族的 `toLinearMap` 在 `L` 上线性无关 ✓。 -/
+theorem algHom_linearIndependent_of_injective {K : Type*} [CommRing K] {L : Type*} [CommRing L]
+    [IsDomain L] [Algebra K L] {ι : Type*} [Fintype ι] (f : ι → (L →ₐ[K] L))
+    (hf : Function.Injective f) :
+    LinearIndependent L (fun i : ι => (f i).toLinearMap) :=
+  (linearIndependent_algHom_toLinearMap K L L).comp f hf
+
+end DedekindRestriction311
+
+#print axioms algHom_linearIndependent_of_injective
+
+
 end ABGV52

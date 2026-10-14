@@ -1499,3 +1499,13 @@ the group action into algebra automorphisms of the extension, using that the act
 input of that route.  Three practical points are recorded, about beta-reduction in the structure fields of an algebra
 equivalence, about the asymmetric naming of the compatibility lemmas for addition and multiplication, and about the
 field over which independence is asserted.
+
+Round 311 lands the independence engine for the injectivity argument on the corrected route.  Distinct field
+automorphisms of an extension are linearly independent over the extension itself, which the library provides for the
+family of all algebra homomorphisms; restricting that family along an injective indexing map gives the version needed
+here, namely that the automorphisms arising from a faithful action are linearly independent over the extension.  Two
+practical points are recorded, both consequences of how the library elaborates these statements: statements that are
+composed with the bridge landed in the previous round must declare the base ring in the same way that the bridge does,
+and the elaboration of the independence statement is expensive enough that the heartbeat budget has to be raised
+substantially, which does not add warnings.  Injectivity of the crossed-product map and the Galois clause itself are
+not claimed here.
