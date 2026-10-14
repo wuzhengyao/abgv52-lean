@@ -1278,3 +1278,14 @@ registered explicitly: the normal basis, not the trace formula.  A probe that ap
 formulation through the split carrier was itself refuted by the project's existing machine-checked lemmas, which
 show that carrier to satisfy both the trace formula and the conclusion; that line is closed as a positive
 instance rather than a counterexample.
+
+Round 287 settles the field tier of the surjectivity question by dimension counting.  Over a field, if the rank of
+the algebra equals the order of the group, then injectivity of the crossed-product map implies its surjectivity,
+because the two sides are vector spaces of the same dimension: the group order times the rank on one side, the
+square of the rank on the other, equal precisely under the rank hypothesis.  The dimension of the skew monoid
+algebra is computed through its coefficient linear equivalence and the standard formula for finitely supported
+functions, and the dimension of the endomorphism ring through the standard formula for linear maps, so the whole
+argument is a transport of existing results.  Neither the trace form nor the trace formula is used, which locates
+the weight of the earlier trace rounds precisely: they matter only over a general ring, where equal ranks no longer
+suffice.  The field tier of the outstanding surjectivity obligation therefore reduces to injectivity alone.  Nothing
+about the ring tier is claimed; the registered shape remains open there.

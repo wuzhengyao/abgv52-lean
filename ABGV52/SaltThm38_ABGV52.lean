@@ -8157,4 +8157,56 @@ end R270QuadraticTrace
 
 #print axioms r270_traceFormula_quadratic
 
+/-! ### 4.77 **域档 `(1b)`：维数论证**（第 287 轮）—— `rank = |G|` 时 **`δ` 单射 ⟹ 满射**（**不用迹形式／迹公式**）
+
+**靶** ✓：`(1b)`（`δ` 满射）在**域档**的形态 —— 登记件 `TraceUnimodularSufficiency269`（§4.75 ✓）
+在 `R = K` 为**域**时的形态 ✓。
+
+**机检内容** ✓✅：`K` 域 ✓、`S` 有限维 `K`-代数 ✓、`|G| = finrank_K S` ✓（＝登记件的**秩假设** ✓）下
+**`δ` 单射 ⟹ `δ` 满射** ✓。**机制** ✓（**纯维数** ✓，**全部用 mathlib 现成件** ✓）：
+两侧都是 `K`-向量空间 ✓ —— 定义域 `SkewMonoidAlgebra S G` ✓（经 `SkewMonoidAlgebra.coeffLinearEquiv` ✓
+与 `Module.finrank_finsupp` ✓ 得 `|G| · n` ✓）、陪域 `Module.End K S` ✓（经 `Module.finrank_linearMap` ✓ 得 `n · n` ✓），
+秩假设使其**同维** ✓ ⟹ `LinearMap.injective_iff_surjective_of_finrank_eq_finrank` ✓ 收口 ✓。
+
+**⚠ 意义（两条，逐字如实）** ✓：
+**(甲)** 登记件 `TraceUnimodularSufficiency269` 的**域档**形态**为真** ✓，且其**迹形式幺模假设在该档未被使用** ✗ ——
+即**迹形式／迹公式路线（第 268–284 轮）只在环档承重** ✓（域档早已由线性代数决定 ✓）；
+**(乙)** 域档的 `(1b)` 因而**只欠 `δ` 单射** ✓（**不是**迹公式 ✗）。
+
+**🔴 不声称** ✗：**不**声称**环档**形态 ✓（本件**只**做域档 ✓ —— 环档下两侧秩相等**不能**推出满射 ✗，
+如 `ℤ →^2 ℤ` ✓）；**不**声称 `TraceUnimodularSufficiency269` 本身真或假 ✗；
+**不**声称 `δ` 单射在**任何**档可得 ✗。
+**⚠ 宇宙工艺** ✓：本条**取单一宇宙 `u`** ✓（`Module.finrank_finsupp` ✓ 要求指标型与系数型**同宇宙** ✗）；
+**实例注册用 `let _inst`** ✓（**不用** `letI` ✗ —— 后者计警告 ✗，见 §5.1 工艺 1 ✓）。 -/
+
+section FieldTierDeltaRank
+
+/-- **域档 `(1b)`** ✓✅：`K` 域、`S` 有限维 `K`-代数、`|G| = finrank_K S` ⟹ **`δ` 单射 ⟹ 满射** ✓
+（**维数论证** ✓，**不用迹形式／迹公式** ✗）。 -/
+theorem delta_surjective_of_injective_of_card_eq_finrank
+    {K S : Type u} [Field K] [CommRing S] [Algebra K S] [FiniteDimensional K S]
+    {G : Type u} [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (k : K) (x : S), g • (k • x) = k • (g • x))
+    (hcard : Fintype.card G = Module.finrank K S)
+    (hinj : Function.Injective (BTier.deltaToEndRingHom hRG)) :
+    Function.Surjective (BTier.deltaToEndRingHom hRG) := by
+  classical
+  let _inst : Module.Finite K (SkewMonoidAlgebra S G) :=
+    Module.Finite.equiv (SkewMonoidAlgebra.coeffLinearEquiv (k := S) (G := G) (S := K)).symm
+  have hdom : Module.finrank K (SkewMonoidAlgebra S G) = Fintype.card G * Module.finrank K S :=
+    (SkewMonoidAlgebra.coeffLinearEquiv (k := S) (G := G) (S := K)).finrank_eq.trans
+      (Module.finrank_finsupp (R := K) (M := S) (ι := G))
+  have hcod : Module.finrank K (Module.End K S) = Module.finrank K S * Module.finrank K S :=
+    Module.finrank_linearMap (R := K) (S := K) (M := S) (N := S)
+  have heq : Module.finrank K (SkewMonoidAlgebra S G) = Module.finrank K (Module.End K S) := by
+    rw [hdom, hcod, hcard]
+  exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+    (K := K) (V := SkewMonoidAlgebra S G) (V₂ := Module.End K S) heq
+      (f := (BTier.deltaToEndLinearS hRG).restrictScalars K)).mp hinj
+
+end FieldTierDeltaRank
+
+#print axioms delta_surjective_of_injective_of_card_eq_finrank
+
+
 end ABGV52
