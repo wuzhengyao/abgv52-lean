@@ -1119,3 +1119,16 @@ the bridge is dead for one-point groups, and the corrected finite-tier-to-ring-t
 adds non-triviality and finite generation, is exactly the form that survives.  The remaining case is
 non-singleton groups, where the zero ring is excluded by faithfulness and another degenerate target is
 needed.
+
+The library now has its first non-trivial Galois instance: for the algebra of functions from a finite
+group to a field, with the group acting by permuting the coordinates, the Galois predicate holds.  The
+proof is a faithfulness check, a bijectivity argument for the structure map by extracting
+coefficients, and a two-sided dimension count.  With that instance in hand the ring-tier question for
+non-singleton groups is no longer vague: the split algebra is not isomorphic to the field once the
+group has at least two elements, by counting idempotents, so the ring tier fails there outright, while
+the finite-field tier is false at the same carrier once any non-trivial Galois field extension exists.
+The remaining obstruction is therefore pinned to a single point: refuting the bridge for non-singleton
+groups is exactly the problem of making the finite-field tier true at some carrier, and the only
+available carriers are the source-side generic objects, whose field tier is the project's open
+main-line obligation.  The instance-ambiguity trap of the previous round is broken by fixing the
+tensor's instances once and naming the algebra homomorphism's compatibility slots explicitly.

@@ -3975,4 +3975,557 @@ theorem ringTierBridge_refuted_registered : True := trivial
 
 end RingTierBridgeRefuted
 
+
+/-! ### 4.66 **分裂 `G`-Galois 代数 `K^G`**（r264 ✓：库内**首个非平凡** `G`-Galois 实例 ✓✅）
+
+**⚠ 起点** ✓（承 §4.65 登记 (丙)(iv) ✓）：r263 把残余 ①（环档桥 `RealizationRingTierBridge` ✓）
+的 `Subsingleton G` 档**机器反驳** ✓✅，并把**非亚单档**的候选退化目标登记为
+**分裂 `G`-Galois 代数** ✓ `K^G` ✓（＝函数空间 `G → K` ✓，坐标**正则置换** ✓），
+但**其前置件**（`IsGaloisWithGroup K (G → K) G` ✓）**库内未落** ✗。本轮**落**该前置件 ✓✅。
+
+**⚠ 机制** ✓（**δ 双射 ＝ 维数计数 ＋ 单射** ✓，五步 ✓）：
+**① 忠实性** ✓：取 `f = Pi.single 1 1` ✓，在坐标 `g` 处取值 ✓ 得 `g⁻¹ * g = 1` 与
+`Pi.single 1 1 g` ✓ 的比较 ⟹ `g = 1` ✓（用 `K` 域 ⟹ `1 ≠ 0` ✓）；
+**② ② 款自动** ✓（由 `hRG` ✓ ＋ `algebraMap_fixed_of_smulCommClass` ✓）；
+**③ 两边 `K`-维数** ✓：左 ＝ `finrank K (SkewMonoidAlgebra (G → K) G)` ＝ `|G| · |G|` ✓
+（`coeffLinearEquiv` ✓ ＋ `Finsupp.linearEquivFunOnFinite` ✓ ＋ `LinearEquiv.curry` ✓ ＋
+`finrank_fintype_fun_eq_card` ✓），右 ＝ `finrank K (Module.End K (G → K))` ＝ `|G| · |G|` ✓
+（`Module.finrank_linearMap` ✓）；
+**④ 单射** ✓（**系数提取** ✓）：取测试函数 `t = Pi.single h 1` ✓，公式
+`δ x t = Σ_g (coeff g x) * (g • t)` ✓（**归纳** ✓，`deltaToEndAdd_single` ✓ ＋ `Finset.sum_eq_single` ✓）
+＋ 在坐标 `j` 处取值 ✓ 抽出**唯一**贡献项 ✓（`g⁻¹ * j = h ↔ g = j * h⁻¹` ✓）
+⟹ `(coeff (j * h⁻¹) x) j = 0` ✓（对一切 `j, h` ✓）⟹ 换元 `j := h`、`h := g⁻¹ * h` ✓ 得 `coeff g x = 0` ✓
+⟹ `x = 0` ✓（`SkewMonoidAlgebra.ext` ✓）；
+**⑤ 双射** ✓：`LinearMap.injective_iff_surjective_of_finrank_eq_finrank` ✓（维数相等 ✓ ＋ 单射 ✓）。
+
+**⚠ 口径** ✓：正则作用以**具名定义** ✓ `regularSMul` ✓／`regularMSA` ✓ 给出 ✓，
+经 `attribute [local instance]` ✓ **限本文件**注册 ✓（**不**污染全库实例表 ✓）——
+下游取用时写 `let _inst : MulSemiringAction G (G → K) := regularMSA G K` ✓（`let`-绑定与其值 defeq ✓）。
+**⚠ 档位** ✓：本件只用 `[Field K]` ✓ ＋ `[Group G] [Fintype G]` ✓（**无**其它有限性／分离性输入 ✗）。
+**🔴 不声称** ✗：**不**声称 `K^G` 是域 ✗（`|G| ≥ 2` 时它**有零因子** ✗，见 §4.67 ✓）；
+**不**声称它可作**有限域档**的见证 ✗（有限域档的 `L` 是**域** ✓，而 `K^G` 不是 ✗ —— 这正是残余 ①
+非亚单档的**卡点** ✓，见 §4.67 登记 ✓）；**不**声称两条源陈述已证 ✗。 -/
+
+section SplitGaloisAlgebra
+
+/-- **正则置换作用（`SMul` 层）** ✓：`(g • f) h = f (g⁻¹ * h)` ✓
+（＝ `G` 在自身上的**左正则**作用所诱导的坐标置换 ✓）。
+**⚠ 为何具名** ✓：mathlib **无**该作用的实例 ✗（实测 `synthInstanceFailed` ✓）；
+具名 ＋ `attribute [local instance]` ✓ 使**陈述**层可用 ✓ 而**不**污染全库 ✓。 -/
+@[instance_reducible] def regularSMul (G : Type*) [Group G] (K : Type*) : SMul G (G → K) :=
+  ⟨fun g f h => f (g⁻¹ * h)⟩
+
+attribute [local instance] regularSMul
+
+/-- **取值式** ✓：钉住作用在坐标上的形式 ✓（`rfl` 型 ✓ ⟹ 外形改动即编译失败 ✓）。 -/
+@[simp] lemma regularSMul_apply {G : Type*} [Group G] {K : Type*} (g : G) (f : G → K) (h : G) :
+    (g • f) h = f (g⁻¹ * h) := rfl
+
+/-- **正则置换作用（`MulSemiringAction` 层）** ✓：逐条验证 ✓ ——
+`G` 的作用是**环自同构** ✓（逐坐标 ✓），故 `smul_zero`／`smul_add`／`smul_mul`／`smul_one` 全为逐点等式 ✓。
+**⚠ 工艺** ✓：字段证明须**先** `rw [regularSMul_apply]`（或 `inv_one`／`mul_inv_rev` ＋ `mul_assoc` ✓）再 `simp` ✓ ——
+直接 `simp [regularSMul]` **不**能穿过 `HSMul`-包装 ✗（实测：`simp` made no progress ✓）。 -/
+@[instance_reducible] def regularMSA (G : Type*) [Group G] (K : Type*) [Semiring K] :
+    MulSemiringAction G (G → K) where
+  toSMul := regularSMul G K
+  one_smul f := by ext h; rw [regularSMul_apply, inv_one, one_mul]
+  mul_smul g₁ g₂ f := by ext h; rw [regularSMul_apply, mul_inv_rev, mul_assoc]; simp
+  smul_zero g := by ext h; rw [regularSMul_apply]; rfl
+  smul_add g f₁ f₂ := by ext h; rw [regularSMul_apply]; simp
+  smul_mul g f₁ f₂ := by ext h; rw [regularSMul_apply]; simp
+  smul_one g := by ext h; rw [regularSMul_apply]; rfl
+
+attribute [local instance] regularMSA
+
+/-- **作用与 `K`-纯量交换** ✓（＝判据的 `hRG` 输入 ✓）：`(g • (r • t)) h = r * t (g⁻¹ * h)` ✓
+＝ `(r • (g • t)) h` ✓（逐坐标 ✓）。 -/
+lemma regular_smul_comm {G : Type*} [Group G] {K : Type*} [Semiring K] :
+    ∀ (g : G) (r : K) (t : G → K), g • (r • t) = r • (g • t) := by
+  intro g r t
+  ext h
+  rw [regularSMul_apply]
+  simp
+
+/-- **单点函数的作用** ✓：`g • Pi.single h a = Pi.single (g * h) a` ✓
+（`(g • f) j = f (g⁻¹ * j)` ✓ ⟹ `g⁻¹ * j = h ↔ j = g * h` ✓）。 -/
+lemma regularMSA_single {G : Type*} [Group G] {K : Type*} [Semiring K] [DecidableEq G]
+    (g h : G) (a : K) :
+    g • (Pi.single h a : G → K) = Pi.single (g * h) a := by
+  ext j
+  rw [regularSMul_apply]
+  by_cases hj : j = g * h
+  · subst hj
+    rw [show g⁻¹ * (g * h) = h by rw [← mul_assoc, inv_mul_cancel, one_mul],
+      Pi.single_eq_same, Pi.single_eq_same]
+  · rw [Pi.single_eq_of_ne (i := g * h) (i' := j) hj,
+      Pi.single_eq_of_ne (i := h) (i' := g⁻¹ * j) (fun hc => hj (by
+        rw [← hc, ← mul_assoc, mul_inv_cancel, one_mul]))]
+
+/-- **忠实性** ✓（判据第 ① 款 ✓）：`g • f = f`（对一切 `f` ✓）取 `f = Pi.single 1 1` ✓，
+在坐标 `g` 处取值 ✓ 得 `1 = (Pi.single 1 1) g` ✓ ⟹ `g ≠ 1 ⟹ 1 = 0` ✗（`K` 域 ✓）⟹ `g = 1` ✓。
+**⚠ 用点** ✓：**须** `Nontrivial K` ✓。 -/
+lemma faithfulSMul_regular {G : Type*} [Group G] {K : Type*} [Semiring K] [Nontrivial K] :
+    FaithfulSMul G (G → K) where
+  eq_of_smul_eq_smul {a b} hab := by
+    classical
+    have h := congrFun (hab (Pi.single (1 : G) (1 : K))) a
+    rw [regularSMul_apply, inv_mul_cancel, Pi.single_eq_same, regularSMul_apply] at h
+    by_cases hba : b = a
+    · exact hba.symm
+    · rw [Pi.single_eq_of_ne (i := (1 : G)) (i' := b⁻¹ * a) (fun hc => hba
+        (inv_mul_eq_one.mp hc))] at h
+      exact absurd h one_ne_zero
+
+section DeltaFormula
+
+variable {G : Type*} [Group G] [Fintype G] {K : Type*} [Field K]
+
+/-- **δ 的求和公式** ✓（单射证明的**主引理** ✓）：`δ x t = Σ_g (coeff g x) * (g • t)` ✓ ——
+由 `SkewMonoidAlgebra.induction_on` ✓（`zero` ✓／`single` ✓／`add` ✓）归纳：
+`single` 档用 `deltaToEndAdd_single` ✓ ＋ `Finset.sum_eq_single` ✓（`coeff_single_apply` ✓），
+`add` 档用 `coeff_add` ✓ ＋ `add_mul` ✓ ＋ `Finset.sum_add_distrib` ✓。 -/
+lemma deltaToEndRingHom_apply (x : SkewMonoidAlgebra (G → K) G) (t : G → K) :
+    deltaToEndRingHom (regular_smul_comm (G := G) (K := K)) x t
+      = ∑ g : G, x.coeff g * (g • t) := by
+  classical
+  induction x using SkewMonoidAlgebra.induction_on with
+  | zero => simp
+  | single g₀ s =>
+    change deltaToEndAdd (regular_smul_comm (G := G) (K := K))
+        (SkewMonoidAlgebra.single g₀ s) t
+      = ∑ g : G, (SkewMonoidAlgebra.single g₀ s).coeff g * (g • t)
+    rw [deltaToEndAdd_single, Module.End.mul_apply]
+    change s * (g₀ • t) = ∑ g : G, (SkewMonoidAlgebra.single g₀ s).coeff g * (g • t)
+    rw [Finset.sum_eq_single g₀]
+    · rw [SkewMonoidAlgebra.coeff_single_apply, if_pos rfl]
+    · intro b _ hb
+      rw [SkewMonoidAlgebra.coeff_single_apply, if_neg (fun hc => hb hc.symm), zero_mul]
+    · intro hb; exact absurd (Finset.mem_univ g₀) hb
+  | add f h hf hh =>
+    rw [map_add, LinearMap.add_apply, hf, hh]
+    simp only [SkewMonoidAlgebra.coeff_add, Finsupp.add_apply, add_mul,
+      Finset.sum_add_distrib]
+
+/-- **δ 单射** ✓（判据第 ③ 款的**一半** ✓，§4.66 机制 ④ ✓）：设 `δ z = 0` ✓（`z = x - y` ✓），
+取 `t = Pi.single h 1` ✓ 并用求和公式 ✓ ＋ `Finset.sum_eq_single (j * h⁻¹)` ✓
+抽出唯一贡献项 ✓ ⟹ `(coeff (j * h⁻¹) z) j = 0` ✓（对一切 `j, h` ✓）；
+换元 `j := h`、`h := g⁻¹ * h` ✓ 得 `coeff g z = 0` ✓ ⟹ `z = 0` ✓（`SkewMonoidAlgebra.ext` ✓）。 -/
+lemma injective_deltaToEndRingHom :
+    Function.Injective (deltaToEndRingHom (regular_smul_comm (G := G) (K := K))) := by
+  classical
+  intro x y hxy
+  have hz : deltaToEndRingHom (regular_smul_comm (G := G) (K := K)) (x - y) = 0 := by
+    rw [map_sub, hxy, sub_self]
+  have hstep : ∀ (j h' : G), (x - y).coeff (j * h'⁻¹) j = 0 := by
+    intro j h'
+    have h0 : (deltaToEndRingHom (regular_smul_comm (G := G) (K := K)) (x - y))
+        (Pi.single h' (1 : K)) j = 0 := by rw [hz]; rfl
+    rw [deltaToEndRingHom_apply, Finset.sum_apply] at h0
+    have h1 : ∑ g : G, ((x - y).coeff g * (g • (Pi.single h' (1 : K) : G → K))) j
+        = ((x - y).coeff (j * h'⁻¹)
+            * ((j * h'⁻¹) • (Pi.single h' (1 : K) : G → K))) j := by
+      refine Finset.sum_eq_single (j * h'⁻¹) ?_ ?_
+      · intro b _ hb
+        rw [Pi.mul_apply, regularMSA_single,
+          Pi.single_eq_of_ne (i := b * h') (i' := j) (fun hc =>
+            hb (by rw [hc, mul_assoc, mul_inv_cancel, mul_one])), mul_zero]
+      · intro hb; exact absurd (Finset.mem_univ _) hb
+    rw [h1] at h0
+    rw [Pi.mul_apply, regularMSA_single,
+      show j * h'⁻¹ * h' = j by rw [mul_assoc, inv_mul_cancel, mul_one],
+      Pi.single_eq_same, mul_one] at h0
+    exact h0
+  have hcoeff : ∀ g : G, (x - y).coeff g = 0 := by
+    intro g
+    ext h
+    have h2 := hstep h (g⁻¹ * h)
+    rwa [show h * (g⁻¹ * h)⁻¹ = g by
+      rw [mul_inv_rev, inv_inv, ← mul_assoc, mul_inv_cancel, one_mul]] at h2
+  exact sub_eq_zero.mp (SkewMonoidAlgebra.ext hcoeff)
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 本轮主结果：分裂 `G`-Galois 代数** ✓✅：`IsGaloisWithGroup K (G → K) G` ✓ ——
+**库内首个非平凡** `G`-Galois 实例 ✓（此前库内只有零环档 ✓ 与源侧数据档 ✓）。
+**⚠ 证明** ✓（五步 ✓，见本 § 开头机制表 ✓）：忠实性 ✓ ＋ ② 款 ✓ ＋ `δ` 单射 ✓ ＋
+**两侧维数相等** ✓ ＋ `LinearMap.injective_iff_surjective_of_finrank_eq_finrank` ✓。
+**⚠ 工艺** ✓（**本件的两处实例** ✗）：`Module.Finite K (SkewMonoidAlgebra (G → K) G)` **无**实例 ✗
+（实测 `synthInstanceFailed` ✓）⟹ 由 `coeffLinearEquiv` ✓ ＋ `Module.Finite.equiv` ✓
+**就地注册** ✓（`let _instFinSkew` ✓ —— 不用 `haveI` ✗）；`FiniteDimensional K (SkewMonoidAlgebra …)` ✓
+是 `Module.Finite` ✓ 的**缩写** ✓ ⟹ 一步到位 ✓。
+**⚠ 维数工艺** ✓：`Module.finrank_finsupp` ✓ 要求 `ι` 与 `M` **同宇宙** ✗
+（其签名 `∀ (R) (M) {ι : Type u_4}` ✓；实测 `G : Type u_1` 与 `G → K : Type (max u_1 u_2)` ✗ 不同 ⟹ 不可用 ✗）
+⟹ 改走 **`Finsupp.linearEquivFunOnFinite` ✓ ＋ `LinearEquiv.curry` ✓ ＋ `finrank_fintype_fun_eq_card` ✓**
+（三者对宇宙**无**该限制 ✓）。
+**🔴 不声称** ✗：**不**声称 `K^G` 是域 ✗；**不**声称残余 ① 已驳 ✗（见 §4.67 ✓）。 -/
+theorem isGaloisWithGroup_regularAction :
+    IsGaloisWithGroup K (G → K) G (regular_smul_comm (G := G) (K := K)) := by
+  classical
+  let _instFinSkew : Module.Finite K (SkewMonoidAlgebra (G → K) G) :=
+    Module.Finite.equiv (SkewMonoidAlgebra.coeffLinearEquiv (S := K) (k := G → K) (G := G)).symm
+  refine ⟨faithfulSMul_regular (G := G) (K := K),
+    fun g r => algebraMap_fixed_of_smulCommClass
+      (regular_smul_comm (G := G) (K := K)) g r, ?_⟩
+  have hinj := injective_deltaToEndRingHom (G := G) (K := K)
+  have hsmul : ∀ (k : K) (x : SkewMonoidAlgebra (G → K) G),
+      deltaToEndRingHom (regular_smul_comm (G := G) (K := K)) (k • x)
+        = k • deltaToEndRingHom (regular_smul_comm (G := G) (K := K)) x := by
+    intro k x
+    induction x using SkewMonoidAlgebra.induction_on with
+    | zero => simp
+    | add x y hx hy => simp [hx, hy]
+    | single g a =>
+      rw [SkewMonoidAlgebra.smul_single]
+      change deltaToEndAdd (regular_smul_comm (G := G) (K := K))
+          (SkewMonoidAlgebra.single g (k • a))
+        = k • deltaToEndAdd (regular_smul_comm (G := G) (K := K))
+            (SkewMonoidAlgebra.single g a)
+      rw [deltaToEndAdd_single, deltaToEndAdd_single]
+      apply LinearMap.ext
+      intro y
+      change (k • a) * (g • y) = k • (a * (g • y))
+      exact smul_mul_assoc k a (g • y)
+  let δL : SkewMonoidAlgebra (G → K) G →ₗ[K] Module.End K (G → K) :=
+    { toFun := deltaToEndRingHom (regular_smul_comm (G := G) (K := K))
+      map_add' := map_add _
+      map_smul' := hsmul }
+  have hskew : Module.finrank K (SkewMonoidAlgebra (G → K) G)
+      = Fintype.card G * Fintype.card G := by
+    rw [(SkewMonoidAlgebra.coeffLinearEquiv (S := K) (k := G → K) (G := G)).finrank_eq,
+      (Finsupp.linearEquivFunOnFinite K (G → K) G).finrank_eq,
+      (LinearEquiv.curry K K G G).symm.finrank_eq]
+    simp
+  have hend : Module.finrank K (Module.End K (G → K))
+      = Fintype.card G * Fintype.card G := by
+    rw [Module.finrank_linearMap, Module.finrank_fintype_fun_eq_card]
+  have hfin : Module.finrank K (SkewMonoidAlgebra (G → K) G)
+      = Module.finrank K (Module.End K (G → K)) := by rw [hskew, hend]
+  have hinjL : Function.Injective δL := hinj
+  exact ⟨hinj, (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hfin).mp hinjL⟩
+
+end DeltaFormula
+
+#print axioms regularSMul_apply
+#print axioms regular_smul_comm
+#print axioms regularMSA_single
+#print axioms faithfulSMul_regular
+#print axioms deltaToEndRingHom_apply
+#print axioms injective_deltaToEndRingHom
+#print axioms isGaloisWithGroup_regularAction
+
+end SplitGaloisAlgebra
+
+/-! ### 4.67 **分裂代数的幂等元** ＋ **残余 ①（非亚单档）的精确登记**（r264 ✓）
+
+**⚠ 目标** ✓：承 §4.65 登记 (丙)(iv) ✓ —— 非亚单档的候选退化目标 ＝ 分裂代数 `K^G` ✓；
+本节的**两件** ✓：**①** `K^G ≇ K`（`|G| ≥ 2` ✓）的**机器证明** ✓✅；
+**②** 幂等元版**桥引理** ✓（＝把「`L` 有非平凡幂等元 ✓ ＋ `T` 无 ✓」翻成「无 `K`-代数同构」✓）。
+
+**🔴 残余 ①（非亚单档）的终态** ✓（**逐条如实** ✓）：
+**(甲) 已落** ✓✅：**前置件** ✓（§4.66 `isGaloisWithGroup_regularAction` ✓，
+**库内首个非平凡** `G`-Galois 实例 ✓）；**幂等元计数** ✓（`piSelf_not_algEquiv_self` ✓）；
+**桥引理** ✓（`not_nonempty_algEquiv_of_idempotent_of_idempotentFree` ✓）。
+**(乙) 卡点（精确）** ✗：**反驳须**「有限域档在**某** `(R,S)` 上**真** ✓」＋「环档在**同载体**上**假** ✗」——
+**退化载体 `(R,S) = (F,F)`** ✓：环档**确实假** ✗（见证 ＝ `K := F` ✓、`L := K^G` ✓，
+由 (甲) 的幂等元计数 ✓ 与前置件 ✓）**但**前置件（有限域档）在该载体上**假** ✗ ——
+`RealizationPropertyFieldFinite F G F F` ✓ 展开后要求
+「**一切**有限 `G`-Galois 域扩张 `L/K`（`K ⊇ F` ✓）满足 `L ≅ K` ✓」✗
+（`|G| ≥ 2` 时取任一非平凡扩张即违 ✗）。**⟹ `(F,F)` 路线在 `|G| ≥ 2` 档死** ✗。
+**(丙) 编码层卡点**（**可复现** ✓，探针 `.abgv52-scratch/probe-r264m.lean` ✓）✗：
+把 (乙) 的断言写成机器定理（`¬ RealizationProperty F G F F` ✓）时，`RealizationProperty` ✓ 结论里的
+`letI : Algebra R K := φ.toRingHom.toAlgebra` ✓（**遮蔽** ✓）与 `RealizationPropertyExplicit` ✓ 的
+`∃ A : Algebra R K` ✓ 使**同一类型上出现两个 `Algebra` 候选** ✗：实测报错
+「**Type mismatch**：`AlgHom.id F F` has type `@AlgHom F F F … A A` but is expected to have type
+`@AlgHom F F F … (Algebra.id F) (Algebra.id F)`」✓ 与
+「**synthesized type class instance is not definitionally equal to expression inferred by typing rules**：
+synthesized `@Function.algebra F G F … A`，inferred `… (Algebra.id F)`」✓ ——
+即 r262 的**同一编码层**卡点 ✗（r263 之所以能在**亚单档**穿过 ✓，是因为其见证是**零环** ✓，
+断言只需 `Subsingleton`／`Nontrivial` ✓ 这类**与代数结构无关**的谓词 ✓；
+而幂等元断言**必须**指名张量的**乘法** ✓ ⟹ 须先把张量的实例**逐槽指名** ✓ ——
+**本轮已在 §4.68 完成** ✓✅（`selfTensor` ✓ 把张量实例**固定一次** ✓ ＋ `@AlgHom.commutes` ✓ **逐槽指名** ✓：
+上述**两处报错均消失** ✓，`not_realizationPropertyExplicit_self_of_two_le_card` ✓ 与
+`not_realizationProperty_self_of_two_le_card` ✓ 已落地 ✓）。
+**(丁) 有限域档的真实卡点** ✗（**数学内容** ✓，**非**编码 ✗）：要 (乙) 的「有限域档为真」 ✓，
+须在**非退化** `(R,S)` ✓（**源侧 generic object** ✓：`R` 局部化多项式环 ✓、
+`S = Localization.Away t` ✓）上落 `RealizationPropertyFieldFinite` ✓ —— 那**正是**源
+`theorem-5-1`／`theorem-2-1` ✓ 的主线残余 ✓（库内已有
+`realizationPropertyFieldFinite_of_sourceData` ✓ 把该档**压到源侧数据** ✓，但其**数据**（`hgal` ✓／`hProj` ✓／
+`hS₀R` ✓／`hRQ` ✓／`hRGpoint` ✓）**仍未落** ✗）。
+**⚠ 分类（规则 17）** ✓：缺失对象 ＝ **有限域档在非退化载体上的证明** ✓（＝主线**证明义务** ✓，
+**非**观测数据 ✗，**亦非**「可算未算」✗）⟹ **不**登记为**材料阻断** ✗；
+且其**载体**（源侧数据 ✓）**已在库内具名** ✓ ⟹ 属**主线**残余 ✓，**不**另立新阻断 ✓。
+**(戊) 未落** ✗：**(i)** 非亚单档环档桥的**无条件**机器反驳 ✗ —— **载体侧已齐** ✓✅
+（环档在 `(F,F)` 上**无条件假** ✓，§4.68 ✓；**条件反驳** ✓（有限域档 ⟹ 桥假 ✓）亦已落 ✓），
+**唯一**缺口 ＝ **(丁) 的有限域档** ✓（`(F,F)` 档**假** ✗ —— §4.69 已备好其**消费者** ✓：
+**任一**非平凡 `G`-Galois 域扩张即证其假 ✓；非退化档 ＝ 主线残余 ✓）；
+**(ii)** 两条源陈述 ✓ **仍未证** ✗（承 §4.65 ✓）。
+**🔴 不声称** ✗：**不**声称非亚单档的桥已驳 ✗；**不**声称 `(F,F)` 的有限域档**已被机器反驳** ✗
+（其**数学否定** ✓ 须先在库内**构造**一个非平凡 `G`-Galois 域扩张 ✓ —— **未落** ✗，列为下一手 ✓；
+**该步的接线件**已在 §4.69 落地 ✓）；
+**不**声称两条源陈述已证 ✗。 -/
+
+section SplitAlgebraIdempotents
+
+variable {G : Type} [Fintype G] {K : Type} [Field K]
+
+set_option maxHeartbeats 1000000 in
+/-- **非平凡幂等元存在** ✓（`|G| ≥ 2` ✓）：取 `g ≠ h`（`Fintype.exists_pair_of_one_lt_card` ✓）
+与坐标 `g` 的**指示函数** `u = Pi.single g 1` ✓：`u * u = u` ✓（逐坐标 ✓）、
+`u ≠ 0` ✓（`u g = 1 ≠ 0` ✓）、`u ≠ 1` ✓（`u h = 0 ≠ 1` ✓）。 -/
+theorem piSelf_exists_nontrivial_idempotent (hcard : 2 ≤ Fintype.card G) :
+    ∃ u : G → K, u * u = u ∧ u ≠ 0 ∧ u ≠ 1 := by
+  classical
+  obtain ⟨g, h, hgh⟩ := Fintype.exists_pair_of_one_lt_card (by omega : 1 < Fintype.card G)
+  refine ⟨Pi.single g 1, ?_, ?_, ?_⟩
+  · ext j
+    by_cases hj : j = g
+    · subst hj; simp
+    · simp [hj]
+  · intro hzero
+    have h2 := congrFun hzero g
+    simp at h2
+  · intro hone
+    have h2 := congrFun hone h
+    simp [Pi.single_eq_of_ne (i := g) (i' := h) hgh.symm] at h2
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴 `K^G ≇ K`** ✓✅（`|G| ≥ 2` ✓）：设 `e : K^G ≃ₐ[K] K` ✓，取非平凡幂等元 `u` ✓（上件 ✓）
+⟹ `e u` 是 `K` 的幂等元 ✓ ⟹ `e u = 0 ∨ e u = 1` ✓（**域内** `x * x = x ⟹ x (x - 1) = 0` ✓
+＋ `mul_eq_zero` ✓）⟹ `u = 0 ∨ u = 1` ✓（`e` 单射 ✓ ＋ `map_zero`／`map_one` ✓）—— 与 `u` 非平凡矛盾 ✗。
+**⚠ 地位** ✓：本件是**分裂代数**作为「退化目标」的**判别力** ✓（§4.65 (丙)(iv) 的预期 ✓ 已落地 ✓）。 -/
+theorem piSelf_not_algEquiv_self (hcard : 2 ≤ Fintype.card G) :
+    ¬ Nonempty ((G → K) ≃ₐ[K] K) := by
+  classical
+  rintro ⟨e⟩
+  obtain ⟨u, hu, hu0, hu1⟩ := piSelf_exists_nontrivial_idempotent (G := G) (K := K) hcard
+  have he : e u * e u = e u := by rw [← map_mul, hu]
+  have h0 : e u * (e u - 1) = 0 := by rw [mul_sub, mul_one, he, sub_self]
+  rcases (mul_eq_zero.mp h0) with hz | hone
+  · exact hu0 (e.injective (by rw [hz, map_zero]))
+  · exact hu1 (e.injective (by rw [sub_eq_zero.mp hone, map_one]))
+
+set_option maxHeartbeats 1000000 in
+/-- **桥引理（幂等元版）** ✓（§4.65 的 `not_nonempty_algEquiv_of_subsingleton_of_nontrivial` ✓ 的**对偶** ✓）：
+`L` 有**非平凡幂等元** ✓ ＋ `T` 的幂等元**只有 `0, 1`** ✓ ⟹ **无** `K`-代数同构 `L ≃ₐ[K] T` ✓
+（同构把幂等元搬到幂等元 ✓，`e 0 = 0` ✓／`e 1 = 1` ✓ ＋ 单射 ✓）。
+**⚠ 工艺** ✓（**与 r263 同款** ✓）：两个 `Algebra` 实例作**显式变元** ✓（`aL` ✓／`aT` ✓，**非** instance binder ✗）
+⟹ 下游应用时由 **unify** ✓（对齐具体张量实例 ✓）而非 **synth** ✗ 决定 ✓ ——
+这是穿过 `letI` 遮蔽的关键 ✓（`linter.unusedVariables` 由 `let _instL`／`let _instT` 命名规避 ✓）。 -/
+theorem not_nonempty_algEquiv_of_idempotent_of_idempotentFree {K L T : Type*} [CommSemiring K]
+    [Semiring L] [Semiring T] (aL : Algebra K L) (aT : Algebra K T)
+    (hL : ∃ u : L, u * u = u ∧ u ≠ 0 ∧ u ≠ 1)
+    (hT : ∀ u : T, u * u = u → u = 0 ∨ u = 1) :
+    ¬ Nonempty (@AlgEquiv K L T _ _ _ aL aT) := by
+  let _instL : Algebra K L := aL
+  let _instT : Algebra K T := aT
+  rintro ⟨e⟩
+  obtain ⟨u, hu, hu0, hu1⟩ := hL
+  have he : e u * e u = e u := by rw [← map_mul, hu]
+  rcases hT (e u) he with hz | hone
+  · exact hu0 (e.injective (by rw [hz, map_zero]))
+  · exact hu1 (e.injective (by rw [hone, map_one]))
+
+set_option maxHeartbeats 1000000 in
+/-- **登记（非亚单档）** ✓：残余 ①（环档桥 ✓）**非亚单档**的终态 ——
+**A**（已落 ✓✅）：前置件 ✓（§4.66 ✓）／幂等元计数 ✓（`piSelf_not_algEquiv_self` ✓）／
+桥引理 ✓（`not_nonempty_algEquiv_of_idempotent_of_idempotentFree` ✓）。
+**B**（卡点 ✗）：反驳须**非退化**载体上的有限域档 ✓（源侧 generic object ✓，其数据未落 ✗）；
+退化载体 `(F,F)` 的环档**确实假** ✗，但其有限域档**假** ✗ ⟹ 该路线**死** ✗。
+**C**（编码层 ✗）：写成机器定理时尚有 `letI` 遮蔽导致的**实例二义** ✗
+（探针 `.abgv52-scratch/probe-r264m.lean` ✓ 可复现 ✓）。
+**D**（下一手 ✓）：**①** 库内构造**一个非平凡 `G`-Galois 域扩张** ✓（如 `ℂ/ℝ` ＋ `G = ZMod 2` ✓，
+δ 双射由 `finrank ℝ ℂ = 2` ✓ ＋ 单射 ✓）⟹ 可把 `(F,F)` 的有限域档**机器反驳** ✗✅，
+从而把「`(F,F)` 路线已死」从**数学断言** ✓ 升级为**机器读数** ✓；
+**②** 源侧数据（`hgal` ✓／`hProj` ✓／`hS₀R` ✓／`hRQ` ✓／`hRGpoint` ✓）⟹ 非退化载体上的有限域档 ✓
+⟹ 非亚单档反驳 ✓（**须先过 C** ✓）。
+**🔴 不声称** ✗：**不**声称本件给出反驳 ✗（**只**给出**前置件 ＋ 判别力 ＋ 卡点定位** ✓）。 -/
+theorem ringTierBridge_nonSingleton_registered : True := trivial
+
+#print axioms piSelf_exists_nontrivial_idempotent
+#print axioms piSelf_not_algEquiv_self
+#print axioms not_nonempty_algEquiv_of_idempotent_of_idempotentFree
+#print axioms ringTierBridge_nonSingleton_registered
+
+end SplitAlgebraIdempotents
+
+/-! ### 4.68 **退化载体 `(F,F)` 的环档反驳 ＋ 条件桥反驳**（r264 ✓：环档在 `(F,F)` 上**无条件假** ✓✅）
+
+**⚠ 起点** ✓（承 §4.67 的登记 ✓）：§4.67 已落**前置件** ✓（分裂代数 `G`-Galois ✓）、
+**幂等元计数** ✓（`K^G ≇ K` ✓）与**幂等元版桥引理** ✓；本轮把三者**接成反驳** ✓✅。
+
+**⚠ 主张（逐条，**不**越界 ✓）**：
+**①** `¬ RealizationPropertyExplicit F G F F` ✓（`|G| ≥ 2` ✓）—— **显式实例形**的环档在 `(F,F)` 上**假** ✗；
+**②** `¬ RealizationProperty F G F F` ✓ —— **源形**环档在同载体上**假** ✗（由 ① ＋ **旧 ⟹ 新** ✓ 的**逆否** ✓）；
+**③** `RealizationPropertyFieldFinite F G F F → ¬ RealizationRingTierBridge F G` ✓ —— **条件桥反驳** ✓
+（＝「若有限域档在 `(F,F)` 上真 ✓，则环档桥**被分裂代数反驳** ✓」）。
+**⚠ 机制** ✓（① 的证明链 ✓，**四步** ✓）：`obtain ⟨φ, A, hA, hP⟩` ✓ ⟹
+**(a)** `A = Algebra.id F` ✓（`φ` 是 `F` 的**唯一** `F`-代数自同态 ✓ —— `AlgHom.commutes` ✓ ＋
+`algebra_ext_of_algebraMap_eq` ✓ ⟹ `A.algebraMap = RingHom.id F` ✓）；
+**(b)** `hP` 沿 (a) **搬运** ✓（`▸` ✓：两边都写成**同一显式实例式** ✓ ⟹ motive 的实例元变量由 **unify** 定 ✓）；
+**(c)** 典范张量 `F ⊗_F F` 的**幂等元只有 `0, 1`** ✓（`Algebra.TensorProduct.rid` ✓ 把它送到 `F` ✓，
+再用**域内** `x * x = x ⟹ x = 0 ∨ x = 1` ✓）；
+**(d)** 分裂代数的**非平凡幂等元** ✓（§4.67 ✓）＋ **桥引理** ✓（§4.67 ✓，两 `Algebra` 实例作**显式变元** ✓
+⟹ 由 **unify** 决定 ✓）。
+**⚠ 关键技术读数** ✓（**r262／r263 卡点的突破** ✓，两处 ✓）：**(i)** 陈述里的张量**必须写成显式实例式** ✓
+（`@TensorProduct F _ F F _ _ (@Algebra.toModule F F _ _ A) (@Algebra.toModule F F _ _ (Algebra.id F))` ✓，
+本 § 用 `abbrev selfTensor` ✓ 把它**固定一次** ✓）；**(ii)** `AlgHom.commutes` ✓ 等引理在 `A` 进语境后
+会**误取** `A` 作 `Algebra F F` 实例 ✗（实测报错「synthesized `A` / inferred `Algebra.id F`」✓）
+⟹ **须**写成 `@AlgHom.commutes F F F _ _ _ (Algebra.id F) (Algebra.id F) φ x` ✓（**逐槽指名** ✓）。
+**🔴 不声称** ✗：**不**声称 ③ 的**前件**成立 ✗ —— 恰恰相反：`(F,F)` 的有限域档要求
+「一切有限 `G`-Galois 域扩张 `L/K`（`K ⊇ F`）满足 `L ≅ K`」✗（`|G| ≥ 2` 时**假** ✗，见 §4.67 (乙) ✓）
+⟹ ③ **不**给出**无条件**反驳 ✗（**它**给出的是**卡点的精确定位** ✓：非亚单档的反驳**等价于**在
+**非退化**载体上落有限域档 ✓ ＝ 源侧主线残余 ✓）。
+**🔴 不声称** ✗：**不**声称非亚单档的桥已驳 ✗；**不**声称两条源陈述已证 ✗。 -/
+
+section RingTierSelfRefuted
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G]
+
+attribute [local instance] regularSMul regularMSA
+
+/-- **自张量 `F ⊗_F F`（第一因子取给定 `Algebra F F` ✓，第二因子取 `Algebra.id F` ✓）** ✓：
+**具名一次** ✓ ⟹ 下游一切陈述共用**同一批**实例项 ✓ —— 这是穿过 `letI` 遮蔽的关键工艺 ✓
+（r262／r263 的实例二义 ✗ 在此被**固定** ✓）。 -/
+abbrev selfTensor (F : Type) [Field F] (A : Algebra F F) : Type :=
+  @TensorProduct F _ F F _ _ (@Algebra.toModule F F _ _ A) (@Algebra.toModule F F _ _ (Algebra.id F))
+
+set_option maxHeartbeats 1000000 in
+/-- **典范自张量的幂等元只有 `0, 1`** ✓：`Algebra.TensorProduct.rid F F F : F ⊗_F F ≃ₐ[F] F` ✓ 把幂等元送到 `F` ✓；
+`F` 域 ⟹ `x * x = x ⟹ x (x - 1) = 0 ⟹ x = 0 ∨ x = 1` ✓（`mul_eq_zero` ✓）；
+回拉用 `rid` 的**单射** ✓ ＋ `map_zero` ✓／`map_one` ✓。 -/
+lemma selfTensor_idem (u : selfTensor F (Algebra.id F)) (hu : u * u = u) : u = 0 ∨ u = 1 := by
+  have h1 : (Algebra.TensorProduct.rid F F F) u * (Algebra.TensorProduct.rid F F F) u
+      = (Algebra.TensorProduct.rid F F F) u := by rw [← map_mul, hu]
+  have h2 : (Algebra.TensorProduct.rid F F F) u
+      * ((Algebra.TensorProduct.rid F F F) u - 1) = 0 := by
+    rw [mul_sub, mul_one, h1, sub_self]
+  rcases (mul_eq_zero.mp h2) with h3 | h3
+  · left
+    refine (Algebra.TensorProduct.rid F F F).injective ?_
+    rw [h3, map_zero]
+  · right
+    refine (Algebra.TensorProduct.rid F F F).injective ?_
+    rw [sub_eq_zero.mp h3, map_one]
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 环档在 `(F,F)` 上假（显式实例形）** ✓✅：`|G| ≥ 2` ⟹
+`¬ RealizationPropertyExplicit F G F F` ✓ —— 见证 ＝ `K := F` ✓、`L := G → F` ✓（分裂代数 ✓，
+由 §4.66 前置件 ✓ 是 `F`-上 `G`-Galois ✓）。
+**⚠ 证明四步** ✓（见本 § 开头机制表 ✓）：`A = Algebra.id F` ✓（**唯一自同态** ✓）⟹
+张量沿 (a) **搬运** ✓ ⟹ **幂等元计数** ✓（`selfTensor_idem` ✓ ＋ `piSelf_exists_nontrivial_idempotent` ✓）
+⟹ **桥引理** ✓（`not_nonempty_algEquiv_of_idempotent_of_idempotentFree` ✓，两 `Algebra` 实例**由 unify 定** ✓）。
+**⚠ 工艺** ✓：`AlgHom.commutes` ✓ **须**逐槽指名 ✗（否则误取 `A` ✗，实测报错
+「synthesized `A` / inferred `Algebra.id F`」✓）。 -/
+theorem not_realizationPropertyExplicit_self_of_two_le_card (hcard : 2 ≤ Fintype.card G) :
+    ¬ RealizationPropertyExplicit F G F F := by
+  classical
+  have hL : ∃ u : G → F, u * u = u ∧ u ≠ 0 ∧ u ≠ 1 :=
+    piSelf_exists_nontrivial_idempotent (G := G) (K := F) hcard
+  have hcanon : ∀ u : selfTensor F (Algebra.id F), u * u = u → u = 0 ∨ u = 1 :=
+    fun u hu => selfTensor_idem (F := F) u hu
+  intro h
+  let _instMSA : MulSemiringAction G (G → F) := regularMSA G F
+  have hKL : ∀ (g : G) (r : F) (t : G → F), g • (r • t) = r • (g • t) :=
+    regular_smul_comm (G := G) (K := F)
+  have hgal : IsGaloisWithGroup F (G → F) G hKL :=
+    isGaloisWithGroup_regularAction (G := G) (K := F)
+  obtain ⟨φ, A, hA, hP⟩ := h F (G → F) hKL hgal
+  have hφ : ∀ x : F, φ x = x := by
+    intro x
+    exact @AlgHom.commutes F F F _ _ _ (Algebra.id F) (Algebra.id F) φ x
+  have hAA : A = Algebra.id F := by
+    apply algebra_ext_of_algebraMap_eq
+    intro x
+    show A.algebraMap x = (Algebra.id F).algebraMap x
+    rw [show A.algebraMap x = φ x from by rw [hA]; rfl]
+    exact hφ x
+  have hT : ∀ u : selfTensor F A, u * u = u → u = 0 ∨ u = 1 := hAA ▸ hcanon
+  exact not_nonempty_algEquiv_of_idempotent_of_idempotentFree (K := F) (L := G → F)
+    (T := selfTensor F A) _ _ hL hT hP
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 环档在 `(F,F)` 上假（源形）** ✓✅：`|G| ≥ 2` ⟹ `¬ RealizationProperty F G F F` ✓ ——
+由**显式实例形**的反驳 ✓ ＋ **旧 ⟹ 新** ✓（`realizationPropertyExplicit_of_realizationProperty` ✓）的**逆否** ✓。
+**⚠ 意义** ✓：源形（＝两条源陈述所用之档 ✓）在 `(F,F)` 上**不成立** ✗ ⟹ 桥的**结论侧**在该载体上
+**必然假** ✗ —— 故 `(F,F)` 路线**唯一**缺口 ＝ **前件（有限域档）** ✓（下件 ✓）。 -/
+theorem not_realizationProperty_self_of_two_le_card (hcard : 2 ≤ Fintype.card G) :
+    ¬ RealizationProperty F G F F :=
+  fun h => not_realizationPropertyExplicit_self_of_two_le_card (F := F) (G := G) hcard
+    (realizationPropertyExplicit_of_realizationProperty h)
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 条件桥反驳（退化载体 `(F,F)`）** ✓✅：**若**有限域档在 `(F,F)` 上**真** ✓
+（`RealizationPropertyFieldFinite F G F F` ✓）**则**环档桥 `RealizationRingTierBridge F G` ✓ **假** ✗
+（`|G| ≥ 2` ✓）。
+**⚠ 地位** ✓（**精确** ✓）：本件把非亚单档反驳的**全部缺口**压到**单一前件** ✓ ——
+即 `(F,F)` 的有限域档 ✓；而该前件**恰好假** ✗（§4.67 (乙) ✓：它要求一切有限 `G`-Galois 域扩张平凡 ✓）
+⟹ **本件不构成无条件反驳** ✗（**如 §4.68 头注 (🔴) 所述** ✓）。
+**⚠ 用途** ✓：**下一手**若在**非退化**载体（源侧 generic object ✓）上落有限域档 ✓，
+把本件的 `(F,F)` 换成该载体 ✓ 即得**无条件反驳** ✓（**须**先把张量的实例逐槽指名 ✓，见 (丙) ✓）。 -/
+theorem not_realizationRingTierBridge_of_fieldTier_self (hcard : 2 ≤ Fintype.card G)
+    (hFF : RealizationPropertyFieldFinite F G F F) : ¬ RealizationRingTierBridge F G :=
+  fun hb => not_realizationProperty_self_of_two_le_card (F := F) (G := G) hcard (hb F F hFF)
+
+#print axioms selfTensor_idem
+#print axioms not_realizationPropertyExplicit_self_of_two_le_card
+#print axioms not_realizationProperty_self_of_two_le_card
+#print axioms not_realizationRingTierBridge_of_fieldTier_self
+
+end RingTierSelfRefuted
+
+/-! ### 4.69 **`(F,F)` 有限域档的消费者**（r264 ✓：任一非平凡 `G`-Galois 域扩张 ⟹ `(F,F)` 档假 ✓✅）
+
+**⚠ 起点** ✓（承 §4.67 (丁) ✓／§4.68 ✓）：非亚单档反驳的**唯一**缺口 ＝ 有限域档在**某** `(R,S)` 上为真 ✓；
+而 §4.67 已指出 `(F,F)` 档**假** ✗（它要求一切有限 `G`-Galois 域扩张平凡 ✓）。
+本件把该**断言**升级为**定理** ✓✅：**给**一个非平凡扩张 ✓（`L/K` 有限 ✓ ＋
+`IsGaloisWithGroup K L G` ✓ ＋ `¬ Nonempty (L ≃ₐ[K] K)` ✓）⟹
+`¬ RealizationPropertyFieldFinite F G F F` ✓。
+
+**⚠ 机制** ✓（**三步** ✓，且**不**触发 §4.67 (丙) 的编码卡点 ✓✅）：由该档取 `(K, L)` ✓ 得
+`∃ φ : F →ₐ[F] K` ✓ ＋（`letI` 遮蔽下）`Nonempty (L ≃ₐ[K] (K ⊗_F F))` ✓；**关键工艺** ✓：
+`let _inst : Algebra F K := φ.toRingHom.toAlgebra` ✓ **就地**把 `letI`-遮蔽的实例**具名** ✓
+（`let`-绑定与其值 ***defeq*** ✓ ⟹ 张量实例**对齐** ✓），再用
+`Algebra.TensorProduct.rid F K K : (K ⊗_F F) ≃ₐ[K] K` ✓ **复合** ✓ ⟹ `Nonempty (L ≃ₐ[K] K)` ✓
+—— 与 `hne` ✓ 矛盾 ✓。
+**⚠ 与 §4.67 (丙) 之别** ✓：本件的 `∃` **只**绑定 `φ` ✓（**不**绑定 `Algebra F K` ✓）⟹
+`A`-型实例污染**不存在** ✗ ⟹ **无需** `selfTensor` 式逐槽指名 ✓（**实测一次通过** ✓，探针
+`.abgv52-scratch/probe-r264p.lean` ✓，**零警告** ✓）。
+**⚠ 用途** ✓（**把下一手接线完毕** ✓）：非亚单档反驳的路线图现为
+**①**（可选，判别力）库内构造一个非平凡 `G`-Galois 域扩张 ✓（如 `ℂ/ℝ` ＋ `G` 为二阶群 ✓：
+δ 双射由 `finrank ℝ ℂ = 2` ✓ ＋ `t = 1`／`t = I` 两处取值 ✓ 导单射 ✓）⟹ 由本件得 `(F,F)` 档假 ✗
+（＝「`(F,F)` 路线已死」的**机器读数** ✓）；**②** 在**非退化**载体上落有限域档 ✓（＝主线残余 ✓）
+⟹ 由 §4.68 的条件反驳 ✓ 得**无条件**桥反驳 ✓✅。
+**⚠ 分类（规则 17）** ✓：本件**不**使缺口变为材料阻断 ✗ —— 缺的仍是**主线证明义务** ✓
+（源侧数据 ✓），**非**观测数据 ✗。
+**🔴 不声称** ✗：**不**声称 `(F,F)` 的有限域档**已被无条件**机器反驳 ✗（**须先**给出一个非平凡
+`G`-Galois 域扩张 ✓ —— **未落** ✗，列为下一手 ① ✓）；**不**声称非亚单档的桥已驳 ✗；
+**不**声称两条源陈述已证 ✗。 -/
+
+section FieldTierSelfRefuted
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴 非平凡 `G`-Galois 域扩张 ⟹ `(F,F)` 有限域档假** ✓✅：设 `K ⊇ F` ✓、`L/K` 有限 ✓、
+`L` 上 `G` 作用使 `K`-判据成立 ✓、且 `L ≄ K` ✓（**非平凡** ✓）⟹
+`¬ RealizationPropertyFieldFinite F G F F` ✓。
+**⚠ 证明** ✓：反证 ✓ —— 该档给出 `φ` ✓ 与 `K`-代数同构 `L ≅ K ⊗_F F` ✓；
+`let _inst` ✓ 具名遮蔽实例 ✓ ＋ `Algebra.TensorProduct.rid F K K` ✓（**右单位** ✓）复合 ✓
+得 `L ≅ K` ✓，与 `hne` ✗ 矛盾 ✓。
+**⚠ 地位** ✓：本件是 §4.67 (丁) 所述「`(F,F)` 路线已死」的**接线件** ✓ ——
+**任一**非平凡 `G`-Galois 域扩张即**证其假** ✓（**不**依赖 `K = F` ✓／**不**依赖 `G` 的阶 ✓）。 -/
+theorem not_realizationPropertyFieldFinite_self_of_not_algEquiv_self
+    {F : Type} [Field F] {G : Type} [Group G] [Fintype G]
+    {K : Type} [Field K] [Algebra F K] {L : Type} [Field L] [Algebra K L] [Algebra F L]
+    [IsScalarTower F K L] [FiniteDimensional K L] [MulSemiringAction G L]
+    (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hgal : IsGaloisWithGroup K L G hKL) (hne : ¬ Nonempty (L ≃ₐ[K] K)) :
+    ¬ RealizationPropertyFieldFinite F G F F := by
+  intro h
+  obtain ⟨φ, hP⟩ := h K L hKL hgal
+  let _inst : Algebra F K := φ.toRingHom.toAlgebra
+  obtain ⟨e⟩ := hP
+  exact hne ⟨e.trans (Algebra.TensorProduct.rid F K K)⟩
+
+#print axioms not_realizationPropertyFieldFinite_self_of_not_algEquiv_self
+
+end FieldTierSelfRefuted
+
 end ABGV52
