@@ -32,6 +32,7 @@
 
   **无 sorry、无自造公理** ✓；公理门见文末 ✓。 -/
 import ABGV52.SaltGeneric_ABGV52
+import ABGV52.GaloisAlgebra_ABGV52
 import ABGV52.SaltLocalProj_ABGV52
 import ABGV52.SaltLocalLift_ABGV52
 import ABGV52.SaltCor_ABGV52
@@ -1532,5 +1533,97 @@ end
 #print axioms isGaloisWithGroup_away_adjoin_pUnit_rat
 #print axioms exists_wiringHypotheses_pUnit_rat
 #print axioms nonempty_genericExtensionWitnessFieldFinite_pUnit_rat
+
+
+/-! ## **§0 判据一族 · 第五条**：`GaloisProjectiveSectionHyp` 的 **F-代数档反驳**（第 250 轮）
+
+**⚠ 位置说明** ✓：家族其余四件（① ② ③ ④ ✓）落在 `GaloisAlgebra_ABGV52` ✓；本件落在**本文件** ✓ ——
+理由 ＝ **`GaloisAlgebra` 在 `FILES` 序中先于本文件** ✗ ⟹ 家族文件**看不见 r247 通用件** ✗
+（`isGaloisWithGroup_of_subsingleton_of_surjective_algebraMap` ✓，本文件 `:1154` ✓；**实测** ✗）
+⟹ 本件须落在**能同时看见二者**的文件 ✓（本文件 ＋ 新增 `import ABGV52.GaloisAlgebra_ABGV52` ✓）。 -/
+
+section GaloisProjectiveSectionRefutation
+
+/-- **反例的 `↥S`-结构** ✓：`Polynomial ℚ → ℚ` 取 **`X ↦ 0`** ✓（**`Polynomial.aeval 0`** ✓）——
+**该结构不是全局实例** ✗（mathlib **无** `Algebra (Polynomial ℚ) ℚ` ✓，**实测** ✗）⟹ 须**节级 `local instance`** ✓。 -/
+noncomputable local instance instA250 : Algebra (Polynomial ℚ) ℚ :=
+  (Polynomial.aeval (0 : ℚ)).toRingHom.toAlgebra
+
+/-- **反例的 `G`-作用** ✓：**`G = PUnit`** ✓ 的**平凡作用** ✓ —— 同为**非全局实例** ✗（**实测** ✗）。 -/
+noncomputable local instance instMSA250 : MulSemiringAction PUnit.{1} ℚ :=
+  { smul := fun _ x => x
+    one_smul := fun _ => rfl
+    mul_smul := fun _ _ _ => rfl
+    smul_zero := fun _ => rfl
+    smul_add := fun _ _ _ => rfl
+    smul_mul := fun _ _ _ => rfl
+    smul_one := fun _ => rfl }
+
+set_option maxHeartbeats 1000000 in
+/-- **`GaloisProjectiveSectionHyp` 现形（`F`-代数档）的反驳** ✓✅（第 250 轮 ✓；**非空洞** ✓）：
+存在 **`F = ℚ`** ✓、**`G = PUnit`** ✓、**`R = Polynomial ℚ`** ✓、**`S = ℚ`** ✓（**结构 `X ↦ 0`** ✓）、
+**`M = Polynomial ℚ`** ✓、**`f` ＝ 结构映射** ✓，使 **`IsGaloisWithGroup R S G hRG` 成立** ✓ 而
+**`GaloisProjectiveSectionHyp ℚ PUnit` 不成立** ✗ ⟹ **其「实体」不可证** ✗。
+**⚠ 前件（非空洞 ✓）**：**r247 通用件** ✓（**`G` 单点** ✓ ＋ **`algebraMap Polynomial ℚ ℚ` 满射** ✓ ——
+**`q = aeval 0 (C q)`** ✓）⟹ **`IsGaloisWithGroup` 成立** ✓。
+**⚠ 反驳步** ✓：设 **`p := δ 1`** ✓ ⟹ **`1 = f p`** ✓（截面条件 ✓）与
+**`X * p = δ (X • 1) = δ 0 = 0`** ✓（**`R`-线性** ✓ ＋ **`X • 1 = 0`** ✓）⟹
+**`Polynomial ℚ` 是整环** ✓ ＋ **`X ≠ 0`** ✓ ⟹ **`p = 0`** ✓ ⟹ **`1 = f 0 = 0`** ✗（**`one_ne_zero`** ✓）。
+**⚠ 工艺读数（须入纪律 ✓）**：本件是**首个须节级 `local instance` 的反驳件** ✓ ——
+**`Algebra (Polynomial ℚ) ℚ`** ✓ 与 **`MulSemiringAction PUnit ℚ`** ✓ **皆非全局实例** ✗（**实测** ✗），
+而反例的**参数 `hRG` 的类型含 `r • t`** ✓ ⟹ 须**节级实例**方能**写出陈述本身** ✓
+（**结论内 `letI`** 按 §210.2 ① 记为由 linter 计警告 ✗ ⟹ **不用** ✗）。
+**⚠ 意义** ✓：**§0 判据一族第五条收束** ✓（**① ② ③ ④ 反驳** ✗ ＋ **⑤ 反驳** ✗ ＋ **⑥ 未判定** ⚠）⟹
+**§197.3「`F`-代数档不受波及」的旧口径作废** ✗ —— **`F`-代数档亦不能救截面存在性** ✗
+（**连带**：**`Module.Finite`／`Module.Projective`** 在该档同样不能由判据推出 ✗）⟹
+蓝图第 9 步的 **`hproj` 输入** ✓（`SaltLem12_ABGV52:274` ✓）须**按 ④ 的先例「在预期用例上重建」** ✓。
+**⚠ 不声称** ✗：**不**声称**预期用例**（源侧 `S'/R` 为 `G`-Galois ✓ ＋ 局部化 ✓）中截面不存在 ✗
+（**相反** ✓ —— 那是源侧断言 ✓，**未落** ✗）；**`R[G]`-投射性** ✗ 与 **`proposition-0-2(b)`** ✗ 不在本件射程 ✓。 -/
+theorem galoisProjectiveSectionHyp_refuted :
+    ∃ hRG : ∀ (g : PUnit.{1}) (r : Polynomial ℚ) (t : ℚ), g • (r • t) = r • (g • t),
+      BTier.IsGaloisWithGroup (Polynomial ℚ) ℚ PUnit.{1} hRG ∧
+        ¬ BTier.GaloisProjectiveSectionHyp ℚ PUnit.{1} := by
+  let _instT : IsScalarTower ℚ (Polynomial ℚ) ℚ :=
+    IsScalarTower.of_algebraMap_eq (fun q => by
+      show q = Polynomial.aeval (0 : ℚ) (Polynomial.C q)
+      simp)
+  let hRG : ∀ (g : PUnit.{1}) (r : Polynomial ℚ) (t : ℚ), g • (r • t) = r • (g • t) :=
+    fun g r t => rfl
+  have hsurj : Function.Surjective (algebraMap (Polynomial ℚ) ℚ) := by
+    intro q
+    exact ⟨Polynomial.C q, by
+      show Polynomial.aeval (0 : ℚ) (Polynomial.C q) = q
+      simp⟩
+  have hgal : BTier.IsGaloisWithGroup (Polynomial ℚ) ℚ PUnit.{1} hRG :=
+    isGaloisWithGroup_of_subsingleton_of_surjective_algebraMap (G := PUnit.{1}) hsurj hRG
+  refine ⟨hRG, hgal, fun h => ?_⟩
+  obtain ⟨δ, hδ, _hδg⟩ :=
+    h (R := Polynomial ℚ) (S := ℚ) hRG hgal (M := Polynomial ℚ)
+      (Algebra.linearMap (Polynomial ℚ) ℚ)
+      (fun g m => rfl)
+      (fun s => hsurj s)
+  have hf1 : algebraMap (Polynomial ℚ) ℚ (δ 1) = 1 := hδ 1
+  have hX1 : (Polynomial.X : Polynomial ℚ) • (1 : ℚ) = 0 := by
+    rw [Algebra.smul_def]
+    show Polynomial.aeval (0 : ℚ) Polynomial.X * 1 = 0
+    simp
+  have hp : (Polynomial.X : Polynomial ℚ) * δ 1 = 0 := by
+    calc (Polynomial.X : Polynomial ℚ) * δ 1
+        = (Polynomial.X : Polynomial ℚ) • δ 1 := rfl
+      _ = δ ((Polynomial.X : Polynomial ℚ) • (1 : ℚ)) := (map_smul δ _ _).symm
+      _ = δ 0 := by rw [hX1]
+      _ = 0 := map_zero δ
+  have hXne : (Polynomial.X : Polynomial ℚ) ≠ 0 := Polynomial.X_ne_zero
+  have hzero : δ 1 = 0 := by
+    rcases mul_eq_zero.mp hp with h' | h'
+    · exact absurd h' hXne
+    · exact h'
+  have hone : (1 : ℚ) = 0 := by
+    rw [← hf1, hzero, map_zero]
+  exact one_ne_zero hone
+
+end GaloisProjectiveSectionRefutation
+
+#print axioms galoisProjectiveSectionHyp_refuted
 
 end ABGV52

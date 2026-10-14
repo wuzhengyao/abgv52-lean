@@ -934,3 +934,21 @@ repair the mismatch either.  The clause is obtained instead by evaluating the No
 homomorphism at the group's single element, where it is the identity, and transporting the resulting
 equality along `congrArg`.
 
+
+The fifth criterion of the family has now been decided, and it is false even in the F-algebra tier.
+The counterexample takes the base field to be the rationals, the group to be the one-point type, the
+algebra to be the polynomial ring in one variable with the structure map sending the variable to
+zero, and the module to be the polynomial ring itself with the structure map as the surjection.  The
+Galois predicate holds on this data by the general lemma of two rounds ago, since the structure map
+is surjective and the group is a one-point type; the equivariant section, however, does not exist.
+A section would send one to a polynomial mapping to one, and the variable times that polynomial
+would be the image of the variable times one, which is zero; the polynomial ring being a domain,
+that polynomial would be zero, and one would be zero.
+
+One process reading: this is the first refutation that needs section-level local instances.  Neither
+the algebra structure of the rationals over the polynomial ring nor the trivial action of the
+one-point group is a global instance, and the counterexample's compatibility clause mentions the
+scalar action, so the statement itself cannot be written without them.  The refutation lives in the
+file that carries the general lemma rather than in the file that carries the rest of the family,
+because the family's file precedes the lemma's file in the compilation order and therefore cannot
+see it; the family's file is imported, in the legal direction, to make the criterion visible.
