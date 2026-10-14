@@ -1197,3 +1197,16 @@ the discriminant into that element, and the mechanism is proved in general, with
 where the strengthened element makes the discriminant a unit and surjectivity follows.  What remains is
 the classical statement that unimodularity of the multiplication trace plus the rank condition gives
 surjectivity, which is registered and open.
+
+The discriminant repair is now complete for an arbitrary finite group and the ring-tier surjectivity
+question is reduced to a single precisely located gap.  The discriminant element, the product over
+ordered pairs of distinct coordinates of their differences, is nonzero and invariant under the group
+for every finite group; on the two-element group it reproduces the previous round's discriminant up to
+a unit, so the general statement genuinely generalises the model.  Multiplying it into the localising
+element makes the discriminant a unit in the localisation, and the whole wiring package is rebuilt at
+that element, with all downstream rows supplied by construction as before.  For surjectivity itself, a
+trace formula together with unimodularity of the trace form implies surjectivity for an arbitrary
+finite group, arbitrary rank and arbitrary commutative base ring, the preimage being written down
+explicitly from trace-dual elements; neither the rank hypothesis nor injectivity is needed.  The one
+remaining obligation is whether the registered hypotheses imply that trace formula, and the split
+carrier witnesses the new hypotheses over an arbitrary commutative ring.

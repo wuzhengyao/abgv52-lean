@@ -6135,6 +6135,9 @@ end RingTierCounterexample267
 （`tr : S →ₗ[R] R` ✓ `G`-不变 ✓ 对称 ✓ ＋ **配对满** ✓ ＝ 迹形式幺模 ✓ ＋ `S` 对 `R` 有限 ✓
 ＋ `δ` 单射 ⟹ `δ` 满射 ✓）—— **未证** ✗（登记 ✓，`traceUnimodularSufficiency268_registered` ✓）；
 本轮落的是其 **`G = C₂`／秩 2** 档 ✓（**且更强**：`⟺` ✓，**无需单射假设** ✓）。
+**⚠ 后注（第 269 轮** ✓**）** ✓：本条登记的 `TraceUnimodularSufficiency268` ✓ 已被**机检否决** ✗
+（`not_traceUnimodularSufficiency268` ✓，§4.75 ✓）—— 其假设「`tr` `G`-不变」**严格弱于**本条的
+正确输入（**乘法迹** ✓）；本条主定理 ✓ 与秩 2 `⟺` ✓ **不受影响** ✓。
 
 **⚠ 分类（规则 17）** ✓：本轮**未落**项**只有一条** ✓ ＝ `TraceUnimodularSufficiency268` ✓
 （**证明义务** ✓，**非**观测数据 ✗、**非 (b) 类「可算未算」**✗）—— **无 (b) 类未算项** ✓
@@ -7364,5 +7367,553 @@ end R269Shape
 
 #print axioms r269MulTrace_quadratic
 #print axioms traceUnimodularSufficiency269_registered
+
+/-! ### 4.76 接线档的**判别式入 `T`**（一般 `G` 的 Vandermonde 型不变量）＋ 环档**迹形式幺模性**的**充分条件**（第 270 轮）
+
+**⚠ 起点** ✓（承 §4.74 ✓／§4.75 ✓）：**(甲)** §4.74 ✓ 把环档的**正确输入**锁为**迹形式（乘法迹配对）幺模性** ✓
+（秩 2 档 `⟺` ✓，`surjective_deltaToEndRingHom_quadratic268_iff` ✓）；**(乙)** §4.75 ✓（r269）**机检否决**了
+朴素形状件 ✓（`not_traceUnimodularSufficiency268` ✓）并给出**加强机制** ✓
+（`r269_isUnit_algebraMap_of_dvd` ✓：`d ∣ T ⟹ IsUnit (algebraMap A (Away T) d)` ✓）＋ 秩 2 档**非空性见证** ✓
+（`r269_strengthened_delta_surjective` ✓）。**本轮补 §4.75 ✓ 的未落项** ✗：**一般 `G` 档的判别式型元素** ✗
+（§4.75 ✓ 的**不声称**行 ✓ 逐字：「**不**声称一般接线档的 `disc` 是 `MvPolynomial G F` 中的 `G`-不变多项式」✗）。
+
+**🔴🔴 主结果 ①（O3：判别式入 `T`，一般 `G`）** ✓✅：
+**(a)** **判别式型元素** ✓ `r270Disc F G := ∏_σ ∏_{τ ≠ σ} (X_σ − X_τ)` ✓（Vandermonde 型 ✓）——
+**非零** ✓（`r270Disc_ne_zero` ✓，仅需 `F` 域 ✓）＋ **`G`-不变** ✓（`r270_smul_disc` ✓，
+**一般有限群** ✓，机制 ＝ 「变量按 `τ ↦ gτ` 置换 ⟹ 对角外的二元组集**整体置换**」✓，双重重标号机检 ✓）；
+**(b)** **`C₂`／`ℚ` 档回收 §4.75 模型** ✓✅：`r270Disc ℚ (Multiplicative (ZMod 2)) = −(X_1 − X_a)²` ✓
+（`r270_disc_zmod2` ✓）——即 r269 模型判别式 `disc = (X₀ − X₁)²` ✓ **相差单位 `−1`** ✓，
+故**一般档确实推广了** §4.75 ✓ 的 `C₂`／`ℚ` 档 ✓（**不是**另一个对象 ✗）；
+**(c)** **接线包加强** ✓✅：`r270_exists_realizationPropertyFieldFinite_of_noetherFixedWiring_discDvd` ✓ ——
+与 §4.70 ✓ 的 `exists_realizationPropertyFieldFinite_of_noetherFixedWiring` ✓ **同一 ∃-包** ✓
+（`T` ✓／`t ≠ 0` ✓／不变化 ✓／`hle` ✓／三实例 ✓／`hact_map` ✓／`hRG` ✓／`hS_0R` ✓／`hS_fix` ✓
+**全由构造供给** ✓，假设表仍为**两行** ✓：`δ` 双射 ✓ ＋ `hProj` ✓），唯**输出 `T`** ✓ 携带
+**`r270Disc F G ∣ T`** ✓ ＋ **`IsUnit (algebraMap (MvPolynomial G F) (Localization.Away T) (r270Disc F G))`** ✓
+（后款由**前款**经 r269 ✓ 的机制供给 ✓）。**机制** ✓：取 §4.70 ✓ 的 `T₀` ✓（`exists_invariant_t_of_noether` ✓）
+并置 **`T := T₀ · r270Disc F G`** ✓ —— **非零** ✓（`mul_ne_zero` ✓）、**不变化** ✓（`smul_mul'` ✓ ＋
+`r270_smul_disc` ✓）、**包含** ✓（`hT₀le.trans (adjoin_away_mono …)` ✓），下游**逐行照搬** ✓
+（**实例／`hRG`／`hS_0R` 皆随新 `T` 重建** ✓）。
+
+**⚠ 强度序（O3 侧，逐行；方向明确 ✓）**：
+
+| # | 接线档的输出条件 | 相对强度 | 状态 |
+|---|---|---|---|
+| ① | 朴素 `T` ✓（`T ≠ 0` ✓ ＋ 不变 ✓ ＋ 含分母 ✓，**无判别式条件** ✗） | **不足** ✗ | **§4.75 ✓ 机检否决** ✗（模型档：`disc = (X₀−X₁)²` 在**任何**含它的子环中**非单位** ✗ ⟹ 迹形式**非**幺模 ✗ ⟹ 秩 2 载体 `δ` **非满射** ✗，`r269_wiring_delta_not_surjective` ✓） |
+| ② | `r270Disc F G ∣ T` ✓ | **充分** ✓ 于 ③ ✓ | **已证** ✓✅（本件 ✓，**一般 `G`** ✓） |
+| ③ | `IsUnit (algebraMap … (r270Disc F G))` ✓ | **推论** ✓ of ② | **已证** ✓✅（② ⟹ ③ ✓，`r269_isUnit_algebraMap_of_dvd` ✓；**反向不声称** ✗） |
+| ④ | `disc` 是 `MvPolynomial G F` 的 `G`-不变非零元 ✓ | **结构前提** ✓ | **已证** ✓✅（本件 ✓，一般有限 `G` ✓） |
+
+**🔴 主结果 ②（O2：环档迹形式幺模性的充分条件，任意秩）** ✓✅：
+**定理** ✓ `r270_delta_surjective_of_traceFormula` ✓：对**任意交换环** `R` ✓、`R`-代数 `S` ✓、
+**任意有限群 `G`** ✓、`R`-基 `b : Basis ι R S` ✓（**指标型任意** ✓，秩 `|ι|` **不受限** ✗），若
+**(甲) 迹公式** ✓ `∀ z, algebraMap R S (Tr_b z) = ∑_g g • z` ✓（`Tr_b` ＝ **乘法迹** ✓，`r270MulTrace` ✓）
+且 **(乙) 迹形式幺模** ✓ `∀ φ : S →ₗ[R] R, ∃ y, ∀ x, φ x = Tr_b (x·y)` ✓，则 **`δ` 满射** ✓。
+**机制** ✓（**四步**，全部机检 ✓）：**①** 幺模 ＋ `b.coord i` ✓ ⟹ 迹对偶元 `y_i` ✓
+（`Tr_b (b_j · y_i) = δ_{ji}` ✓，`Module.Basis.repr_self` ✓）；**②** 迹公式把
+`∑_g (g•y_i)·(g•b_j) = ∑_g g•(y_i·b_j)` ✓ 打成 `algebraMap (Tr_b (y_i·b_j))` ✓ ⟹
+**正交关系** ✓ `∑_g (g•y_i)·(g•b_j) = algebraMap (if i = j then 1 else 0)` ✓；
+**③** 对任意 `f : End_R S` ✓ **显式预像** ✓ `x := ∑_g single g (∑_i f(b_i)·(g•y_i))` ✓；
+**④** 逐基元核验 ✓（`b.ext` ✓ ＋ `Finset.sum_comm` ✓ ＋ ② 消去 ⟹ `δ x = f` ✓）。
+**⟹ 若将「迹公式」并入登记件** ✓，则 §4.75 ✓ 的 `TraceUnimodularSufficiency269` ✓ **成立** ✓
+（`r270_traceUnimodularSufficiency_of_traceFormula` ✓，**逐字同形** ✓ 且**多一条迹公式** ✓）。
+
+**⚠ 强度序（O2 侧，逐行；**勿读作等价** ✗）**：
+
+| # | 输入 | 相对强度 | 状态 |
+|---|---|---|---|
+| ① | **迹公式** ✓ ＋ **迹形式幺模** ✓（**任意秩** ✓／**任意交换环** ✓） | **充分** ✓ | **已证** ✓✅（本件 ✓，**秩与单射假设皆不使用** ✗） |
+| ② | `TraceUnimodularSufficiency269` ✓（乘法迹幺模 ＋ **秩 ＝ `\|G\|`** ✓ ＋ `δ` 单射 ✓） | **目标形** ✓ | **仍开** ✗（**唯一缺口** ＝ 「② 的假设是否**推出**迹公式」✗，**证明义务** ✓） |
+| ③ | 秩 2／二次载体：`IsUnit (b²+4a)` ⟺ `δ` 满射 ✓（§4.74 ✓） | ① 的**同行档** ✓ | **已证** ✓✅（§4.74 ✓；**迹公式在二次代数上自动成立** ✓，本件机检 ✓ `r270_traceFormula_quadratic` ✓） |
+| ④ | `K` **域** 档：`δ` 单射 ⟹ `δ` 满射 ✓（§4.72 ✓） | **另一条**充分条件 ✓ | **已证** ✓✅（§4.72 ✓；**环档不成立** ✗，§4.73 ✓ 机检反例 ✓） |
+| ⑤ | 分裂载体 `S = R^G` ✓（正则作用 ✓）：迹公式 ✓ ＋ 幺模 ✓ ＋ `δ` 满射 ✓ | ① 的**实例** ✓ | **已证** ✓✅（本件 ✓，**任意交换环** ✓ ＋ **任意有限 `G`** ✓；★ **新**：§4.72 ✓ 的同类结果限 `K` **域** ✗；**域档** ✓ 时 §4.72 ✓ 另给 `δ` **双射** ✓ ⟹ **登记件 ② 的全部假设**在同一载体上**同时成立** ✓ —— 唯 ② 的缺口（迹公式）**不在该载体**上 ✗） |
+
+**⚠ 分类（规则 17）** ✓：本轮**未落**项**只有一条** ✓ ＝ 「② ⟹ 迹公式」✓（**证明义务** ✓：
+**非**观测数据 ✗、**非** (b) 类「可算未算」✗ —— 它是**数学命题** ✓，其真值**未定** ✓，本轮**不声称**任一方向 ✗）；
+**无**材料阻断登记 ✓；**无** (b) 类未算项 ✓（`C₂` 判别式读数 ✓、分裂载体读数 ✓、二次载体读数 ✓ **均已算完并落地** ✓）。
+
+**⚠ 非空性（L1／L19）** ✓（**三处** ✓，**互异性** ✓）：
+**(i)** **分裂载体** ✓（**任意交换环** ✓ ＋ **任意有限 `G`** ✓）：迹公式 ✓（`r270_traceFormula_regularAction` ✓，
+**非分裂** ✗ 的一般群档 ✓）＋ 幺模 ✓（`r270_unimodular_regularAction` ✓，Gram ＝ 单位阵 ✓）⟹
+`δ` **满射** ✓（`r270_delta_surjective_regularAction` ✓）；**秩 3 实例** ✓：`G = Multiplicative (ZMod 3)` ✓
+（`r270_card_zmod_three` ✓，`|G| = 3` ✓）⟹ **①的假设在秩 3 环档可满足** ✓（§4.74 ✓ 的秩 2 之外的**新档** ✓）；
+**(ii)** **二次载体** ✓（**非分裂** ✓，§4.74 ✓ 的载体族 ✓）：迹公式**自动成立** ✓
+（`r270_traceFormula_quadratic` ✓，`star`-共轭 ＋ `trace_def` ✓），故 §4.74 ✓ 的秩 2 `⟸` 与 ① **不矛盾** ✓；
+**(iii)** **接线档** ✓：`disc ∣ T` 的见证**由本件构造给出** ✓（`T := T₀ · r270Disc F G` ✓），
+且 `C₂`／`ℚ` 档的判别式读数**已回收到 r269 模型** ✓（`r270_disc_zmod2` ✓）。
+
+**⚠ 判别力（L43）** ✓（**如实** ✓）：本件的每条假设都在**证明体内作为实参被消费** ✓ ——
+`r270_delta_surjective_of_traceFormula` ✓ 用**迹公式** ✓（正交关系 ② 步）与**幺模** ✓（对偶元 ① 步），
+**不用**秩假设 ✗ 与 `δ` 单射 ✗（**该两款本轮如实登记为「未使用」** ✓，**不冒充为已消费** ✗）；
+`r270_exists_realizationPropertyFieldFinite_of_noetherFixedWiring_discDvd` ✓ 用
+`r270Disc_ne_zero` ✓（`mul_ne_zero` ✓）与 `r270_smul_disc` ✓（`hTinv` ✓）。
+
+**🔴 不声称** ✗：**不**声称 `TraceUnimodularSufficiency269` ✓ 成立 ✗（② ⟹ 迹公式**未落** ✗）；
+**不**声称迹公式由登记件的**任何子集**推出 ✗；**不**声称 `disc` 是**判别式**的**唯一**候选 ✗
+（本件构造的是**Vandermonde 型**元素 ✓，`C₂` 档与 r269 模型**相差单位** ✓ `−1` ✓）；
+**不**声称接线包的**假设表**（`δ` 双射 ✓ ＋ `hProj` ✓）已证 ✗（**两行仍开** ✗，§4.70 ✓／§4.71 ✓）；
+**不**声称两条源陈述已证 ✗。 -/
+
+/-! #### 270.A 一般 `G` 的**判别式型不变量**（Vandermonde 型） -/
+
+universe v
+
+section R270DiscDef
+
+variable (F : Type u) [CommRing F] (G : Type v) [Fintype G] [DecidableEq G]
+
+/-- **判别式型元素** ✓（**一般有限 `G`** ✓）：`∏_σ ∏_{τ ≠ σ} (X_σ − X_τ)` ✓ ——
+**Vandermonde 型** ✓（`|G| = 2` ✓ 时 ＝ `−(X_0 − X_1)²` ✓，见 `r270_disc_zmod2` ✓）。
+**⚠ 为何是它** ✓：它是 `MvPolynomial G F` 中**对角外二元组**上的乘积 ✓ ⟹ 变量按 `τ ↦ gτ` 置换时
+**整体不变** ✓（§4.75 ✓ 的 `C₂`／`ℚ` 模型判别式 `(X₀ − X₁)²` ✓ 正是它的**单位倍** ✓）。
+**⚠ 域档** ✓：`F` 只需**交换环** ✓ 即可定义 ✓（非零性另需无零因子 ✓）。 -/
+def r270Disc : MvPolynomial G F :=
+  ∏ σ : G, ∏ τ ∈ Finset.univ.erase σ, (MvPolynomial.X σ - MvPolynomial.X τ)
+
+end R270DiscDef
+
+section R270DiscLemmas
+
+variable {F : Type u} [Field F] {G : Type u} [Group G] [Fintype G] [DecidableEq G]
+
+omit [Group G] [Fintype G] [DecidableEq G] in
+lemma r270_X_sub_ne_zero {σ τ : G} (h : σ ≠ τ) :
+    (MvPolynomial.X σ - MvPolynomial.X τ : MvPolynomial G F) ≠ 0 :=
+  sub_ne_zero.mpr (fun hc => h (MvPolynomial.X_injective hc))
+
+omit [Group G] in
+/-- **判别式型元素非零** ✓✅（**一般有限 `G`** ✓）：每个因子 `X_σ − X_τ`（`σ ≠ τ` ✓）非零 ✓
+（`MvPolynomial.X_injective` ✓），`MvPolynomial G F` 无零因子 ✓ ⟹ 乘积非零 ✓。 -/
+theorem r270Disc_ne_zero : r270Disc F G ≠ 0 := by
+  classical
+  rw [r270Disc]
+  refine Finset.prod_ne_zero_iff.mpr (fun σ _ => ?_)
+  refine Finset.prod_ne_zero_iff.mpr (fun τ hτ => ?_)
+  exact r270_X_sub_ne_zero (fun h => (Finset.mem_erase.mp hτ).1 h.symm)
+
+/-- **内层重标号** ✓（**机检** ✓）：`τ ↦ gτ` 把 `univ.erase σ` **双射**到 `univ.erase (gσ)` ✓
+（`mul_left_cancel` ✓ ＋ `mul_inv_cancel_left` ✓）⟹ 内层乘积可换标 ✓（`Finset.prod_bij` ✓）。 -/
+lemma r270_prod_erase_smul (g σ : G) (Φ : G → MvPolynomial G F) :
+    (∏ τ ∈ Finset.univ.erase σ, Φ (g * τ)) = ∏ τ ∈ Finset.univ.erase (g * σ), Φ τ := by
+  classical
+  refine Finset.prod_bij (fun τ _ => g * τ) ?_ ?_ ?_ ?_
+  · intro τ hτ
+    rw [Finset.mem_erase] at hτ ⊢
+    exact ⟨fun h => hτ.1 (mul_left_cancel h), Finset.mem_univ _⟩
+  · intro τ₁ _ τ₂ _ h
+    exact mul_left_cancel h
+  · intro τ' hτ'
+    rw [Finset.mem_erase] at hτ'
+    refine ⟨g⁻¹ * τ', ?_, mul_inv_cancel_left g τ'⟩
+    rw [Finset.mem_erase]
+    exact ⟨fun h => hτ'.1 (by rw [← h]; exact (mul_inv_cancel_left g τ').symm),
+      Finset.mem_univ _⟩
+  · intro τ _; rfl
+
+omit [Fintype G] [DecidableEq G] in
+/-- **作用穿过乘积** ✓（`noetherRingHom` ✓ 是环同构 ⟹ `map_prod` ✓；用 `show` 转写 ✓，
+与 `smul_X_noether` ✓ 同款工艺 ✓）。 -/
+lemma r270_smul_prod (g : G) (s : Finset ι) (f : ι → MvPolynomial G F) :
+    g • (∏ i ∈ s, f i) = ∏ i ∈ s, g • f i := by
+  show (noetherRingHom F G g) (∏ i ∈ s, f i) = ∏ i ∈ s, (noetherRingHom F G g) (f i)
+  exact map_prod _ _ _
+
+/-- **✅ 判别式型元素 `G`-不变** ✓✅（**一般有限 `G`** ✓）：两步重标号 ✓ ——
+**内层**用 `r270_prod_erase_smul` ✓（`τ ↦ gτ` ✓），**外层**用 `Finset.prod_bij` ✓（`σ ↦ gσ` ✓，
+`mul_left_cancel` ✓／`mul_inv_cancel_left` ✓）⟹ `g • r270Disc F G = r270Disc F G` ✓。 -/
+theorem r270_smul_disc (g : G) : g • r270Disc F G = r270Disc F G := by
+  classical
+  have hX : ∀ τ : G, g • (MvPolynomial.X τ : MvPolynomial G F) = MvPolynomial.X (g * τ) :=
+    fun τ => smul_X_noether F G g τ
+  have hstep : g • r270Disc F G
+      = ∏ σ : G, ∏ τ ∈ Finset.univ.erase σ,
+          (MvPolynomial.X (g * σ) - MvPolynomial.X (g * τ)) := by
+    rw [r270Disc, r270_smul_prod]
+    refine Finset.prod_congr rfl (fun σ _ => ?_)
+    rw [r270_smul_prod]
+    refine Finset.prod_congr rfl (fun τ _ => ?_)
+    rw [smul_sub, hX, hX]
+  rw [hstep, r270Disc]
+  refine Finset.prod_bij (fun σ _ => g * σ) (fun σ _ => Finset.mem_univ _) ?_ ?_ ?_
+  · intro σ₁ _ σ₂ _ h
+    exact mul_left_cancel h
+  · intro σ' _
+    exact ⟨g⁻¹ * σ', Finset.mem_univ _, mul_inv_cancel_left g σ'⟩
+  · intro σ _
+    exact r270_prod_erase_smul g σ
+      (fun τ => MvPolynomial.X (g * σ) - MvPolynomial.X τ)
+
+end R270DiscLemmas
+
+/-- **`C₂`／`ℚ` 档回收 §4.75 模型判别式** ✓✅：`r270Disc ℚ (Multiplicative (ZMod 2)) = −(X_1 − X_a)²` ✓
+—— 即 §4.75 ✓ 模型档的 `disc = (X₀ − X₁)²` ✓（`r269_disc_eq` ✓）**相差单位 `−1`** ✓
+（`−1` 在 `ℚ` 中可逆 ✓）⟹ **一般档确实推广 `C₂`／`ℚ` 档** ✓（**非**另一对象 ✗）。 -/
+theorem r270_disc_zmod2 :
+    r270Disc ℚ (Multiplicative (ZMod 2))
+      = -((MvPolynomial.X (1 : Multiplicative (ZMod 2))
+            - MvPolynomial.X (Multiplicative.ofAdd 1)) ^ 2) := by
+  classical
+  set a : Multiplicative (ZMod 2) := Multiplicative.ofAdd 1 with ha
+  have h1 : (Finset.univ : Finset (Multiplicative (ZMod 2))) = {1, a} := by decide
+  have h2 : ({1, a} : Finset (Multiplicative (ZMod 2))).erase 1 = {a} := by decide
+  have h3 : ({1, a} : Finset (Multiplicative (ZMod 2))).erase a = {1} := by decide
+  have hne : (1 : Multiplicative (ZMod 2)) ≠ a := by decide
+  rw [r270Disc, h1, Finset.prod_insert (by simp [hne]), Finset.prod_singleton]
+  rw [h2, Finset.prod_singleton, h3, Finset.prod_singleton]
+  ring
+
+#print axioms r270_X_sub_ne_zero
+#print axioms r270Disc_ne_zero
+#print axioms r270_prod_erase_smul
+#print axioms r270_smul_prod
+#print axioms r270_smul_disc
+#print axioms r270_disc_zmod2
+
+/-! #### 270.B 接线档：**判别式入 `T`** 的 ∃-包（`disc ∣ T` ＋ `IsUnit`） -/
+
+section R270WiringDisc
+
+variable {F : Type} [Field F] {G : Type} [Group G] [Fintype G] [DecidableEq G]
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 接线档的判别式入 `T`** ✓✅（**本轮的 (O3) 主件** ✓）：与 §4.70 ✓ 的
+`exists_realizationPropertyFieldFinite_of_noetherFixedWiring` ✓ **同一 ∃-包** ✓（`T` ✓／`t ≠ 0` ✓／
+不变化 ✓／`hle` ✓／三实例 ✓／`hact_map` ✓／`hRG` ✓／`hS_0R` ✓／`hS_fix` ✓ 全由构造供给 ✓，
+假设表仍为**两行** ✓：`δ` 双射 ✓ ＋ `hProj` ✓），**唯输出 `T`** 携带
+**`r270Disc F G ∣ T`** ✓ 与 **`IsUnit (algebraMap (MvPolynomial G F) (Localization.Away T) (r270Disc F G))`** ✓
+（＝ §4.75 ✓ 的加强机制 ✓ 在新 `T` 上的落地 ✓）。
+**机制** ✓：取 §4.70 ✓ 的 `T₀` ✓（`exists_invariant_t_of_noether` ✓）并置 **`T := T₀ · r270Disc F G`** ✓：
+**非零** ✓（`mul_ne_zero` ✓ ＋ `r270Disc_ne_zero` ✓）、**不变化** ✓（`smul_mul'` ✓ ＋ `r270_smul_disc` ✓）、
+**包含** ✓（`hT₀le.trans (adjoin_away_mono T₀ (r270Disc F G) …)` ✓）；下游实例／`hRG`／`hS_0R`／忠实性
+**随新 `T` 逐行重建** ✓（**`let _inst`** 记法 ✓，**无** `letI` ✗）。
+**⚠ 强度序** ✓：本件的输出条件 **②（`disc ∣ T`）严格强于** §4.70 ✓ 的朴素 `T` ✓ 之条件 ① ✓
+（① 在 `C₂`／`ℚ` 模型档**已被 §4.75 ✓ 机检否决** ✗：`disc` **非单位** ✗ ⟹ `δ` **非满射** ✗）；
+**反向不成立** ✗（② ⟹ ① ✓ 而 ① ⇏ ② ✗）。
+**⚠ 非空性（L1）** ✓：**`disc ∣ T` 可满足** ✓（见证 ＝ `T := T₀ · r270Disc F G` ✓ **由本件构造给出** ✓）；
+**`IsUnit` 款在同一见证上成立** ✓（`r269_isUnit_algebraMap_of_dvd` ✓）；**接线包的假设两行**（`δ` 双射 ✓ ＋
+`hProj` ✓）的非空性**不在本件** ✗（§4.70 ✓ 的 `ℚ`／`PUnit` 档 ✓ 与 §4.71 ✓ 的分裂档 ✓ 已登记 ✓）。
+**🔴 不声称** ✗：**不**声称接线包的假设两行已证 ✗；**不**声称 `δ` 双射由 `disc ∣ T` **推出** ✗
+（推出它的是 §4.74 ✓ 的秩 2 `⟸` **在该档** ✓，一般档**未落** ✗，见 270.C ✓）；
+**不**声称两条源陈述已证 ✗。 -/
+theorem r270_exists_realizationPropertyFieldFinite_of_noetherFixedWiring_discDvd
+    {n : ℕ} {a : Fin n → NoetherInvariantField F G} {s₀ : NoetherInvariantField F G}
+    (hs₀ : s₀ ≠ 0) (hinf : Infinite F) :
+    ∃ (T : MvPolynomial G F) (_hT : T ≠ 0) (_hTinv : ∀ g : G, g • T = T)
+      (_hdvd : r270Disc F G ∣ T)
+      (_hunit : IsUnit (algebraMap (MvPolynomial G F) (Localization.Away T) (r270Disc F G)))
+      (_hle : noetherFixedCarrier F G a s₀ ≤ Subalgebra.restrictScalars F
+        (Algebra.adjoin (MvPolynomial G F)
+          ({(algebraMap (MvPolynomial G F) (NoetherField F G) T)⁻¹} : Set (NoetherField F G))))
+      (instA : Algebra ↥(noetherFixedCarrier F G a s₀) (Localization.Away T))
+      (instT : letI := instA;
+        IsScalarTower F ↥(noetherFixedCarrier F G a s₀) (Localization.Away T))
+      (instM : MulSemiringAction G (Localization.Away T)),
+      letI := instA
+      letI := instT
+      letI := instM
+      ∃ (_hRG : ∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀))
+          (x : Localization.Away T), g • (r • x) = r • (g • x)),
+        Function.Bijective (BTier.deltaToEndRingHom _hRG) →
+        BTier.GaloisProjectiveHyp ↥(noetherFixedCarrier F G a s₀)
+          (Localization.Away T) G _hRG →
+        RealizationPropertyFieldFinite F G ↥(noetherFixedCarrier F G a s₀)
+          (Localization.Away T) := by
+  classical
+  have hs₀L : ((s₀ : NoetherInvariantField F G) : NoetherField F G) ≠ 0 :=
+    fun h => hs₀ (Subtype.ext h)
+  have ha_fix : ∀ (g : G) (i : Fin n),
+      g • ((a i : NoetherInvariantField F G) : NoetherField F G)
+        = ((a i : NoetherInvariantField F G) : NoetherField F G) :=
+    fun g i => (a i).2 g
+  have hs₀_fix : ∀ g : G,
+      g • ((s₀ : NoetherInvariantField F G) : NoetherField F G)
+        = ((s₀ : NoetherInvariantField F G) : NoetherField F G) :=
+    fun g => s₀.2 g
+  obtain ⟨T₀, hT₀ne, hT₀inv, hT₀le⟩ := exists_invariant_t_of_noether (F := F) (G := G)
+    (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+    (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G)) hs₀L
+  have hDne : r270Disc F G ≠ 0 := r270Disc_ne_zero
+  have hDinv : ∀ g : G, g • r270Disc F G = r270Disc F G := fun g => r270_smul_disc g
+  have hTne : T₀ * r270Disc F G ≠ 0 := mul_ne_zero hT₀ne hDne
+  have hTinv : ∀ g : G, g • (T₀ * r270Disc F G) = T₀ * r270Disc F G := by
+    intro g
+    rw [smul_mul', hT₀inv g, hDinv g]
+  have hTle : noetherFixedCarrier F G a s₀ ≤ Subalgebra.restrictScalars F
+      (Algebra.adjoin (MvPolynomial G F)
+        ({(algebraMap (MvPolynomial G F) (NoetherField F G) (T₀ * r270Disc F G))⁻¹}
+          : Set (NoetherField F G))) :=
+    hT₀le.trans (fun x hx => adjoin_away_mono (A := MvPolynomial G F)
+      (L := NoetherField F G) T₀ (r270Disc F G) hDne hx)
+  obtain ⟨ι, hι⟩ := exists_algHom_away_of_noetherAdjoin (F := F) (G := G)
+    (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+    (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G))
+    (T₀ * r270Disc F G) hTne hTle
+  let instA : Algebra ↥(noetherFixedCarrier F G a s₀)
+      (Localization.Away (T₀ * r270Disc F G)) :=
+    ι.toRingHom.toAlgebra
+  have hST : IsScalarTower F ↥(noetherFixedCarrier F G a s₀)
+      (Localization.Away (T₀ * r270Disc F G)) :=
+    inferInstance
+  let instM : MulSemiringAction G (Localization.Away (T₀ * r270Disc F G)) :=
+    awayMulSemiringAction (F := F) (G := G) (t := T₀ * r270Disc F G) hTinv
+  have hact : ∀ (g : G) (p : MvPolynomial G F),
+      g • (algebraMap (MvPolynomial G F) (Localization.Away (T₀ * r270Disc F G)) p)
+        = algebraMap (MvPolynomial G F) (Localization.Away (T₀ * r270Disc F G)) (g • p) :=
+    fun g p => awayRingHom_algebraMap (F := F) (G := G) (t := T₀ * r270Disc F G) hTinv g p
+  have hS0R : ∀ r : ↥(noetherFixedCarrier F G a s₀),
+      awayToFieldAlg (F := F) (G := G) (T₀ * r270Disc F G) hTne
+          (algebraMap ↥(noetherFixedCarrier F G a s₀)
+            (Localization.Away (T₀ * r270Disc F G)) r)
+        = algebraMap ↥(noetherFixedCarrier F G a s₀) (NoetherField F G) r :=
+    fun r => hι r
+  have hRG : ∀ (g : G) (r : ↥(noetherFixedCarrier F G a s₀))
+      (x : Localization.Away (T₀ * r270Disc F G)), g • (r • x) = r • (g • x) :=
+    smulCommClass_away_of_algHom (F := F) (G := G)
+      (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+      (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G))
+      ha_fix hs₀_fix (T₀ * r270Disc F G) hTne hTinv ι hι
+  have hSfix : ∀ (g : G) {x : NoetherField F G},
+      x ∈ noetherFixedCarrier F G a s₀ → g • x = x :=
+    smul_eq_self_of_mem_adjoin_of_fixed (F := F) (G := G)
+      (a := fun i => ((a i : NoetherInvariantField F G) : NoetherField F G))
+      (s₀ := ((s₀ : NoetherInvariantField F G) : NoetherField F G)) ha_fix hs₀_fix
+  have hunit : IsUnit (algebraMap (MvPolynomial G F)
+      (Localization.Away (T₀ * r270Disc F G)) (r270Disc F G)) :=
+    r269_isUnit_algebraMap_of_dvd (r270Disc F G) (T₀ * r270Disc F G) (dvd_mul_left _ _)
+  refine ⟨T₀ * r270Disc F G, hTne, hTinv, dvd_mul_left _ _, hunit, hTle, instA, hST, instM,
+    hRG, ?_⟩
+  intro hδ hProj
+  have hgal : BTier.IsGaloisWithGroup ↥(noetherFixedCarrier F G a s₀)
+      (Localization.Away (T₀ * r270Disc F G)) G hRG :=
+    ⟨faithfulSMul_away_of_noetherAdjoin (F := F) (G := G) (T := T₀ * r270Disc F G) hTne hTinv,
+      fun g r => BTier.algebraMap_fixed_of_smulCommClass hRG g r, hδ⟩
+  exact realizationPropertyFieldFinite_of_subalgebra (F := F) (G := G)
+    (S := noetherFixedCarrier F G a s₀) (t := T₀ * r270Disc F G) hTne hTinv hTle hSfix hact hRG
+    hgal hProj hS0R hinf
+
+end R270WiringDisc
+
+#print axioms r270_exists_realizationPropertyFieldFinite_of_noetherFixedWiring_discDvd
+
+/-! #### 270.C 环档：**迹公式 ＋ 迹形式幺模 ⟹ `δ` 满射**（**任意秩** ✓） -/
+
+section R270TraceUnimodular
+
+variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+variable {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+
+/-- **乘法迹（任意指标型）** ✓：与 §4.75 ✓ 的 `r269MulTrace` ✓ **同一公式** ✓
+（`Matrix.trace (Matrix.of fun i j => (b.repr (x * b j)) i)` ✓），唯指标型从 `Fin n` ✓
+放宽到**任意 `Fintype`** ✓（**本轮的秩自由化** ✓）。 -/
+def r270MulTrace {ι : Type*} [Fintype ι] (b : Module.Basis ι R S) (x : S) : R :=
+  Matrix.trace (Matrix.of fun i j => (b.repr (x * b j)) i)
+
+/-- **口径核验** ✓✅（**机检** ✓）：`Fin n` 档与 §4.75 ✓ 的 `r269MulTrace` ✓ **逐字一致** ✓
+（`rfl` ✓ ⟹ 本条把两个口径**钉死** ✓，下游可互换 ✓）。 -/
+theorem r270MulTrace_fin {n : ℕ} (b : Module.Basis (Fin n) R S) (x : S) :
+    r270MulTrace b x = r269MulTrace b x := rfl
+
+/-- **`δ` 在求和上的取值式** ✓：`δ (∑_g single g (s g)) x = ∑_g s g · (g • x)` ✓
+（`map_sum` ✓ ＋ `LinearMap.sum_apply` ✓ ＋ `deltaToEndAdd_single` ✓）。 -/
+lemma r270_delta_sum_apply (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x))
+    (s : G → S) (x : S) :
+    BTier.deltaToEndRingHom hRG (∑ g : G, SkewMonoidAlgebra.single g (s g)) x
+      = ∑ g : G, s g * (g • x) := by
+  rw [map_sum, LinearMap.sum_apply]
+  refine Finset.sum_congr rfl (fun g _ => ?_)
+  change BTier.deltaToEndAdd hRG (SkewMonoidAlgebra.single g (s g)) x = s g * (g • x)
+  rw [BTier.deltaToEndAdd_single, Module.End.mul_apply]
+  rfl
+
+set_option maxHeartbeats 1000000 in
+/-- **🔴🔴 主结果 ②（O2）** ✓✅：**迹公式 ＋ 迹形式幺模 ⟹ `δ` 满射** ✓ ——
+**任意交换环** ✓、**任意有限群 `G`** ✓、**任意 `R`-基 `b : Basis ι R S`** ✓（**秩 `|ι|` 不受限** ✗）。
+**⚠ 机制（四步，全机检 ✓）**：**①** 幺模 ＋ `b.coord i` ✓ ⟹ **迹对偶元** ✓ `y_i` ✓
+（`Tr_b (b_j · y_i) = δ_{ji}` ✓，`Module.Basis.repr_self` ✓ ＋ `Finsupp.single_apply` ✓）；
+**②** **迹公式** ✓ 把 `∑_g (g•y_i)·(g•b_j)` ✓ 打成 `∑_g g•(y_i·b_j)` ✓ ＝ `algebraMap (Tr_b (y_i·b_j))` ✓
+⟹ **正交关系** ✓ `∑_g (g•y_i)·(g•b_j) = algebraMap (if i = j then 1 else 0)` ✓；
+**③** **显式预像** ✓：`x := ∑_g single g (∑_i f(b_i)·(g•y_i))` ✓；
+**④** 逐基元核验 ✓（`b.ext` ✓ ＋ `Finset.sum_comm` ✓ ＋ ② 消去 ⟹ `δ x = f` ✓）。
+**⚠ 未使用的假设** ✓（**如实** ✓）：**秩假设** ✗ 与 **`δ` 单射** ✗ **均未被本证明消费** ✓
+（本件**不把它们写进假设表** ✓ —— 登记件形见下件 ✓）。
+**🔴 不声称** ✗：**不**声称迹公式由登记件的假设推出 ✗（＝ 唯一缺口 ✓，见节头强度序 ② ✓）；
+**不**声称登记件 `TraceUnimodularSufficiency269` ✓ 成立 ✗。 -/
+theorem r270_delta_surjective_of_traceFormula {ι : Type*} [Fintype ι]
+    (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x))
+    (b : Module.Basis ι R S)
+    (hTr : ∀ z : S, algebraMap R S (r270MulTrace b z) = ∑ g : G, g • z)
+    (hUni : ∀ φ : S →ₗ[R] R, ∃ y : S, ∀ x : S, φ x = r270MulTrace b (x * y)) :
+    Function.Surjective (BTier.deltaToEndRingHom hRG) := by
+  classical
+  choose y hy using fun i : ι => hUni (b.coord i)
+  have horth : ∀ i j : ι,
+      (∑ g : G, (g • y i) * (g • b j)) = algebraMap R S (if j = i then 1 else 0) := by
+    intro i j
+    have h1 : (∑ g : G, (g • y i) * (g • b j)) = ∑ g : G, g • (y i * b j) := by
+      refine Finset.sum_congr rfl (fun g _ => ?_)
+      rw [smul_mul']
+    rw [h1, ← hTr (y i * b j)]
+    congr 1
+    rw [mul_comm (y i) (b j), ← hy i (b j), Module.Basis.coord_apply, Module.Basis.repr_self,
+      Finsupp.single_apply]
+  intro f
+  refine ⟨∑ g : G, SkewMonoidAlgebra.single g (∑ i : ι, f (b i) * (g • y i)), ?_⟩
+  refine b.ext (fun j => ?_)
+  rw [r270_delta_sum_apply]
+  calc ∑ g : G, (∑ i : ι, f (b i) * (g • y i)) * (g • b j)
+      = ∑ g : G, ∑ i : ι, f (b i) * ((g • y i) * (g • b j)) :=
+        Finset.sum_congr rfl (fun g _ => by
+          rw [Finset.sum_mul]
+          exact Finset.sum_congr rfl (fun i _ => by ring))
+    _ = ∑ i : ι, ∑ g : G, f (b i) * ((g • y i) * (g • b j)) := Finset.sum_comm
+    _ = ∑ i : ι, f (b i) * algebraMap R S (if j = i then 1 else 0) := by
+        refine Finset.sum_congr rfl (fun i _ => ?_)
+        rw [← Finset.mul_sum, horth i j]
+    _ = f (b j) := by
+        rw [Finset.sum_eq_single j]
+        · simp
+        · intro i _ hij
+          rw [if_neg (Ne.symm hij), map_zero, mul_zero]
+        · intro hj; exact absurd (Finset.mem_univ j) hj
+
+set_option maxHeartbeats 1000000 in
+/-- **登记件 ＋ **一条迹公式** ⟹ 成立** ✓✅（**形对照件** ✓）：逐字取 §4.75 ✓ 的
+`TraceUnimodularSufficiency269` ✓ 的假设表 ✓（乘法迹幺模 ＋ **秩 ＝ `|G|`** ✓ ＋ **`δ` 单射** ✓），
+**另加**迹公式 ✓ 一行 ✓ ⟹ `δ` 满射 ✓。
+**⚠ 强度序（**勿读作等价** ✗）**：本条的**秩**行 ✓ 与 **单射**行 ✓ **在证明中不被使用** ✗
+（**如实登记** ✓：它们留在表内**只**为与登记件**逐字同形** ✓，**不冒充为已消费** ✗）；
+真正的**唯一**缺口是**迹公式** ✓（**证明义务** ✓，见节头 ✓）。
+**🔴 不声称** ✗：**不**声称 `TraceUnimodularSufficiency269` ✓ 成立 ✗。 -/
+theorem r270_traceUnimodularSufficiency_of_traceFormula :
+    ∀ (R S : Type) [CommRing R] [CommRing S] [Algebra R S] (G : Type) [Group G] [Fintype G]
+      [MulSemiringAction G S]
+      (hRG : ∀ (g : G) (r : R) (x : S), g • (r • x) = r • (g • x)) {n : ℕ}
+      (b : Module.Basis (Fin n) R S),
+      Fintype.card G = n →
+      (∀ z : S, algebraMap R S (r269MulTrace b z) = ∑ g : G, g • z) →
+      Function.Injective (BTier.deltaToEndRingHom hRG) →
+      (∀ φ : S →ₗ[R] R, ∃ y : S, ∀ x : S, φ x = r269MulTrace b (x * y)) →
+      Function.Surjective (BTier.deltaToEndRingHom hRG) := by
+  intro R S _ _ _ G _ _ _ hRG n b _hcard hTr _hinj hUni
+  exact r270_delta_surjective_of_traceFormula hRG b hTr hUni
+
+end R270TraceUnimodular
+
+#print axioms r270MulTrace_fin
+#print axioms r270_delta_sum_apply
+#print axioms r270_delta_surjective_of_traceFormula
+#print axioms r270_traceUnimodularSufficiency_of_traceFormula
+
+/-! #### 270.D **非空性（L1）**：分裂载体（**任意交换环** ✓）＋ 二次载体（迹公式**自动** ✓） -/
+
+section R270RegularNonempty
+
+variable {R : Type*} [CommRing R] {G : Type*} [Group G] [Fintype G] [DecidableEq G]
+
+attribute [local instance] regularSMul regularMSA
+
+omit [Group G] in
+/-- **分裂载体的乘法迹** ✓：标准基（`Pi.basisFun` ✓）下「乘 `z`」的矩阵是**对角阵** ✓
+（对角元 `z i` ✓）⟹ `Tr_b z = ∑_g z g` ✓。 -/
+lemma r270_mulTrace_basisFun (z : G → R) :
+    r270MulTrace (Pi.basisFun R G) z = ∑ g : G, z g := by
+  rw [r270MulTrace]
+  simp only [Matrix.trace, Matrix.diag_apply, Matrix.of_apply]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [Pi.basisFun_apply, Pi.basisFun_repr, Pi.mul_apply, Pi.single_eq_same, mul_one]
+
+/-- **✅ 分裂载体上迹公式成立** ✓✅（**任意交换环** ✓ ＋ **任意有限 `G`** ✓）：
+`algebraMap (∑_g z g) = ∑_g g • z` ✓ —— 两侧逐坐标相等 ✓（右端在坐标 `h` 处 ＝ `∑_g z (g⁻¹h)` ✓，
+重标号 `g ↦ g⁻¹h` 后 ＝ `∑ g, z g` ✓；`Equiv.sum_comp` ✓）。 -/
+theorem r270_traceFormula_regularAction (z : G → R) :
+    algebraMap R (G → R) (r270MulTrace (Pi.basisFun R G) z) = ∑ g : G, g • z := by
+  funext h
+  rw [r270_mulTrace_basisFun]
+  simp only [Pi.algebraMap_apply, Algebra.algebraMap_self_apply, Finset.sum_apply,
+    regularSMul_apply]
+  exact (Equiv.sum_comp ((Equiv.inv G).trans (Equiv.mulRight h)) z).symm
+
+omit [Group G] in
+/-- **✅ 分裂载体上迹形式幺模** ✓✅（**任意交换环** ✓）：对任意 `φ` ✓ 取
+`y i := φ (Pi.single i 1)` ✓ ⟹ `Tr_b (x · y) = ∑_i x i · φ (single i 1) = φ x` ✓
+（`Finset.sum_eq_single` ✓ 展开 `x = ∑_i x i • single i 1` ✓）。 -/
+theorem r270_unimodular_regularAction (φ : (G → R) →ₗ[R] R) :
+    ∃ y : G → R, ∀ x : G → R, φ x = r270MulTrace (Pi.basisFun R G) (x * y) := by
+  refine ⟨fun i => φ (Pi.single i (1 : R)), fun x => ?_⟩
+  rw [r270_mulTrace_basisFun]
+  have hx : x = ∑ i : G, x i • (Pi.single i (1 : R)) := by
+    funext j
+    rw [Finset.sum_apply, Finset.sum_eq_single j]
+    · rw [Pi.smul_apply, Pi.single_eq_same, smul_eq_mul, mul_one]
+    · intro i _ hij
+      rw [Pi.smul_apply, Pi.single_eq_of_ne (Ne.symm hij), smul_zero]
+    · intro hj; exact absurd (Finset.mem_univ j) hj
+  calc φ x = φ (∑ i : G, x i • (Pi.single i (1 : R))) := congrArg φ hx
+    _ = ∑ i : G, x i * φ (Pi.single i (1 : R)) := by
+        rw [map_sum]
+        refine Finset.sum_congr rfl (fun i _ => ?_)
+        rw [map_smul, smul_eq_mul]
+    _ = ∑ i : G, (x * fun i => φ (Pi.single i (1 : R))) i := by
+        refine Finset.sum_congr rfl (fun i _ => ?_)
+        rw [Pi.mul_apply]
+
+set_option maxHeartbeats 1000000 in
+/-- **✅✅ 分裂载体上 `δ` 满射** ✓✅（**任意交换环** ✓ ＋ **任意有限 `G`** ✓）：
+由 270.C ✓ 的主定理 ✓ 在 `S = G → R` ✓、`b = Pi.basisFun R G` ✓ 上**直接消费**上面两条 ✓。
+**⚠ 新意** ✓（**如实** ✓）：§4.72 ✓ 的同类结果（`bijective_deltaToEndRingHom_regularAction` ✓）
+**限 `K` 域** ✗；本条把**同一载体**推到**任意交换环** ✓（机制不同：**不用维数** ✗，
+**用迹形式对偶基 ＋ 迹公式** ✓）。 -/
+theorem r270_delta_surjective_regularAction :
+    Function.Surjective (BTier.deltaToEndRingHom (regular_smul_comm (G := G) (K := R))) :=
+  r270_delta_surjective_of_traceFormula (regular_smul_comm (G := G) (K := R))
+    (Pi.basisFun R G) r270_traceFormula_regularAction r270_unimodular_regularAction
+
+/-- **秩 3 实例** ✓（**L1 非空洞** ✓）：`|Multiplicative (ZMod 3)| = 3` ✓ ——
+⟹ 270.C ✓ 的假设（迹公式 ✓ ＋ 幺模 ✓）在**秩 3** ✓（**环档** ✓：`R = ℤ` 可用 ✓）可满足 ✓，
+即 §4.74 ✓ 的秩 2 之外的**新档** ✓。 -/
+theorem r270_card_zmod_three : Fintype.card (Multiplicative (ZMod 3)) = 3 := by
+  rw [Fintype.card_multiplicative, ZMod.card]
+
+end R270RegularNonempty
+
+#print axioms r270_mulTrace_basisFun
+#print axioms r270_traceFormula_regularAction
+#print axioms r270_unimodular_regularAction
+#print axioms r270_delta_surjective_regularAction
+#print axioms r270_card_zmod_three
+
+section R270QuadraticTrace
+
+attribute [local instance] qaMSA268
+
+variable {R : Type*} [CommRing R] {a b : R}
+
+set_option maxHeartbeats 1000000 in
+/-- **✅ 二次载体上迹公式自动成立** ✓✅（**非分裂** ✓ 的非空性见证 ✓）：`G = C₂` ✓ 经 `star` ✓ 作用，
+`Tr (mk x y) = 2x + by` ✓（`QuadraticAlgebra.trace_def` ✓）而 `z + star z = algebraMap (2x + by)` ✓
+（`star_mk` ✓：`star (mk x y) = mk (x + b*y) (−y)` ✓）⟹ 迹公式 ✓。
+**⚠ 意义** ✓（**两条** ✓）：**(甲)** 270.C ✓ 的**新假设**（迹公式 ✓）在 §4.74 ✓ 的**载体族**上
+**自动满足** ✓ ⟹ 270.C ✓ 与 §4.74 ✓ 的秩 2 `⟸` ✓ **不矛盾** ✓，且 270.C ✓ 是它的**推广方向** ✓；
+**(乙)** 秩 2 档的幺模性判别**已由 §4.74 ✓ 机检** ✓（`qaTraceUnimodular268_iff` ✓），
+**两者的复合**（270.C ＋ §4.74 ⟹ 秩 2 `⟸` 的第二证）**本轮未落** ✗、**不声称** ✗。 -/
+theorem r270_traceFormula_quadratic (z : QuadraticAlgebra R a b) :
+    algebraMap R (QuadraticAlgebra R a b) (r270MulTrace (QuadraticAlgebra.basis a b) z)
+      = ∑ g : Multiplicative (ZMod 2), g • z := by
+  rw [r270MulTrace_fin, r269MulTrace_quadratic]
+  have hsum : (∑ g : Multiplicative (ZMod 2), g • z) = z + star z := by
+    have h1 : (Finset.univ : Finset (Multiplicative (ZMod 2)))
+        = {1, Multiplicative.ofAdd 1} := by decide
+    rw [h1, Finset.sum_insert (by decide), Finset.sum_singleton]
+    rw [qaConj268_smul_def, qaConj268_smul_def, qaConj268_one, qaConj268_gen]
+  rw [hsum]
+  apply QuadraticAlgebra.ext
+  · rw [QuadraticAlgebra.trace_def, QuadraticAlgebra.algebraMap_re, QuadraticAlgebra.re_add,
+      QuadraticAlgebra.re_star]
+    ring
+  · rw [QuadraticAlgebra.algebraMap_im, QuadraticAlgebra.im_add, QuadraticAlgebra.im_star]
+    ring
+
+end R270QuadraticTrace
+
+#print axioms r270_traceFormula_quadratic
 
 end ABGV52
