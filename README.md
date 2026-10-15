@@ -2004,3 +2004,20 @@ primitivity cannot be recovered from the type; introducing a type class carrying
 step.  Three declarations are recorded: the values of the power basis, the surjectivity, and the bijectivity.  No new
 practical difficulty arose in this round.  The packaged criterion, the realization property in this case and the
 source's theorem for it are not addressed here.
+
+Round 356 packages the criterion for the Kummer carrier, removing the need to carry the action as a hypothesis.  The
+distinguished unit and the statement that its order is exactly the order of the group are collected in a type class
+whose parameters are the base ring, the order and the coefficient, so that they all occur in the type of the
+carrier; from this data the action of the group on the carrier is produced as an instance, the agreement of that
+action with the displayed shift becomes definitional, and the invariance of coefficients and the criterion follow
+from the previous rounds.  The three clauses of the criterion are then assembled into the packaged form, which is
+the source's statement for this carrier.  A first attempt to register the action directly failed because the unit
+and its order do not occur in the type of the carrier, so that they cannot be recovered during instance synthesis;
+expressing the order as an equivalence between the vanishing of a power and divisibility by the order keeps the data
+inside the base ring and suffices for the faithfulness argument.  Seven declarations are recorded: the data class,
+the action instance, the agreement with the shift, the invariance of the scalars, the invariance of coefficients,
+the faithfulness and the packaged criterion.  Two practical points are recorded: an omission command has to be
+placed before the documentation comment rather than between it and the declaration, so unused instance assumptions
+are instead given as explicit binders of the affected theorems; and the projections of the data class have to be
+applied with all their arguments named.  The realization property in this case, the corresponding statement for
+orders coprime to the characteristic and the source's remaining theorems are not addressed here.

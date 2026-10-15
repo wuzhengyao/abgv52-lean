@@ -12795,9 +12795,154 @@ theorem kummerDelta_bijective_of_moment {R : Type u} [CommRing R] [Nontrivial R]
 
 end KummerSurj355
 
-#print axioms kummerBasis_apply
-#print axioms kummerDelta_surjective_of_moment
-#print axioms kummerDelta_bijective_of_moment
+/-! ### 4.139 🔴🔴🔴🔴 **T6-F 第二口收官：实例形判据 —— 源 `proposition-0-6(a)` 落库**（第 356 轮）
+—— **`KummerDatum` 类型类解开实例口径** ✓（**§4.135 的悬案收口** ✓）
+
+**靶** ✓：**源 `proposition-0-6(a)`** ✓ 的**实例形** ✓ —— **§4.135–§4.138 的"抽象作用 ＋ 桥假设"口径之解** ✓。
+
+**落成七件** ✓✅：**(甲)** **`KummerDatum R n a`** ✓✅ —— **类型类** ✓：字段 **`ρ : Rˣ`** ✓、**`hρ : (ρ:R)^n = 1`** ✓、
+**`hpow_dvd : ∀ m, (ρ:R)^m = 1 ↔ n ∣ m`** ✓（**阶恰为 `n`** ✓ —— **`IsPrimitiveRoot` 的可合成替身** ✓，
+**因 `IsPrimitiveRoot` 须域 `F` 而 `F` 不出现在载体类型中** ✗）；**(乙)** **`instMSA`** ✓✅ ——
+**`MulSemiringAction (Multiplicative (ZMod n)) (kummerCarrier R n a)` 实例** ✓✅（**由 `kummerMSA` 供给** ✓，
+**⭐ 此即 §4.135 悬案之解** ✓）；**(丙)** **`smul_eq_shift`** ✓✅（**`hact` 桥定义即同（`rfl`）** ✓）；
+**(丁)** **`smul_algebraMap`** ✓✅（**款②实例形** ✓）；**(戊)** **`hRG`** ✓✅（**实例形 `hRG`** ✓ —— **桥件自动满足** ✓）；
+**(己)** **`faithful`** ✓✅（**款①实例形** ✓ —— **`hpow_dvd` 版核平凡 ＋ `faithfulSMul_iff`** ✓）；
+**(庚)** **`kummer_isGaloisWithGroup`** ✓✅🔴 —— **`IsGaloisWithGroup R (kummerCarrier R n a) C_n hRG`** ✓✅
+（**源 `proposition-0-6(a)` 的实例形** ✓ —— **款①（己）＋ 款②（丁）＋ 款③（§4.138 ✓）** ✓）。
+
+**⚠ 类的设计要点** ✓：**(i)** **类参数只含 `R`／`n`／`a`** ✓（**不出现在载体类型中的 `F` 不得入类** ✗ ——
+**否则实例合成无法回推** ✗，**§4.135 的失败正是此因** ✓）；**(ii)** **阶信息以 `hpow_dvd` 表达** ✓（**`↔ n ∣ m`** ✓）——
+**纯 `R` 内可写** ✓，**且忠实性证明只需此形** ✓；**(iii)** **实例声明带 `[NeZero n]`** ✓（**可合成** ✓）。
+
+**⚠ 工艺（两条，入 §5.1）** ✓：**(#81)** **`omit … in` 须写在文档注释之前** ✗ ——
+**写在 `/-- … -/` 与 `theorem` 之间报 "unexpected token 'omit'"** ✗（**实测** ✓）⟹
+**正解 ＝ 把该实例假设改为定理上的显式 binder** ✓（**§5.1 的 "变量声明位置" 族** ✓）；
+**(#82)** **类投影须给全具名实参** ✗（`KummerDatum.ρ (R := R) (n := n) (a := a)` ✓ ——
+**用 `_` 占位报 "don't know how to synthesize placeholder for argument hρ"** ✗，**实测** ✓）。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` **无条件**已证 ✗（**须 `KummerDatum` 实例 ＋ `hdiff`（差为单位）假设** ✓ ——
+**两者皆为具名假设而非定理** ✓）；**不**声称源侧"`ρ(n) ∈ F`"的完整假设链已核 ✗（**本件以 `hpow_dvd` 代之** ✓）；
+**不**声称源 `theorem-1-2(b)` 已证 ✗（**Kummer 实现未落** ✗）；**不**声称源 `proposition-0-6(c)` 已证 ✗。 -/
+
+section KummerDatum356
+
+/-- **Kummer 数据类** ✓✅：`ρ` 是 `R` 中**阶恰为 `n`** 的单位（`(ρ:R)^m = 1 ↔ n ∣ m` ✓）——
+**把 `ρ` 与其阶信息挂进类型类** ✓ ⟹ **`MulSemiringAction` 实例可合成** ✓（**§4.135 的实例口径之解** ✓）。 -/
+class KummerDatum (R : Type u) [CommRing R] (n : ℕ) (a : R) where
+  ρ : Rˣ
+  hρ : ((ρ : R)) ^ n = 1
+  hpow_dvd : ∀ m : ℕ, ((ρ : R)) ^ m = 1 ↔ n ∣ m
+
+namespace KummerDatum
+
+variable {R : Type u} [CommRing R] {n : ℕ} {a : R} [KummerDatum R n a]
+
+/-- **(甲) `C_n`-作用实例** ✓✅（**由 `kummerMSA` 供给** ✓）。 -/
+@[instance_reducible] noncomputable instance instMSA [NeZero n] :
+    MulSemiringAction (Multiplicative (ZMod n)) (kummerCarrier R n a) :=
+  kummerMSA a (KummerDatum.ρ (R := R) (n := n) (a := a))
+    (KummerDatum.hρ (R := R) (n := n) (a := a))
+
+/-- **(乙) 作用 ＝ 位移** ✓（**定义即同** ✓ —— `hact` 桥自动满足 ✓）。 -/
+theorem smul_eq_shift [NeZero n] (k : Multiplicative (ZMod n)) (x : kummerCarrier R n a) :
+    k • x = kummerShiftK a (KummerDatum.ρ (R := R) (n := n) (a := a))
+      (KummerDatum.hρ (R := R) (n := n) (a := a)) k x := rfl
+
+/-- **(丙) 款②（不动基，实例形）** ✓：`g • algebraMap r = algebraMap r` ✓。 -/
+theorem smul_algebraMap [NeZero n] (k : Multiplicative (ZMod n)) (r : R) :
+    k • algebraMap R (kummerCarrier R n a) r = algebraMap R (kummerCarrier R n a) r := by
+  show kummerShiftK a (KummerDatum.ρ (R := R) (n := n) (a := a))
+      (KummerDatum.hρ (R := R) (n := n) (a := a)) k (algebraMap R (kummerCarrier R n a) r) = _
+  rw [show algebraMap R (kummerCarrier R n a) r
+    = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r from rfl]
+  rw [kummerShiftK_of]
+
+/-- **(丁) `hRG`（实例形）** ✓。 -/
+theorem hRG [NeZero n] :
+    ∀ (g : Multiplicative (ZMod n)) (r : R) (t : kummerCarrier R n a),
+      g • (r • t) = r • (g • t) := by
+  intro k r t
+  rw [Algebra.smul_def, Algebra.smul_def]
+  show kummerShiftK a (KummerDatum.ρ (R := R) (n := n) (a := a))
+      (KummerDatum.hρ (R := R) (n := n) (a := a)) k
+      (algebraMap R (kummerCarrier R n a) r * t)
+    = algebraMap R (kummerCarrier R n a) r
+      * kummerShiftK a (KummerDatum.ρ (R := R) (n := n) (a := a))
+        (KummerDatum.hρ (R := R) (n := n) (a := a)) k t
+  rw [map_mul]
+  congr 1
+  rw [show algebraMap R (kummerCarrier R n a) r
+    = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r from rfl]
+  rw [kummerShiftK_of]
+
+/-- **(戊) 款①（忠实性，实例形）** ✓✅（**`hpow_dvd` 版核平凡 ＋ `faithfulSMul_iff`** ✓）。 -/
+theorem faithful [Nontrivial R] [NeZero n] (hn : 1 ≤ n) (ha : IsUnit a) :
+    FaithfulSMul (Multiplicative (ZMod n)) (kummerCarrier R n a) := by
+  rw [faithfulSMul_iff]
+  intro k hk
+  have hρ := KummerDatum.hρ (R := R) (n := n) (a := a)
+  have hρpow := KummerDatum.hpow_dvd (R := R) (n := n) (a := a)
+  have hroot : kummerShiftK a (KummerDatum.ρ (R := R) (n := n) (a := a)) hρ k
+      (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      = AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) := hk _
+  rw [kummerShiftK_root] at hroot
+  have hof : AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+      (((KummerDatum.ρ (R := R) (n := n) (a := a) : Rˣ) : R)
+        ^ (Multiplicative.toAdd k).val - 1) = 0 := by
+    have h1 : (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+          (((KummerDatum.ρ (R := R) (n := n) (a := a) : Rˣ) : R)
+            ^ (Multiplicative.toAdd k).val) - 1)
+        * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) = 0 := by
+      rw [sub_mul, one_mul, hroot, sub_self]
+    obtain ⟨u, hu_eq⟩ := kummerRoot_isUnit (R := R) (n := n) hn ha
+    have h3 : (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+          (((KummerDatum.ρ (R := R) (n := n) (a := a) : Rˣ) : R)
+            ^ (Multiplicative.toAdd k).val) - 1)
+        * (↑u : kummerCarrier R n a) = 0 := by
+      rw [hu_eq]
+      exact h1
+    have h4 := congrArg (fun t => t * (↑u⁻¹ : kummerCarrier R n a)) h3
+    rw [mul_assoc, Units.mul_inv, mul_one, zero_mul] at h4
+    rw [map_sub, map_one]
+    exact h4
+  have hzero : ((KummerDatum.ρ (R := R) (n := n) (a := a) : Rˣ) : R)
+      ^ (Multiplicative.toAdd k).val - 1 = 0 :=
+    kummer_of_eq_zero (R := R) (n := n) hn a hof
+  have hpow : ((KummerDatum.ρ (R := R) (n := n) (a := a) : Rˣ) : R)
+      ^ (Multiplicative.toAdd k).val = 1 := sub_eq_zero.mp hzero
+  have hdvd : n ∣ (Multiplicative.toAdd k).val := (hρpow _).mp hpow
+  have hval : (Multiplicative.toAdd k).val = 0 := Nat.eq_zero_of_dvd_of_lt hdvd (ZMod.val_lt _)
+  have htoAdd : Multiplicative.toAdd k = 0 := by
+    have h := ZMod.natCast_zmod_val (Multiplicative.toAdd k)
+    rw [hval] at h
+    simpa using h.symm
+  have h1 : Multiplicative.toAdd (1 : Multiplicative (ZMod n)) = 0 := rfl
+  exact Multiplicative.toAdd.injective (by rw [htoAdd, h1])
+
+/-- **(己) 🔴🔴 实例形判据** ✓✅：**`IsGaloisWithGroup R (kummerCarrier R n a) C_n hRG`** ✓✅
+（**源 `proposition-0-6(a)` 的实例形** ✓）。 -/
+theorem kummer_isGaloisWithGroup [Nontrivial R] [NeZero n] (hn : 1 ≤ n) (ha : IsUnit a)
+    (hdiff : ∀ i j : Fin n, i ≠ j → IsUnit
+      (((KummerDatum.ρ (R := R) (n := n) (a := a) : Rˣ) : R) ^ (i : ℕ)
+        - ((KummerDatum.ρ (R := R) (n := n) (a := a) : Rˣ) : R) ^ (j : ℕ))) :
+    IsGaloisWithGroup R (kummerCarrier R n a) (Multiplicative (ZMod n))
+      (hRG (R := R) (n := n) (a := a)) :=
+  ⟨faithful (R := R) (n := n) (a := a) hn ha,
+    fun g r => smul_algebraMap (R := R) (n := n) (a := a) g r,
+    kummerDelta_bijective_of_moment hn a (KummerDatum.ρ (R := R) (n := n) (a := a))
+      (KummerDatum.hρ (R := R) (n := n) (a := a)) ha hdiff
+      (hRG (R := R) (n := n) (a := a))
+      (fun k x => smul_eq_shift (R := R) (n := n) (a := a) k x)⟩
+
+
+end KummerDatum
+end KummerDatum356
+
+#print axioms KummerDatum.smul_eq_shift
+#print axioms KummerDatum.smul_algebraMap
+#print axioms KummerDatum.hRG
+#print axioms KummerDatum.faithful
+#print axioms KummerDatum.kummer_isGaloisWithGroup
 
 
 end ABGV52
