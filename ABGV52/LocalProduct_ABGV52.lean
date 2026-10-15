@@ -253,3 +253,21 @@ instance maximalSpectrumMulAction (M R : Type*) [Group M] [CommRing R]
   mul_smul a b I := MaximalSpectrum.ext (mul_smul a b I.asIdeal)
 
 #print axioms maximalSpectrumMulAction
+
+
+/-! ## (丙) 拼装接口（第 389 轮）：**轨道＝全集 ⟹ 传递**
+
+**已核 API** ✓（第 389 轮探针 ✓）：`MulAction.mem_orbit_iff : a₂ ∈ orbit γ a₁ ↔ ∃ x, x • a₁ = a₂` ✓；
+**`MulAction.IsPretransitive` 是类**（字段 `exists_smul_eq` ✓）⟹ 证明须用 **`⟨…⟩` 构造** ✗
+（第 388 轮用匿名 `fun i j => …` 失败 ✗ 即此因 ✓）。
+**用途** ✓：(丙) 传递性论证的**最后一步** ✓ —— 幂等元引擎（第 368 轮 ✓）＋ 轨道指示幂等元给出"轨道指示函数 ＝ 1" ✓，
+本引理把它转成 `IsPretransitive` ✓。 -/
+
+/-- **(丙) 拼装接口** ✓：若作用的**每个轨道都是全集**，则作用**传递** ✓。 -/
+theorem isPretransitive_of_orbit_eq_univ {G ι : Type*} [Group G] [MulAction G ι]
+    (h : ∀ i : ι, MulAction.orbit G i = Set.univ) : MulAction.IsPretransitive G ι :=
+  ⟨fun i j => by
+    have hj : j ∈ MulAction.orbit G i := by rw [h i]; exact Set.mem_univ j
+    exact MulAction.mem_orbit_iff.mp hj⟩
+
+#print axioms isPretransitive_of_orbit_eq_univ

@@ -2599,3 +2599,15 @@ declared with `scoped[Pointwise]`, available only in the `Pointwise` locale, so
 `open scoped Pointwise` is needed; neither a missing hypothesis nor a missing
 import was at fault.  Adding the declaration at the end of the file, rather than
 editing it in place, avoided the earlier mishaps with block comments.
+
+## Round 389 (2026-10-15, appended)
+
+`isPretransitive_of_orbit_eq_univ`: if every orbit of an action is the whole
+type, the action is transitive.  This is the last step of the transitivity
+argument for the third dichotomy input, turning the statement obtained from the
+idempotent lemma, that an orbit indicator equals one, into transitivity.
+
+The lemma depends on no axioms at all.  Two API facts made it work:
+`MulAction.mem_orbit_iff` reads `a₂ ∈ orbit γ a₁ ↔ ∃ x, x • a₁ = a₂`, and
+`MulAction.IsPretransitive` is a class, so it must be proved with the anonymous
+constructor; the anonymous function used in round 388 failed for that reason.
