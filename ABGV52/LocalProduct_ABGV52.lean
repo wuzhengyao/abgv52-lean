@@ -372,3 +372,21 @@ instance permMulSemiringAction (G ι K : Type*) [Group G] [MulAction G ι] [Semi
   smul_add g x y := by funext i; rfl
   smul_one g := by funext i; rfl
   smul_mul g x y := by funext i; rfl
+
+
+/-! ### (丙) 组装层所需实例：`FaithfulSMul K (ι → K)`（第 406 轮 ✓）
+
+**🔴 根因** ✓（第 406 轮打印所得 ✓）：`#synth` 显示引擎所需实例中**唯一缺的是 `FaithfulSMul K (ι → K)`** ✗
+（`CommRing (ι → K)` ✓ 与 `MulSemiringAction G (ι → K)` ✓〔第 403 轮〕均已有 ✓）。
+**且须 `[Nonempty ι]`** ✗ —— `ι` 空时 `K → (∅ → K)` **不单射** ✗（`∅ → K` 是单点集 ✓）⟹ 假设不可省 ✓。
+**证法** ✓：取 `i : ι` 与 `Pi.single i 1` ✓，在 `i` 处取值即得 `a = b` ✓。 -/
+
+/-- **(丙) 需的非忠实补丁** ✓：`ι` 非空时 `FaithfulSMul K (ι → K)` ✓。 -/
+instance faithfulSMulPi {ι K : Type*} [Nonempty ι] [Field K] : FaithfulSMul K (ι → K) where
+  eq_of_smul_eq_smul h := by
+    classical
+    obtain ⟨i⟩ := ‹Nonempty ι›
+    have := congrFun (h (Pi.single (M := fun _ => K) i (1 : K))) i
+    simpa [Pi.smul_apply, Pi.single_eq_same] using this
+
+#print axioms faithfulSMulPi

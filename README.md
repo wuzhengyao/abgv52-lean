@@ -2684,3 +2684,14 @@ Four points had to be fixed, all found in scratch at no cost to the library:
 `MulSemiringAction` also needs the additive fields `smul_zero` and `smul_add`; the
 name is `inv_one`, not `one_inv`; `mul_smul` goes through `mul_inv_rev`; and the
 remaining pointwise fields close by `rfl`.
+
+## Round 406 (2026-10-15, appended)
+
+`faithfulSMulPi`: for non-empty `ι` and a field `K`, the action of `K` on `ι → K`
+is faithful.  Printing the instance search showed this to be the only one missing
+for the idempotent lemma of round 368 in the function-space setting, the ring
+structure and the permuted `MulSemiringAction` of round 403 being already present.
+
+The hypothesis `Nonempty ι` cannot be dropped: for empty `ι` the type `ι → K` is a
+singleton, so the map from a nontrivial field into it is not injective.  The proof
+evaluates at a chosen index on `Pi.single i 1`.
