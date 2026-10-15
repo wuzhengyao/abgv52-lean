@@ -1632,3 +1632,17 @@ of the carrier with the target field; the existence of a root of the mapped poly
 target field is not addressed here.  Two practical points are recorded: the tensor notation has to be opened inside
 this section, and the polynomial operations have to be referred to with their namespace because the file has the
 multivariable polynomial namespace open.
+
+Round 330 lands the generation half of the structure theorem for cyclic extensions of degree a prime in
+characteristic that prime.  If an automorphism of a domain over a field sends an element to its successor, then
+the conjugates of that element under the powers of the automorphism are as many distinct elements as the
+characteristic, so a polynomial over the base vanishing at the element either is zero or has degree at least that
+prime; consequently a monic polynomial of that degree vanishing at the element divides every polynomial vanishing
+there.  Combining this divisibility with the dimension count for the Artin--Schreier carrier yields an isomorphism
+between the carrier and any finite-dimensional domain carrying an element that satisfies the Artin--Schreier
+relation, provided the dimension over the base equals the prime.  Three practical points are recorded: a statement
+that does not mention the base field loses the section instances, so the characteristic has to be requested in the
+statement itself; injectivity is not proved by introducing one element and a vanishing hypothesis, because the
+definition of injectivity takes two elements and an equality; and instances are registered with an anonymous local
+binding rather than with a local instance command.  The existence of such an element, which is the other half of
+the structure theorem quoted by the source, is not addressed here.

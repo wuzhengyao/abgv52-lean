@@ -10275,5 +10275,205 @@ end BaseChangeAdjoinRoot329
 
 #print axioms tensorProduct_adjoinRoot
 
+/-! ### 4.115 🔴 **移位根的生成性 ＋ AS 载体同构**（第 330 轮）
+—— 子目标 (c) 的**第二件**（**次数半边** ✓）：源 `proposition-0-5(e)` ✓ 的「**生成**」一半 ✓
+
+**源侧路线** ✓（**照源走** ✓）：`raw/Saltman1982.tex:174`（label `theorem-1-2` ✓ 的证明 ✓，**逐字** ✓）：
+「If `K ⊇ F` is a field and `L/K` is Galois with group `C_p`, then by `proposition-0-5(e)`
+`L ≅ K{y^p − y − a}`, for some `a ∈ K`」✓ —— 源把「`L` **由 AS 根生成**」整体归给 `proposition-0-5(e)` ✓。
+**本件拆其一** ✓：**给定移位根 `y`（`σ y = y + 1` ✓）时的「生成 ＋ 计数」半边** ✓
+（**另一件 ＝ AS 根的存在性** ✗，**未落** ✗ —— 那是**下一手** ✓）。
+
+**落成七件** ✓✅：**(i)** **`algebraMap_injective_of_field`** ✓（域到非平凡环的代数映射单射 ✓）；
+**(ii)** **`shift_pow_apply`** ✓（`(σ ^ i) y = y + i` ✓）；
+**(iii)** **`aeval_shift_eq_zero`** ✓（共轭元仍是根 ✓ —— `Polynomial.aeval_algHom_apply` ✓）；
+**(iv)** **`shift_add_ne`** ✓（`i ≠ j`（`i, j < p`）⟹ `y + i ≠ y + j` ✓ ——
+`CharP L p` ✓ ＋ `CharP.cast_eq_zero_iff` ✓ ＋ `Nat.le_of_dvd` ✓）；
+**(v)** **`natDegree_le_of_aeval_eq_zero_of_shift`** ✓✅：`σ y = y + 1` ⟹ 以 `y` 为根的 `K`-多项式
+**要么为零、要么次数 ≥ `p`** ✓；
+**(vi)** **`dvd_of_aeval_eq_zero_of_shift`** ✓✅：`f` **首一**、**次数 `p`**、以 `y` 为根 ⟹
+**`f` 整除**一切以 `y` 为根的 `K`-多项式 ✓（`modByMonic_add_div` ✓ ＋ (v) ✓）；
+**(vii)** **`asCarrier_algEquiv_of_shift_root`** ✓✅：`L` 为域（`IsDomain` ✗ ＋ `K`-有限维 ✗）、
+`y ∈ L` 满足 `σ y = y + 1` ✓ 与 **`y^p − y = b`（`b ∈ K`）** ✓、**`finrank K L = p`** ✓
+⟹ **`L ≃ₐ[K] K{y^p − y − b}`** ✓✅（即 `asCarrier K p b` ✓）。
+
+**机制（四步，全部消费 mathlib 现成件 ✓）** ✓：
+**(甲)** **移位迭代** ✓：`AlgEquiv.commutes` ✓（`σ` 固定 `K` ✓）⟹ `σ (i : L) = (i : L)` ✓；
+**(乙)** **`aeval` 换元** ✓：`Polynomial.aeval_algHom_apply` ✓（`aeval (σ^i y) P = σ^i (aeval y P)` ✓）；
+**(丙)** **`p` 个互异共轭根** ✓：`Finset.image` ＋ `Finset.card_image_of_injOn` ✓ ⟹
+`p ≤ (P.map _).roots.card ≤ P.natDegree` ✓（`card_roots'` ✓ ＋ `natDegree_map_eq_of_injective` ✓）；
+**(丁)** **同构** ✓：`AdjoinRoot.liftAlgHom` ✓（根 ↦ `y` ✓）＋ (vi) ⟹ **单射** ✓（`AdjoinRoot.mk_eq_zero` ✓）
+＋ `asCarrier_finrank` ✓（§4.91 ✓）＋ **秩相等 ⟹ 双射** ✓（`AlgEquiv.ofBijective` ✓）。
+
+**⚠ 工艺（三条，入 §5.1；均本轮实测）** ✓：
+**(甲)** **「结论不含 `K`」⟹ section 实例被 Lean 剔除** ✗：`shift_add_ne` 的结论只含 `L` ✓ ⟹
+`[Field K]`／`[Algebra K L]`／`[CharP K p]` **不进签名** ✗（实测：证明体内报 `unknown identifier K` ✗）
+⟹ **正解 ＝ 把 `[CharP L p]` 提到语句里** ✓（**不是**在证明体内引用 `K` ✗）；
+**(乙)** **`Function.Injective` 的 `intro` 形状** ✗：它是 `∀ a₁ a₂, f a₁ = f a₂ → a₁ = a₂` ✓
+（**不是** `∀ a, f a = 0 → a = 0` ✗）⟹ `intro x hx` **错** ✗ ⟹ **先证核平凡** ✓ 再 `sub_eq_zero` ✓；
+**(丙)** **实例注册用 `let _inst`** ✓、**`haveI` 计样式警告** ✗（§5.1 #14 ✓ 的**第三次命中** ✓）。
+
+**🔴 不声称** ✗：**不**声称子目标 (c) 已克 ✗（**只**落「给定移位根」的半边 ✓）；
+**不**声称 **AS 根的存在性** ✗（源 `proposition-0-5(e)` 的**另一半** ✗ —— **下一手** ✓）；
+**不**声称环档判据（(b)）有进展 ✗；**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+/-- 域到非平凡环的代数映射单射 ✓。 -/
+theorem algebraMap_injective_of_field {K L : Type u} [Field K] [CommRing L] [Nontrivial L]
+    [Algebra K L] : Function.Injective (algebraMap K L) := by
+  intro a b hab
+  have h : algebraMap K L (a - b) = 0 := by rw [map_sub, hab, sub_self]
+  have h2 : a - b = 0 := by
+    by_contra hne
+    have hunit : IsUnit (algebraMap K L (a - b)) := (IsUnit.mk0 _ hne).map (algebraMap K L)
+    rw [h] at hunit
+    exact not_isUnit_zero hunit
+  exact sub_eq_zero.mp h2
+
+section ASShiftRoot330
+
+variable {K L : Type u} [Field K] [CommRing L] [Algebra K L]
+variable {p : ℕ} [CharP K p] {σ : L ≃ₐ[K] L} {y : L}
+
+omit [CharP K p] in
+/-- **移位迭代** ✓：`(σ ^ i) y = y + i` ✓。 -/
+theorem shift_pow_apply (hy : σ y = y + 1) (i : ℕ) : (σ ^ i) y = y + i := by
+  induction i with
+  | zero => simp
+  | succ i ih =>
+    have hfix : σ ((i : L)) = (i : L) := by
+      rw [show (i : L) = algebraMap K L (i : K) from (map_natCast (algebraMap K L) i).symm,
+        AlgEquiv.commutes]
+    rw [pow_succ', AlgEquiv.mul_apply, ih, map_add, hy, hfix]
+    push_cast
+    ring
+
+omit [CharP K p] in
+/-- **共轭元仍是根** ✓。 -/
+theorem aeval_shift_eq_zero {P : Polynomial K} (i : ℕ)
+    (hP : Polynomial.aeval y P = 0) : Polynomial.aeval ((σ ^ i) y) P = 0 := by
+  rw [Polynomial.aeval_algHom_apply, hP, map_zero]
+
+/-- **共轭元的互异性** ✓：`i ≠ j`（`i, j < p`）⟹ `y + i ≠ y + j` ✓。 -/
+theorem shift_add_ne [Nontrivial L] [CharP L p] (i j : ℕ) (hi : i < p) (hj : j < p)
+    (hij : i ≠ j) : y + (i : L) ≠ y + (j : L) := by
+  intro h
+  have h1 : ((i : L)) = ((j : L)) := add_left_cancel h
+  rcases lt_trichotomy i j with hlt | heq | hgt
+  · have hsub : ((j - i : ℕ) : L) = 0 := by
+      rw [Nat.cast_sub hlt.le, h1, sub_self]
+    have hdvd : p ∣ (j - i) := (CharP.cast_eq_zero_iff L p (j - i)).mp hsub
+    have hpos : 0 < j - i := by omega
+    have := Nat.le_of_dvd hpos hdvd
+    omega
+  · exact hij heq
+  · have hsub : ((i - j : ℕ) : L) = 0 := by
+      rw [Nat.cast_sub hgt.le, h1, sub_self]
+    have hdvd : p ∣ (i - j) := (CharP.cast_eq_zero_iff L p (i - j)).mp hsub
+    have hpos : 0 < i - j := by omega
+    have := Nat.le_of_dvd hpos hdvd
+    omega
+
+/-- **移位根的生成性** ✓✅：`σ y = y + 1` ⟹ 以 `y` 为根的 `K`-多项式要么为零、要么次数 ≥ `p` ✓。 -/
+theorem natDegree_le_of_aeval_eq_zero_of_shift [IsDomain L]
+    (hy : σ y = y + 1) {P : Polynomial K}
+    (hP : Polynomial.aeval y P = 0) : P = 0 ∨ p ≤ P.natDegree := by
+  classical
+  rcases eq_or_ne P 0 with rfl | hP0
+  · exact Or.inl rfl
+  · right
+    have hIa : Function.Injective (algebraMap K L) := algebraMap_injective_of_field
+    let _inst : CharP L p := charP_of_injective_algebraMap hIa p
+    have hmap0 : P.map (algebraMap K L) ≠ 0 := fun h =>
+      hP0 ((Polynomial.map_eq_zero_iff hIa).mp h)
+    have hroot : ∀ i ∈ Finset.range p, (P.map (algebraMap K L)).IsRoot (y + (i : L)) := by
+      intro i _
+      rw [Polynomial.IsRoot, Polynomial.eval_map, ← Polynomial.aeval_def,
+        ← shift_pow_apply (σ := σ) hy i]
+      exact aeval_shift_eq_zero (σ := σ) i hP
+    have hinj : Set.InjOn (fun i : ℕ => y + (i : L)) ↑(Finset.range p) := by
+      intro i hi j hj hij
+      by_contra hne
+      exact shift_add_ne (y := y) i j (Finset.mem_range.mp hi)
+        (Finset.mem_range.mp hj) hne hij
+    have hcard : p ≤ Multiset.card (P.map (algebraMap K L)).roots := by
+      have h1 : Finset.card (Finset.image (fun i : ℕ => y + (i : L)) (Finset.range p)) = p := by
+        rw [Finset.card_image_of_injOn hinj, Finset.card_range]
+      have h2 : (Finset.image (fun i : ℕ => y + (i : L)) (Finset.range p)) ⊆
+          (P.map (algebraMap K L)).roots.toFinset := by
+        intro a ha
+        obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp ha
+        rw [Multiset.mem_toFinset, Polynomial.mem_roots hmap0]
+        exact hroot i hi
+      calc p = Finset.card (Finset.image (fun i : ℕ => y + (i : L)) (Finset.range p)) := h1.symm
+        _ ≤ Finset.card ((P.map (algebraMap K L)).roots.toFinset) := Finset.card_le_card h2
+        _ ≤ Multiset.card (P.map (algebraMap K L)).roots := Multiset.toFinset_card_le _
+    calc p ≤ Multiset.card (P.map (algebraMap K L)).roots := hcard
+      _ ≤ (P.map (algebraMap K L)).natDegree := Polynomial.card_roots' _
+      _ = P.natDegree := Polynomial.natDegree_map_eq_of_injective hIa P
+
+/-- **移位根的整除性** ✓✅：`f` 首一、次数 `p`、以 `y` 为根 ⟹ `f` 整除一切以 `y` 为根的 `K`-多项式 ✓。 -/
+theorem dvd_of_aeval_eq_zero_of_shift [IsDomain L] {f P : Polynomial K} (hf : f.Monic)
+    (hfd : f.natDegree = p) (hp0 : p ≠ 0) (hy : σ y = y + 1)
+    (hf0 : Polynomial.aeval y f = 0) (hP : Polynomial.aeval y P = 0) : f ∣ P := by
+  classical
+  have hr : Polynomial.aeval y (P %ₘ f) = 0 := by
+    have h := congrArg (Polynomial.aeval y) (Polynomial.modByMonic_add_div P f)
+    simp only [map_add, map_mul, hf0, zero_mul, add_zero] at h
+    rw [h, hP]
+  have hf1 : f ≠ 1 := by
+    rintro rfl
+    rw [Polynomial.natDegree_one] at hfd
+    exact hp0 hfd.symm
+  rcases natDegree_le_of_aeval_eq_zero_of_shift (p := p) (σ := σ) hy hr with h | h
+  · exact (Polynomial.modByMonic_eq_zero_iff_dvd hf).mp h
+  · exfalso
+    have hlt := Polynomial.natDegree_modByMonic_lt P hf hf1
+    omega
+
+/-- **移位根 ⟹ AS 载体同构** ✓✅：`L` 为域（`IsDomain` ＋ `K`-有限维）、`y ∈ L` 满足
+`σ y = y + 1` 与 `y^p − y = b`（`b ∈ K`）、`finrank K L = p` ⟹ `L ≃ₐ[K] K{y^p − y − b}` ✓。 -/
+theorem asCarrier_algEquiv_of_shift_root [IsDomain L] [Module.Finite K L]
+    (hp : p.Prime) {b : K} {y : L} (hy : σ y = y + 1)
+    (hb : algebraMap K L b = y ^ p - y) (hcard : Module.finrank K L = p) :
+    Nonempty (L ≃ₐ[K] asCarrier K p b) := by
+  have hp2 : 2 ≤ p := hp.two_le
+  have hroot : Polynomial.aeval y (ASpoly K p b) = 0 := by
+    rw [ASpoly, map_sub, map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, hb]
+    ring
+  have hroot' : (ASpoly K p b).eval₂ (↑(Algebra.ofId K L)) y = 0 := by
+    rw [Algebra.toRingHom_ofId, ← Polynomial.aeval_def]
+    exact hroot
+  set Φ : asCarrier K p b →ₐ[K] L :=
+    AdjoinRoot.liftAlgHom (ASpoly K p b) (Algebra.ofId K L) y hroot' with hΦ
+  have hval : ∀ P : Polynomial K,
+      Φ (AdjoinRoot.mk (ASpoly K p b) P) = Polynomial.aeval y P := by
+    intro P
+    rw [hΦ, AdjoinRoot.liftAlgHom_mk, Polynomial.aeval_def, Algebra.toRingHom_ofId]
+  have hker : ∀ x : asCarrier K p b, Φ x = 0 → x = 0 := by
+    intro x hx
+    obtain ⟨P, hP⟩ := AdjoinRoot.mk_surjective x
+    rw [← hP] at hx ⊢
+    have h0 : Polynomial.aeval y P = 0 := by rw [← hval P, hx]
+    have hdvd := dvd_of_aeval_eq_zero_of_shift (σ := σ) (aspoly_monic (R := K) hp2 b)
+      (aspoly_natDegree (R := K) hp2 b) hp.ne_zero hy hroot h0
+    exact AdjoinRoot.mk_eq_zero.mpr hdvd
+  have hinj : Function.Injective Φ := by
+    intro x z hxz
+    have h1 : Φ (x - z) = 0 := by rw [map_sub, hxz, sub_self]
+    exact sub_eq_zero.mp (hker (x - z) h1)
+  have hfin : Module.finrank K (asCarrier K p b) = p := asCarrier_finrank hp2 b
+  let _inst : Module.Finite K (asCarrier K p b) :=
+    Module.finite_of_finrank_pos (by rw [hfin]; omega)
+  have hbij : Function.Bijective Φ := by
+    refine ⟨hinj, ?_⟩
+    have hinjL : Function.Injective (Φ.toLinearMap : asCarrier K p b →ₗ[K] L) := hinj
+    exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+      (V := asCarrier K p b) (V₂ := L) (f := Φ.toLinearMap) (by rw [hfin, hcard])).mp hinjL
+  exact ⟨(AlgEquiv.ofBijective Φ hbij).symm⟩
+
+end ASShiftRoot330
+
+#print axioms asCarrier_algEquiv_of_shift_root
+
 
 end ABGV52
