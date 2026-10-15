@@ -9697,4 +9697,64 @@ end DeltaInjectiveField316
 #print axioms delta_injective_of_field
 
 
+/-! ### 4.105 🔴🔴 **域档款③：`δ` 双射（`IsGaloisWithGroup` 第三款，域档落库）**（第 317 轮）
+—— **源 §0 判据的第三款** ✓✅（域档），**三款齐备** ✓✅
+
+**落成** ✓✅：**`delta_bijective_of_field`** ✓✅：`K` **域** ✓、`L` **域** ✓、`[Algebra K L]` ✓、
+**`[Module.Finite K L]`** ✓、`G` 有限 ✓ 作用于 `L` ✓、**不动基** ✓ ＋ **`hRG`** ✓ ＋ **忠实** ✓ ＋
+**`Module.finrank K L = Fintype.card G`** ✓ ⟹
+**`Function.Bijective (deltaToEndRingHom (S := L) hRG)`** ✓✅ —— **即源判据的第三款** ✓。
+
+**证明** ✓：§4.104 的**单射** ✓ ＋ **秩相等** ✓ ＋ 域档判据 ⟹ **满射** ✓：
+**(i)** 秩相等：§4.93 的 `skew_finrank` ✓（`finrank K Δ = |G| · finrank K L` ✓）与 `end_finrank` ✓
+（`finrank K End = (finrank K L)²` ✓）在 **`finrank K L = |G|`** ✓ 下相等 ✓（`rw` 一步 ✓）；
+**(ii)** 单射经 `deltaToEndLinearS` ✓（**同函数** ✓，`toFun := deltaToEndAdd hRG` ✓）传递 ✓；
+**(iii)** **`LinearMap.injective_iff_surjective_of_finrank_eq_finrank`** ✓（域档 ✓，第 287 轮已用 ✓）⟹ 满射 ✓。
+
+**⚠ 工艺（四条，入 §5.1；均本轮实测）** ✓：
+**(甲) 宇宙约束** ✗：§4.93 的秩件以**单宇宙**声明 ✓ ⟹ 本件 `K`／`L`／`G` **须同宇宙** ✓（`Type u` ✓，
+异宇宙报 "Application type mismatch … Type u_1 / Type u_2" ✗）；
+**(乙) 有限性实例** ✗：`FiniteDimensional K (SkewMonoidAlgebra L G)` **不自动合成** ✗ ⟹ 经
+`Module.Finite.equiv` ✓ ＋ **`coeffLinearEquiv`（取 `.symm`** ✗，方向须匹配 ✓）提供 ✓；
+**(丙) 实例风格** ✗：`haveI` 触发 `linter.style.haveILetI` ✗ ⟹ 用 **`let _inst : … := …`** ✓；
+**(丁) 判据须具名给 `f`** ✗：`LinearMap.injective_iff_surjective_of_finrank_eq_finrank` ✓ **不能**从 `hinjL` 反推
+被作用的线性映射 ✗（报 "type mismatch … ⇑?m.190 / ⇑(deltaToEndLinearS hRG)" ✓）⟹ 须 **`(f := …)`** ✓；
+另：秩相等的 `rw` **一步即闭** ✓ —— 再加 `ring`／`ring_nf` 会报 **"No goals to be solved"** ✗（实测 ✓）。
+
+**🔴 不声称** ✗：**不**声称**一般环档**的款③ ✗（**只**域档 ✓ —— 环档 §4.92 已**判否**朴素路线 ✓）；
+**不**声称 `IsGaloisWithGroup` 整体（**须三款装配** ✓ —— **域档三款皆已落** ✓，**装配件下一手** ✓）；
+**不**声称源 `theorem-1-2` 已证 ✗；**不**声称残余 ①／③ 已证 ✗。 -/
+
+section DeltaBijectiveField317
+
+open ABGV52.BTier
+
+set_option maxHeartbeats 4000000 in
+/-- **🔴 域档款③** ✓✅：`δ` **双射** ✓（单射 ＋ 秩相等，域档判据）。 -/
+theorem delta_bijective_of_field {K : Type u} [Field K] {L : Type u} [Field L] [Algebra K L]
+    [Module.Finite K L] {G : Type u} [Group G] [Fintype G] [MulSemiringAction G L]
+    (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r)
+    (hRG : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hfaith : Function.Injective (fun g : G => actionAlgEquiv (S := L) hfix g))
+    (hcard : Module.finrank K L = Fintype.card G) :
+    Function.Bijective (deltaToEndRingHom (S := L) hRG) := by
+  have hinj : Function.Injective (deltaToEndRingHom (S := L) hRG) :=
+    delta_injective_of_field hfix hRG hfaith
+  have hrank : Module.finrank K (SkewMonoidAlgebra L G) = Module.finrank K (Module.End K L) := by
+    rw [skew_finrank (R := K) (S := L) (G := G), end_finrank (R := K) (S := L), hcard]
+  let _inst : Module.Finite K (SkewMonoidAlgebra L G) :=
+    Module.Finite.equiv (SkewMonoidAlgebra.coeffLinearEquiv (S := K) (k := L) (G := G)).symm
+  have hinjL : Function.Injective (deltaToEndLinearS (G := G) hRG) := fun x y hxy => hinj hxy
+  have hsurjL : Function.Surjective (deltaToEndLinearS (G := G) hRG) :=
+    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+      (f := deltaToEndLinearS (G := G) hRG) hrank).mp hinjL
+  refine ⟨hinj, fun y => ?_⟩
+  obtain ⟨x, hx⟩ := hsurjL y
+  exact ⟨x, hx⟩
+
+end DeltaBijectiveField317
+
+#print axioms delta_bijective_of_field
+
+
 end ABGV52

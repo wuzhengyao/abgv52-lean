@@ -1549,3 +1549,13 @@ then forces the coefficient to be both one and zero.  Since the rank of the cros
 ring agree, bijectivity of the map is now one dimension count away.  Three practical points are recorded about moving a
 factor across a sum, about pointwise congruence of sums, and about deriving injectivity of a map into algebra
 homomorphisms from injectivity of the underlying algebra equivalences.
+
+Round 317 lands the third and last clause of the Galois criterion in the field case: the map from the crossed product to
+the endomorphism ring is bijective.  Injectivity was established in the previous round, and surjectivity follows from
+the equality of the two ranks, which is obtained from the dimension count of an earlier round together with the
+hypothesis that the degree of the extension equals the order of the group; the criterion for linear maps over a field
+then converts injectivity into bijectivity.  The map is transported to the linear-map form used by the criterion along
+the linearization of the same underlying function, and the finiteness needed there is supplied by transporting along
+the linear equivalence between the crossed product and finitely supported functions.  Four practical points are
+recorded, about the common universe the rank lemmas require, about supplying the finiteness instance, about the style
+of local instances, and about naming the linear map explicitly when applying the rank criterion.
