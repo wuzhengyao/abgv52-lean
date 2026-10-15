@@ -10935,5 +10935,48 @@ end CpDomainAssembly335
 
 #print axioms realization_Cp_domain
 
+/-! ### 4.121 🔴 **分裂档之一：分裂载体的根点**（第 336 轮）
+—— 子目标 (c) 的**装配之三（分裂档）**的**第一件** ✓
+
+**靶** ✓：**分裂档** = `L ≅ K^p` ✓ 的支 ✓（源 `theorem-1-2(a)` ✓ 的另一支 ✓）。
+**拆分（分割包围 ✓）**：**(甲)** **分裂载体必为分裂代数** ✓：**`asCarrier K p 0 ≃ₐ[K] (ZMod p → K)`** ✗（**下一手** ✓）；
+**(乙)** **结构事实** ✗：**`L ≅ K^p`** ✓ —— **须先判** ✓（**库内未证** ✗；源 `proposition-0-5(e)` ✓ 的**非域支** ✓）。
+**本件只落 (甲) 的「根点」半步** ✓。
+
+**落成一件** ✓✅：**`asCarrier_zero_aeval_eq_zero`** ✓✅：**`(i : K)` 是 `X^p − X` 的根** ✓
+（`i : ZMod p` ✓、**`ZMod.castHom (dvd_refl p) K`** ✓）—— 即 **`p` 个互异根点** ✓
+（互异性用 §4.86 ✓ 的 `zmod_castHom_injective` ✓）。
+
+**机制** ✓：`ASpoly K p 0 = X^p − X − C 0` ✓ ⟹ `aeval` 展开为 **`(i:K)^p − (i:K)`** ✓ ⟹
+**`map_pow`** ✓ ＋ **`ZMod.pow_card`** ✓（**Fermat**：`i^p = i` ✓）⟹ `0` ✓。
+
+**⚠ 工艺（两条，入 §5.1；均本轮实测）** ✓：
+**(甲)** **`Algebra (ZMod p) K` 不是实例** ✗（`ZMod.algebra` ✓ 是 `abbrev` ✗）⟹ **语句里不得写 `(i : K)`** ✗
+（**实测**：`Type mismatch` ✗）⟹ **正解 ＝ 用环同态 `ZMod.castHom (dvd_refl p) K`** ✓ 显式书写 ✓；
+**(乙)** **`Polynomial.eval_def` 不存在** ✗（**实测** `unknown identifier` ✗）—— 而**误以为其存在**会**静默留下 `sorryAx`** ✗
+（**实测**：`#print axioms` 报 `sorryAx` ✗）⟹ **正解 ＝ 只落 `aeval` 形** ✓，
+**`eval` 形留待下一手用正确的引理**（**候选**：`Polynomial.eval₂_at_apply` ✓／`eval_eq_eval₂` ✓ —— **先 `#check` 再写** ✓）。
+
+**🔴 不声称** ✗：**不**声称 `asCarrier K p 0 ≃ₐ[K] K^p` 已证 ✗（**未落** ✗）；
+**不**声称 `L ≅ K^p` ✗（**结构事实未落** ✗）；**不**声称分裂档已克 ✗；
+**不**声称 `RealizationProperty` 有实例 ✗；**不**声称 (b) 环档判据有进展 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section SplitCarrierRoot336
+
+/-- **分裂载体的根点** ✓：`(i : K)`（`i : ZMod p`）是 `X^p − X` 的根 ✓（**Fermat ＋ char p**）。 -/
+theorem asCarrier_zero_aeval_eq_zero (K : Type u) [Field K] {p : ℕ} [Fact p.Prime] [CharP K p]
+    (i : ZMod p) :
+    Polynomial.aeval (ZMod.castHom (dvd_refl p) K i) (ASpoly K p 0) = 0 := by
+  rw [ASpoly]
+  simp only [map_sub, map_pow, Polynomial.aeval_X, map_zero]
+  rw [show (ZMod.castHom (dvd_refl p) K i) ^ p = ZMod.castHom (dvd_refl p) K (i ^ p) from
+    (map_pow (ZMod.castHom (dvd_refl p) K) i p).symm, ZMod.pow_card]
+  simp
+
+end SplitCarrierRoot336
+
+#print axioms asCarrier_zero_aeval_eq_zero
+
 
 end ABGV52

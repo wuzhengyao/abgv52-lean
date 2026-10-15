@@ -1712,3 +1712,15 @@ instance command; and the identification of the value of the structure map on th
 has to be performed on the isomorphism before it is used, since the goal already displays the coefficient.  The
 realization property itself, whose quantifier also ranges over algebras that are not domains, and the case of a
 split algebra, are not addressed here.
+
+Round 336 begins the split case of the realization property for cyclic groups of prime order.  The case is split
+further: first the carrier at the zero coefficient has to be identified with a product of copies of the base, and
+second the algebra under consideration has to be identified with such a product.  This round records the first
+half of the first step, namely that the residue classes of the integers modulo the prime are roots of the
+polynomial defining the carrier at the zero coefficient, so that there are as many distinct roots as the degree;
+this is Fermat's congruence read through the characteristic.  Two practical points are recorded: the algebra
+structure of the residue ring on the field is available as a definition rather than as an instance, so the
+structure map has to be named explicitly in statements; and naming a lemma for evaluation that does not exist
+silently leaves a proof hole, which the axiom check exposes, so the evaluation form of the root statement is
+deferred until the correct lemma has been located.  The identification of the carrier with the product, and the
+identification of the algebra with the product, are not addressed here.
