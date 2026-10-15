@@ -10039,4 +10039,40 @@ end FaithfulForms323
 #print axioms delta_bijective_of_field_of_faithful
 
 
+/-! ### 4.112 **子目标 (a) 的范式：`Localization.Away w` 自身**（第 325 轮）
+—— 源 def-1-1(a)（`R` 为**局部化多项式环** ✓）的**范式供给件** ✓
+
+**落成** ✓✅：**`away_isLocalizationAway`** ✓✅：对任意**非零** `w : MvPolynomial (Fin n) F` ✓，
+**`∃ m v, v ≠ 0 ∧ Nonempty (Localization.Away w ≃ₐ[F] Localization.Away v)`** ✓
+（取 `m := n` ✓、`v := w` ✓、等价取 `AlgEquiv.refl` ✓）。
+
+**⚠ 意义** ✓：源 def-1-1(a) 的**形状** ✓ 对**一切** `Localization.Away w` **自动满足** ✓ ⟹
+源 `theorem-2-1` 的三子目标中 **(a) 对"多项式环的局部化"这一族载体是免费的** ✓ ——
+⟹ **实际难点只剩 (b) 环档判据 ＋ (c) `RealizationProperty`** ✓（**缺口再缩小一格** ✓）。
+
+**⚠ 未竟（精确，供交接）** ✗：**`F[x]` 档**（`R = Polynomial F` ✓）**未收口** ✗ ——
+式子写作 `Polynomial F ≃ₐ[F] Localization.Away w` ✓（`w : MvPolynomial (Fin 1) F` ✓）须经
+**(i)** `MvPolynomial.uniqueAlgEquiv F (Fin 1) : MvPolynomial (Fin 1) F ≃ₐ[F] Polynomial F` ✓（**已核** ✓）
+＋ **(ii)** `Localization.Away (1) ≃ₐ[F] MvPolynomial (Fin 1) F` ✓；**(ii)** 实测受阻 ✗：
+`IsLocalization` 的实例是 **`Submonoid.powers (1)`** ✓ 而**非** `Submonoid.closure {1}` ✗
+（报 `synthInstanceFailed` ✓）⟹ **下一手**：用 **`Submonoid.powers (1) = ⊤`** ✓（`IsLocalization.self` 或
+`⊤`-档实例 ✓）拼 **(i)(ii)** ✓（**预估半轮** ✓）。
+
+**🔴 不声称** ✗：**不**声称 `F[x]` 档已收口 ✗；**不**声称 (b)／(c) 有任何进展 ✗；
+**不**声称源 `theorem-2-1` 已证 ✗；**不**声称残余 ①／③ 已证 ✗。 -/
+
+section SubgoalA325
+
+/-- **子目标 (a) 的范式** ✓：`Localization.Away w` 自身满足「为局部化多项式环」✓。 -/
+theorem away_isLocalizationAway (F : Type u) [Field F] {n : ℕ} (w : MvPolynomial (Fin n) F)
+    (hw : w ≠ 0) :
+    ∃ (m : ℕ) (v : MvPolynomial (Fin m) F), v ≠ 0 ∧
+      Nonempty (Localization.Away w ≃ₐ[F] Localization.Away v) :=
+  ⟨n, w, hw, ⟨AlgEquiv.refl⟩⟩
+
+end SubgoalA325
+
+#print axioms away_isLocalizationAway
+
+
 end ABGV52
