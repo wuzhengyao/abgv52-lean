@@ -1972,3 +1972,21 @@ that distributes it; the order of the carrier has to be given explicitly in stat
 only under a matrix construction; and a unit of the base ring is transported to the carrier by the map on units.
 The moment map, the bijectivity of the crossed-product map, the realization property in this case and the source's
 theorem for it are not addressed here.
+
+Round 354 records the moment form of the crossed-product map for the Kummer carrier and the injectivity of that map.
+The shift is given in a form indexed by the group, agreeing with the action, and the action on powers of the root is
+computed; the group is identified with the residue classes through a bijection that sends a residue to its canonical
+representative, which allows the sum over the group to be reindexed along the nodes.  The moment matrix has the
+powers of the nodes as its entries, its determinant is a unit by the previous round, so the associated linear map is
+invertible, and from the moment form of the crossed-product map and the vanishing of that map on an element one
+deduces that all coefficients of the element vanish.  Nine declarations are recorded: the indexed shift with its two
+computation rules, the action on powers of the root, the bijection between the indices and the group, the moment
+form, the matrix, the map, its invertibility, its values, and the injectivity.  The statements take the action as a
+hypothesis together with the assumption that it agrees with the shift, because the action cannot be registered for
+type class synthesis, and they take the invariance of coefficients as a further hypothesis, exactly as in the
+additive case.  Two practical points are recorded: the computation rules for the indexed shift require all their
+arguments to be named, since placeholders leave the ring undetermined, and the coefficient is the second explicit
+argument rather than the unit; and aligning the exponents of the nodes requires reducing the canonical
+representative of a residue class modulo the order, so the final step is not definitional.  Surjectivity of the
+crossed-product map, the Galois criterion for this carrier, the realization property in this case and the source's
+theorem for it are not addressed here.

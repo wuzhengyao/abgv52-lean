@@ -12523,8 +12523,175 @@ end KummerHRGDetHalf353
 #print axioms isUnit_kummerNode_sub
 #print axioms isUnit_det_vandermonde_kummerNode
 #print axioms isUnit_det_momentMatrix_kummerNode
-#print axioms kummerCoeff_sub_ne_zero
-#print axioms isUnit_kummerCoeff_sub
+/-! ### 4.137 🔴🔴🔴 **T6-F 第二口（六续）：Kummer 档矩量映射可逆 ＋ `δ` 单射**（第 354 轮）
+—— **源 `proposition-0-6(a)` 款③ 的接线半之一落库** ✓（**§4.126 的乘法类比** ✓）
+
+**靶** ✓：**源 `proposition-0-6(a)`** ✓ 的**款③（`δ` 双射）之单射半** ✓ —— **乘法档矩量通道** ✓。
+
+**落成九件** ✓✅：**(甲)** **`kummerShiftK`** ✓✅（**位移的 `k`-形** ✓ —— 与 `kummerMSA` 的 `smul` 同值 ✓）
+＋ 两条计算件 ✓；**(乙)** **`kummerMSA_smul_pow`** ✓✅（`φ_k (root^m) = (of(ρ^{k.val})·root)^m` ✓）；
+**(丙)** **`finEquivGZMod`** ✓✅（**`Fin n ≃ Multiplicative (ZMod n)`** ✓ —— 供 `Equiv.sum_comp` 重索引 ✓）；
+**(丁)** **`kummerDelta_root_pow_eq_moment`** ✓✅ —— **`δ` 的矩量形** ✓；
+**(戊)** **`kummerMomentMatrix`／`kummerMomentMap`** ✓✅；**(己)** **`kummerMomentMap_bijective`** ✓✅
+（**单位行列式（§4.136 ✓）＋ `toLinearEquiv'`** ✓）；**(庚)** **`kummerMomentMap_apply`** ✓✅；
+**(辛)** **`kummerDelta_injective_of_moment`** ✓✅ —— **款③ 单射半** ✓（**矩量形 ＋ 矩量映射单射 ＋ 系数消去** ✓）。
+
+**⚠ 口径（承重 ✓）** ✗：**`kummerMSA` 不能作实例** ✗（§4.135 ✓）⟹ **本件取"抽象作用 ＋ 桥假设"形** ✓：
+`[MulSemiringAction (Multiplicative (ZMod n)) (kummerCarrier R n a)]` ✓ ＋
+**`hRG`** ✓ ＋ **`hact : ∀ k x, k • x = kummerShiftK a ρ hρ k x`** ✓ ——
+**与 §4.126 的 `hRG` 抽象形同构** ✓（**故本件是该件在乘法档的逐字类比** ✓）；
+**⚠ 出口** ✓：**Kummer 档的 `IsGaloisWithGroup` 实例形** ✗ 须**先解决实例口径** ✗（**下一手** ✓ ——
+**候选**：**引入 `KummerDatum` 类型类把 `ρ`／`hprim` 挂进类型类** ✓，**使 `MulSemiringAction` 实例可合成** ✓）。
+
+**⚠ 工艺（两条，入 §5.1）** ✓：**(#79)** **`kummerShiftK` 上的计算件须给全具名实参** ✗ ——
+**用 `_` 占位会报 "CommRing ?m" 类的 stuck 实例问题** ✗（**系数是第 2 位置实参** ✓ ——
+**`(ρ := (ρ:R)^k.val)` 而非 `(ρ := (ρ:R))`** ✗，**实测** ✓）；
+**(#80)** **指数对齐须显式 `show` ＋ `ZMod.val_natCast` ＋ `Nat.mod_eq_of_lt`** ✗ ——
+**`(j : ZMod n).val` 与 `j` 只 mod `n` 相等** ✓ ⟹ **末步 `rfl` 不足** ✗。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` 已证 ✗（**款①＋款②＋行列式半＋单射半已落** ✓ ——
+**满射／双射 ＋ `IsGaloisWithGroup` ＋ 实现未落** ✗）；**不**声称 `IsGaloisWithGroup`（Kummer 档）已落 ✗；
+**不**声称源 `theorem-1-2(b)` 已证 ✗。 -/
+
+section KummerMoment354
+
+/-- **Kummer 位移的 `k`-形** ✓（`k ↦ φ_{ρ^{k.val}}` ✓ —— 与 `kummerMSA` 的 `smul` 同值 ✓）。 -/
+noncomputable def kummerShiftK {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ)
+    (hρ : ((ρ : R)) ^ n = 1) (k : Multiplicative (ZMod n)) :
+    kummerCarrier R n a →+* kummerCarrier R n a :=
+  kummerShiftH a ((ρ : R) ^ (Multiplicative.toAdd k).val) (kummer_pow_coeff_pow ρ hρ _)
+
+/-- 计算件 ①：固定系数 ✓。 -/
+theorem kummerShiftK_of {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ)
+    (hρ : ((ρ : R)) ^ n = 1) (k : Multiplicative (ZMod n)) (r : R) :
+    kummerShiftK a ρ hρ k (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r)
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r :=
+  kummerShiftH_of (a := a) (ρ := (ρ : R) ^ (Multiplicative.toAdd k).val)
+    (hρ := kummer_pow_coeff_pow ρ hρ (Multiplicative.toAdd k).val) (r := r)
+
+/-- 计算件 ②：根 ↦ `ρ^{k.val} · root` ✓。 -/
+theorem kummerShiftK_root {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ)
+    (hρ : ((ρ : R)) ^ n = 1) (k : Multiplicative (ZMod n)) :
+    kummerShiftK a ρ hρ k (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+          ((ρ : R) ^ (Multiplicative.toAdd k).val)
+        * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) :=
+  kummerShiftH_root (a := a) (ρ := (ρ : R) ^ (Multiplicative.toAdd k).val)
+    (hρ := kummer_pow_coeff_pow ρ hρ (Multiplicative.toAdd k).val)
+
+/-- **(L1) 作用在幂基上的值** ✓：`φ_k (root^m) = (of (ρ^{k.val}) · root)^m` ✓。 -/
+theorem kummerMSA_smul_pow {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ)
+    (hρ : ((ρ : R)) ^ n = 1) (k : Multiplicative (ZMod n)) (m : ℕ) :
+    kummerShiftK a ρ hρ k
+        ((AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ m)
+      = (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+            ((ρ : R) ^ (Multiplicative.toAdd k).val)
+          * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ m := by
+  rw [map_pow, kummerShiftK_root]
+
+/-- **(L2) 编号等价** ✓：`Fin n ≃ Multiplicative (ZMod n)` ✓（**逐点定义形** ✓）。 -/
+noncomputable def finEquivGZMod (n : ℕ) [NeZero n] : Fin n ≃ Multiplicative (ZMod n) :=
+  Equiv.ofBijective (fun i : Fin n => Multiplicative.ofAdd (i : ZMod n))
+    ⟨fun i j h => Fin.eq_of_val_eq (by
+        have h1 : (i : ZMod n) = (j : ZMod n) := Equiv.injective Multiplicative.ofAdd h
+        exact ((ZMod.natCast_eq_natCast_iff (i : ℕ) (j : ℕ) n).mp h1).eq_of_lt_of_lt i.isLt j.isLt),
+      fun g => ⟨⟨(Multiplicative.toAdd g).val, ZMod.val_lt _⟩, by
+        show Multiplicative.ofAdd (((Multiplicative.toAdd g).val : ℕ) : ZMod n) = g
+        rw [ZMod.natCast_zmod_val]
+        exact Equiv.apply_symm_apply Multiplicative.ofAdd g⟩⟩
+
+/-- **(L3) `δ` 的矩量形（Kummer）** ✓：`(δ z)(root^i) = Σ_j (coeff z (ofAdd j)) · (kummerNode a ρ j)^i` ✓。 -/
+theorem kummerDelta_root_pow_eq_moment {R : Type u} [CommRing R] {n : ℕ} [NeZero n] (a : R)
+    (ρ : Rˣ) (hρ : ((ρ : R)) ^ n = 1)
+    [MulSemiringAction (Multiplicative (ZMod n)) (kummerCarrier R n a)]
+    (hRG : ∀ (g : Multiplicative (ZMod n)) (r : R) (t : kummerCarrier R n a),
+      g • (r • t) = r • (g • t))
+    (hact : ∀ (k : Multiplicative (ZMod n)) (x : kummerCarrier R n a),
+      k • x = kummerShiftK a ρ hρ k x)
+    (z : SkewMonoidAlgebra (kummerCarrier R n a) (Multiplicative (ZMod n))) (i : Fin n) :
+    deltaToEndRingHom hRG z
+        ((AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ (i : ℕ))
+      = ∑ j : Fin n, z.coeff (Multiplicative.ofAdd (j : ZMod n)) * (kummerNode a ρ j) ^ (i : ℕ) := by
+  rw [delta_apply_sum hRG z, delta_sum_univ z]
+  rw [← Equiv.sum_comp (finEquivGZMod n) (fun g : Multiplicative (ZMod n) =>
+    z.coeff g * (g • ((AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      ^ (i : ℕ))))]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [hact, kummerMSA_smul_pow]
+  show z.coeff (Multiplicative.ofAdd ((j : ℕ) : ZMod n))
+      * (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+          ((ρ : R) ^ (ZMod.val ((j : ℕ) : ZMod n)))
+        * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ (i : ℕ)
+    = z.coeff (Multiplicative.ofAdd ((j : ℕ) : ZMod n))
+      * (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) ((ρ : R) ^ (j : ℕ))
+        * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ (i : ℕ)
+  rw [ZMod.val_natCast, Nat.mod_eq_of_lt j.isLt]
+
+/-- **(L4-a) Kummer 矩量矩阵** ✓：`M_{i,j} = (kummerNode a ρ j)^i` ✓。 -/
+noncomputable def kummerMomentMatrix {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ) :
+    Matrix (Fin n) (Fin n) (kummerCarrier R n a) :=
+  fun i j => (kummerNode (n := n) a ρ j) ^ (i : ℕ)
+
+/-- **(L4-b) Kummer 矩量映射** ✓：`Λ = Matrix.toLin' M` ✓。 -/
+noncomputable def kummerMomentMap {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ) :
+    (Fin n → kummerCarrier R n a) →ₗ[kummerCarrier R n a] (Fin n → kummerCarrier R n a) :=
+  Matrix.toLin' (kummerMomentMatrix a ρ)
+
+/-- **(L4-c) Kummer 矩量映射可逆** ✓✅（**单位行列式 ＋ `toLinearEquiv'`** ✓ —— §4.136 的行列式半 ✓）。 -/
+theorem kummerMomentMap_bijective {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ}
+    (hn : 1 ≤ n) (a : R) (ρ : Rˣ) (ha : IsUnit a)
+    (hdiff : ∀ i j : Fin n, i ≠ j → IsUnit ((ρ : R) ^ (i : ℕ) - (ρ : R) ^ (j : ℕ))) :
+    Function.Bijective (kummerMomentMap (n := n) a ρ) :=
+  (Matrix.toLinearEquiv' (kummerMomentMatrix (n := n) a ρ)
+    (Matrix.invertibleOfIsUnitDet _ (isUnit_det_momentMatrix_kummerNode hn a ρ ha hdiff))).bijective
+
+/-- **(L4-d) Kummer 矩量映射的取值形** ✓。 -/
+theorem kummerMomentMap_apply {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ)
+    (s : Fin n → kummerCarrier R n a) (i : Fin n) :
+    kummerMomentMap (n := n) a ρ s i
+      = ∑ j : Fin n, s j * (kummerNode (n := n) a ρ j) ^ (i : ℕ) := by
+  rw [kummerMomentMap, Matrix.toLin'_apply, Matrix.mulVec]
+  exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+
+/-- **(L5) Kummer 档 `δ` 单射** ✓✅（**矩量形 ＋ 矩量映射单射 ＋ 系数消去** ✓ —— §4.126 的乘法类比 ✓）。 -/
+theorem kummerDelta_injective_of_moment {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} [NeZero n]
+    (hn : 1 ≤ n) (a : R) (ρ : Rˣ) (hρ : ((ρ : R)) ^ n = 1) (ha : IsUnit a)
+    (hdiff : ∀ i j : Fin n, i ≠ j → IsUnit ((ρ : R) ^ (i : ℕ) - (ρ : R) ^ (j : ℕ)))
+    [MulSemiringAction (Multiplicative (ZMod n)) (kummerCarrier R n a)]
+    (hRG : ∀ (g : Multiplicative (ZMod n)) (r : R) (t : kummerCarrier R n a),
+      g • (r • t) = r • (g • t))
+    (hact : ∀ (k : Multiplicative (ZMod n)) (x : kummerCarrier R n a),
+      k • x = kummerShiftK a ρ hρ k x) :
+    Function.Injective (deltaToEndRingHom (S := kummerCarrier R n a) hRG) := by
+  rw [injective_iff_map_eq_zero]
+  intro z hz
+  have hzero : ∀ i : Fin n,
+      kummerMomentMap (n := n) a ρ
+        (fun j : Fin n => z.coeff (Multiplicative.ofAdd (j : ZMod n))) i = 0 := by
+    intro i
+    rw [kummerMomentMap_apply, ← kummerDelta_root_pow_eq_moment a ρ hρ hRG hact z i, hz]
+    rfl
+  have hvec : (fun j : Fin n => z.coeff (Multiplicative.ofAdd (j : ZMod n))) = 0 := by
+    apply (kummerMomentMap_bijective hn a ρ ha hdiff).1
+    ext i
+    simp [hzero i]
+  apply SkewMonoidAlgebra.coeff_eq_zero.mp
+  ext g
+  obtain ⟨i, hi⟩ := (finEquivGZMod n).surjective g
+  rw [← hi]
+  change z.coeff (Multiplicative.ofAdd (i : ZMod n)) = 0
+  exact congrFun hvec i
+
+
+end KummerMoment354
+
+#print axioms kummerShiftK_of
+#print axioms kummerShiftK_root
+#print axioms kummerMSA_smul_pow
+#print axioms kummerDelta_root_pow_eq_moment
+#print axioms kummerMomentMap_bijective
+#print axioms kummerMomentMap_apply
+#print axioms kummerDelta_injective_of_moment
 
 
 end ABGV52
