@@ -24,6 +24,7 @@ import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
 import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 import Mathlib.RingTheory.Nakayama
+import ABGV52.TauCetiCHR_ABGV52
 open CategoryTheory
 noncomputable section
 namespace ABGV52.BTier
@@ -2668,5 +2669,55 @@ theorem sum_coeff_eq_one {x : SkewMonoidAlgebra S G}
 #print axioms sum_coeff_eq_one
 
 end Round362
+
+/-! ## 第 366 轮（甲）：**桥引理在域情形** ✓ ＋ 域情形有限性 ✓（2026-10-15）
+
+**所攻问句** ✓：第 364 轮判定「桥」＝ **CHR 两种 Galois 定义等价** ✓（我方 `\delta` 到 `End_R(S)` 的双射 ⟹
+自由作用条件 `hG` ✗）是**一般环情形**的难点 ✗。**域情形呢？**
+
+**答案** ✓（本轮）：**域情形桥引理极短** ✓ —— `L` 是域时，`FaithfulSMul G L` 给出某个 `a` 使 `g • a ≠ a` ✓，
+于是 `g • a - a ≠ 0` ✓，而**域中非零元皆单位** ✓ ⟹ 该理想含单位 ⟹ `= ⊤` ✓。
+⟹ **域情形 `hG` 由忠实性直接得到** ✓（**不需要** δ 双射 ✗ —— 这正是域与一般环的分水岭 ✓）。
+
+**⟹ 域情形 (甲)** ✓：`hG` ✓ ＋ `[Algebra.IsInvariant K L G]` ✓ ⟹（第 364 轮接入件 ✓）**`Module.Finite K L`** ✓。
+
+**⚠ 不声称** ✗：**一般交换环情形**的桥**仍未解** ✗（第 364 轮定性 ✓）；本节的域情形**不能**直接用于
+二分的 `L`（那是**交换 `K`-代数**、非域 ✗）—— 它服务的是「`IsDomain` 支」若能把 `L` 化为域的情形 ⚠。 -/
+
+section Round366
+
+variable {K L : Type*} [Field K] [Field L] [Algebra K L]
+variable {G : Type*} [Group G] [MulSemiringAction G L]
+
+/-- **第 366 轮 ①（域情形桥引理）** ✓：域上忠实作用 ⟹ **自由作用条件** `hG` ✓。
+**证明** ✓：忠实性 ⟹ `∃ a, g • a ≠ a` ✓ ⟹ `g • a - a ≠ 0` ✓ ⟹ **单位** ✓（域 ✓）⟹ 理想 = ⊤ ✓。 -/
+theorem freeness_condition_of_field [hf : FaithfulSMul G L] :
+    ∀ g : G, g ≠ 1 → Ideal.span (Set.range fun a : L => g • a - a) = ⊤ := by
+  intro g hg
+  have hex : ∃ a : L, g • a ≠ a := by
+    by_contra h
+    push Not at h
+    refine hg (eq_of_smul_eq_smul (M := G) (α := L) fun a => ?_)
+    rw [one_smul]
+    exact h a
+  obtain ⟨a, ha⟩ := hex
+  refine Ideal.eq_top_of_isUnit_mem _ (Ideal.subset_span ⟨a, rfl⟩) ?_
+  rw [isUnit_iff_ne_zero]
+  exact sub_ne_zero.mpr ha
+
+/-- **第 366 轮 ②（域情形 (甲)）** ✓：`IsGaloisWithGroup` ＋ `[Algebra.IsInvariant K L G]` ⟹
+**`Module.Finite K L`** ✓（域情形桥 ① ＋ 第 364 轮接入件 `moduleFinite_of_freeness` ✓）。 -/
+theorem moduleFinite_of_field_galois [Fintype G]
+    (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hgal : IsGaloisWithGroup K L G hKL) [Algebra.IsInvariant K L G] :
+    Module.Finite K L := by
+  have hcomm : SMulCommClass G K L := ⟨hKL⟩
+  exact moduleFinite_of_freeness
+    (freeness_condition_of_field (G := G) (L := L) (hf := hgal.1))
+
+#print axioms freeness_condition_of_field
+#print axioms moduleFinite_of_field_galois
+
+end Round366
 
 end ABGV52.BTier

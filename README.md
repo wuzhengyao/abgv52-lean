@@ -2227,3 +2227,28 @@ spectra.
 This discharges the second of the three inputs of the `C_p`-Galois dichotomy
 recorded in the working notes; the first (finiteness) is still open and the
 third (transitivity of the `C_p`-action) is next.
+
+## Round 366 (2026-10-15, appended)
+
+The bridge from `IsGaloisWithGroup` to the free-action hypothesis is settled in
+the field case, and this is a genuine dichotomy between fields and general
+commutative rings.
+
+`freeness_condition_of_field`: over a field, a faithful action already gives
+`Ideal.span (Set.range fun a => g • a - a) = ⊤` for every `g ≠ 1`, without any
+use of the bijectivity of `deltaToEndRingHom`.  Faithfulness supplies an `a`
+with `g • a ≠ a`; the difference is then non-zero, hence a unit, hence the ideal
+is the whole ring.
+
+`moduleFinite_of_field_galois`: consequently, for a field extension with
+`IsGaloisWithGroup` and `Algebra.IsInvariant K L G`, the extension is finite over
+the base --- through the ported `moduleFinite_of_freeness`.
+
+The dichotomy is that over a general commutative ring the same argument fails:
+the elements `g • a - a` may all be zero divisors, so faithfulness gives no
+unit.  The general case therefore still needs the bridge, which is the
+Chase--Harrison--Rosenberg equivalence of the two definitions of a Galois
+extension.  Since the `L` of the paper is a commutative algebra and not
+necessarily a field, the finiteness half is not discharged by this round; what
+it does give is the field case, and the candidate route of reducing the domain
+case to it.
