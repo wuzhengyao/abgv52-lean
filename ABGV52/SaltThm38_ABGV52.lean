@@ -12413,9 +12413,118 @@ theorem kummerShift_faithful {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} 
 
 end KummerFaithful352
 
-#print axioms kummer_of_eq_zero
-#print axioms kummer_of_injective
-#print axioms kummerShift_faithful
+/-! ### 4.136 🔴🔴 **T6-F 第二口（五续）：Kummer 款②（不动基）＋ 行列式半**（第 353 轮）
+—— **源 `proposition-0-6(a)` 款②（不动基）落库 ＋ 款③（判据）的行列式半落库** ✓
+
+**靶** ✓：**源 `proposition-0-6(a)`** ✓ 的**款②** ✓（**作用不动基** ✓）＋ **款③（`δ` 双射）的行列式半** ✓
+（**§4.125 的乘法档类比** ✓）。
+
+**落成八件** ✓✅：**(甲)** **`kummer_hRG`** ✓✅ —— **`φ_k (r · t) = r · (φ_k t)`** ✓（**显式移位形** ✓ ——
+**⚠ `kummerMSA` 不能作实例** ✗ §4.135 ✓）；**(乙)** **`kummerNode`** ✓✅ —— **乘法档节点 `v k := of (ρ^k) · root`** ✓
+（AS 档为 `root + of k` ✓）；**(丙)** **`kummerNode_sub`** ✓✅ —— **`ρ^i y − ρ^j y = (ρ^i − ρ^j) y`** ✓；
+**(丁)** **`isUnit_kummerNode_sub`** ✓✅（**差为单位 × `root` 为单位** ✓ —— **`IsUnit.map`** ✓ ＋ §4.133 ✓）；
+**(戊)** **`isUnit_det_vandermonde_kummerNode`** ✓✅ —— **节点 Vandermonde 行列式为单位** ✓
+（**复用 §4.125 的一般件 ＋ AS 档泛型引理** ✓）；**(己)** **`isUnit_det_momentMatrix_kummerNode`** ✓✅
+（**转置形** ✓ ＝ 矩量矩阵 ✓）；**(庚)** **`kummerCoeff_sub_ne_zero`** ✓✅ —— **`ρ` 本原 ＋ `i ≠ j` ⟹ `ρ^i − ρ^j ≠ 0`** ✓
+（**`sub_eq_zero` ＋ `IsPrimitiveRoot.pow_inj`** ✓ —— **一行** ✓）；**(辛)** **`isUnit_kummerCoeff_sub`** ✓✅。
+
+**机制（(庚)，关键简化）** ✓：**乘法档的差非零只需 `pow_inj`** ✓ —— **`ρ^i = ρ^j` ＋ `i,j < n` ⟹ `i = j`** ✓
+（**AS 档须 `k^p − k` 的因式分解 ＋ `CharP`** ✗ —— **乘法档更省** ✓）；
+**单位性由域性质** ✓（`isUnit_iff_ne_zero` ✓）；**`R` 侧**由 **`IsUnit.map`** ✓ 送入载体 ✓。
+
+**⚠ 与 AS 档结构差别** ✓：**AS 档节点差为单位须 `k^p − k` 的因式分解** ✗（§4.125 ✓）；
+**乘法档只须 `pow_inj` ＋ 域中非零即单位** ✓ ⟹ **乘法档的判据路更短** ✓（**下一手** ✗：矩量映射可逆 ＋ `δ` 双射 ✓）。
+
+**⚠ 工艺（三条，入 §5.1）** ✓：**(#75)** **`algebraMap R (AdjoinRoot f) r` 与 `of f r` 须 `show … from rfl` 桥接** ✗
+（**`rw [kummerShiftH_of]` 直接命中失败** ✗ —— **§4.128 的 `asCarrier_hRG'` 同款** ✓）；
+**(#76)** **`← sub_mul` 用于"提出公因子"** ✗（**`sub_mul` 是展开方向** ✓ —— **实测报 "Did not find an occurrence"** ✗）；
+**(#77)** **`kummerNode a ρ` 的 `n` 须显式** ✗（`(n := n)` ✓ —— **否则语句里报 "don't know how to synthesize implicit argument M／R"** ✗，**实测** ✓）；
+**(#78)** **`IsUnit.map` 用于把 `R` 中单位送入载体** ✗（**`hdiff … : IsUnit (… : R)` 与目标的 `of (…)` 不同环** ✓）。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` 已证 ✗（**款① §4.135 ＋ 款② ＋ 行列式半已落** ✓ —— **矩量映射可逆 ＋ `δ` 双射 ＋ 款③ 未落** ✗）；
+**不**声称 **`FaithfulSMul`／`IsGaloisWithGroup` 实例形已落** ✗；**不**声称源 `theorem-1-2(b)` 已证 ✗。 -/
+
+section KummerHRGDetHalf353
+
+/-- **(甲) 款②（不动基）** ✓：`φ_k (r · t) = r · φ_k t` ✓（**移位是环同态且固定系数** ✓）。
+**⚠ 口径** ✗：`kummerMSA` **不能作实例** ✗（§4.135 已登记 ✓）⟹ **语句用显式移位形** ✓。 -/
+theorem kummer_hRG {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ) (hρ : ((ρ : R)) ^ n = 1)
+    (r : R) (t : kummerCarrier R n a) (m : ℕ) :
+    kummerShiftH a ((ρ : R) ^ m) (kummer_pow_coeff_pow ρ hρ m) (r • t)
+      = r • (kummerShiftH a ((ρ : R) ^ m) (kummer_pow_coeff_pow ρ hρ m) t) := by
+  rw [Algebra.smul_def, Algebra.smul_def, map_mul]
+  congr 1
+  rw [show algebraMap R (kummerCarrier R n a) r
+    = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r from rfl]
+  rw [kummerShiftH_of]
+
+
+
+/-- **Kummer 节点族** ✓：`v k := of (ρ^k) · root` ✓（**乘法档节点** ✓ —— AS 档为 `root + of k` ✓）。 -/
+noncomputable def kummerNode {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ) (k : Fin n) :
+    kummerCarrier R n a :=
+  AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) ((ρ : R) ^ (k : ℕ))
+    * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+
+/-- **节点差** ✓：`ρ^i·y − ρ^j·y = (ρ^i − ρ^j)·y` ✓。 -/
+theorem kummerNode_sub {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ) (i j : Fin n) :
+    kummerNode a ρ i - kummerNode a ρ j
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+          ((ρ : R) ^ (i : ℕ) - (ρ : R) ^ (j : ℕ))
+        * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) := by
+  rw [kummerNode, kummerNode, ← sub_mul, ← map_sub]
+
+/-- **(乙) 节点差为单位** ✓✅（**差为单位 ＋ `root` 为单位** ✓）。 -/
+theorem isUnit_kummerNode_sub {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} (hn : 1 ≤ n)
+    (a : R) (ρ : Rˣ) (ha : IsUnit a)
+    (hdiff : ∀ i j : Fin n, i ≠ j → IsUnit ((ρ : R) ^ (i : ℕ) - (ρ : R) ^ (j : ℕ)))
+    {i j : Fin n} (hij : i ≠ j) : IsUnit (kummerNode a ρ i - kummerNode a ρ j) := by
+  rw [kummerNode_sub]
+  exact IsUnit.mul
+    ((hdiff i j hij).map (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)))
+    (kummerRoot_isUnit (R := R) (n := n) hn ha)
+
+/-- **(丙) 节点 Vandermonde 的行列式为单位** ✓✅（**路线（丙″）的乘法档行列式半** ✓）。 -/
+theorem isUnit_det_vandermonde_kummerNode {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ}
+    (hn : 1 ≤ n) (a : R) (ρ : Rˣ) (ha : IsUnit a)
+    (hdiff : ∀ i j : Fin n, i ≠ j → IsUnit ((ρ : R) ^ (i : ℕ) - (ρ : R) ^ (j : ℕ))) :
+    IsUnit (Matrix.vandermonde (kummerNode (n := n) a ρ)).det :=
+  isUnit_det_vandermonde_of_isUnit_sub (v := kummerNode (n := n) a ρ)
+    (fun i j hij => isUnit_kummerNode_sub hn a ρ ha hdiff (i := i) (j := j) hij)
+
+/-- **(丁) 矩量矩阵（转置形）的行列式为单位** ✓（`M i j = v j ^ i` ＝ `(vandermonde v)ᵀ` ✓）。 -/
+theorem isUnit_det_momentMatrix_kummerNode {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ}
+    (hn : 1 ≤ n) (a : R) (ρ : Rˣ) (ha : IsUnit a)
+    (hdiff : ∀ i j : Fin n, i ≠ j → IsUnit ((ρ : R) ^ (i : ℕ) - (ρ : R) ^ (j : ℕ))) :
+    IsUnit (Matrix.det (fun i j : Fin n => (kummerNode (n := n) a ρ j) ^ (i : ℕ))) := by
+  have h : (fun i j : Fin n => (kummerNode (n := n) a ρ j) ^ (i : ℕ))
+      = Matrix.transpose (Matrix.vandermonde (kummerNode (n := n) a ρ)) := rfl
+  rw [h, Matrix.det_transpose]
+  exact isUnit_det_vandermonde_kummerNode hn a ρ ha hdiff
+
+/-- **(戊) 差非零（`F` 侧供给）** ✓✅：**`ρ` 本原 `n` 次单位根 ＋ `i ≠ j` ⟹ `ρ^i − ρ^j ≠ 0`** ✓
+（**`sub_eq_zero` ＋ `IsPrimitiveRoot.pow_inj`** ✓ —— **一行** ✓）。 -/
+theorem kummerCoeff_sub_ne_zero {F : Type u} [Field F] {n : ℕ} (ρ : Fˣ)
+    (hprim : IsPrimitiveRoot (ρ : F) n) {i j : Fin n} (hij : i ≠ j) :
+    (ρ : F) ^ (i : ℕ) - (ρ : F) ^ (j : ℕ) ≠ 0 := fun h =>
+  hij (Fin.eq_of_val_eq (hprim.pow_inj i.isLt j.isLt (sub_eq_zero.mp h)))
+
+/-- **(己) 差为单位（`F` 侧）** ✓✅。 -/
+theorem isUnit_kummerCoeff_sub {F : Type u} [Field F] {n : ℕ} (ρ : Fˣ)
+    (hprim : IsPrimitiveRoot (ρ : F) n) {i j : Fin n} (hij : i ≠ j) :
+    IsUnit ((ρ : F) ^ (i : ℕ) - (ρ : F) ^ (j : ℕ)) :=
+  isUnit_iff_ne_zero.mpr (kummerCoeff_sub_ne_zero ρ hprim hij)
+
+
+end KummerHRGDetHalf353
+
+#print axioms kummer_hRG
+#print axioms kummerNode_sub
+#print axioms isUnit_kummerNode_sub
+#print axioms isUnit_det_vandermonde_kummerNode
+#print axioms isUnit_det_momentMatrix_kummerNode
+#print axioms kummerCoeff_sub_ne_zero
+#print axioms isUnit_kummerCoeff_sub
 
 
 end ABGV52

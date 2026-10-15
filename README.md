@@ -1953,3 +1953,22 @@ collects rather than the one that distributes; and after cancelling a unit the z
 requires the corresponding lemma for multiplication by zero on the left.  The fixed base, the Galois criterion for
 this carrier, the realization property in this case and the source's theorem for it are not addressed here.
 
+Round 353 records the invariance of the coefficients under the action and the determinant half of the criterion for
+the Kummer carrier.  The action sends a scalar multiple of an element to the same scalar multiple of its image,
+which follows from the shift being a ring homomorphism that fixes coefficients; the statement is given with the
+shift displayed explicitly, since the action cannot be registered for type class synthesis.  For the determinant,
+the nodes are the products of the root with the powers of the unit, and their differences are the structure map
+applied to the differences of those powers times the root; each such difference is a unit, being the product of the
+image of a nonzero element of the base field with the root, which is itself a unit.  The determinant of the
+Vandermonde matrix of the nodes is therefore a unit, and so is that of its transpose, which is the matrix whose
+entries are the powers of the nodes.  The nonvanishing of the differences of powers of a primitive root is proved
+directly from the injectivity of the power map below the order, which is shorter than the corresponding step in the
+additive case, where a factorization of the difference of the shifted powers is needed.  Eight declarations are
+recorded: the invariance of coefficients, the nodes, their differences, the unitness of those differences, the two
+determinants, the nonvanishing of the differences of powers, and their unitness.  Four practical points are
+recorded: the structure map and the algebra structure on the carrier are equal only up to definitional equality, so
+the identification has to be restated; factoring a common factor out of a difference uses the reverse of the lemma
+that distributes it; the order of the carrier has to be given explicitly in statements where the node family occurs
+only under a matrix construction; and a unit of the base ring is transported to the carrier by the map on units.
+The moment map, the bijectivity of the crossed-product map, the realization property in this case and the source's
+theorem for it are not addressed here.
