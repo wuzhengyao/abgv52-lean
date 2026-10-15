@@ -160,6 +160,33 @@ theorem mvPolynomial_tower (K : Type*) [CommRing K] (k n : ℕ) :
     ((MvPolynomial.renameEquiv K (finSumFinEquiv (m := n) (n := k))).trans
       (MvPolynomial.renameEquiv K (finCongr (Nat.add_comm n k))))⟩
 
+/-! ### 砖①的**清分母**零件（第 373 轮）
+
+**砖① 剩余步骤** ✗ ＝ 证 `IsLocalization ((nonZeroDivisors A).map C) (MvPolynomial σ (FractionRing A))` ✓
+（**多项式环上的局部化** ✓）；其 `surj'` 用**支集上有限积清分母** ✓。本轮先落其**两块必需零件** ✓。 -/
+
+/-- **砖①零件 1** ✓：**非零因子在多项式环中的像（`C a`）仍是非零因子** ✓（逐系数验证 ✓）。 -/
+theorem C_mem_nonZeroDivisors {A : Type*} [CommRing A] [IsDomain A] {σ : Type*} {a : A}
+    (ha : a ∈ nonZeroDivisors A) : MvPolynomial.C a ∈ nonZeroDivisors (MvPolynomial σ A) := by
+  rw [mem_nonZeroDivisors_iff] at ha ⊢
+  refine ⟨fun x hx => ?_, fun x hx => ?_⟩
+  · ext v
+    have h := congrArg (fun q => q.coeff v) hx
+    exact ha.1 (x.coeff v) (by simpa using h)
+  · ext v
+    have h := congrArg (fun q => q.coeff v) hx
+    rw [mul_comm x (MvPolynomial.C a), MvPolynomial.coeff_C_mul] at h
+    have h2 : a * x.coeff v = 0 := h
+    rw [mul_comm] at h2
+    exact ha.2 (x.coeff v) h2
+
+/-- **砖①零件 2** ✓：**非零因子在分式环中是单位** ✓（`IsLocalization.map_units` ✓）。 -/
+theorem isUnit_algebraMap_fractionRing {A : Type*} [CommRing A] [IsDomain A] {a : A}
+    (ha : a ∈ nonZeroDivisors A) : IsUnit (algebraMap A (FractionRing A) a) :=
+  IsLocalization.map_units (FractionRing A) ⟨a, ha⟩
+
+#print axioms C_mem_nonZeroDivisors
+#print axioms isUnit_algebraMap_fractionRing
 #print axioms mvPolynomial_tower
 #print axioms rationalFunctionFieldTowerHyp_typeLock
 #print axioms isStablyRational_rationalFunctionField

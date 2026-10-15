@@ -2381,3 +2381,24 @@ to a single localisation step: the fraction ring of `MvPolynomial sigma
 (FractionRing A)` is the fraction ring of `MvPolynomial sigma A`.  For that step
 mathlib was found to have nothing, and the pending proof is the clearing of
 denominators described in round 371.
+
+## Round 373 (2026-10-15, appended)
+
+Two parts of the clearing of denominators for the first brick.
+`C_mem_nonZeroDivisors`: a non-zero divisor of the base ring remains a non-zero
+divisor as a constant polynomial, checked coefficient by coefficient.
+`isUnit_algebraMap_fractionRing`: a non-zero divisor becomes a unit in the
+fraction ring, by `IsLocalization.map_units`.
+
+These are what the pending localisation statement needs; what remains for it is
+its surjectivity clause, the finite product of denominators over the support, and
+the equality clause.
+
+Three points of craft, all recurring.  `mem_nonZeroDivisors_iff` is a
+conjunction, one clause for each side of the multiplication, not a single
+universal statement.  `IsLocalization.map_units` takes an element of the
+submonoid, not an element with a membership proof.  And `MvPolynomial.coeff` is
+still the dot notation `p.coeff v`, as already corrected in round 364; there is
+no `coeff_mul_C`, so one commutes and uses `coeff_C_mul`.  A further trap: over a
+domain `simpa` will over-simplify `x * a = 0` into the disjunction
+`a = 0 ∨ x = 0`, so the goal has to be fixed by an ascription before `exact`.
