@@ -75,6 +75,27 @@ theorem isStablyRational_iff_of_algEquiv {F K L : Type*} [Field F] [Field K] [Fi
 （先证 `L` 在 `F` 上稳定有理；须处理两层变元与 `Algebra` 塔）—— 同为后续波次目标 ✗。
 -/
 
+/-! ## §2.5 第 370 轮：**G1/G2 的两块砖** —— 砖②（系数延拓）已落 ✓
+
+**G1／G2 的公共机制** ✓：两块砖
+**砖②**：同构 `K ≃ₐ[F] L` 可**延拓**到有理函数域 `K(t_n) ≃ₐ[F] L(t_n)` ✓（本轮 ✓）；
+**砖①**：塔**展平** `(K(t_k))(s_n) ≅ K(u_{k+n})` ✓（**未落** ✗ —— 见 §2 的卡点，mathlib 侧 `MvPolynomial.finSumEquiv` **不存在** ✗，
+须用 `MvPolynomial.renameEquiv` ＋ `Fin k ⊕ Fin n ≃ Fin (k+n)` 自建 ✓）。
+**⚠ 不声称** ✗：本节的**砖②**不依赖砖① ✓ 独立可用 ✓；但 **G1／G2 本身仍未证** ✗。 -/
+
+/-- **砖②（系数延拓）** ✓：`K ≃ₐ[F] L` ⟹ **`K(t_n) ≃ₐ[F] L(t_n)`** ✓。
+**路线** ✓（与 G0 同工艺 ✓）：`MvPolynomial.mapAlgEquiv (Fin n) φ` 给**分子环**同构 ✓，
+再经 `IsFractionRing.algEquivOfAlgEquiv` ✓ 提升到分式域 ✓。 -/
+theorem rationalFunctionField_algEquivMap {F K L : Type*} [Field F] [Field K] [Field L]
+    [Algebra F K] [Algebra F L] (φ : K ≃ₐ[F] L) (n : ℕ) :
+    Nonempty (EM.rationalFunctionField K n ≃ₐ[F] EM.rationalFunctionField L n) :=
+  ⟨IsFractionRing.algEquivOfAlgEquiv (R := F)
+    (A := MvPolynomial (Fin n) K) (B := MvPolynomial (Fin n) L)
+    (K := EM.rationalFunctionField K n) (L := EM.rationalFunctionField L n)
+    (MvPolynomial.mapAlgEquiv (Fin n) φ)⟩
+
+#print axioms rationalFunctionField_algEquivMap
+
 /-! ## §3 公理闸门 -/
 
 #print axioms isStablyRational_of_isRational

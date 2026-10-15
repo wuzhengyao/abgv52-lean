@@ -2316,3 +2316,28 @@ allowed to be zero divisors there.
 latter is the paper's proposition-0-2(a).  Nothing here is claimed to be proved
 unconditionally: the hypothesis is recorded, and every conclusion that uses it is
 conditional on it.
+
+## Round 370 (2026-10-15, appended)
+
+With the dichotomy phase closed -- the local product decomposition proved, the
+finiteness half reduced to one named hypothesis with all its wiring checked --
+this round turns to the second phase, the named hypotheses of the main chain.
+
+`rationalFunctionField_algEquivMap`, the second of the two bricks that G1 and G2
+need: an isomorphism `K ≃ₐ[F] L` extends to `K(t_1,...,t_n) ≃ₐ[F] L(t_1,...,t_n)`,
+by `MvPolynomial.mapAlgEquiv` on the numerator and
+`IsFractionRing.algEquivOfAlgEquiv` to pass to fraction fields, the technique
+already used for G0.
+
+For the first brick, the flattening of a tower of rational function fields, the
+missing API has been located: `MvPolynomial.sumAlgEquiv` together with
+`finSumFinEquiv`.  What is still missing is the passage from polynomials over a
+fraction field to polynomials over the base, that is
+`FractionRing (MvPolynomial sigma (FractionRing A)) ≃ FractionRing (MvPolynomial
+sigma A)`, for which no ready-made lemma was found.
+
+A note of round 2 of this file is corrected here: the remark that
+`MvPolynomial.map`, `map_map` and `renameEquiv` do not exist was a reading of the
+old pin.  On the upgraded pin `MvPolynomial.map` and `MvPolynomial.renameEquiv`
+are both present; `MvPolynomial.finSumEquiv` indeed does not exist and is
+superseded by `sumAlgEquiv`.
