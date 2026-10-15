@@ -4,6 +4,8 @@ import Mathlib.RingTheory.Spectrum.Prime.Noetherian
 import Mathlib.RingTheory.Spectrum.Maximal.Localization
 import Mathlib.RingTheory.Localization.AtPrime.Basic
 import Mathlib.RingTheory.Ideal.Pointwise
+import ABGV52.GaloisAlgebra_ABGV52
+import ABGV52.TauCetiCHR_ABGV52
 
 /-!
 # (乙) 有限维交换代数 ⟹ **局部积分解**（第 365 轮，2026-10-15）
@@ -626,3 +628,22 @@ theorem card_maximalSpectrum_eq_prime_of_galoisFixedRing {p : ℕ} (hp : p.Prime
   card_maximalSpectrum_eq_prime hp (hfix_fun_of_galoisFixedRingHyp hRG h) h2
 
 #print axioms card_maximalSpectrum_eq_prime_of_galoisFixedRing
+
+
+/-! ## CHR 路线 · 条件层桥 **第 1 步**（第 470 轮 ✓✓）：单点分量对照
+
+**所证** ✓：本仓 Δ 与 TauCeti 的 `tensorToPi` 在**同一单点分量**上**逐字相同** ✓。
+**证明** ✓：`deltaToEndAdd_single` ✓ ＋ `tensorToPi_tmul` ✓ 两条分量公式代入 ⟹ **两侧定义相同** ⟹ **`rfl` 收尾** ✓。
+**⚠ 两条工艺** ✓：① 须 **`[SMulCommClass G R S]`** ✗（`tensorToPi` 的要求 ✓）；② **本文件原只 import 6 行 Mathlib** ✗
+⟹ 须**补两行**方能引用 ✓；③ **`rw` 后仍有一目标** ✗ ⟹ **须显式 `rfl`** ✓（scratch 版有、首落版漏写 ✗ —— **照搬 scratch 时须逐行核对** ✓）。 -/
+
+/-- **桥 · 第 1 步** ✓：Δ 与 `tensorToPi` 的单点分量**逐字相同** ✓。 -/
+theorem deltaToEndAdd_single_apply {R S G : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    [Group G] [Fintype G] [MulSemiringAction G S] [SMulCommClass G R S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) (g : G) (s t : S) :
+    ABGV52.BTier.deltaToEndAdd hRG (SkewMonoidAlgebra.single g s) t
+      = TauCeti.MulSemiringAction.tensorToPi R S G (s ⊗ₜ[R] t) g := by
+  rw [ABGV52.BTier.deltaToEndAdd_single, TauCeti.MulSemiringAction.tensorToPi_tmul]
+  rfl
+
+#print axioms deltaToEndAdd_single_apply
