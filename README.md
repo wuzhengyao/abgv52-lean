@@ -2622,3 +2622,17 @@ idempotents over an orbit, invariant under the action.  With the idempotent lemm
 of round 368, which says that an invariant idempotent is 0 or 1, the indicator is
 therefore 1, so the orbit is everything, and the interface lemma of round 389
 turns that into transitivity.
+
+## Round 394 (2026-10-15, appended)
+
+`isIdempotentElem_pi_single`: the single-point indicator `Pi.single i 1` is
+idempotent.  With the orthogonality of distinct indicators this gives the
+idempotency of the orbit indicator, the sum of the indicators over an orbit, which
+with orbit invariance of round 390 and the idempotent lemma of round 368 forces
+that indicator to be 1, hence the orbit to be everything, and round 389 turns that
+into transitivity.
+
+Two API points: the type family of `Pi.single` is named `M`, not `alpha`, and the
+same holds for `Pi.mul_apply` and the evaluation lemmas; and `simp` alone does not
+see through the pointwise product, so the proof proceeds by `funext`, then
+`Pi.mul_apply`, then a case split on `j = i`.

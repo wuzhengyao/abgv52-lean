@@ -283,3 +283,21 @@ theorem smul_mem_orbit {G ι : Type*} [Group G] [MulAction G ι] (g : G) {i j : 
   exact MulAction.mem_orbit_iff.mpr ⟨g * h, by rw [mul_smul, hh]⟩
 
 #print axioms smul_mem_orbit
+
+
+/-- **(丙) 轨道和论证基元** ✓：**单点指示函数 `Pi.single i 1` 是幂等元** ✓（`IsIdempotentElem a := a * a = a` ✓）。
+**已核签名** ✓：`Pi.single` 的族名为 **`M`** ✗（不是 `α` ✗）；`Pi.mul_apply`／`Pi.single_eq_same`／`Pi.single_eq_of_ne`
+**族名亦为 `M`** ✓。**证法** ✓：`funext` ＋ `Pi.mul_apply` ＋ 按 `j = i` 分支取求值律 ✓（**点式** ✓，
+不用 `simp` 单独收口 ✗ —— 第 393 轮实测 `simp` 看不穿 pointwise 乘积 ✗）。
+**用途** ✓：轨道指示函数 `Σ_{j ∈ orbit i} Pi.single j 1` ✓ 的幂等性（配**两两正交** ✓），
+接第 390 轮**轨道 `G`-不变** ✓ 与第 368 轮**引擎** ✓ ⟹ "轨道指示函数 ＝ 1" ⟹ 轨道＝全集 ⟹ 第 389 轮接口 ⟹ **传递性** ✓。 -/
+theorem isIdempotentElem_pi_single {ι K : Type*} [DecidableEq ι] [MulZeroOneClass K] (i : ι) :
+    IsIdempotentElem (Pi.single (M := fun _ => K) i (1 : K)) := by
+  rw [IsIdempotentElem]
+  funext j
+  rw [Pi.mul_apply]
+  by_cases h : j = i
+  · subst h; simp
+  · simp [Pi.single_eq_of_ne, h]
+
+#print axioms isIdempotentElem_pi_single
