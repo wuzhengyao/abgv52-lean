@@ -2611,3 +2611,14 @@ The lemma depends on no axioms at all.  Two API facts made it work:
 `MulAction.mem_orbit_iff` reads `a₂ ∈ orbit γ a₁ ↔ ∃ x, x • a₁ = a₂`, and
 `MulAction.IsPretransitive` is a class, so it must be proved with the anonymous
 constructor; the anonymous function used in round 388 failed for that reason.
+
+## Round 390 (2026-10-15, appended)
+
+`smul_mem_orbit`: an orbit is invariant under the action, that is `g • j` lies in
+the orbit of `j`.  The lemma depends on no axioms.
+
+This is the ingredient that makes the orbit indicator, the sum of the `Pi.single`
+idempotents over an orbit, invariant under the action.  With the idempotent lemma
+of round 368, which says that an invariant idempotent is 0 or 1, the indicator is
+therefore 1, so the orbit is everything, and the interface lemma of round 389
+turns that into transitivity.

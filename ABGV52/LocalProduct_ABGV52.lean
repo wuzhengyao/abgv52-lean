@@ -271,3 +271,15 @@ theorem isPretransitive_of_orbit_eq_univ {G ι : Type*} [Group G] [MulAction G �
     exact MulAction.mem_orbit_iff.mp hj⟩
 
 #print axioms isPretransitive_of_orbit_eq_univ
+
+
+/-- **(丙) 轨道和论证零件** ✓：**轨道对 `G` 不变** ✓（`g • j` 仍在 `j` 的轨道内 ✓）——
+**用途** ✓：轨道指示函数（`Σ_{j ∈ orbit i} Pi.single j 1` ✓）的 **`G`-不变性** ✓，
+配第 368 轮幂等元引擎（不变幂等元只有 0／1 ✓）得"轨道指示函数 ＝ 1" ✓ ⟹ 轨道＝全集 ✓
+⟹ 配第 389 轮接口引理 `isPretransitive_of_orbit_eq_univ` ✓ 得**传递性** ✓。 -/
+theorem smul_mem_orbit {G ι : Type*} [Group G] [MulAction G ι] (g : G) {i j : ι}
+    (hj : j ∈ MulAction.orbit G i) : g • j ∈ MulAction.orbit G i := by
+  obtain ⟨h, hh⟩ := MulAction.mem_orbit_iff.mp hj
+  exact MulAction.mem_orbit_iff.mpr ⟨g * h, by rw [mul_smul, hh]⟩
+
+#print axioms smul_mem_orbit
