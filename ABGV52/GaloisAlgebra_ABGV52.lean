@@ -2624,4 +2624,49 @@ end RowReductions266
 #print axioms rows_of_normalBasis
 #print axioms galoisProjectiveHyp_of_normalBasis
 
+/-! ## 第 362 轮（甲）：路线 T′ 的**入口** —— `δ` 满射的"对偶元素"（2026-10-15 ✓）
+
+**所攻问句** ✓：由 `IsGaloisWithGroup R S G hRG` 的**第三款**（`δ` 双射 ✓）能取出什么**可用于有限性**的对象？
+**本轮答案** ✓：取出 `x : SkewMonoidAlgebra S G` 使 `δ x = 1` ✓（＝ `End_R(S)` 的单位原像 ✓），
+并读成**逐点恒等式** `∀ t : S, Σ_{g : G} (coeff g x) * (g • t) = t` ✓。
+**位置** ✓：这是路线 T′（[[proj-ABGV52-alpha-finiteness-routes]] §5）的第一步；`SkewMonoidAlgebra S G` 本身
+**有限支撑** ✓ 且 `G` 有限 ⟹ 上式已是**有限和** ✓（无须再抽支集）。
+**⚠ 不声称** ✗：**`Module.Finite R S` 本轮未落** ✗ —— 从 ① 到有限性还差**正交性／平均**一步
+（须把系数化为 `S^G` 中元素 ✓，见交接件；**路线 R（秩比较）已自我更正为循环** ✗，不得再用）。 -/
+
+section Round362
+
+variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
+variable {G : Type*} [Group G] [Fintype G] [MulSemiringAction G S]
+variable (hRG : ∀ (g : G) (r : R) (s : S), g • (r • s) = r • (g • s))
+
+/-- **第 362 轮 ①（对偶元素的存在性）** ✓：`δ` 满射 ⟹ `∃ x, δ x = 1` ✓。
+**读法** ✓：`1` 是 `End_R(S)` 的**单位**（＝ `LinearMap.id` ✓），故 `x` 是"对偶基元素"的**斜代数侧**对应物 ✓。 -/
+theorem exists_delta_eq_one (hgal : IsGaloisWithGroup R S G hRG) :
+    ∃ x : SkewMonoidAlgebra S G, deltaToEndRingHom hRG x = 1 :=
+  hgal.2.2.2 (1 : Module.End R S)
+
+/-- **第 362 轮 ②（逐点恒等式）** ✓：`∃ x, ∀ t : S, Σ_{g} (coeff g x) * (g • t) = t` ✓。
+**证明** ✓：`deltaToEndRingHom_coeff_sum`（本文件第 266 轮 ✓）＋ ① 逐点取值 ✓。 -/
+theorem exists_coeff_sum_mul_smul_eq_self (hgal : IsGaloisWithGroup R S G hRG) :
+    ∃ x : SkewMonoidAlgebra S G, ∀ t : S, ∑ g : G, x.coeff g * (g • t) = t := by
+  obtain ⟨x, hx⟩ := exists_delta_eq_one hRG hgal
+  refine ⟨x, fun t => ?_⟩
+  rw [← deltaToEndRingHom_coeff_sum hRG x t, hx]
+  rfl
+
+/-- **第 362 轮 ③（保真度检查）** ✓：取 `t = 1` ✓ ⟹ `Σ_g (coeff g x) = 1` ✓
+（`g • (1 : S) = 1` ✓）。**用途** ✓：这是"系数之和为 1"的**非空洞性**见证 ✓ —— 若右侧恒 0 则②为空 ✗。 -/
+theorem sum_coeff_eq_one {x : SkewMonoidAlgebra S G}
+    (hx : ∀ t : S, ∑ g : G, x.coeff g * (g • t) = t) :
+    ∑ g : G, x.coeff g = 1 := by
+  have h := hx 1
+  simpa using h
+
+#print axioms exists_delta_eq_one
+#print axioms exists_coeff_sum_mul_smul_eq_self
+#print axioms sum_coeff_eq_one
+
+end Round362
+
 end ABGV52.BTier

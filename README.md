@@ -2138,3 +2138,18 @@ on `propext`, `Classical.choice` and `Quot.sound`, and `SaltThm38_ABGV52.lean`
 still declares 368 declarations.  The warning count of a full build is 924
 lines (918 distinct), of which 218 are deprecations of names renamed in
 mathlib; these are recorded, not yet rewritten.
+
+## Round 362 (2026-10-15, appended)
+
+`GaloisAlgebra_ABGV52.lean` gains the entry point of the finiteness step: from
+the bijectivity of `deltaToEndRingHom` one extracts an element `x` of the skew
+monoid algebra with `deltaToEndRingHom x = 1`, read pointwise as
+
+    sum over g of (coeff g x) * (g • t) = t    for every t
+
+together with the normalisation `sum over g of (coeff g x) = 1` obtained at
+`t = 1`.  This is the skew-algebra counterpart of the dual element in the
+classical proof that a Galois extension of rings is a finitely generated
+projective module.  The finiteness statement itself is *not* proved in this
+round: what is still missing is the step that turns the coefficients into
+elements of the fixed ring.
