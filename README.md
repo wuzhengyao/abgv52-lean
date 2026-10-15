@@ -1724,3 +1724,17 @@ structure map has to be named explicitly in statements; and naming a lemma for e
 silently leaves a proof hole, which the axiom check exposes, so the evaluation form of the root statement is
 deferred until the correct lemma has been located.  The identification of the carrier with the product, and the
 identification of the algebra with the product, are not addressed here.
+
+Round 337 identifies the carrier at the zero coefficient with a product of copies of the base, completing the
+first step of the split case of the realization property for cyclic groups of prime order.  The identification
+goes through the evaluation of polynomials at the residue classes of the integers modulo the prime, which are
+roots of the defining polynomial as recorded in the previous round; the resulting map out of the carrier is
+injective because a polynomial vanishing at all those points reduces modulo the defining polynomial to one of
+smaller degree that still vanishes there, and therefore is divisible by the defining polynomial; equality of the
+two dimensions then upgrades injectivity to bijectivity.  Two practical points are recorded: the passage between
+evaluation of a polynomial in the algebra and evaluation in the base, which the library does not provide
+directly, has to be bridged by a small lemma of its own, and the intermediate values are best kept in the
+algebra-valued form with a single conversion at the end; and a local definition introduced by a let-binding
+cannot be substituted away, so the case of a degenerate coefficient has to be handled by rewriting instead.
+The identification of the algebra under consideration with such a product, and hence the split case itself, are
+not addressed here.

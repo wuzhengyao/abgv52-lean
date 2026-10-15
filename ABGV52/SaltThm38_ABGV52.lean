@@ -10978,5 +10978,126 @@ end SplitCarrierRoot336
 
 #print axioms asCarrier_zero_aeval_eq_zero
 
+/-! ### 4.122 🔴🔴 **分裂载体同构（T6-E-1 收口）**（第 337 轮）
+—— 子目标 (c) 的**装配之三（分裂档）第一件** ✓✅
+
+**靶** ✓：**`asCarrier K p 0 ≃ₐ[K] (ZMod p → K)`** ✓（**`K[X]/(X^p − X) ≅ K^p`** ✓）——
+即**分裂档的「载体侧」** ✓（`b = 0` ✓ 时的目标代数 ✓）。
+
+**落成两件** ✓✅：**(i)** **`aeval_eq_eval_self`** ✓（`K`-代数自求值下 **`aeval` ＝ `eval`** ✓ ——
+**§5.1 #38 的桥梁件** ✓）；**(ii)** 🔴 **`asCarrier_zero_algEquiv_pi`** ✓✅：
+**`Nonempty (asCarrier K p 0 ≃ₐ[K] (ZMod p → K))`** ✓✅（`p` 素 ✓、`[CharP K p]` ✓）。
+
+**机制（三步，求值通道 ✓）** ✓：
+**(甲)** **求值通道** ✓：`Φ := AlgHom.pi (fun i : ZMod p => AdjoinRoot.liftAlgHom …)` ✓
+（**`AlgHom.pi`** ✓ —— `AlgHom.pi_apply` ✓；义务由 **§4.121** ✓ 的根点供给 ✓）；
+**(乙)** **单射** ✓：`Φ (mk P) = 0 ⟹ ∀ i, P(i) = 0` ✓（`hval` ✓ —— `liftAlgHom_mk` ✓ ＋ **`aeval_def`** ✓）
+⟹ **`modByMonic` 归约** ✓（`modByMonic_add_div` ✓／`natDegree_modByMonic_lt` ✓／
+`modByMonic_eq_zero_iff_dvd` ✓）⟹ **`(P %ₘ f)` 在 `p` 个点上为零且次数 `< p`** ✓
+⟹ **`eq_zero_of_natDegree_lt_card_of_eval_eq_zero`** ✓（**插值零判** ✓ ＋
+**§4.86 的 `zmod_castHom_injective`** ✓ 给互异性 ✓）⟹ **`f ∣ P`** ✓ ⟹ **`mk P = 0`** ✓；
+**(丙)** **秩相等 ⟹ 双射** ✓：**§4.91** ✓（`asCarrier_finrank` ✓）＋ **`Module.finrank_pi`** ✓ ＋
+**`ZMod.card`** ✓ ⟹ **`AlgEquiv.ofBijective`** ✓✅。
+
+**⚠ 意义** ✓：**分裂档的「载体侧」已全克** ✓✅ —— 分裂档只余**结构事实 `L ≅ K^p`** ✗（**T6-E-2** ✓）。
+
+**⚠ 工艺（两条，入 §5.1；均本轮实测）** ✓：
+**(甲)** 🔴 **`aeval`／`eval` 的桥接须自带** ✗：`liftAlgHom_mk` ✓ 给 **`eval₂`** 形 ✓、插值零判要 **`eval`** 形 ✗、
+§4.121 ✓ 给 **`aeval`** 形 ✓ ⟹ **正解 ＝ ①`hval` 用 `aeval` 形**（`(Polynomial.aeval_def ..).symm` ✓）
+**②末尾落一步 `rw [← aeval_eq_eval_self]`** ✓（**§5.1 #38** ✓）；
+**(乙)** **`set` 定义的局部变量不可 `rintro rfl`／`subst`** ✗（实测 ✓）⟹ **用 `intro h; rw [h, …]`** ✓。
+
+**🔴 不声称** ✗：**不**声称 **`L ≅ K^p`** ✗（**T6-E-2 未落** ✗）；**不**声称分裂档已克 ✗；
+**不**声称 `RealizationProperty` 有实例 ✗；**不**声称非域环档已处理 ✗；**不**声称 (b) 环档判据有进展 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section SplitCarrierIso337
+
+/-- `K`-代数自求值时 `aeval` ＝ `eval` ✓。 -/
+theorem aeval_eq_eval_self (K : Type u) [CommRing K] (x : K) (P : Polynomial K) :
+    Polynomial.aeval x P = P.eval x := by
+  rw [Polynomial.aeval_def]
+  rfl
+
+/-- **分裂载体的分裂同构** ✓✅：`K[X]/(X^p − X) ≃ₐ[K] K^p` ✓（**求值通道 ＋ 插值 ＋ 秩相等** ✓）。 -/
+theorem asCarrier_zero_algEquiv_pi (K : Type u) [Field K] {p : ℕ} [Fact p.Prime] [CharP K p] :
+    Nonempty (asCarrier K p 0 ≃ₐ[K] (ZMod p → K)) := by
+  classical
+  let _inst : NeZero p := ⟨(Fact.out : p.Prime).ne_zero⟩
+  have hp2 : 2 ≤ p := (Fact.out : p.Prime).two_le
+  set Φ : asCarrier K p 0 →ₐ[K] (ZMod p → K) :=
+    AlgHom.pi (fun i : ZMod p =>
+      AdjoinRoot.liftAlgHom (ASpoly K p 0) (Algebra.ofId K K) (ZMod.castHom (dvd_refl p) K i)
+        (by simpa [Polynomial.aeval_def] using asCarrier_zero_aeval_eq_zero K i)) with hΦ
+  have hval : ∀ (P : Polynomial K) (i : ZMod p),
+      Φ (AdjoinRoot.mk (ASpoly K p 0) P) i =
+        Polynomial.aeval (ZMod.castHom (dvd_refl p) K i) P := by
+    intro P i
+    rw [hΦ, AlgHom.pi_apply, AdjoinRoot.liftAlgHom_mk]
+    exact (Polynomial.aeval_def ..).symm
+  have hker : ∀ x : asCarrier K p 0, Φ x = 0 → x = 0 := by
+    intro x hx
+    obtain ⟨P, rfl⟩ := AdjoinRoot.mk_surjective x
+    rw [AdjoinRoot.mk_eq_zero]
+    have hP : ∀ i : ZMod p, Polynomial.aeval (ZMod.castHom (dvd_refl p) K i) P = 0 := by
+      intro i
+      have h := congrFun hx i
+      rw [hval P i] at h
+      exact h
+    set f := ASpoly K p 0 with hf
+    have hfmonic : f.Monic := aspoly_monic (R := K) hp2 0
+    have hfd : f.natDegree = p := aspoly_natDegree (R := K) hp2 0
+    have hf1 : f ≠ 1 := by
+      intro h
+      rw [h, Polynomial.natDegree_one] at hfd
+      exact (Fact.out : p.Prime).ne_zero hfd.symm
+    have hfroot : ∀ i : ZMod p,
+        Polynomial.aeval (ZMod.castHom (dvd_refl p) K i) f = 0 := by
+      intro i
+      exact asCarrier_zero_aeval_eq_zero K i
+    have hR : ∀ i : ZMod p,
+        Polynomial.aeval (ZMod.castHom (dvd_refl p) K i) (P %ₘ f) = 0 := by
+      intro i
+      have h := Polynomial.modByMonic_add_div P f
+      have h2 := congrArg (Polynomial.aeval (ZMod.castHom (dvd_refl p) K i)) h
+      simp only [map_add, map_mul, hP i, hfroot i, zero_mul, add_zero] at h2
+      exact h2
+    have hReval : ∀ i : ZMod p,
+        Polynomial.eval (ZMod.castHom (dvd_refl p) K i) (P %ₘ f) = 0 := by
+      intro i
+      rw [← aeval_eq_eval_self]
+      exact hR i
+    have hdeg : (P %ₘ f).natDegree < p := by
+      have := Polynomial.natDegree_modByMonic_lt P hfmonic hf1
+      rw [hfd] at this
+      exact this
+    have hzero : P %ₘ f = 0 :=
+      Polynomial.eq_zero_of_natDegree_lt_card_of_eval_eq_zero (P %ₘ f)
+        (zmod_castHom_injective (R := K)) hReval (by rw [ZMod.card]; exact hdeg)
+    exact (Polynomial.modByMonic_eq_zero_iff_dvd hfmonic).mp hzero
+  have hinj : Function.Injective Φ := by
+    intro x z hxz
+    have h1 : Φ (x - z) = 0 := by rw [map_sub, hxz, sub_self]
+    exact sub_eq_zero.mp (hker (x - z) h1)
+  have hfin1 : Module.finrank K (asCarrier K p 0) = p := asCarrier_finrank hp2 0
+  have hfin2 : Module.finrank K (ZMod p → K) = p := by
+    rw [Module.finrank_pi, ZMod.card]
+  let _inst2 : Module.Finite K (asCarrier K p 0) :=
+    Module.finite_of_finrank_pos (by rw [hfin1]; exact (Fact.out : p.Prime).pos)
+  let _inst3 : Module.Finite K (ZMod p → K) :=
+    Module.finite_of_finrank_pos (by rw [hfin2]; exact (Fact.out : p.Prime).pos)
+  have hbij : Function.Bijective Φ := by
+    refine ⟨hinj, ?_⟩
+    have hinjL : Function.Injective (Φ.toLinearMap : asCarrier K p 0 →ₗ[K] (ZMod p → K)) := hinj
+    exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+      (V := asCarrier K p 0) (V₂ := ZMod p → K) (f := Φ.toLinearMap)
+      (by rw [hfin1, hfin2])).mp hinjL
+  exact ⟨AlgEquiv.ofBijective Φ hbij⟩
+
+
+end SplitCarrierIso337
+
+#print axioms asCarrier_zero_algEquiv_pi
+
 
 end ABGV52
