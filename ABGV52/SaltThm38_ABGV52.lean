@@ -9757,4 +9757,61 @@ end DeltaBijectiveField317
 #print axioms delta_bijective_of_field
 
 
+/-! ### 4.106 🔴🔴 **域档 `IsGaloisWithGroup` 装配（源 §0 判据域档完成）**（第 318 轮）
+—— **三款齐 ＋ 装配落库** ✓✅
+
+**落成两件** ✓✅：**(i)** **`actionAlgEquiv_injective_of_faithful`** ✓✅：**忠实** `FaithfulSMul G L` ✓ ⟹
+**自同构族 `g ↦ actionAlgEquiv hfix g` 单射** ✓（§4.105 的**忠实接口** ✓）；
+**(ii)** **`isGaloisWithGroup_of_field`** ✓✅：**`IsGaloisWithGroup K L G hRG`** ✓✅ —— **源 §0 判据的域档完成形** ✓
+（**三款装配** ✓：款① ＝ `hfaith` ✓、款② ＝ `hfix` ✓、款③ ＝ **§4.105** ✓）。
+
+**机制** ✓（(i) ✓）：由 `hg : actionAlgEquiv hfix g₁ = actionAlgEquiv hfix g₂` ✓ 取**点值** ✓（`congrArg (· x)` ✓）
+⟹ `∀ x, g₁ • x = g₂ • x` ✓ ⟹ `g₂⁻¹ * g₁` **不动一切** ✓（`mul_smul` ✓ ＋ `inv_smul_smul` ✓）
+⟹ `g₂⁻¹ * g₁ = 1` ✓（`faithfulSMul_iff` ✓）⟹ `g₁ = g₂` ✓（`mul_left_cancel` ✓）。
+
+**⚠ 工艺（一条，入 §5.1）** ✓：**群消去** ✗ —— 由 `g₂⁻¹ * g₁ = 1` 得 `g₁ = g₂` ✓ 时，
+`rw [mul_comm] at h`／`inv_mul_eq_one.mp` 组合**实测不命中** ✗ ⟹ 用 **`mul_left_cancel (a := g₂⁻¹)`** ✓
+＋ `rw [h1, inv_mul_cancel]` ✓（**一行** ✓）。
+
+**⚠ 意义（本节为里程碑）** ✓✅：**源 §0 的 Galois 判据在域档已"三款齐 ＋ 装配齐"** ✓ ——
+即：**域上有限作用 ＋ 不动基 ＋ 忠实 ＋ `finrank = |G|` ⟹ （交叉积 ≅ 自同态环）** ✓。
+**与 AS 档对齐** ✓：AS 档（§4.85／§4.87／§4.89 ✓）是**本判据的载体档特例** ✓（款① 已去条件化 ✓）。
+
+**🔴 不声称** ✗：**不**声称**环档**判据 ✓（**只**域档 ✓）；**不**声称源 `theorem-1-2` 已证 ✗；
+**不**声称残余 ①／③ 已证 ✗；**不**声称源 `theorem-5-1`／`theorem-2-1` 已证 ✗。 -/
+
+section IsGaloisWithGroupField318
+
+open ABGV52.BTier
+
+/-- **忠实 ⟹ 自同构族单射** ✓（§4.105 的忠实接口）。 -/
+theorem actionAlgEquiv_injective_of_faithful {K : Type u} [CommRing K] {L : Type u} [CommRing L]
+    [Algebra K L] {G : Type u} [Group G] [MulSemiringAction G L] (h : FaithfulSMul G L)
+    (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r) :
+    Function.Injective (fun g : G => actionAlgEquiv (S := L) hfix g) := by
+  intro g₁ g₂ hg
+  have hpt : ∀ x : L, g₁ • x = g₂ • x := fun x =>
+    congrArg (fun φ : L ≃ₐ[K] L => φ x) hg
+  rw [faithfulSMul_iff] at h
+  have h1 : g₂⁻¹ * g₁ = 1 := h _ (fun x => by
+    rw [mul_smul, hpt x, inv_smul_smul])
+  exact mul_left_cancel (a := g₂⁻¹) (by rw [h1, inv_mul_cancel])
+
+/-- **🔴 域档 `IsGaloisWithGroup` 装配** ✓✅（源 §0 判据域档完成形）。 -/
+theorem isGaloisWithGroup_of_field {K : Type u} [Field K] {L : Type u} [Field L] [Algebra K L]
+    [Module.Finite K L] {G : Type u} [Group G] [Fintype G] [MulSemiringAction G L]
+    (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r)
+    (hRG : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hfaith : FaithfulSMul G L)
+    (hcard : Module.finrank K L = Fintype.card G) :
+    IsGaloisWithGroup K L G hRG :=
+  ⟨hfaith, hfix, delta_bijective_of_field hfix hRG
+    (actionAlgEquiv_injective_of_faithful hfaith hfix) hcard⟩
+
+end IsGaloisWithGroupField318
+
+#print axioms actionAlgEquiv_injective_of_faithful
+#print axioms isGaloisWithGroup_of_field
+
+
 end ABGV52

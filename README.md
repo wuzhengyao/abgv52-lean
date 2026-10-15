@@ -1559,3 +1559,11 @@ the linearization of the same underlying function, and the finiteness needed the
 the linear equivalence between the crossed product and finitely supported functions.  Four practical points are
 recorded, about the common universe the rank lemmas require, about supplying the finiteness instance, about the style
 of local instances, and about naming the linear map explicitly when applying the rank criterion.
+
+Round 318 assembles the Galois criterion in the field case.  The criterion has three clauses: faithfulness of the
+action, the base being fixed, and bijectivity of the crossed-product map; the first and second are hypotheses here and
+the third was proved in the previous round, so the criterion follows in three lines.  One bridge is needed, from
+faithfulness to injectivity of the family of automorphisms that the bijectivity argument consumes: if two automorphisms
+of that family agree, then the two group elements act identically, so their quotient is the identity.  A single
+practical point is recorded about the group cancellation used in that bridge.  With this, the criterion of the source
+is complete over fields, and the carrier-specific results of the preceding rounds appear as its special case.
