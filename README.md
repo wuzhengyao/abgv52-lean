@@ -1588,3 +1588,11 @@ two forms are therefore equivalent, and a caller may supply either the faithfuln
 that family.  The proof reduces faithfulness to the statement that an element acting trivially is the identity, and
 concludes by injectivity.  No new mathematics is added beyond this interface, and the ring case of the criterion
 remains open.
+
+Round 322 records the interfaces for the generic extension of the source.  The definition has three clauses, that the
+base is a localization of a polynomial ring, that the extension is Galois with the given group, and that the
+realization property holds; the round states the definition as that conjunction, provides the converse assembly, and
+packages the three clauses together with the carrier data into the witness whose existence the source's existence
+theorem asserts.  This splits the remaining gap for that theorem into three named subgoals, of which the Galois clause
+is already available in the field case and the other two remain open.  One practical point is recorded about the
+namespace in which these predicates live.

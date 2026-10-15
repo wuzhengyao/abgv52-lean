@@ -9931,4 +9931,68 @@ end FaithfulInterface321
 #print axioms faithfulSMul_iff_actionAlgEquiv_injective
 
 
+/-! ### 4.110 **generic extension 三款的拆装件 ＋ 见证装配**（第 322 轮）
+—— 源 `definition-1-1`（三款 ✓）与 `theorem-2-1`（见证 ✓）的**接口件** ✓
+
+**落成三件** ✓✅：**(i)** **`isGenericExtension_iff`** ✓✅（**拆卸形** ✓：三款合取 ✓）；
+**(ii)** **`isGenericExtension_of_clauses`** ✓✅（**装配形** ✓：三款 ⟹ `IsGenericExtension` ✓）；
+**(iii)** **`genericExtensionWitness_of_clauses`** ✓✅（**见证装配** ✓：三款 ＋ 载体数据 ⟹
+**`GenericExtensionWitness F A`** ✓）。
+
+**⚠ 意义** ✓：源 `theorem-2-1` 的**结论形**（`Nonempty (GenericExtensionWitness F A)` ✓）此后**只需三款** ✓：
+**(a)** `R` 为**局部化多项式环** ✓（`∃ n w, w ≠ 0 ∧ R ≃ₐ[F] Localization.Away w` ✓）；
+**(b)** **`IsGaloisWithGroup R S A hRG`** ✓（**域档已完** ✓ —— 环档为**余项** ✗）；
+**(c)** **`RealizationProperty F A R S`** ✓（源 §2 构造的**内容** ✗）。
+⟹ **本轮把源 `theorem-2-1` 的缺口"分割包围"为三个具名子目标** ✓（毛式 ✓），其中 **(b)** 在域档**已克** ✓。
+
+**⚠ 工艺** ✓（入 §5.1 ✓）：**`IsGenericExtension`／`RealizationProperty` 在 `ABGV52.BTier` 命名空间** ✓ ⟹
+**须限定** ✓（未限定被 `autoImplicit` 误读为隐式变量 ✗，实测 ✓）。
+
+**🔴 不声称** ✗：**不**声称 `IsGenericExtension` 的任何实例已构造 ✗（**只**落拆装件 ✓）；
+**不**声称 `GenericExtensionWitness` **非空** ✗；**不**声称源 `theorem-2-1` 已证 ✗；**不**声称残余 ①／③ 已证 ✗。 -/
+
+section GenericExtensionInterface322
+
+/-- **`IsGenericExtension` 拆装（拆卸形）** ✓。 -/
+theorem isGenericExtension_iff {F : Type u} [Field F] {G : Type u} [Group G] [Fintype G]
+    {R : Type u} [CommRing R] {S : Type u} [CommRing S] [Algebra F R] [Algebra R S]
+    [Algebra F S] [IsScalarTower F R S] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) :
+    BTier.IsGenericExtension F G R S hRG ↔
+      (∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w))
+      ∧ BTier.IsGaloisWithGroup R S G hRG ∧ BTier.RealizationProperty F G R S :=
+  Iff.rfl
+
+/-- **`IsGenericExtension` 拆装（装配形）** ✓。 -/
+theorem isGenericExtension_of_clauses {F : Type u} [Field F] {G : Type u} [Group G] [Fintype G]
+    {R : Type u} [CommRing R] {S : Type u} [CommRing S] [Algebra F R] [Algebra R S]
+    [Algebra F S] [IsScalarTower F R S] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (h1 : ∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w))
+    (h2 : BTier.IsGaloisWithGroup R S G hRG)
+    (h3 : BTier.RealizationProperty F G R S) :
+    BTier.IsGenericExtension F G R S hRG :=
+  ⟨h1, h2, h3⟩
+
+/-- **见证装配** ✓：三款齐 ⟹ `GenericExtensionWitness` ✓。 -/
+noncomputable def genericExtensionWitness_of_clauses {F : Type u} [Field F]
+    {A : Type u} [Group A] [Fintype A] {R : Type u} [CommRing R] {S : Type u} [CommRing S]
+    [Algebra F R] [Algebra R S] [Algebra F S] [IsScalarTower F R S] [MulSemiringAction A S]
+    (hRG : ∀ (g : A) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (h1 : ∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧ Nonempty (R ≃ₐ[F] Localization.Away w))
+    (h2 : BTier.IsGaloisWithGroup R S A hRG)
+    (h3 : BTier.RealizationProperty F A R S) :
+    GenericExtensionWitness F A where
+  R := R
+  S := S
+  hRG := hRG
+  isGeneric := isGenericExtension_of_clauses hRG h1 h2 h3
+
+end GenericExtensionInterface322
+
+#print axioms isGenericExtension_iff
+#print axioms isGenericExtension_of_clauses
+#print axioms genericExtensionWitness_of_clauses
+
+
 end ABGV52
