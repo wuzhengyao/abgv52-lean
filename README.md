@@ -1746,3 +1746,12 @@ rank, which that earlier round computes as the prime.  One practical point is re
 positive rank into finiteness requires freeness, which a basis does not register as an instance by itself, so the
 freeness instance has to be introduced explicitly from the basis.  The bijectivity of the crossed-product map
 over a ring, and the projectivity of the carrier, are not addressed here.
+
+Round 340 continues the prerequisites of the ring case of the Galois criterion by recording that the
+Artin--Schreier carrier is projective over an arbitrary nontrivial commutative ring, which is the second half of
+the conclusion that the source derives from the normal basis.  Freeness follows from the power basis of an earlier
+round, and projectivity from freeness.  The route through the structure of etale algebras is examined and set
+aside: the library's statement that an etale algebra is a finite product of separable field extensions is a
+statement over a field, so it does not apply to the ring case and cannot serve as the wheel for the ring case of
+the criterion.  The bijectivity of the crossed-product map over a ring is not addressed here.
+

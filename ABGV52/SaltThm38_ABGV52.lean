@@ -11113,7 +11113,11 @@ end SplitCarrierIso337
 （**§5.1 #41** ✓ —— **`finite_of_finrank_pos` 要 `Module.Free`** ✗，而幂基例**不自动**注册 `Free` ✗）⟹
 `Module.finite_of_finrank_pos` ✓ ＋ **`asCarrier_finrank`** ✓（秩 ＝ `p` ✓）。
 
-**🔴 不声称** ✗：**不**声称环档 `δ` 双射有进展 ✗（**本件只补前置** ✓）；**不**声称 `S` 在 `R` 上投射 ✗；
+**⚠ 第 340 轮追加** ✓：**`asCarrier_projective`** ✓✅（**同一幂基 ⟹ 自由 ⟹ 投射** ✓ ——
+**源 `proposition-0-5(c)`** ✓ 的**结论项** ✓；**⚠ étale 轮子已判「仅域档」** ✗ ——
+`Algebra.FormallyEtale.iff_exists_algEquiv_prod` ✓ 的**量词域是域 `K`** ✗（`Etale/Field.lean:25` ✓ 的文档：**「finite product of separable field extensions」** ✗）⟹ **对环档不可直用** ✗）。
+
+**🔴 不声称** ✗：**不**声称环档 `δ` 双射有进展 ✗（**本件只补前置** ✓）；
 **不**声称源 `proposition-0-5(c)` ✓ 已证 ✗；**不**声称 `RealizationProperty` 有实例 ✗；
 **不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
 
@@ -11128,7 +11132,15 @@ theorem asCarrier_finite {R : Type u} [CommRing R] [Nontrivial R] {p : ℕ} (hp 
 
 end ASCarrierFinite339
 
+/-- **AS 载体的环档投射性** ✓✅（**源 `proposition-0-5(c)`** ✓ 的**结论项之一** ✓；**由幂基 ⟹ 自由 ⟹ 投射** ✓）。 -/
+theorem asCarrier_projective {R : Type u} [CommRing R] [Nontrivial R] {p : ℕ} (hp : 2 ≤ p) (a : R) :
+    Module.Projective R (asCarrier R p a) := by
+  let _inst : Module.Free R (asCarrier R p a) :=
+    Module.Free.of_basis (asCarrierBasis (R := R) hp a)
+  exact Module.Projective.of_free
+
 #print axioms asCarrier_finite
+#print axioms asCarrier_projective
 
 
 end ABGV52
