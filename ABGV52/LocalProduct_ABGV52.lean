@@ -351,3 +351,24 @@ theorem orbit_eq_univ_of_forall_smul_eq {G ι : Type*} [Group G] [MulAction G ι
   exact MulAction.mem_orbit_iff.mpr (h j)
 
 #print axioms orbit_eq_univ_of_forall_smul_eq
+
+
+/-! ## (丙) 传递性链的**最后一个具体缺口**：`MulSemiringAction G (ι → K)`（第 403 轮 ✓）
+
+**构造** ✓：`smul g x := fun i => x (g⁻¹ • i)` ✓ —— **坐标置换**是环自同构 ✓ ⟹ 给出 `MulSemiringAction` ✓。
+**四处已修** ✓（第 402 轮 scratch 诊断 → 第 403 轮修复 ✓）：补 **`smul_zero`／`smul_add`** ✓
+（`MulSemiringAction` 经 `DistribMulAction` 要求加法作用 ✓）；`one_smul` 用 **`inv_one`** ✓（**不是 `one_inv`** ✗）；
+`mul_smul` 用 **`mul_inv_rev` ＋ `mul_smul`** ✓；其余点式字段 `rfl` ✓。
+**用途** ✓：喂第 368 轮**引擎** ✓，其 `hfix` 由第 381 轮 `eq_const_of_perm_fixed` ✓ 供给 ⟹ **传递性** ✓。 -/
+instance permMulSemiringAction (G ι K : Type*) [Group G] [MulAction G ι] [Semiring K] :
+    MulSemiringAction G (ι → K) where
+  smul g x := fun i => x (g⁻¹ • i)
+  one_smul x := by funext i; show x ((1 : G)⁻¹ • i) = x i; rw [inv_one, one_smul]
+  mul_smul g h x := by
+    funext i
+    show x ((g * h)⁻¹ • i) = x (h⁻¹ • (g⁻¹ • i))
+    rw [mul_inv_rev, mul_smul]
+  smul_zero g := by funext i; rfl
+  smul_add g x y := by funext i; rfl
+  smul_one g := by funext i; rfl
+  smul_mul g x y := by funext i; rfl

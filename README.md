@@ -2671,3 +2671,16 @@ indicator argument: the orbit indicator is idempotent (round 399) and invariant
 (round 390), so the idempotent lemma of round 368 makes it 1, every point has
 value 1 in it, and each point therefore lies in the orbit.  With round 389 this
 yields transitivity.
+
+## Round 403 (2026-10-15, appended)
+
+`permMulSemiringAction`: the permutation action of a group on the index type
+induces a `MulSemiringAction` on functions, by `smul g x := fun i => x (g⁻¹ • i)`,
+coordinate permutation being a ring automorphism.  This was the last concrete gap
+of the transitivity chain: it feeds the idempotent lemma of round 368, whose
+fixed-point hypothesis is supplied by `eq_const_of_perm_fixed` of round 381.
+
+Four points had to be fixed, all found in scratch at no cost to the library:
+`MulSemiringAction` also needs the additive fields `smul_zero` and `smul_add`; the
+name is `inv_one`, not `one_inv`; `mul_smul` goes through `mul_inv_rev`; and the
+remaining pointwise fields close by `rfl`.
