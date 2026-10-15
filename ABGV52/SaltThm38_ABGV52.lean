@@ -10863,5 +10863,77 @@ end CpDataExtraction334
 #print axioms exists_shift_automorphism
 #print axioms finrank_eq_prime_of_isGaloisWithGroup
 
+/-! ### 4.120 🔴🔴 **域档装配收口：`RealizationProperty` 的域档形**（第 335 轮）
+—— 子目标 (c) 的**装配之二收口** ✓✅（**首个 `RealizationProperty` 形的结果** ✓）
+
+**靶** ✓：**源 `theorem-1-2(a)`** ✓（`R = F[x]` ✓、`S = R{y^p − y − x}` ✓、`G = C_p` ✓）的
+**域档 `(c)` 款** ✓（＝ `RealizationPropertyExplicit` ✓ 的域档形 ✓）。
+
+**落成一件** ✓✅：**`realization_Cp_domain`** ✓✅：`char F = p` ✓、`C_p`-Galois **域档** ＋ 有限性 ⟹
+**`∃ (φ : F[x] →ₐ[F] K) (A : Algebra F[x] K), algebraMap = φ.toRingHom ∧
+Nonempty (L ≃ₐ[K] K ⊗_{F[x]} S)`** ✓✅（`S = asCarrier F[x] p x` ✓）。
+
+**机制（四步拼装，全为本工程已落件 ✓）** ✓：
+**(甲)** **§4.119** ✓ 给 `σ` ✓（`σ^p = 1` ✓、`σ ≠ 1` ✓）＋ **`finrank K L = p`** ✓；
+**(乙)** **§4.118** ✓ 给 **`b : K`** ＋ **`e : L ≃ₐ[K] asCarrier K p b`** ✓；
+**(丙)** **`φ := Polynomial.aeval b`** ✓（**它本身就是 `AlgHom`** ✓；`Polynomial.aeval_X` ✓ 给 `φ X = b` ✓）
+＋ **`A := φ.toRingHom.toAlgebra`** ✓（**`algebraMap = φ.toRingHom` 为 `rfl`** ✓）；
+**(丁)** **§4.114** ✓ 在 `let _inst : Algebra F[x] K := A` ✓ 下给
+**`K ⊗_{F[x]} S ≃ₐ[K] asCarrier K p (algebraMap F[x] K x)`** ✓，而
+**`algebraMap F[x] K x = φ x = b`** ✓ ⟹ 与 (乙) 的 `e` 复合 ⟹ **结论** ✓✅。
+
+**⚠ 意义** ✓：**(c) 的域档已闭环** ✓✅ —— 从 **`G`-作用**到 **`L ≃ₐ[K] K ⊗_R S`** 全程机检 ✓。
+**⚠ 未覆盖** ✗：**分裂档**（`L ≅ K^p` ✗）＋ **`L` 非域的一般环档** ✗ —— 二者**都不在本件量词域** ✗
+（本件**逐字限定** `[IsDomain L]` ✓ ＋ `[Module.Finite K L]` ✓ ⟹ **不是** `RealizationProperty` 本身 ✗）。
+
+**⚠ 工艺（三条，入 §5.1；均本轮实测）** ✓：
+**(甲)** `exists_algEquiv_asCarrier` ✓ **要 `[CharP K p]`** ✗ ⟹ **现场注册**
+`let _inst : CharP K p := charP_of_injective_algebraMap (algebraMap_injective_of_field) p` ✓；
+**(乙)** **`let _inst : Algebra R K := A`** ✓（**`letI` 计样式警告** ✗ —— §5.1 #14／#23 同款 ✓）；
+**(丙)** **`algebraMap` 的改写须在项内做** ✗：目标里已是 `b` ✓ ⟹ 须先把
+**`asCarrier_tensorProduct` 的结论取成 `have ht := ....symm`** ✓ **再 `rw [hX] at ht`** ✓（**直接 `rw` 命中不了目标** ✗）。
+
+**🔴 不声称** ✗：**不**声称 `RealizationProperty`（源形 ✓）已证 ✗（**本件只覆盖域档** ✗ —— 分裂档 ✗、
+非域环档 ✗ 未处理）；**不**声称 `IsGenericExtension` 有实例 ✗；**不**声称见证非空 ✗；
+**不**声称 (b) 环档判据有进展 ✗；**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section CpDomainAssembly335
+
+/-- **域档装配收口** ✓✅：`C_p`-Galois **域档** ⟹ `∃ φ A, … ∧ L ≃ₐ[K] K ⊗_R S` ✓
+（**即 `RealizationPropertyExplicit` 的域档形** ✓）。 -/
+theorem realization_Cp_domain {F : Type} [Field F] {p : ℕ} (hp : p.Prime) [CharP F p]
+    [NeZero p] (K : Type) [Field K] [Algebra F K]
+    (L : Type) [CommRing L] [IsDomain L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+    [MulSemiringAction (Multiplicative (ZMod p)) L] [Module.Finite K L]
+    (hKL : ∀ (g : Multiplicative (ZMod p)) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hgal : IsGaloisWithGroup K L (Multiplicative (ZMod p)) hKL) :
+    ∃ (φ : Polynomial F →ₐ[F] K) (A : Algebra (Polynomial F) K),
+      (@Algebra.algebraMap (Polynomial F) K _ _ A : Polynomial F →+* K) = φ.toRingHom ∧
+      letI : Algebra (Polynomial F) K := A
+      Nonempty (L ≃ₐ[K] (TensorProduct (Polynomial F) K
+        (asCarrier (Polynomial F) p Polynomial.X))) := by
+  classical
+  let _inst : CharP K p :=
+    charP_of_injective_algebraMap (algebraMap_injective_of_field (K := F) (L := K)) p
+  have hcard : Module.finrank K L = p := finrank_eq_prime_of_isGaloisWithGroup hKL hgal
+  obtain ⟨σ, hσ, hσ1⟩ := exists_shift_automorphism (K := K) (L := L) hp hKL hgal
+  obtain ⟨b, ⟨e⟩⟩ := exists_algEquiv_asCarrier (K := K) (L := L) hp hcard hσ hσ1
+  refine ⟨Polynomial.aeval b, (Polynomial.aeval b : Polynomial F →ₐ[F] K).toRingHom.toAlgebra,
+    rfl, ?_⟩
+  let _inst : Algebra (Polynomial F) K :=
+    (Polynomial.aeval b : Polynomial F →ₐ[F] K).toRingHom.toAlgebra
+  have hX : (algebraMap (Polynomial F) K Polynomial.X) = b := by
+    show (Polynomial.aeval b : Polynomial F →ₐ[F] K) Polynomial.X = b
+    simp
+  refine ⟨e.trans ?_⟩
+  have ht := (asCarrier_tensorProduct (R := Polynomial F) (K := K) p Polynomial.X).symm
+  rw [hX] at ht
+  exact ht
+
+
+end CpDomainAssembly335
+
+#print axioms realization_Cp_domain
+
 
 end ABGV52

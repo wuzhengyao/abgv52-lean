@@ -1697,3 +1697,18 @@ lemmas relating powers of the additive-to-multiplicative tag to multiples live i
 under the tag; and the fact that the unit of the residue ring is nonzero is best obtained from the characteristic
 rather than from the general lemma about units of nontrivial rings.  The assembly of the specialization and the
 tensor product, and the case of a split algebra, are not addressed here.
+
+Round 335 closes the domain case of the realization property for cyclic groups of prime order in characteristic
+that prime.  The generator of the group supplies a nontrivial automorphism of prime order by the previous round,
+the structure theorem of the round before that produces a coefficient in the base together with an isomorphism
+from the extension to the Artin--Schreier carrier, the coefficient defines the specialization of the polynomial
+ring by evaluation, and the base change of the carrier along that specialization, established five rounds
+earlier, provides the remaining isomorphism.  What results is a specialization and an algebra structure on the
+target field, compatible with it, such that the extension is isomorphic to the tensor product of the carrier with
+the field.  Three practical points are recorded: the structure theorem needs the characteristic of the target
+field, which has to be registered from the characteristic of the base together with injectivity of the structure
+map; the algebra structure on the target is registered with an anonymous local binding rather than with a local
+instance command; and the identification of the value of the structure map on the variable with the coefficient
+has to be performed on the isomorphism before it is used, since the goal already displays the coefficient.  The
+realization property itself, whose quantifier also ranges over algebras that are not domains, and the case of a
+split algebra, are not addressed here.
