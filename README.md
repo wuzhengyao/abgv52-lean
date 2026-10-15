@@ -1660,3 +1660,17 @@ it; the two lemmas about the degree of the top intermediate field have the same 
 meanings, the one without the prime being the degree over the top field; and the lemma stating that a set is
 contained in the field it generates takes the set and the membership as separate arguments.  The existence of an
 element moved to its successor by the automorphism, which is the other half, is not addressed here.
+
+Round 332 produces an element moved to its successor by a nontrivial automorphism of a domain over a field of
+prime characteristic when the degree of the extension is that prime.  The difference of the automorphism and the
+identity is nilpotent with exponent the prime, its kernel is the base by the previous round, and if the unit of
+the ring were not in its range then the base and the range would be complementary, so the range would be stable
+under the difference and hence, being killed after as many steps as the prime, would be zero, making the
+automorphism trivial.  Therefore the unit lies in the range, which is the required element.  This route replaces
+the classical one through the nonvanishing of the trace, which would require the normal basis theorem.  Three
+practical points are recorded: the Frobenius identity for a difference requires the primality of the exponent as
+an instance, which has to be registered from the hypothesis; the lemmas identifying multiplication of
+endomorphisms with composition and the recursion of powers live in the endomorphism namespace rather than the
+linear map one; and there is no lemma stating that the image of the kernel is the bottom submodule, so that
+identity is proved directly.  The realization property itself, which assembles these ingredients, is not
+addressed here.

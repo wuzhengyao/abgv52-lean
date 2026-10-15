@@ -10554,5 +10554,162 @@ end FixedOfFinrankPrime331
 
 #print axioms fixed_of_finrank_prime
 
+/-! ### 4.117 🔴🔴 **移位根的存在性（幂零 ＋ 秩-零化，不用迹）**（第 332 轮）
+—— 子目标 (c) 的**第三件之②** ✓ ⟹ **(c) 第三件由此收官** ✓✅
+
+**靶** ✓：**`∃ y, σ y = y + 1`** ✓ —— 与 §4.116 ✓（`L^σ = K` ✓）＋ §4.115 ✓
+（`asCarrier_algEquiv_of_shift_root` ✓）合成 ⟹ **`RealizationProperty` 的 `C_p` 档** ✓
+（**库内零实例 → 首例** ✓）。
+
+**落成一件** ✓✅：**`exists_shift_root`** ✓✅：`char K = p` ✓、`[L : K] = p` 素数 ✓、`σ ^ p = 1` ✓、`σ ≠ 1` ✓
+⟹ **`∃ y : L, σ y = y + 1`** ✓✅。
+
+**🔴 机制（初等；不用迹、不用正规基、不走加法 Hilbert 90 的经典路线）** ✓：
+**(甲)** `N := σ − 1` ✓（`Module.End K L` ✓）；**char p** ✓ ⟹ **`N ^ p = σ ^ p − 1 = 0`** ✓
+（`sub_pow_char_of_commute` ✓ ＋ `AlgEquiv.pow_toLinearMap` ✓；`CharP (End K L) p` ✓ 由
+`charP_of_injective_algebraMap` ✓ ＋ **`algebraMap K (End K L)` 单射** ✓（`Module.algebraMap_end_apply` ✓
+＋ §4.115 的 `algebraMap_injective_of_field` ✓））；
+**(乙)** **`ker N = K ∙ 1`** ✓ —— 由 §4.116 ✓（**其点值形** ✓）＋ `N 1 = 0` ✓；
+**(丙)** **反设 `1 ∉ range N`** ✓ ⟹ `ker N ⊓ range N = ⊥` ✓ ⟹ `finrank (range N) = p − 1` ✓
+（**秩-零化** ✓）⟹ `finrank (ker N ⊔ range N) = p` ✓（`finrank_sup_add_finrank_inf_eq` ✓）
+⟹ **`ker N ⊔ range N = ⊤`** ✓；
+**(丁)** **`range N = range (N ∘ N)`** ✓：`range N = map N ⊤ = map N (ker ⊔ range) = ⊥ ⊔ range (N∘N)` ✓
+（`range_eq_map` ✓／`map_sup` ✓／`map N ker = ⊥` ✓／`range_comp` ✓）；
+**(戊)** **迭代稳定** ✓（`Module.End.iterate_succ'` ✓）＋ **`range (N^p) = ⊥`** ✓ ⟹ `range N = ⊥` ✓
+⟹ `N = 0` ✓（`range_eq_bot` ✓）⟹ `σ = 1` ✗ **矛盾** ✓ ⟹ **`1 ∈ range N`** ✓ ⟹ **`∃ y, Ny = 1`** ✓✅。
+
+**⚠ 意义** ✓：**`Tr ≠ 0` 的经典路线不作首选** ✗（那一步**要正规基定理** ✓，代价高 ✗）——
+本件只用**幂零 ＋ 秩-零化 ＋ 直和** ✓ ⟹ **省一整条路线** ✓。
+
+**⚠ 工艺（三条，入 §5.1；均本轮实测）** ✓：
+**(甲)** `sub_pow_char_of_commute` ✓ **要 `[Fact p.Prime]`** ✗ ⟹ **由 `hp : p.Prime` 现场注册
+`let _inst : Fact p.Prime := ⟨hp⟩`** ✓；
+**(乙)** **`Module.End.mul_eq_comp`／`Module.End.iterate_succ'` 在 `Module.End` 命名空间** ✓
+（**`LinearMap.mul_eq_comp` 不存在** ✗）；
+**(丙)** **`Submodule` 的 `map_ker` 不存在** ✗ ⟹ **`Submodule.eq_bot_iff` ＋ `rintro y ⟨x, hx, rfl⟩`** ✓（实测 ✓）。
+
+**🔴 不声称** ✗：**不**声称 `RealizationProperty` 已有实例 ✗（**装配未落** ✗ —— **下一手** ✓）；
+**不**声称环档 `L` 的分量形已处理 ✗；**不**声称 (b) 环档判据有进展 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+open Module
+
+section ShiftRootExistence332
+
+/-- **移位根存在** ✓：`char K = p`、`[L : K] = p` 素数、`σ^p = 1`、`σ ≠ 1` ⟹
+`∃ y, σ y = y + 1` ✓（**幂零 `N = σ − 1` ＋ 秩-零化**，**不用迹**）。 -/
+theorem exists_shift_root {K L : Type u} [Field K] [CommRing L] [IsDomain L] [Algebra K L]
+    [Module.Finite K L] {p : ℕ} (hp : p.Prime) [CharP K p]
+    (hcard : Module.finrank K L = p) {σ : L ≃ₐ[K] L} (hσ : σ ^ p = 1) (hσ1 : σ ≠ 1) :
+    ∃ y : L, σ y = y + 1 := by
+  classical
+  let _inst : Fact p.Prime := ⟨hp⟩
+  -- `End K L` 的 char p
+  have hEnd : Function.Injective (algebraMap K (Module.End K L)) := by
+    intro c d hcd
+    have h := congrArg (fun f : Module.End K L => f 1) hcd
+    simp only [Module.algebraMap_end_apply, Algebra.smul_def, mul_one] at h
+    exact algebraMap_injective_of_field h
+  let _inst : CharP (Module.End K L) p := charP_of_injective_algebraMap hEnd p
+  set N : Module.End K L := σ.toLinearMap - 1 with hN
+  have hNp : N ^ p = 0 := by
+    have hcomm : Commute σ.toLinearMap (1 : Module.End K L) := Commute.one_right _
+    have h1 : (σ.toLinearMap - 1 : Module.End K L) ^ p
+        = σ.toLinearMap ^ p - 1 := by
+      simpa using sub_pow_char_of_commute (R := Module.End K L) (p := p)
+        (x := σ.toLinearMap) (y := 1) hcomm
+    rw [hN, h1, ← AlgEquiv.pow_toLinearMap σ p, hσ]
+    simp
+  -- `N` 的核
+  have hNapply : ∀ x : L, N x = σ x - x := by
+    intro x
+    simp [hN]
+  have hker : ∀ x : L, N x = 0 → x ∈ (K ∙ (1 : L)) := by
+    intro x hx
+    have hσx : σ x = x := by
+      have h : σ x - x = 0 := by rw [← hNapply]; exact hx
+      exact sub_eq_zero.mp h
+    obtain ⟨c, hc⟩ := fixed_of_finrank_prime hp hcard hσ1 hσx
+    exact Submodule.mem_span_singleton.mpr ⟨c, by rw [← hc, Algebra.smul_def, mul_one]⟩
+  have hker_eq : N.ker = K ∙ (1 : L) := by
+    refine le_antisymm (fun x hx => hker x hx) ?_
+    intro x hx
+    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hx
+    rw [LinearMap.mem_ker, hNapply, map_smul, map_one, sub_self]
+  -- 反设 `1 ∉ range N`
+  by_contra hcon
+  have h1notin : (1 : L) ∉ N.range := by
+    rintro ⟨y, hy⟩
+    refine hcon ⟨y, ?_⟩
+    have h : σ y - y = 1 := by rw [← hNapply]; exact hy
+    have h2 : σ y = 1 + y := sub_eq_iff_eq_add.mp h
+    exact h2.trans (add_comm y 1).symm
+  have hfin_ker : Module.finrank K (N.ker) = 1 := by
+    rw [hker_eq]
+    exact finrank_span_singleton (K := K) (v := (1 : L)) one_ne_zero
+  have hfin_range : Module.finrank K (N.range) = p - 1 := by
+    have h := LinearMap.finrank_range_add_finrank_ker (K := K) N
+    rw [hcard, hfin_ker] at h
+    omega
+  have hinf : N.ker ⊓ N.range = ⊥ := by
+    rw [hker_eq]
+    refine le_antisymm ?_ bot_le
+    intro x hx
+    obtain ⟨hx1, hx2⟩ := Submodule.mem_inf.mp hx
+    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hx1
+    by_contra hc
+    have hc0 : c ≠ 0 := by
+      rintro rfl
+      exact hc (by simp)
+    refine h1notin ?_
+    have : (1 : L) = c⁻¹ • (c • (1 : L)) := by
+      rw [smul_smul, inv_mul_cancel₀ hc0, one_smul]
+    rw [this]
+    exact Submodule.smul_mem _ _ hx2
+  have htop : N.ker ⊔ N.range = ⊤ := by
+    have hp1 : 1 ≤ p := le_trans (by norm_num) hp.two_le
+    have h := Submodule.finrank_sup_add_finrank_inf_eq (K := K) N.ker N.range
+    rw [hinf, hfin_ker, hfin_range, finrank_bot, add_zero] at h
+    refine Submodule.eq_top_of_finrank_eq ?_
+    rw [h, add_comm, hcard, Nat.sub_add_cancel hp1]
+  -- 稳定化：`range N = range (N ∘ N)`
+  have hstab : N.range = (N.comp N).range := by
+    conv_lhs => rw [LinearMap.range_eq_map N]
+    rw [← htop, Submodule.map_sup]
+    have hmapker : Submodule.map N N.ker = ⊥ := by
+      rw [Submodule.eq_bot_iff]
+      rintro y ⟨x, hx, rfl⟩
+      simpa using hx
+    rw [hmapker, bot_sup_eq]
+    exact (LinearMap.range_comp N N).symm
+  have hind : ∀ k : ℕ, 1 ≤ k → (N ^ k).range = N.range := by
+    intro k hk
+    induction k with
+    | zero => omega
+    | succ k ih =>
+      rcases Nat.eq_zero_or_pos k with hk0 | hkpos
+      · subst hk0
+        simp
+      · rw [Module.End.iterate_succ', LinearMap.range_comp, ih hkpos,
+          ← LinearMap.range_comp N N]
+        exact hstab.symm
+  have hbot : N.range = ⊥ := by
+    have h := hind p hp.pos
+    rw [hNp, LinearMap.range_zero] at h
+    exact h.symm
+  have hN0 : N = 0 := LinearMap.range_eq_bot.mp hbot
+  refine hσ1 ?_
+  have hlin : σ.toLinearMap = 1 := by
+    have h : σ.toLinearMap - 1 = 0 := hN0
+    exact sub_eq_zero.mp h
+  ext x
+  have := congrArg (fun f : L →ₗ[K] L => f x) hlin
+  simpa using this
+
+
+end ShiftRootExistence332
+
+#print axioms exists_shift_root
+
 
 end ABGV52
