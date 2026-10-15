@@ -2563,3 +2563,22 @@ turning the action into ring automorphisms; and
 `Ideal.isMaximal_map_iff_of_bijective`, by which maximality is preserved along
 `map` under a bijection.  So what remains is to prove that identification, or to
 prove maximality of `g • I` directly, avoiding it.
+
+## Round 384 (2026-10-15, appended)
+
+The gap recorded in round 383 turns out not to be a gap.  In
+`Mathlib/RingTheory/Ideal/Pointwise.lean` the pointwise action on ideals is
+*defined* as `Ideal.map (MulSemiringAction.toRingHom _ _ a)`, and
+`Ideal.pointwise_smul_def` states exactly the identification that was reported as
+missing.  This is the fifth verdict of "not in the library" in this development
+to be overturned by a wider search, and all five have the same cause.
+
+The instance itself is still not in place.  It fails because no `SMul M (Ideal R)`
+or `MulAction M (Ideal R)` instance is synthesized, even with the file imported;
+the instance there is probably stated in the general form
+`SMul M N` with `IsScalarTower M N R`, and has to be instantiated in that form.
+
+The failing attempt introduced `sorryAx`, so it was withdrawn at once, and the
+tree is again free of `sorry`.  The facts confirmed this round are recorded:
+`Ideal.pointwise_smul_def`, `Ideal.isMaximal_map_iff_of_bijective`, and that
+`MulSemiringAction.toRingEquiv` needs `Group M` rather than `Monoid M`.

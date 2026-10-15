@@ -3,6 +3,7 @@ import Mathlib.RingTheory.Spectrum.Prime.Topology
 import Mathlib.RingTheory.Spectrum.Prime.Noetherian
 import Mathlib.RingTheory.Spectrum.Maximal.Localization
 import Mathlib.RingTheory.Localization.AtPrime.Basic
+import Mathlib.RingTheory.Ideal.Pointwise
 
 /-!
 # (乙) 有限维交换代数 ⟹ **局部积分解**（第 365 轮，2026-10-15）
@@ -204,18 +205,23 @@ theorem card_eq_prime_of_pretransitive_of_nontrivial {p : ℕ} (hp : p.Prime)
 
 #print axioms card_eq_prime_of_pretransitive_of_nontrivial
 
-/-! ## (丙) 接线：**`MaximalSpectrum` 的 `G`-作用**（第 383 轮）
+/-! **⚠ 第 384 轮：该实例仍未落** ✗ —— 失败原因是 **`SMul M (Ideal R)`／`MulAction M (Ideal R)` 实例
+未合成** ✗（即使 import 了 `Mathlib.RingTheory.Ideal.Pointwise` ✓ 亦未合成 ✗）⟹ 须查该文件实例的**作用域／假设**
+（疑为 `[SMul M N]`＋`[IsScalarTower M N R]` 一般形 ✓，或 `local instance` ✗）。
+**⚠ 纪律** ✓：失败证明会带 **`sorryAx`** ✗ ⟹ **必须立即撤下**（本仓"0 sorry"基线 ✓）；
+**已核且可复用的发现** ✓：`a • I = Ideal.map (MulSemiringAction.toRingHom M R a) I` ✓（`Ideal.pointwise_smul_def` ✓）＋
+`MulSemiringAction.toRingEquiv` 需 **`[Group M]`** ✗（`[Monoid M]` 不够 ✓）。 -/
 
-**所攻问句** ✓：`G`（`|G| = p` 素 ✓）在 (乙) 的**因子集** `MaximalSpectrum L` 上的作用 ✓ ——
-有了它，配第 367 轮轨道引理 ✓ ＋ 第 368 轮幂等元引擎 ✓ ＋ 第 381 轮对角计算 ✓ 即可拼 (丙)。
+/-! ## (丙) 接线：**`MaximalSpectrum` 上的 `G`-作用**（第 383–384 轮）
 
-**已核的 mathlib 件** ✓：`PrimeSpectrum` 的作用（`Spectrum/Prime/Basic.lean:508` ✓）｜
-`MulSemiringAction.toRingEquiv` ✓（群作用给出的**环自同构** ✓）｜
-**`Ideal.isMaximal_map_iff_of_bijective`** ✓（`Ideal/Maps.lean:559` ✓：双射下极大性沿 `map` 保持 ✓）。
+**所攻问句** ✓：`G`（`|G| = p` 素 ✓）在 (乙) 的**因子集** `MaximalSpectrum L` 上的作用 ✓。
 
-**⚠ 缺口** ✗：把**点作用** `g • I`（`Ideal` 上的 `SMul` ✓）与 **`Ideal.map (toRingEquiv g) I`** 等同的引理
-**未见** ✗（检索：`Ideal.smul_eq_map` ✗／`grep -rn "IsMaximal" Ideal/ | grep -iE "map|comap"` ✓ 只给 `map` 侧 ✓）——
-这是本作用的**最后一步** ✗。 -/
+**🔴 "缺口"实为假阻断** ✗→✓（第 384 轮 L46 全库检索命中 ✓）：**`Mathlib/RingTheory/Ideal/Pointwise.lean:43`**
+把点作用**直接定义为** `Ideal.map (MulSemiringAction.toRingHom _ _ a)` ✓，并给出 **`Ideal.pointwise_smul_def`**
+（第 66 行 ✓）：`a • S = S.map (MulSemiringAction.toRingHom _ _ a)` ✓ —— 正是所需的等同 ✓。
+配 **`Ideal.isMaximal_map_iff_of_bijective`** ✓（`Ideal/Maps.lean:559` ✓）即得本作用 ✓。
+**⚠ 关键** ✓：`MulSemiringAction.toRingEquiv` 需 **`[Group M]`** ✗（`[Monoid M]` 不够 ✓）。 -/
+
 
 
 end PermFixed
