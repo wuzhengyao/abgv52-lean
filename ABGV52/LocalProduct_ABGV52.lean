@@ -500,3 +500,28 @@ theorem isPretransitive_of_fixed_idempotent {G ι K : Type*} [Group G] [MulActio
     · exact absurd h1 (by simp [e, hjn])
 
 #print axioms isPretransitive_of_fixed_idempotent
+
+
+/-! ## (丙) **分裂支核心结论**（第 413 轮）：**因子个数 ＝ p** ✓
+
+**组合** ✓：**传递性**（411 ✓）＋ **轨道计数**（367／382 ✓）⟹ **因子数 ＝ p** ✓。
+**⚠ 三条工艺** ✓：① `hidem` 群须**显式钉住** ✗；② 传递性须以 **`haveI`** 供给 ✓（**类型类参数** ✗）；
+③ 计数引理的参数序是 **`hp (x) h2`** ✓（`h2` 在 `x` **之后** ✗ —— 第 412 轮两处报错即此因 ✓），
+且 `omega` 一次可关**两支** ✗（第 413 轮 "No goals to be solved" 即此因 ✓ ⟹ 用 `<;> omega` ✓）。
+**意义** ✓：(丙) **分裂支**核心算术结论 ✓；**剩余** ✗：`mapPiLocalization` **对接** ✓。 -/
+
+/-- **(丙) 分裂支核心结论** ✓：**因子个数 ＝ p** ✓。 -/
+theorem card_factors_eq_prime {p : ℕ} (hp : p.Prime) {ι K : Type*} [Fintype ι] [Nonempty ι]
+    [Field K] [MulAction (Multiplicative (ZMod p)) ι]
+    (hidem : ∀ e : ι → K, IsIdempotentElem e →
+      (∀ g : Multiplicative (ZMod p), g • e = e) → e = 0 ∨ e = 1)
+    (h2 : 2 ≤ Fintype.card ι) [Fintype (ZMod p)]
+    [Fintype (MulAction.orbit (Multiplicative (ZMod p)) (Classical.arbitrary ι))]
+    [Fintype ↥(MulAction.stabilizer (Multiplicative (ZMod p)) (Classical.arbitrary ι))] :
+    Fintype.card ι = p := by
+  haveI : MulAction.IsPretransitive (Multiplicative (ZMod p)) ι :=
+    isPretransitive_of_fixed_idempotent hidem
+  rcases ABGV52.LocalProduct.card_eq_prime_of_pretransitive_of_nontrivial hp
+    (Classical.arbitrary ι) h2 with h | h <;> omega
+
+#print axioms card_factors_eq_prime

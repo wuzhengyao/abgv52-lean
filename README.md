@@ -2746,3 +2746,15 @@ lies in the orbit, and the interfaces of rounds 400 and 389 give transitivity.
 This is the machine-checked form of transitivity of the action on the set of
 factors, which with the factor decomposition of round 365 and the action on
 MaximalSpectrum of round 386 completes the third dichotomy input.
+
+## Round 413 (2026-10-15, appended)
+
+`card_factors_eq_prime`: for a prime p, a transitive action of Multiplicative
+(ZMod p) on at least two factors, and fixed idempotents in ι → K only 0 or 1, the
+number of factors is p.  It combines the transitivity of round 411 with the orbit
+count of rounds 367 and 382, and is the arithmetic core of the split case of the
+third dichotomy input.
+
+Craft: the group in the hypothesis must be pinned explicitly; transitivity must be
+supplied by haveI since it is a typeclass argument; the count lemma takes hp, then
+the point, then the bound; and omega closes both branches at once.
