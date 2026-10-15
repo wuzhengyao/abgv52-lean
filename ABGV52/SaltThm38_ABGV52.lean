@@ -13119,7 +13119,37 @@ theorem algebraMap_injective_of_field_univ (F : Type u) [Field F] (R : Type v) [
 
 end KummerSupply358
 
-#print axioms algebraMap_injective_of_field_univ
+/-! ### 4.142 🔴 **T6-F 第四口（第二小步）：自档供给 ＋ 一般档障碍精确化**（第 359 轮）
+
+**靶** ✓：**源 `proposition-0-6(a)` 的源侧供给** ✓（**"`a` 单位 ＋ `ρ(n) ∈ F`"** ✓）—— **本件落"基域自身"档** ✓
+＋ **把一般档的障碍精确到一步** ✗。
+
+**落成一件** ✓✅：**`kummerDatumSelf`** ✓✅ —— **`R = F` 时 `ρ : Fˣ` 直接入类** ✓
+（**`ρ := ρ`** ✓、**`hρ := hprim.pow_eq_one`** ✓、**`hpow_dvd := hprim.pow_eq_one_iff_dvd`** ✓ —— **零强制转换** ✗）。
+
+**⚠ 一般档障碍（本轮再探，**精确化** ✓，**仍不谎报** ✗）** ✗：**单位群内做幂** ✓ 的路线**本轮进了一步** ✓ ——
+**`(Units.map f ρ)^n = 1`** ✓ 与 **`h1 : …^m = 1`** ✓ **皆可落** ✓（**`Units.ext` ＋ `Units.coe_pow` ＋ `rw [← map_pow]`** ✓）；
+**残余障碍** ✗：**`IsPrimitiveRoot.pow_eq_one`／`pow_eq_one_iff_dvd` 的陈述是对"被强制的元素" `(ρ:F)`** ✗，
+**而单位群内需要的是"单位的幂" `ρ^n`** ✗ ⟹ **须插入搬运** ✓：**`Units.ext (by rw [Units.coe_pow, Units.coe_one]; exact hprim.pow_eq_one)`** ✓
+得 **`ρ ^ n = 1`（单位档）** ✓；**同理** ✗：**`↑(Units.map f ρ)`（`Units.coe_map` 后的强制形 ✗）与环同态应用形** ✗
+**在 `h3` 的 `rw [Units.coe_map]` 后再 `rw [map_pow]` 仍不弥合** ✗（**实测** ✓）。
+⟹ **下一手（精确）** ✓：**(i)** 先证 **`ρ ^ m = 1`（单位档）** ✓ 再 **`congrArg (fun u : Rˣ => (u:R))`** ✓ ——
+**全程不出现 `algebraMap` 的应用形** ✓；**(ii)** 或**把类的 `hpow_dvd` 改为对 `↑(Units.map f ρ)` 陈述** ✓。
+
+**🔴 不声称** ✗：**不**声称一般档供给已落 ✗；**不**声称源侧可用性已收口 ✗；**不**声称源 `proposition-0-6(a)` 假设链已核 ✗。 -/
+
+section KummerSupply359
+
+/-- **(甲) 自档供给** ✓✅：**`R = F` 时 `ρ` 直接入类** ✓（**无强制转换** ✗）。 -/
+@[instance_reducible] noncomputable def kummerDatumSelf (F : Type u) [Field F] (n : ℕ) (a : F)
+    (ρ : Fˣ) (hprim : IsPrimitiveRoot (ρ : F) n) : KummerDatum F n a where
+  ρ := ρ
+  hρ := hprim.pow_eq_one
+  hpow_dvd := fun m => hprim.pow_eq_one_iff_dvd m
+
+end KummerSupply359
+
+#print axioms kummerDatumSelf
 
 
 end ABGV52

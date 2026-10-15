@@ -2050,3 +2050,17 @@ on powers applies directly and equality of units is decided by their values, or 
 the element of the field as the field of the data class.  This is a probe-level reading and no negative claim is
 made.  The data class built from a primitive root, the unitness of the differences of its powers, the source-side
 usability of the criterion, and the source's remaining theorems are not addressed here.
+
+Round 359 supplies the data class of the previous rounds from a primitive root in the base field, in the case where
+the coefficient ring is that field, and sharpens the obstruction met in the general case to a single transport step.
+In the case of the field itself the unit and the two required properties are exactly the primitivity hypothesis, so
+no coercion occurs at all.  In the general case the power computations can now be carried out inside the unit
+group, since composition of powers and equality of units by their values are available there; what remains is that
+the statements of primitivity are about the element coerced into the field rather than about the power of the unit,
+so that the identification of the value of a power of a unit with the power of its value has to be inserted
+explicitly, and likewise the coercion of the unit group map has to be replaced by the application of the ring
+homomorphism.  Two exact repairs are recorded: to prove the vanishing of the power as an equality of units and then
+transport it along the value map, so that the ring homomorphism is never applied in the statement, or to state the
+order condition of the class directly for the coerced unit.  One declaration is recorded, namely the data class in
+the case of the base field.  The data class over a general algebra, the source-side usability of the criterion, and
+the source's remaining theorems are not addressed here.
