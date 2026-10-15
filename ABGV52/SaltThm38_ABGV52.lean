@@ -45,6 +45,7 @@ import Mathlib.FieldTheory.Fixed
 import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
 import Mathlib.Algebra.QuadraticAlgebra.Basic
+import Mathlib.RingTheory.Localization.Away.Basic
 open TensorProduct MvPolynomial
 universe u
 noncomputable section
@@ -10073,6 +10074,53 @@ theorem away_isLocalizationAway (F : Type u) [Field F] {n : ℕ} (w : MvPolynomi
 end SubgoalA325
 
 #print axioms away_isLocalizationAway
+
+
+/-! ### 4.113 🔴 **子目标 (a) 收官：`F[x]` 档**（第 328 轮）
+—— 源 def-1-1(a) 对**源实际用的基环 `R = F[x]`** ✓✅
+
+**落成** ✓✅：**`polynomial_isLocalizationAway`** ✓✅：
+**`∃ n w, w ≠ 0 ∧ Nonempty (Polynomial F ≃ₐ[F] Localization.Away w)`** ✓
+（取 `n = 1` ✓、`w = 1` ✓ —— 即 **`F[x]` 是 `MvPolynomial (Fin 1) F` 在 `1` 处的局部化** ✓）。
+
+**证明（三件拼接）** ✓：**(i)** `MvPolynomial.uniqueAlgEquiv F (Fin 1) :
+MvPolynomial (Fin 1) F ≃ₐ[F] Polynomial F` ✓（**已核** ✓）；
+**(ii)** `Localization.Away (1 : MvPolynomial (Fin 1) F) ≃ₐ[·] MvPolynomial (Fin 1) F` ✓ ——
+由 **`IsLocalization.algEquiv`** ✓ ＋ 新供给的实例 ✓；
+**(iii)** 新实例 ✓：`IsLocalization.Away (1) (MvPolynomial (Fin 1) F)` ✓ ——
+由 **`IsLocalization.away_of_isUnit_of_bijective`** ✓（`1` 是单位 ✓ ＋ `algebraMap` 为恒等 ✓ 双射 ✓）。
+
+**⚠ 工艺（三条，入 §5.1；均本轮实测）** ✓：
+**(甲)** 该引理**须加 `Mathlib.RingTheory.Localization.Away.Basic` 导入** ✓ 且**须命名空间限定** ✓
+（`IsLocalization.away_of_isUnit_of_bijective` ✓；裸名**未知** ✗，实测 ✓）；
+**(乙)** `IsLocalization.algEquiv` 给出的是 **`≃ₐ[MvPolynomial (Fin 1) F]`** ✗（基环是它自己 ✓）
+⟹ 须用 **`AlgEquiv.restrictScalars F`** ✓ **降到 `≃ₐ[F]`** ✓（否则报 "type mismatch … ≃ₐ[MvPolynomial (Fin 1) F] / ≃ₐ[F]" ✗）；
+**(丙)** `import` **加入文件头** ✓ 后**全库真编须重跑** ✓（本件即按全量收口 ✓）。
+
+**⚠ 意义（子目标 (a) 收官）** ✓✅：**(a)** 此前只对「多项式环的局部化」族**自动成立** ✓（§4.112 ✓）；
+**本件补上源实际用的 `R = F[x]`** ✓ ⟹ **源 `theorem-2-1` 的三子目标中 (a) 已全克** ✓✅
+—— **余 (b) 环档判据 ✗ ＋ (c) `RealizationProperty`（源 §2）✗** ✓。
+
+**🔴 不声称** ✗：**不**声称 (b)／(c) 有进展 ✗；**不**声称源 `theorem-2-1` 已证 ✗；
+**不**声称 `GenericExtensionWitness` 非空 ✗；**不**声称残余 ①／③ 已证 ✗。 -/
+
+section SubgoalAPolynomial328
+
+/-- **子目标 (a) 的 `F[x]` 档** ✓：`Polynomial F` 是局部化多项式环 ✓。 -/
+theorem polynomial_isLocalizationAway (F : Type u) [Field F] :
+    ∃ (n : ℕ) (w : MvPolynomial (Fin n) F), w ≠ 0 ∧
+      Nonempty (Polynomial F ≃ₐ[F] Localization.Away w) := by
+  refine ⟨1, 1, one_ne_zero, ?_⟩
+  let _inst : IsLocalization.Away (1 : MvPolynomial (Fin 1) F) (MvPolynomial (Fin 1) F) :=
+    IsLocalization.away_of_isUnit_of_bijective _ isUnit_one Function.bijective_id
+  refine ⟨(MvPolynomial.uniqueAlgEquiv F (Fin 1)).symm.trans
+    (AlgEquiv.restrictScalars F (IsLocalization.algEquiv
+      (Submonoid.powers (1 : MvPolynomial (Fin 1) F))
+      (Localization.Away (1 : MvPolynomial (Fin 1) F)) (MvPolynomial (Fin 1) F))).symm⟩
+
+end SubgoalAPolynomial328
+
+#print axioms polynomial_isLocalizationAway
 
 
 end ABGV52
