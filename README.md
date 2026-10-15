@@ -2547,3 +2547,19 @@ the number of factors in the split case of the third dichotomy input.
 One API fact: the orbit lemma of round 367 is stated for
 `Multiplicative (ZMod p)` rather than for a general group, so it has to be
 invoked with that signature.
+
+## Round 383 (2026-10-15, appended)
+
+No new theorem in this round; it records the last gap in the wiring of the third
+dichotomy input.  The instance giving the action of `G` on `MaximalSpectrum` is
+not in place, and the obstruction is a single identification: that the pointwise
+action `g • I` on ideals agrees with
+`Ideal.map (MulSemiringAction.toRingEquiv G R g) I`.  No lemma stating this was
+found in the library.
+
+What the search did confirm is available: the action on `PrimeSpectrum`, in
+`Mathlib/RingTheory/Spectrum/Prime/Basic.lean`; `MulSemiringAction.toRingEquiv`,
+turning the action into ring automorphisms; and
+`Ideal.isMaximal_map_iff_of_bijective`, by which maximality is preserved along
+`map` under a bijection.  So what remains is to prove that identification, or to
+prove maximality of `g • I` directly, avoiding it.

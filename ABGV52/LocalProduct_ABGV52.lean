@@ -204,6 +204,20 @@ theorem card_eq_prime_of_pretransitive_of_nontrivial {p : ℕ} (hp : p.Prime)
 
 #print axioms card_eq_prime_of_pretransitive_of_nontrivial
 
+/-! ## (丙) 接线：**`MaximalSpectrum` 的 `G`-作用**（第 383 轮）
+
+**所攻问句** ✓：`G`（`|G| = p` 素 ✓）在 (乙) 的**因子集** `MaximalSpectrum L` 上的作用 ✓ ——
+有了它，配第 367 轮轨道引理 ✓ ＋ 第 368 轮幂等元引擎 ✓ ＋ 第 381 轮对角计算 ✓ 即可拼 (丙)。
+
+**已核的 mathlib 件** ✓：`PrimeSpectrum` 的作用（`Spectrum/Prime/Basic.lean:508` ✓）｜
+`MulSemiringAction.toRingEquiv` ✓（群作用给出的**环自同构** ✓）｜
+**`Ideal.isMaximal_map_iff_of_bijective`** ✓（`Ideal/Maps.lean:559` ✓：双射下极大性沿 `map` 保持 ✓）。
+
+**⚠ 缺口** ✗：把**点作用** `g • I`（`Ideal` 上的 `SMul` ✓）与 **`Ideal.map (toRingEquiv g) I`** 等同的引理
+**未见** ✗（检索：`Ideal.smul_eq_map` ✗／`grep -rn "IsMaximal" Ideal/ | grep -iE "map|comap"` ✓ 只给 `map` 侧 ✓）——
+这是本作用的**最后一步** ✗。 -/
+
+
 end PermFixed
 
 
