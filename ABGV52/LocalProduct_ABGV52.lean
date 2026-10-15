@@ -583,3 +583,21 @@ theorem hfix_of_galoisFixedRingHyp (R S : Type u) [CommRing R] [CommRing S] [Alg
 
 #print axioms galoisFixedRingHyp_typeLock
 #print axioms hfix_of_galoisFixedRingHyp
+
+
+/-! ### 连接件 ✓（第 441 轮）：`GaloisFixedRingHyp`（418 ✓）在函数空间上**就是** `hfix` ✓
+
+**🔴 三条真因（两轮误判后定位 ✓）**：① `GaloisFixedRingHyp` **在顶层** ✗（无命名空间 ✓）；
+② **宇宙层**：`GaloisFixedRingHyp` 要求 `R S : Type u` **同宇宙** ✗，而 `ι → K : Type (max u₂ u₃)` ✗
+⟹ **须把 `ι` 与 `K` 钉到同一宇宙** ✓（`{ι K : Type u}` ✓）—— 第 423 轮的"宇宙层"猜测**其实部分正确** ✓
+（第 440 轮"无据"的判断**过急** ✗，本轮实测推翻 ✓）；③ 需 **`[MulAction G ι]`** ✓（函数空间作用来自第 403 轮实例 ✓）。
+**作用** ✓：该具名件被外部兑现后 ✓，第 415 轮的 `hfix` 假设**自动满足** ✓ —— **二分右支无需新增假设** ✓。 -/
+
+/-- **连接件** ✓：`GaloisFixedRingHyp` 在 `ι → K` 上**就是** `hfix` ✓（`ι` 与 `K` 同宇宙 ✓）。 -/
+theorem hfix_fun_of_galoisFixedRingHyp {G : Type*} {ι K : Type u} [Group G] [Fintype G]
+    [MulAction G ι] [Field K]
+    (hRG : ∀ (g : G) (r : K) (t : ι → K), g • (r • t) = r • (g • t))
+    (h : GaloisFixedRingHyp K (ι → K) G hRG) :
+    ∀ x : ι → K, (∀ g : G, g • x = x) → ∃ c : K, algebraMap K (ι → K) c = x := h
+
+#print axioms hfix_fun_of_galoisFixedRingHyp
