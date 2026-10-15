@@ -13082,9 +13082,44 @@ theorem kummer_one_algEquiv_pi (K : Type u) [Field K] {n : ℕ} [NeZero n] (ρ :
 
 end KummerSplitIso357
 
-#print axioms kummer_one_aeval_eq_zero
-#print axioms kummer_splitPoint_injective
-#print axioms kummer_one_algEquiv_pi
+/-! ### 4.141 🔴 **T6-F 第四口（第一小步）：源侧供给的承重前置**（第 358 轮）
+—— **`KummerDatum` 的源侧供给之基件** ✓ ＋ **受阻点登记** ✗
+
+**靶** ✓：**源 `proposition-0-6(a)` 的源侧假设形** ✓ —— **"`a` 是单位 ＋ `ρ(n) ∈ F`"** ✓
+（`raw/Saltman1982.tex:142` ✓）⟹ **本件落其承重前置** ✓：**`F` 的像单射** ✓。
+
+**落成一件** ✓✅：**`algebraMap_injective_of_field_univ`** ✓✅（**⚠ 库内已有同宇宙版 `algebraMap_injective_of_field`** ✓ §4.115 档 ✓ —— **本件为跨宇宙版** ✓） —— **`F` 域 ＋ `R` 非平凡 ⟹ `algebraMap F R` 单射** ✓
+（**证法** ✓：`F` 是域 ⟹ `x - y ≠ 0` ⟹ `(x−y)⁻¹(x−y) = 1` ✓ 而像为 `0` ✓ ⟹ **`1 = 0`** ✗ 与 `Nontrivial` 矛盾 ✓）。
+
+**⚠ 本件之用途** ✓：**源侧供给的两条都要它** ✗ ——
+**(i)** **`KummerDatum.hpow_dvd`** ✗（`(algebraMap ρ)^m = 1 ⟹ algebraMap (ρ^m) = algebraMap 1` ⟹ **单射** ⟹ `ρ^m = 1` ✓
+⟹ **`IsPrimitiveRoot.pow_eq_one_iff_dvd`** ✓）；**(ii)** **`hdiff` 的供给** ✗（**`ρ^i − ρ^j` 非零 ⟹ `F` 中单位 ⟹ `IsUnit.map`** ✓）。
+
+**⚠ 受阻点登记（本轮未落，**不谎报** ✗）** ✗：**(甲) `KummerDatum.ofAlgebra`** ✗ 与 **(乙) `hdiff` 的源侧供给** ✗
+**本轮尝试未过** ✗ —— **障碍** ✗：**`Units.coe_map` 的强制转换形与环同态应用形不同一** ✗
+（`↑(algebraMap F R) x` vs `algebraMap F R x` ✓ —— **`rw`／`rfl`／`simp only [map_pow]` 三者皆不能弥合** ✗，
+**实测** ✓）⟹ **下一手候选** ✓：**(i)** 在**单位群内**做幂运算（`(Units.map f ρ)^m` ✓ ＋ **`map_pow`** ✓ ＋
+**`Units.ext`** ✓）以**绕开强制转换** ✓；**(ii)** 或**改以 `ρR : Rˣ` 为类字段** ✓（**放弃 `F` 侧成像** ✓）。
+**⚠ 本件之"受阻"为**探针级读数** ✗（**非判假** ✗）—— **不做否定性声称** ✗。
+
+**🔴 不声称** ✗：**不**声称 `KummerDatum.ofAlgebra` 已落 ✗；**不**声称源侧供给已落 ✗；
+**不**声称 **`KummerDatum` 的源侧可用性已收口** ✗；**不**声称源 `proposition-0-6(a)` 的假设链已核 ✗。 -/
+
+section KummerSupply358
+
+theorem algebraMap_injective_of_field_univ (F : Type u) [Field F] (R : Type v) [CommRing R]
+    [Nontrivial R] [Algebra F R] : Function.Injective (algebraMap F R) := by
+  intro x y hxy
+  by_contra hne
+  have hx : x - y ≠ 0 := sub_ne_zero.mpr hne
+  have h0 : algebraMap F R (x - y) = 0 := by rw [map_sub, hxy, sub_self]
+  have h1 : algebraMap F R ((x - y)⁻¹ * (x - y)) = 0 := by rw [map_mul, h0, mul_zero]
+  rw [inv_mul_cancel₀ hx, map_one] at h1
+  exact one_ne_zero h1
+
+end KummerSupply358
+
+#print axioms algebraMap_injective_of_field_univ
 
 
 end ABGV52

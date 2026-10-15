@@ -2037,3 +2037,16 @@ branches of the dichotomy on the canonical representatives have to be matched wi
 arithmetic decision procedure does not know about divisibility, so the vanishing of the difference has to be
 extracted first.  The model side of the split case, the Kummer realization for fields, the corresponding statement
 for orders coprime to the characteristic and the source's remaining theorems are not addressed here.
+
+Round 358 records the injectivity of the structure map of the base field into the coefficient ring, which is
+load-bearing for supplying the data class of the previous round from the hypotheses of the source, and records an
+obstruction met in that attempt.  The injectivity holds because in a field a nonzero difference is invertible, so
+its image would be both invertible and zero, which is impossible in a nontrivial ring.  The attempt to build the
+data class from a primitive root of the base field, and to supply the unitness of the differences of its powers,
+did not succeed in this round: the coercion of the unit group map and the application of the ring homomorphism are
+not syntactically the same, and the rewriting, reflexivity and restricted simplification tactics all fail to bridge
+them.  Two candidate repairs are recorded: to carry out the power computations inside the unit group, where the map
+on powers applies directly and equality of units is decided by their values, or to take the unit itself rather than
+the element of the field as the field of the data class.  This is a probe-level reading and no negative claim is
+made.  The data class built from a primitive root, the unitness of the differences of its powers, the source-side
+usability of the criterion, and the source's remaining theorems are not addressed here.
