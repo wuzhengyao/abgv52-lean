@@ -1907,3 +1907,16 @@ it does not, is reported as containing unused arguments, so the steps are given 
 cyclic group on the carrier, the Galois criterion for it, the realization property in this case and the source's
 theorem for it are not addressed here.
 
+Round 350 records two prerequisites of the group action and of the criterion for the Kummer carrier.  First, the
+root is a unit as soon as the coefficient is one, since the product of the root with its power one below the order
+is the image of that coefficient.  Second, the powers of the shift act on the root by multiplying it by the
+corresponding power of the coefficient, and they still fix the coefficients; both are proved by induction, the
+induction step for the root using the composition law of the previous round.  Three declarations are recorded: the
+unitness of the root, the invariance of the coefficients under powers of the shift, and the action of powers of the
+shift on the root.  Two practical points are recorded: multiplying two ring homomorphisms is composition only up to
+definitional equality, so the value of a product at an argument has to be restated explicitly rather than obtained
+from a lemma; and the two recursion equations for powers produce the new factor on different sides, so the step
+that collects a power of the coefficient has to use one of them and the step that collects a power of the
+coefficient in the target the other.  The group action on the carrier, the Galois criterion for it, the realization
+property in this case and the source's theorem for it are not addressed here.
+

@@ -12124,9 +12124,91 @@ theorem kummerShiftH_bijective {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ :
 
 end KummerShiftGroup349
 
-#print axioms kummerShiftH_comp
-#print axioms kummerShiftH_one
-#print axioms kummerShiftH_bijective
+/-! ### 4.133 🔴 **T6-F 第二口（再续）：Kummer 根的幂与单位性**（第 350 轮）
+—— **Kummer 档第三步的承重前置** ✓（**`C_n`-作用的幂端 ＋ 判据的节点差** ✓）
+
+**靶** ✓：**源 `proposition-0-6(a)`** ✓（`a` **为单位** ✓）—— 本件落 **`ρ` 的幂在移位下的作用** ✓
+＋ **`root` 的单位性** ✓（**判据的"节点差为单位"一步所需** ✓）。
+
+**落成三件** ✓✅：**(甲)** **`kummerRoot_isUnit`** ✓✅ —— **`a` 单位（＋ `n ≥ 1`）⟹ `root` 是单位** ✓
+（**`root · root^{n−1} = root^n = of a`** ✓ 为单位 ⟹ **`isUnit_of_mul_isUnit_left`** ✓）；
+**(乙)** **`kummerShiftH_pow_of`** ✓✅ —— **`φ_ρ^m` 仍固定系数** ✓（归纳 ✓）；
+**(丙)** **`kummerShiftH_pow_root`** ✓✅ —— **`φ_ρ^m (root) = of (ρ^m) · root`** ✓（归纳 ＋ §4.132 的根公式 ✓）。
+
+**机制（(丙)）** ✓：**归纳步** ✓：`φ^{m+1} root = φ^m (φ root)` ✓（`pow_succ` ＋ `show` 展开 ✓ ——
+**⚠ `φ^m * φ` 的取值须 `show` 显式给出** ✗，**无 `RingHom.mul_apply`** ✗）⟹ **`kummerShiftH_root`** ✓ ⟹
+**`map_mul`** ✓ ＋ **`kummerShiftH_pow_of`** ✓ ＋ **归纳假设** ✓ ⟹ **`← mul_assoc` ＋ `← map_mul` ＋ `← pow_succ'`** ✓ 收口 ✓
+（**⚠ 须 `pow_succ'` 而非 `pow_succ`** ✗ —— 前者给 `ρ * ρ^m` ✓ 后者给 `ρ^m * ρ` ✗）。
+
+**⚠ 用途** ✓：**(甲)** 是**判据的节点差** `y ρ^{k'}(ρ^{k−k'} − 1)` **为单位** ✓ 的一半 ✓；
+**(丙)** 是 **`C_n`-作用**（**下一步** ✗）的**幂端** ✓ —— **故本件为 `C_n`-作用与判据的公共前置** ✓。
+
+**⚠ 工艺（两条，入 §5.1）** ✓：**(#67)** **`RingHom.mul_apply` 不存在** ✗ ⟹ **`φ^m * φ` 的取值须 `show` 显式展开** ✓
+（`(f * g) x = f (g x)` 由 **defeq** ✓ 而非引理 ✓）；**(#68)** **`pow_succ` 与 `pow_succ'` 的方向** ✗ ——
+**`φ^(m+1) = φ^m * φ`** ✓（`pow_succ` ✓）而 **`ρ^(m+1) = ρ * ρ^m`** ✓（`pow_succ'` ✓）⟹
+**同一证明内两者须分别取用** ✓（**实测**：用错即报 "Did not find an occurrence" ✗）。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` 已证 ✗（**只落幂与单位性** ✓ —— **`C_n`-作用 ＋ 判据 ＋ 实现未落** ✗）；
+**不**声称 **`C_n`-作用已构造** ✗；**不**声称 **`IsPrimitiveRoot ρ n` 已用** ✗；**不**声称源 `theorem-1-2(b)` 已证 ✗。 -/
+
+section KummerPowUnits350
+
+/-- **(甲) `root` 是单位** ✓（`a` 单位 ＋ `n ≥ 1` ✓）：`root * root^{n−1} = of a` ✓ 为单位 ⟹ `root` 为单位 ✓。 -/
+theorem kummerRoot_isUnit {R : Type u} [CommRing R] {n : ℕ} (hn : 1 ≤ n) {a : R}
+    (ha : IsUnit a) :
+    IsUnit (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) := by
+  have hroot : (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ n
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) a := by
+    have h := AdjoinRoot.eval₂_root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+    rw [Polynomial.eval₂_sub, Polynomial.eval₂_pow, Polynomial.eval₂_X, Polynomial.eval₂_C] at h
+    exact sub_eq_zero.mp h
+  have hmul : (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      * (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ (n - 1)
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) a := by
+    rw [← pow_succ', Nat.sub_add_cancel hn, hroot]
+  have hunit : IsUnit ((AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      * (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ (n - 1)) := by
+    rw [hmul]
+    exact ha.map _
+  exact isUnit_of_mul_isUnit_left hunit
+
+/-- **(乙) 幂保持系数** ✓：`φ_ρ^m (of r) = of r` ✓（归纳 ✓）。 -/
+theorem kummerShiftH_pow_of {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ)
+    (hρ : ((ρ : R)) ^ n = 1) (m : ℕ) (r : R) :
+    ((kummerShiftH a (ρ : R) hρ) ^ m)
+        (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r)
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r := by
+  induction m with
+  | zero => rfl
+  | succ m ih =>
+    rw [pow_succ]
+    show ((kummerShiftH a (ρ : R) hρ) ^ m)
+        ((kummerShiftH a (ρ : R) hρ)
+          (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r)) = _
+    rw [kummerShiftH_of, ih]
+
+/-- **(丙) 幂迭代** ✓：`φ_ρ^m (root) = of (ρ^m) · root` ✓（**归纳 ＋ 复合律** ✓）。 -/
+theorem kummerShiftH_pow_root {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ)
+    (hρ : ((ρ : R)) ^ n = 1) (m : ℕ) :
+    ((kummerShiftH a (ρ : R) hρ) ^ m)
+        (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) ((ρ : R) ^ m)
+        * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    rw [pow_succ]
+    show ((kummerShiftH a (ρ : R) hρ) ^ m)
+        ((kummerShiftH a (ρ : R) hρ)
+          (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))) = _
+    rw [kummerShiftH_root, map_mul, kummerShiftH_pow_of, ih]
+    rw [← mul_assoc, ← map_mul, ← pow_succ']
+
+end KummerPowUnits350
+
+#print axioms kummerRoot_isUnit
+#print axioms kummerShiftH_pow_of
+#print axioms kummerShiftH_pow_root
 
 
 end ABGV52
