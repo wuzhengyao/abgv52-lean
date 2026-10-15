@@ -9886,4 +9886,49 @@ finite_of_finrank_eq_card hcard`** ✓ 供给 ✓。
 **不**声称环档判据 ✓；**不**声称残余 ①／③ 已证 ✗。 -/
 
 
+/-! ### 4.109 **忠实 ⟺ 自同构族单射**（第 321 轮）
+—— §4.106 接口的**反向** ✓（两形**等价** ✓，调用方可任选 ✓）
+
+**落成两件** ✓✅：**(i)** **`faithfulSMul_of_actionAlgEquiv_injective`** ✓✅：自同构族**单射** ✓ ⟹ **`FaithfulSMul G L`** ✓；
+**(ii)** **`faithfulSMul_iff_actionAlgEquiv_injective`** ✓✅：**等价** ✓（§4.106 的正向 ✓ ＋ 本件的反向 ✓）。
+
+**机制** ✓（(i) ✓）：由 `faithfulSMul_iff` ✓ 只需证「不动一切 ⟹ `g = 1`」✓；取
+`actionAlgEquiv hfix g = actionAlgEquiv hfix 1` ✓（`ext x` ✓ ＋ `hg x` ✓ ＋ `one_smul` ✓）⟹ 单射性给 `g = 1` ✓。
+
+**⚠ 用途** ✓：**(ii)** 使 §4.105／§4.106 的忠实假设**可任取两形** ✓（`FaithfulSMul` ✓ 或
+`Function.Injective (fun g => actionAlgEquiv hfix g)` ✓）—— 对**实例化**（源侧常给「忠实作用」✓）便利 ✓。
+
+**🔴 不声称** ✗：**不**声称环档判据 ✓；**不**声称残余 ①／③ 已证 ✗；**不**声称源两条陈述已证 ✗。 -/
+
+section FaithfulInterface321
+
+open ABGV52.BTier
+
+/-- **自同构族单射 ⟹ 忠实** ✓（§4.106 的反向）。 -/
+theorem faithfulSMul_of_actionAlgEquiv_injective {K : Type u} [CommRing K] {L : Type u}
+    [CommRing L] [Algebra K L] {G : Type u} [Group G] [MulSemiringAction G L]
+    (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r)
+    (hinj : Function.Injective (fun g : G => actionAlgEquiv (S := L) hfix g)) :
+    FaithfulSMul G L := by
+  rw [faithfulSMul_iff]
+  intro g hg
+  refine hinj ?_
+  ext x
+  rw [show (actionAlgEquiv (S := L) hfix (1 : G)) x = x from one_smul G x]
+  exact hg x
+
+/-- **忠实 ⟺ 自同构族单射** ✓（§4.106 ＋ 本件）。 -/
+theorem faithfulSMul_iff_actionAlgEquiv_injective {K : Type u} [CommRing K] {L : Type u}
+    [CommRing L] [Algebra K L] {G : Type u} [Group G] [MulSemiringAction G L]
+    (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r) :
+    FaithfulSMul G L ↔ Function.Injective (fun g : G => actionAlgEquiv (S := L) hfix g) :=
+  ⟨fun h => actionAlgEquiv_injective_of_faithful h hfix,
+    fun h => faithfulSMul_of_actionAlgEquiv_injective hfix h⟩
+
+end FaithfulInterface321
+
+#print axioms faithfulSMul_of_actionAlgEquiv_injective
+#print axioms faithfulSMul_iff_actionAlgEquiv_injective
+
+
 end ABGV52

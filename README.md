@@ -1581,3 +1581,10 @@ landed in the previous round and is moved ahead of its uses here, since a declar
 file.  Existing callers are unaffected, as supplying an instance that is no longer required is harmless, and new
 instantiations of the criterion are spared one step.  One practical point is recorded about the ordering of
 declarations when strengthening a statement, and the round is a hardening round: it adds no new mathematics.
+
+Round 321 completes the faithfulness interface of the field criterion by proving the converse of the bridge landed three
+rounds earlier: if the family of automorphisms attached to the action is injective, then the action is faithful.  The
+two forms are therefore equivalent, and a caller may supply either the faithfulness assumption or the injectivity of
+that family.  The proof reduces faithfulness to the statement that an element acting trivially is the identity, and
+concludes by injectivity.  No new mathematics is added beyond this interface, and the ring case of the criterion
+remains open.
