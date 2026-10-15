@@ -12206,9 +12206,101 @@ theorem kummerShiftH_pow_root {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : 
 
 end KummerPowUnits350
 
-#print axioms kummerRoot_isUnit
-#print axioms kummerShiftH_pow_of
-#print axioms kummerShiftH_pow_root
+/-! ### 4.134 🔴🔴 **T6-F 第二口（三续）：Kummer 载体的 `C_n`-作用**（第 351 轮）
+—— **源 `proposition-0-6(a)` 的作用端落库** ✓（**§4.84 的乘法类比** ✓）
+
+**靶** ✓：**源 `proposition-0-6(a)`** ✓（`raw/Saltman1982.tex:142` ✓）：**`S = R{y^n − a}` 上 `C_n` 的作用
+`σ(y) = ρ · y`** ✓ —— **本件构造该作用** ✓（**判据 ＋ 实现仍欠** ✗）。
+
+**落成四件** ✓✅：**(甲)** **`kummer_pow_coeff_pow`** ✓✅ —— **`((ρ^m))^n = 1`** ✓（**具名** ✓ ⟹
+`smul` 的**证明项句法稳定** ✓ —— **本件的关键工艺** ✓）；**(乙)** **`kummerShiftH_congr`** ✓✅（同值同证 ✓，
+**proof irrelevance** ✓）；**(丙)** **`kummerShiftH_congr_val`** ✓✅ —— **值相等 ⟹ 移位相等** ✓
+（`subst` ＋ **proof irrelevance** ✓ —— **避依赖位重写** ✗）；**(丁)** **`kummerMSA`** ✓✅ ——
+**`MulSemiringAction (Multiplicative (ZMod n)) (kummerCarrier R n a)`** ✓✅，`smul k x := φ_{ρ^{k.val}} x` ✓。
+
+**机制（(丁) 的群律）** ✓：**(i)** **`one_smul`** ✓：`(1 : Multiplicative (ZMod n)).toAdd = 0` ✓ ⟹
+`ρ^{(0).val} = ρ^0 = 1` ✓（`ZMod.val_zero` ✓ ＋ `pow_zero` ✓）⟹ **`kummerShiftH_one`** ✓（§4.132 ✓）⟹ `1 • x = x` ✓；
+**(ii)** **`mul_smul`** ✓：**§4.132 的复合律** ✓ 给 `φ_{ρ^B} ∘ φ_{ρ^C} = φ_{ρ^B · ρ^C}` ✓；
+**`ZMod.val_add`** ✓ ＋ **`pow_eq_pow_mod`** ✓ 给 **`ρ^{k.val + k'.val} = ρ^{(k+k').val}`** ✓
+（`ZMod.val_add` ✓：`(k+k').val = (k.val + k'.val) % n` ✓）⟹ **值相等引理** ✓ 收口 ✓；
+**(iii)** **`smul_zero／add／mul／one`** ✓ ＝ 环同态的相应定律 ✓（**一行各** ✓）。
+
+**⚠ 工艺（三条，入 §5.1）** ✓：**(#69)** **`smul` 的证明项须具名** ✗ —— 若把 `((ρ^m)^n = 1)` 的证明**内联** ✗，
+则 `show`／`rw` 对其**无法句法匹配** ✗（且 `rw` 会因**证明项依赖被改写项**而报
+**"motive is not type correct"** ✗）⟹ **正解 ＝ 提出具名引理 `kummer_pow_coeff_pow`** ✓
+（**§5.1 #65／#67 同族 третья 命中** ✓）；
+**(#70)** **值相等须走独立引理** ✗：**不得**直接 `rw [hpow]` 于含 `φ t h` 的项 ✗（**同上 motive 错** ✗）⟹
+**正解 ＝ `kummerShiftH_congr_val`（`subst` ＋ proof irrelevance）** ✓ 再 `congrArg (fun f => f x)` ✓；
+**(#71)** **`kummerShiftH_comp` 的实参须给足** ✗（`n` **与三个证明项** ✓ —— 否则报
+"don't know how to synthesize implicit argument" ✗，**实测** ✓）。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` 已证 ✗（**作用已构造** ✓，**判据 ＋ 实现未落** ✗）；
+**不**声称作用**忠实** ✗（**须 `IsPrimitiveRoot ρ n`** ✗ —— **本件未用** ✗）；
+**不**声称源 `theorem-1-2(b)`／`proposition-0-6(c)` 已证 ✗。 -/
+
+section KummerMSA351
+
+/-- **(甲) 幂系数的 `n` 次幂为 1** ✓（具名 ✓ —— 供 `smul` 的证明项**句法稳定** ✓）。 -/
+theorem kummer_pow_coeff_pow {R : Type u} [CommRing R] {n : ℕ} (ρ : Rˣ)
+    (hρ : ((ρ : R)) ^ n = 1) (m : ℕ) : (((ρ : R)) ^ m) ^ n = 1 := by
+  rw [← pow_mul, Nat.mul_comm, pow_mul, hρ, one_pow]
+
+/-- **(乙) 移位只依赖系数的值** ✓（proof irrelevance ✓）。 -/
+theorem kummerShiftH_congr {R : Type u} [CommRing R] {n : ℕ} (a t : R) (h1 : t ^ n = 1)
+    (h2 : t ^ n = 1) : kummerShiftH a t h1 = kummerShiftH a t h2 :=
+  congrArg (fun h => kummerShiftH a t h) (Subsingleton.elim h1 h2)
+
+/-- **(乙′) 值相等 ⟹ 移位相等** ✓（`subst` ＋ proof irrelevance ✓ —— **避依赖位重写** ✗）。 -/
+theorem kummerShiftH_congr_val {R : Type u} [CommRing R] {n : ℕ} (a : R) {t1 t2 : R}
+    (h : t1 = t2) (h1 : t1 ^ n = 1) (h2 : t2 ^ n = 1) :
+    kummerShiftH a t1 h1 = kummerShiftH a t2 h2 := by
+  subst h
+  exact kummerShiftH_congr a t1 h1 h2
+
+/-- **(丙) `C_n`-作用** ✓✅：`k ↦ φ_{ρ^{k.val}}` ✓（**群律由 `ZMod.val_add` ＋ `pow_eq_pow_mod`** ✓）。 -/
+@[instance_reducible] noncomputable def kummerMSA {R : Type u} [CommRing R] {n : ℕ} [NeZero n]
+    (a : R) (ρ : Rˣ) (hρ : ((ρ : R)) ^ n = 1) :
+    MulSemiringAction (Multiplicative (ZMod n)) (kummerCarrier R n a) where
+  smul k x := kummerShiftH a ((ρ : R) ^ (Multiplicative.toAdd k).val)
+    (kummer_pow_coeff_pow ρ hρ _) x
+  one_smul x := by
+    have h0 : (ρ : R) ^ ((0 : ZMod n).val) = 1 := by rw [ZMod.val_zero, pow_zero]
+    have h1 : (1 : R) ^ n = 1 := one_pow n
+    exact (congrArg (fun f => f x) (kummerShiftH_congr_val a h0 _ h1)).trans
+      (congrArg (fun f => f x) (kummerShiftH_one a h1))
+  mul_smul k k' x := by
+    show kummerShiftH a ((ρ : R) ^ (Multiplicative.toAdd (k * k')).val)
+        (kummer_pow_coeff_pow ρ hρ _) x
+      = kummerShiftH a ((ρ : R) ^ (Multiplicative.toAdd k).val) (kummer_pow_coeff_pow ρ hρ _)
+          (kummerShiftH a ((ρ : R) ^ (Multiplicative.toAdd k').val)
+            (kummer_pow_coeff_pow ρ hρ _) x)
+    have hBC : (((ρ : R) ^ (Multiplicative.toAdd k).val
+        * (ρ : R) ^ (Multiplicative.toAdd k').val)) ^ n = 1 := by
+      rw [← pow_add]
+      exact kummer_pow_coeff_pow ρ hρ _
+    have hcomp := kummerShiftH_comp (n := n) a ((ρ : R) ^ (Multiplicative.toAdd k).val)
+      ((ρ : R) ^ (Multiplicative.toAdd k').val) (kummer_pow_coeff_pow ρ hρ _)
+      (kummer_pow_coeff_pow ρ hρ _) hBC
+    rw [← RingHom.comp_apply, hcomp]
+    have hpow : (ρ : R) ^ (Multiplicative.toAdd k).val
+          * (ρ : R) ^ (Multiplicative.toAdd k').val
+        = (ρ : R) ^ (Multiplicative.toAdd (k * k')).val := by
+      rw [← pow_add,
+        show Multiplicative.toAdd (k * k')
+          = Multiplicative.toAdd k + Multiplicative.toAdd k' from rfl,
+        ZMod.val_add]
+      exact pow_eq_pow_mod _ hρ
+    exact congrArg (fun f => f x) (kummerShiftH_congr_val a hpow.symm _ _)
+  smul_zero k := map_zero _
+  smul_add k x y := map_add _ x y
+  smul_mul k x y := map_mul _ x y
+  smul_one k := map_one _
+
+end KummerMSA351
+
+#print axioms kummer_pow_coeff_pow
+#print axioms kummerShiftH_congr
+#print axioms kummerShiftH_congr_val
 
 
 end ABGV52

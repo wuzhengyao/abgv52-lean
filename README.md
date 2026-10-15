@@ -1920,3 +1920,19 @@ that collects a power of the coefficient has to use one of them and the step tha
 coefficient in the target the other.  The group action on the carrier, the Galois criterion for it, the realization
 property in this case and the source's theorem for it are not addressed here.
 
+Round 351 constructs the action of the cyclic group on the Kummer carrier.  The group element acts by the shift
+whose coefficient is the corresponding power of the distinguished unit, taken at the canonical representative of
+the residue class, and the action axioms reduce to the composition law of the previous rounds together with the
+compatibility of that canonical representative with addition and the reduction of powers modulo the order.  Two
+auxiliary lemmas are recorded: powers of the distinguished unit have the required order, and the shift depends only
+on the value of its coefficient, so that two shifts with the same coefficient but different proofs of that order
+agree; the latter is what allows the group law to be proved without rewriting inside the argument of a shift.  Four
+declarations are recorded: the order of the powers of the unit, the independence of the shift from the proof, its
+value form, and the action itself.  Three practical points are recorded: the proof that the coefficient has the
+required order must be a named lemma, since an inlined proof cannot be matched syntactically and rewriting it
+fails with a motive error; an equality of coefficients is transported to an equality of shifts through the
+independence lemma rather than by rewriting, for the same reason; and the composition law has to be applied with all
+of its arguments, including the three proofs of the order condition, since they cannot be inferred.  Faithfulness of
+the action, the Galois criterion for the carrier, the realization property in this case and the source's theorem
+for it are not addressed here.
+
