@@ -2582,3 +2582,20 @@ The failing attempt introduced `sorryAx`, so it was withdrawn at once, and the
 tree is again free of `sorry`.  The facts confirmed this round are recorded:
 `Ideal.pointwise_smul_def`, `Ideal.isMaximal_map_iff_of_bijective`, and that
 `MulSemiringAction.toRingEquiv` needs `Group M` rather than `Monoid M`.
+
+## Round 386 (2026-10-15, appended)
+
+`maximalSpectrumMulAction`: the action of a group of ring automorphisms on
+`MaximalSpectrum R`, that is on the set of factors of the product decomposition
+of round 365.  Maximality of the image follows from `Ideal.pointwise_smul_def`,
+which identifies the pointwise action on ideals with
+`Ideal.map (MulSemiringAction.toRingHom _ _ a)`, and from
+`Ideal.isMaximal_map_iff_of_bijective`, maximality being preserved along `map`
+under the bijective ring homomorphism `MulSemiringAction.toRingEquiv`, which
+requires `Group M` rather than `Monoid M`.
+
+The reason the earlier attempts failed was that the action instance on ideals is
+declared with `scoped[Pointwise]`, available only in the `Pointwise` locale, so
+`open scoped Pointwise` is needed; neither a missing hypothesis nor a missing
+import was at fault.  Adding the declaration at the end of the file, rather than
+editing it in place, avoided the earlier mishaps with block comments.

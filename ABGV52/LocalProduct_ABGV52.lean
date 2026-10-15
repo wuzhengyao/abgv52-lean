@@ -230,3 +230,26 @@ end PermFixed
 end CpAction
 
 end ABGV52.LocalProduct
+
+
+/-! ## (丙) 接线最后一步：`MaximalSpectrum` 上的 `M`-作用（第 386 轮）
+
+**根因（第 385 轮定位）** ✓：`Ideal` 上的作用实例是 **`scoped[Pointwise]`** ✗
+（`Mathlib/RingTheory/Ideal/Pointwise.lean:64` ✓）⟹ 须 `open scoped Pointwise` ✓。
+**装配** ✓：`smul a I := ⟨a • I.asIdeal, …⟩` ✓ —— 极大性由 **`Ideal.pointwise_smul_def`** ✓
+（`a • I = Ideal.map (toRingHom a) I` ✓）＋ **`Ideal.isMaximal_map_iff_of_bijective`** ✓
+沿环自同构 **`MulSemiringAction.toRingEquiv`** ✓（须 `[Group M]` ✗）保持 ✓。 -/
+
+open scoped Pointwise
+
+/-- **(丙) 接线最后一步** ✓：`MaximalSpectrum` 上的 `M`-作用 ✓（`G` 在 (乙) 的因子集上的作用 ✓）。 -/
+instance maximalSpectrumMulAction (M R : Type*) [Group M] [CommRing R]
+    [MulSemiringAction M R] : MulAction M (MaximalSpectrum R) where
+  smul a I := ⟨a • I.asIdeal, by
+    rw [Ideal.pointwise_smul_def]
+    exact (Ideal.isMaximal_map_iff_of_bijective _
+      (MulSemiringAction.toRingEquiv M R a).bijective).mpr I.2⟩
+  one_smul I := MaximalSpectrum.ext (one_smul M I.asIdeal)
+  mul_smul a b I := MaximalSpectrum.ext (mul_smul a b I.asIdeal)
+
+#print axioms maximalSpectrumMulAction
