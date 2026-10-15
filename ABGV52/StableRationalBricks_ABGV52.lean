@@ -292,6 +292,28 @@ theorem map_C_le_nonZeroDivisors (R : Type*) [CommRing R] [IsDomain R] (σ : Typ
 
 #print axioms map_C_le_nonZeroDivisors
 
+/-! ### 砖①塔的**构件 1**：系数嵌入（第 378 轮）
+
+**目标** ✓：塔展平 `RF (RF K k) n ≅ RF K (k+n)` 的第一步 —— 把系数环 `RF K k = FractionRing A`
+（`A := MvPolynomial (Fin k) K` ✓）**映入**大分式环 `T := FractionRing (MvPolynomial (Fin n) A)` ✓。
+**路线** ✓：`A → A[x] → T` 的复合**单射** ✓（域 ✓）⟹ `IsFractionRing.lift` 提升为 `RF K k →+* T` ✓。
+**用途** ✓：它给出 `T` 上的 **`Algebra (RF K k) T`** ✓（经 `RingHom.toAlgebra` ✓），进而
+`MvPolynomial.eval₂Hom` 给 **`Algebra (MvPolynomial (Fin n) (RF K k)) T`** ✓ —— 即
+`isFractionRing_of_isLocalization` 所需的 **`[Algebra S T]`** ✓（第 377 轮定位的障碍 ✓）。 -/
+noncomputable def coeffMap (K : Type*) [Field K] (k n : ℕ) :
+    EM.rationalFunctionField K k →+*
+      FractionRing (MvPolynomial (Fin n) (MvPolynomial (Fin k) K)) :=
+  IsFractionRing.lift (K := EM.rationalFunctionField K k)
+    (L := FractionRing (MvPolynomial (Fin n) (MvPolynomial (Fin k) K)))
+    (g := (algebraMap (MvPolynomial (Fin n) (MvPolynomial (Fin k) K))
+        (FractionRing (MvPolynomial (Fin n) (MvPolynomial (Fin k) K)))).comp
+      (MvPolynomial.C : MvPolynomial (Fin k) K →+*
+        MvPolynomial (Fin n) (MvPolynomial (Fin k) K)))
+    (fun a b h => MvPolynomial.C_injective _ _
+      (IsFractionRing.injective (MvPolynomial (Fin n) (MvPolynomial (Fin k) K)) _ h))
+
+#print axioms coeffMap
+
 #print axioms exists_denom_mul_eq_algebraMap
 #print axioms C_mem_nonZeroDivisors
 #print axioms isUnit_algebraMap_fractionRing

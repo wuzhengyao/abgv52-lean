@@ -2477,3 +2477,22 @@ The tower brick itself is *not* in this round.  With the bridge available, its
 remaining obstacle is the instance `Algebra S T` for
 `S = MvPolynomial sigma (FractionRing R)`, which has to be built through
 `IsLocalization.lift`, together with the corresponding `IsScalarTower`.
+
+## Round 378 (2026-10-15, appended)
+
+`coeffMap`: the coefficient ring `K(t_1,...,t_k)`, that is `FractionRing A` for
+`A = MvPolynomial (Fin k) K`, maps into the larger fraction ring
+`FractionRing (MvPolynomial (Fin n) A)`.  The map is obtained from
+`IsFractionRing.lift` applied to the composite `A → A[x] → T`, which is
+injective because the target is a field.
+
+This is the first component of the tower.  It yields an `Algebra` structure of
+the coefficient ring on `T`, through `RingHom.toAlgebra`, and then, by
+`MvPolynomial.eval₂Hom`, the instance `Algebra (MvPolynomial (Fin n)
+(FractionRing A)) T` that `IsFractionRing.isFractionRing_of_isLocalization`
+needs; that instance was the obstacle identified in round 377.
+
+The tower statement itself is not in this round.  What remains is the
+`IsScalarTower`, the assembly through `isFractionRing_of_isLocalization`, the
+isomorphism between the two fraction rings, and the composition with
+`mvPolynomial_tower`.
