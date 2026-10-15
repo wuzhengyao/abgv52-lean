@@ -2431,3 +2431,26 @@ of `sigma` (the cause of five type errors); `coeff_map` must be rewritten before
 closed with a backwards rewrite and `ring`.  Still undetermined: the orientation
 of the `if` in `coeff_monomial`, and the lemma giving `coeff = 0` outside the
 support, `Finsupp.not_mem_support_iff.mp` being absent.
+
+## Round 376 (2026-10-15, appended)
+
+`exists_denom_mul_eq_map`: every element of `MvPolynomial sigma (FractionRing A)`
+becomes, after multiplication by a suitable non-zero divisor (as a constant
+polynomial), the image of an element of `MvPolynomial sigma A`.  This is the
+substance of the surjectivity clause of the pending localisation statement.  The
+proof takes a denominator for each coefficient, multiplies them over the support,
+and checks the identity coefficient by coefficient.
+
+Three API questions are now settled, all of which had blocked earlier attempts:
+the `if` in `coeff_monomial` reads `if v = u`, matching `Finset.sum_ite_eq'`
+rather than `Finset.sum_eq_single`; `Finset.prod_eq_mul_prod_diff_singleton` is
+stated for an element *outside* the finset, so `Finset.mul_prod_erase` is the one
+needed; and `coeff = 0` outside the support comes from
+`MvPolynomial.mem_support_iff`, since `Finsupp.not_mem_support_iff` does not
+exist.
+
+One process note.  Interval-style scripted edits failed twice this round and one
+of them silently overwrote a lemma committed in the previous round; the file was
+restored with `git checkout` and the lemma inserted by line number instead.  Edits
+to the development are henceforth done by reading the file, inserting or
+replacing by line number, and compiling the single file immediately.

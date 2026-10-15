@@ -215,6 +215,40 @@ theorem prod_mem_nonZeroDivisors {A : Type*} [CommRing A] [IsDomain A] {ι : Typ
   Submonoid.prod_mem (nonZeroDivisors A) h
 
 #print axioms prod_mem_nonZeroDivisors
+
+/-- **砖①零件 4（多项式层清分母）** ✓：`MvPolynomial σ (FractionRing A)` 的每个元素乘以某个
+**非零因子**（作为常多项式 ✓）后落在 `MvPolynomial σ A` 的像里 ✓ —— 即 **`IsLocalization` 的 `surj'` 实质** ✓。
+**证法** ✓：逐系数取分母（零件 3 ✓），`s := Π_{v ∈ support} d v` ✓（零件 5 ✓），
+`q := Σ_{v ∈ support} monomial v (b v * Π_{w ∈ support.erase v} d w)` ✓，逐系数验证 ✓。
+**已核 API 事实** ✓：`p.support` 的元素是**指数向量** `σ →₀ ℕ` ✓；`coeff_monomial` 的 `if` 朝向为 **`if v = u`** ✓
+（故配 **`Finset.sum_ite_eq'`** ✓）；`u ∉ support ⟹ coeff = 0` 用 **`MvPolynomial.mem_support_iff`** ✓。 -/
+theorem exists_denom_mul_eq_map {A : Type*} [CommRing A] [IsDomain A] {σ : Type*}
+    (p : MvPolynomial σ (FractionRing A)) :
+    ∃ (s : A) (_ : s ∈ nonZeroDivisors A) (q : MvPolynomial σ A),
+      p * MvPolynomial.C (algebraMap A (FractionRing A) s) =
+        MvPolynomial.map (algebraMap A (FractionRing A)) q := by
+  classical
+  choose d hd b hb using fun v : σ →₀ ℕ => exists_denom_mul_eq_algebraMap (p.coeff v)
+  refine ⟨∏ v ∈ p.support, d v,
+    prod_mem_nonZeroDivisors _ _ fun v _ => hd v,
+    ∑ v ∈ p.support, MvPolynomial.monomial v (b v * ∏ w ∈ p.support.erase v, d w), ?_⟩
+  ext u
+  have hL : (p * MvPolynomial.C (algebraMap A (FractionRing A)
+        (∏ v ∈ p.support, d v))).coeff u
+      = algebraMap A (FractionRing A) (∏ v ∈ p.support, d v) * p.coeff u := by
+    rw [mul_comm p (MvPolynomial.C _), MvPolynomial.coeff_C_mul]
+  rw [hL, MvPolynomial.coeff_map, MvPolynomial.coeff_sum,
+    Finset.sum_congr rfl fun v _ => by rw [MvPolynomial.coeff_monomial],
+    Finset.sum_ite_eq']
+  by_cases hu : u ∈ p.support
+  · rw [if_pos hu, ← Finset.mul_prod_erase p.support d hu, map_mul, map_mul, ← hb u]
+    ring
+  · have hcoeff : p.coeff u = 0 := by
+      by_contra h
+      exact hu (MvPolynomial.mem_support_iff.mpr h)
+    rw [ite_eq_right hu, map_zero, hcoeff, mul_zero]
+
+#print axioms exists_denom_mul_eq_map
 #print axioms exists_denom_mul_eq_algebraMap
 #print axioms C_mem_nonZeroDivisors
 #print axioms isUnit_algebraMap_fractionRing
