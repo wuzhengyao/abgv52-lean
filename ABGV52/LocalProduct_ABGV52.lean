@@ -601,3 +601,28 @@ theorem hfix_fun_of_galoisFixedRingHyp {G : Type*} {ι K : Type u} [Group G] [Fi
     ∀ x : ι → K, (∀ g : G, g • x = x) → ∃ c : K, algebraMap K (ι → K) c = x := h
 
 #print axioms hfix_fun_of_galoisFixedRingHyp
+
+
+/-! ## (丙) **条件式收口件**（第 446 轮 ✓）：计数定理**只条件化于共用具名件**
+
+**作用** ✓：把第 415 轮计数定理的**独立 `hfix` 假设** ✗ 换成**二分共用具名件** `GaloisFixedRingHyp`（418 ✓）
+—— 经连接件（441 ✓）**自动满足** ✓ ⟹ **(丙) 计数／(甲)／(丙) 右支条件化于同一条外部定理** ✓（**假设面统一** ✓）。
+**⚠ 三条工艺（两轮实测所得 ✓）**：① 缺 **`[NeZero p]`** ✗ 时 `Fintype (Multiplicative (ZMod p))` **不自动合成** ✓
+（`Fintype (ZMod p)` 的前提 ✓）；② 补 `[NeZero p]` ✓ 后**该实例已由 `Multiplicative.fintype` 派生** ✓ ⟹
+**显式再给一个实例假设反而报"与推断实例不等"** ✗ ⟹ **须删去** ✓；③ 宇宙须对齐 ✓（`K` 与 `L` 同取 `Type u` ✓）。 -/
+
+/-- **(丙) 条件式收口** ✓：由**共用具名件**直接得**因子个数 ＝ p** ✓。 -/
+theorem card_maximalSpectrum_eq_prime_of_galoisFixedRing {p : ℕ} (hp : p.Prime) [NeZero p]
+    {K : Type u} {L : Type u} [Field K] [CommRing L] [Algebra K L]
+    [MulSemiringAction (Multiplicative (ZMod p)) L]
+    [Fintype (MaximalSpectrum L)] [Nonempty (MaximalSpectrum L)]
+    (hRG : ∀ (g : Multiplicative (ZMod p)) (r : K) (t : MaximalSpectrum L → K),
+      g • (r • t) = r • (g • t))
+    (h : GaloisFixedRingHyp K (MaximalSpectrum L → K) (Multiplicative (ZMod p)) hRG)
+    [Fintype (MulAction.orbit (Multiplicative (ZMod p)) (Classical.arbitrary (MaximalSpectrum L)))]
+    [Fintype ↥(MulAction.stabilizer (Multiplicative (ZMod p)) (Classical.arbitrary (MaximalSpectrum L)))]
+    (h2 : 2 ≤ Fintype.card (MaximalSpectrum L)) :
+    Fintype.card (MaximalSpectrum L) = p :=
+  card_maximalSpectrum_eq_prime hp (hfix_fun_of_galoisFixedRingHyp hRG h) h2
+
+#print axioms card_maximalSpectrum_eq_prime_of_galoisFixedRing
