@@ -1936,3 +1936,20 @@ of its arguments, including the three proofs of the order condition, since they 
 the action, the Galois criterion for the carrier, the realization property in this case and the source's theorem
 for it are not addressed here.
 
+Round 352 records the injectivity of the structure map of the Kummer carrier and the faithfulness of the action.  The
+injectivity is proved as in the additive case, by reducing a constant modulo the defining polynomial, which is
+monic of positive degree.  Faithfulness is proved by evaluating at the root: if a group element acts trivially, then
+the structure map applied to one less than the corresponding power of the distinguished unit annihilates the root,
+and since the root is a unit the structure map is injective, so that power is one; primitivity of the unit then
+forces the exponent to be divisible by the order, whence the canonical representative of the residue class is zero.
+The conclusion is stated as the triviality of the kernel rather than as the type class of faithfulness, because the
+action carries the distinguished unit and its order as explicit arguments which do not occur in its result type, so
+that it cannot be registered for type class synthesis; this is recorded as a difference from the additive case,
+where the coefficient does occur in the result type.  Three declarations are recorded: the vanishing criterion for
+the structure map, its injectivity, and the triviality of the kernel of the action.  Three practical points are
+recorded: cancelling a unit is done by extracting the unit first, since rewriting with its specification otherwise
+fails with a motive error; collecting a power under the structure map uses the direction of the power rule that
+collects rather than the one that distributes; and after cancelling a unit the zero may stand on the left, which
+requires the corresponding lemma for multiplication by zero on the left.  The fixed base, the Galois criterion for
+this carrier, the realization property in this case and the source's theorem for it are not addressed here.
+

@@ -12298,9 +12298,124 @@ theorem kummerShiftH_congr_val {R : Type u} [CommRing R] {n : ℕ} (a : R) {t1 t
 
 end KummerMSA351
 
-#print axioms kummer_pow_coeff_pow
-#print axioms kummerShiftH_congr
-#print axioms kummerShiftH_congr_val
+/-! ### 4.135 🔴🔴 **T6-F 第二口（四续）：Kummer 档的 `of` 单射与作用忠实性**（第 352 轮）
+—— **源 `proposition-0-6(a)` 的款①（忠实性）落库** ✓（**§4.86／§4.87 的乘法类比** ✓）
+
+**靶** ✓：**源 `proposition-0-6(a)`** ✓ 的**款①** ✓ —— **`C_n`-作用的忠实性** ✓
+（**⚠ 须 `IsPrimitiveRoot ρ n`** ✗ —— **乘法档的新增输入** ✓，AS 档无对应物 ✓）。
+
+**落成三件** ✓✅：**(甲)** **`kummer_of_eq_zero`** ✓✅ —— **`of x = 0 ⟹ x = 0`** ✓（**与 §4.128 同法** ✓：
+`C x %ₘ f = C x = 0` ✓ —— **首一 ＋ 正次数** ✓）；**(乙)** **`kummer_of_injective`** ✓✅；
+**(丙)** **`kummerShift_faithful`** ✓✅ —— **核平凡形** ✓：**`ρ` 本原 `n` 次单位根 ＋ `a` 单位** ✓ ⟹
+**`∀ k, (∀ x, φ_{ρ^{k.val}} x = x) → k = 1`** ✓。
+
+**机制（(丙)，链六步）** ✓：**在根上取一次值** ✓（§4.86 同法 ✓）⟹ `of(ρ^{k.val}) · root = root` ✓ ⟹
+`(of(ρ^{k.val}) − 1) · root = 0` ✓ ⟹ **`root` 单位** ✓（§4.133 ✓）⟹ **`of (ρ^{k.val} − 1) = 0`** ✓ ⟹
+**(甲)** ✓ ⟹ **`ρ^{k.val} = 1`** ✓ ⟹ **`IsPrimitiveRoot.pow_eq_one_iff_dvd`** ✓ ⟹ `n ∣ k.val` ✓ ⟹
+**`ZMod.val_lt`** ✓ ⟹ `k.val = 0` ✓ ⟹ **`ZMod.natCast_zmod_val`** ✓ ⟹ `k = 1` ✓。
+
+**⚠ 口径（重要 ✓）** ✗：**`kummerMSA` 不能注册为类型类实例** ✗ —— **Lean 拒登** ✓（**`ρ` 与 `hρ` 不出现在返回类型中** ✓，
+**无法由类型类合成推断** ✗；AS 档的 `asCarrierMSA` 之 `a` **出现在返回类型** ✓ 故可登 ✓）⟹
+**正解 ＝ 结论取"核平凡"形** ✓（**免 `FaithfulSMul` 的实例要求** ✓，**内容与忠实性等价** ✓）。
+
+**⚠ 工艺（三条，入 §5.1）** ✓：**(#72)** **`IsUnit` 的乘法消去须先 `obtain` 出单位** ✗ ——
+**直接 `rw [hu.unit_spec]` 会因 `hu` 的类型依赖被改写项而报 "motive is not type correct"** ✗
+（**依赖位重写第四次命中** ✓）⟹ **正解 ＝ `obtain ⟨u, hu_eq⟩ := hu`** ✓ 再 `rw [hu_eq]` ✓；
+**(#73)** **`← map_pow` 的方向** ✗ —— 目标里 `(of ρ)^m`（**像的幂** ✓）与 `of (ρ^m)`（**幂的像** ✓）**须用 `← map_pow`** ✓
+（**用 `map_pow` 报 "Did not find an occurrence"** ✗，**实测** ✓）；**(#74)** **`Units.mul_inv` 后零在左** ✗ ⟹
+**`zero_mul` 而非 `mul_zero`** ✓（**实测** ✓）。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` 已证 ✗（**款① 已落** ✓ —— **款②（不动基）＋ 款③（判据）＋ 实现未落** ✗）；
+**不**声称 **`FaithfulSMul` 实例形已落** ✗（**只落核平凡形** ✓ —— **口径已登记** ✓）；**不**声称源 `theorem-1-2(b)` 已证 ✗。 -/
+
+section KummerFaithful352
+
+/-- **(甲) `of x = 0 ⟹ x = 0`（Kummer 档）** ✓（与 §4.128 同法 ✓）。 -/
+theorem kummer_of_eq_zero {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} (hn : 1 ≤ n) (a : R)
+    {x : R} (h : AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) x = 0) :
+    x = 0 := by
+  have hmonic : ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a).Monic :=
+    kpoly_monic (R := R) hn a
+  have hdeg : ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a).natDegree = n :=
+    kpoly_natDegree (R := R) hn a
+  have hdvd : ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) ∣ Polynomial.C x := by
+    rw [← AdjoinRoot.mk_eq_zero]
+    exact h
+  have hmod : (Polynomial.C x) %ₘ ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) = 0 :=
+    (Polynomial.modByMonic_eq_zero_iff_dvd hmonic).mpr hdvd
+  have hself : (Polynomial.C x) %ₘ ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+      = Polynomial.C x := by
+    refine (Polynomial.modByMonic_eq_self_iff hmonic).mpr ?_
+    have hdeg' : ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a).degree = (n : WithBot ℕ) := by
+      rw [Polynomial.degree_eq_natDegree hmonic.ne_zero, hdeg]
+    refine lt_of_le_of_lt Polynomial.degree_C_le ?_
+    rw [hdeg']
+    exact_mod_cast hn
+  rw [hself] at hmod
+  exact Polynomial.C_eq_zero.mp hmod
+
+/-- **(乙) `of` 单射（Kummer 档）** ✓。 -/
+theorem kummer_of_injective {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} (hn : 1 ≤ n) (a : R) :
+    Function.Injective (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) := by
+  intro r s h
+  have hsub : AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) (r - s) = 0 := by
+    rw [map_sub, h, sub_self]
+  exact sub_eq_zero.mp (kummer_of_eq_zero (R := R) (n := n) hn a hsub)
+
+/-- **(丙) 忠实性（核平凡形）** ✓✅：`ρ` **本原 `n` 次单位根** ✓ ＋ **`a` 单位** ✓ ⟹
+**作用核平凡** ✓（**在根上取一次值** ✓ —— §4.86 同法 ✓）。
+**⚠ 口径** ✗：`kummerMSA` **不能注册为实例** ✗（`ρ`／`hρ` **不出现在返回类型中** ✓，
+与 AS 档的 `a` 不同 ✗ —— Lean 拒登 ✓）⟹ **结论取"核平凡"形** ✓（**免 `FaithfulSMul` 的实例要求** ✓，
+**内容等价** ✓）。 -/
+theorem kummerShift_faithful {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} [NeZero n]
+    (hn : 1 ≤ n) (a : R) (ρ : Rˣ) (hρ : ((ρ : R)) ^ n = 1)
+    (hprim : IsPrimitiveRoot (ρ : R) n) (ha : IsUnit a) :
+    ∀ k : Multiplicative (ZMod n),
+      (∀ x : kummerCarrier R n a,
+        kummerShiftH a ((ρ : R) ^ (Multiplicative.toAdd k).val)
+          (kummer_pow_coeff_pow ρ hρ _) x = x) → k = 1 := by
+  intro k hk
+  have hroot : kummerShiftH a ((ρ : R) ^ (Multiplicative.toAdd k).val)
+      (kummer_pow_coeff_pow ρ hρ _)
+      (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      = AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) := hk _
+  rw [kummerShiftH_root] at hroot
+  have hu : IsUnit (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) :=
+    kummerRoot_isUnit (R := R) (n := n) hn ha
+  have hof : AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+      ((ρ : R) ^ (Multiplicative.toAdd k).val - 1) = 0 := by
+    have h1 : (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) (ρ : R)
+          ^ (Multiplicative.toAdd k).val - 1)
+        * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) = 0 := by
+      rw [sub_mul, one_mul, ← map_pow, hroot, sub_self]
+    obtain ⟨u, hu_eq⟩ := hu
+    have h3 : (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) (ρ : R)
+          ^ (Multiplicative.toAdd k).val - 1) * (↑u : AdjoinRoot ((Polynomial.X : Polynomial R) ^ n
+            - Polynomial.C a)) = 0 := by
+      rw [hu_eq]
+      exact h1
+    have h4 := congrArg (fun t => t
+      * (↑u⁻¹ : AdjoinRoot ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))) h3
+    rw [mul_assoc, Units.mul_inv, mul_one, zero_mul] at h4
+    rw [map_sub, map_pow, map_one]
+    exact h4
+  have hzero : (ρ : R) ^ (Multiplicative.toAdd k).val - 1 = 0 :=
+    kummer_of_eq_zero (R := R) (n := n) hn a hof
+  have hpow : (ρ : R) ^ (Multiplicative.toAdd k).val = 1 := sub_eq_zero.mp hzero
+  have hdvd : n ∣ (Multiplicative.toAdd k).val := (hprim.pow_eq_one_iff_dvd _).mp hpow
+  have hval : (Multiplicative.toAdd k).val = 0 := Nat.eq_zero_of_dvd_of_lt hdvd (ZMod.val_lt _)
+  have htoAdd : Multiplicative.toAdd k = 0 := by
+    have h := ZMod.natCast_zmod_val (Multiplicative.toAdd k)
+    rw [hval] at h
+    simpa using h.symm
+  have h1 : Multiplicative.toAdd (1 : Multiplicative (ZMod n)) = 0 := rfl
+  exact Multiplicative.toAdd.injective (by rw [htoAdd, h1])
+
+end KummerFaithful352
+
+#print axioms kummer_of_eq_zero
+#print axioms kummer_of_injective
+#print axioms kummerShift_faithful
 
 
 end ABGV52
