@@ -2252,3 +2252,27 @@ extension.  Since the `L` of the paper is a commutative algebra and not
 necessarily a field, the finiteness half is not discharged by this round; what
 it does give is the field case, and the candidate route of reducing the domain
 case to it.
+
+## Round 367 (2026-10-15, appended)
+
+`ABGV52/LocalProduct_ABGV52.lean` gains the combinatorial core of the third
+input of the dichotomy.
+
+`card_orbit_eq_one_or_eq_prime`: an orbit of `Multiplicative (ZMod p)` for prime
+`p` has cardinality `1` or `p`.  The proof multiplies the orbit and stabiliser
+cardinalities to get `p`, so the orbit cardinality divides a prime.
+
+`card_eq_one_or_eq_prime_of_pretransitive`: if the action is transitive, then the
+ambient finite type has cardinality `1` or `p`.
+
+Two craft notes.  The `Fintype` instances for an orbit and for a stabiliser are
+not synthesised automatically, so the two statements take them as arguments; in
+the intended use `α` is `MaximalSpectrum L`, which is finite.  And the usable
+instance is `Fintype (ZMod p)`: from `Fintype (Multiplicative (ZMod p))` alone
+`ZMod.card` cannot be applied.
+
+What remains of this third input is its algebraic part: transitivity of the
+action on `MaximalSpectrum L` (via a `G`-invariant idempotent argument), the
+conclusion `L ≅ K^p` in the case of `p` factors (fixed elements of a product
+under a cyclic permutation are diagonal), and the hardest step, that a single
+factor forces `L` to be a domain.

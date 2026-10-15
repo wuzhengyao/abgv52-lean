@@ -65,4 +65,58 @@ theorem exists_local_product_decomposition [IsArtinianRing L] :
 #print axioms factor_isLocalRing
 #print axioms exists_local_product_decomposition
 
+/-! ## (丙) `C_p` 作用的**组合核心**（第 367 轮，2026-10-15）
+
+**所攻问句** ✓：素数阶群 `C_p = Multiplicative (ZMod p)` 作用在集合 `α` 上 —— 轨道能有多大？
+**答案** ✓：**只能 1 或 p** ✓（轨道大小整除群阶 ✓，而素数只有 1 与自身两个因子 ✓）。
+**推论** ✓：若作用**传递**，则 `card α ∈ {1, p}` ✓。
+**⚠ 语境** ✗：轨道与其稳定化子的**有限性实例不会自动合成**（实测 ✗）⟹ 两条引理**要求调用方供给** ✓
+（在二分的使用场景里 `α = MaxSpec L` 有限 ✓，实例由 `L` 的有限性给出 ✓）。
+**⚠ 不声称** ✗：本件**不含**「`G` 在 `MaxSpec L` 上传递」本身（那要用 `L^G = K` ＋ 幂等元论证 ✗）——
+也不含「p 个因子时 `L ≅ K^p`」的代数结论 ✗。 -/
+
+section CpAction
+
+/-- **(丙) ①** ✓：`C_p` 作用的轨道大小**只能是 1 或 p** ✓。
+**证明** ✓：`card (orbit x) * card (stabilizer x) = card C_p = p` ✓ ⟹ `card (orbit x) ∣ p` ✓ ⟹ 素数因子只有 1 与 p ✓。 -/
+theorem card_orbit_eq_one_or_eq_prime {p : ℕ} (hp : p.Prime)
+    {α : Type*} [MulAction (Multiplicative (ZMod p)) α] (x : α)
+    [Fintype (ZMod p)]
+    [Fintype (MulAction.orbit (Multiplicative (ZMod p)) x)]
+    [Fintype ↥(MulAction.stabilizer (Multiplicative (ZMod p)) x)] :
+    Fintype.card (MulAction.orbit (Multiplicative (ZMod p)) x) = 1 ∨
+      Fintype.card (MulAction.orbit (Multiplicative (ZMod p)) x) = p := by
+  have hcard : Fintype.card (Multiplicative (ZMod p)) = p := by
+    simp [ZMod.card]
+  have hmul :=
+    MulAction.card_orbit_mul_card_stabilizer_eq_card_group (Multiplicative (ZMod p)) x
+  rw [hcard] at hmul
+  have hdvd : Fintype.card (MulAction.orbit (Multiplicative (ZMod p)) x) ∣ p :=
+    ⟨_, hmul.symm⟩
+  exact hp.eq_one_or_self_of_dvd _ hdvd
+
+/-- **(丙) ②（传递推论）** ✓：`C_p` 作用**传递** ⟹ `card α ∈ {1, p}` ✓。
+**证明** ✓：取 `x` ✓，传递性 ⟹ 轨道 ＝ 全集 ✓ ⟹ `card α = card (orbit x)` ✓ 再用 ① ✓。 -/
+theorem card_eq_one_or_eq_prime_of_pretransitive {p : ℕ} (hp : p.Prime)
+    {α : Type*} [Fintype α] [MulAction (Multiplicative (ZMod p)) α]
+    [MulAction.IsPretransitive (Multiplicative (ZMod p)) α] (x : α)
+    [Fintype (ZMod p)]
+    [Fintype (MulAction.orbit (Multiplicative (ZMod p)) x)]
+    [Fintype ↥(MulAction.stabilizer (Multiplicative (ZMod p)) x)] :
+    Fintype.card α = 1 ∨ Fintype.card α = p := by
+  have hset : MulAction.orbit (Multiplicative (ZMod p)) x = (Set.univ : Set α) :=
+    MulAction.orbit_eq_univ _ _
+  have horbit : Fintype.card (MulAction.orbit (Multiplicative (ZMod p)) x) =
+      Fintype.card α :=
+    (Fintype.card_congr (Equiv.subtypeEquivRight (fun y => by rw [hset]))).trans
+      (Fintype.card_congr (Equiv.Set.univ α))
+  rcases card_orbit_eq_one_or_eq_prime hp x with h | h
+  · exact Or.inl (by rw [← horbit, h])
+  · exact Or.inr (by rw [← horbit, h])
+
+#print axioms card_orbit_eq_one_or_eq_prime
+#print axioms card_eq_one_or_eq_prime_of_pretransitive
+
+end CpAction
+
 end ABGV52.LocalProduct
