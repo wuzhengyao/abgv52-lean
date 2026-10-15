@@ -12689,9 +12689,115 @@ end KummerMoment354
 #print axioms kummerShiftK_root
 #print axioms kummerMSA_smul_pow
 #print axioms kummerDelta_root_pow_eq_moment
-#print axioms kummerMomentMap_bijective
-#print axioms kummerMomentMap_apply
-#print axioms kummerDelta_injective_of_moment
+/-! ### 4.138 🔴🔴🔴 **T6-F 第二口（七续）：Kummer 档 `δ` 满射／双射 —— 款③ 完成**（第 355 轮）
+—— **源 `proposition-0-6(a)` 的款③落库** ✓（**§4.127 的乘法类比** ✓）
+
+**靶** ✓：**源 `proposition-0-6(a)`** ✓ 的**款③（`δ` 双射）** ✓ —— **本件完成后，源 `proposition-0-6(a)` 的三款内容全部落库** ✓✅
+（**⚠ 但判据的"实例形"尚欠** ✗ —— **见下"口径"** ✓）。
+
+**落成三件** ✓✅：**(甲)** **`kummerBasis_apply`** ✓✅ —— **幂基取值 `kummerBasis hn a i = root^i`** ✓
+（§4.127 的 `asCarrierBasis_apply` 逐字类比 ✓，**复用 `AdjoinRoot.powerBasis'` 的 `basis_eq_pow`** ✓）；
+**(乙)** **`kummerDelta_surjective_of_moment`** ✓✅ —— **满射** ✓（**矩量映射满射 ＋ 系数装配（`ofCoeff` ＋ `equivFunOnFinite` 逆）＋ 幂基取值收口** ✓）；
+**(丙)** **`kummerDelta_bijective_of_moment`** ✓✅ —— **双射** ✓（**单射（§4.137）＋ 满射** ✓）。
+
+**⚠ 源 `proposition-0-6(a)` 的三款对照** ✓：**款①（忠实）** ✓ §4.135 ✓；**款②（不动基）** ✓ §4.136 ✓；
+**款③（`δ` 双射）** ✓ 本件 ✓ —— **三款皆已落** ✓✅（**在"抽象作用 ＋ `hRG` ＋ `hact` 桥"口径下** ✓）。
+
+**⚠ 口径（承重，未变）** ✗：本件仍取**抽象作用 ＋ 桥假设**形 ✓（**`kummerMSA` 不能作实例** ✗ §4.135 ✓）
+⟹ **源 `proposition-0-6(a)` 的"实例形"（`IsGaloisWithGroup`）尚欠** ✗ ——
+**下一手 ＝ 引入 `KummerDatum` 类型类把 `ρ`／`hρ`／`hprim` 挂进类型类** ✓，**使 `MulSemiringAction` 实例可合成** ✓
+（**⚠ 之后本件与 §4.135–§4.137 的桥假设由该实例自动满足** ✓）。
+
+**⚠ 工艺** ✓：**无新工艺坑** ✓（**本件一次通过** ✓ —— **§4.137 的 `show`／`ZMod.val_natCast`／`Nat.mod_eq_of_lt` 三件套已备** ✓；
+**`kummerBasis_apply` 的 `finCongr_symm`／`finCongr_apply` 化简与 AS 档同** ✓）。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` 的**实例形**已证 ✗（**三款内容已落** ✓，**`IsGaloisWithGroup` 装配欠** ✗）；
+**不**声称源 `proposition-0-6(a)` 整体已证 ✗（**尚欠实例口径 ＋ 源侧"`a` 单位"的完整假设链核对** ✗）；
+**不**声称源 `theorem-1-2(b)` 已证 ✗（**Kummer 实现未落** ✗）。 -/
+
+section KummerSurj355
+
+/-- **幂基的取值形（Kummer 档）** ✓：`kummerBasis hn a i = root^i` ✓（§4.127 的 `asCarrierBasis_apply` 类比 ✓）。 -/
+theorem kummerBasis_apply {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} (hn : 1 ≤ n) (a : R)
+    (i : Fin n) :
+    kummerBasis (R := R) hn a i
+      = (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ (i : ℕ) := by
+  rw [kummerBasis, Module.Basis.reindex_apply]
+  have hb := (AdjoinRoot.powerBasis' (kpoly_monic (R := R) hn a)).basis_eq_pow
+    ((finCongr (kpoly_natDegree (R := R) hn a)).symm i)
+  rw [show (AdjoinRoot.powerBasisAux' (kpoly_monic (R := R) hn a))
+        ((finCongr (kpoly_natDegree (R := R) hn a)).symm i)
+      = (AdjoinRoot.powerBasis' (kpoly_monic (R := R) hn a)).basis
+          ((finCongr (kpoly_natDegree (R := R) hn a)).symm i) from rfl, hb]
+  have hgen : (AdjoinRoot.powerBasis' (kpoly_monic (R := R) hn a)).gen
+      = AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) := rfl
+  have hexp : (((finCongr (kpoly_natDegree (R := R) hn a)).symm i : Fin _) : ℕ) = (i : ℕ) := by
+    simp [finCongr_symm, finCongr_apply]
+  rw [hgen, hexp]
+
+/-- **(甲) Kummer 档 `δ` 满射** ✓✅（**矩量映射满射 ＋ 系数装配 ＋ 幂基取值** ✓ —— §4.127 的乘法类比 ✓）。 -/
+theorem kummerDelta_surjective_of_moment {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} [NeZero n]
+    (hn : 1 ≤ n) (a : R) (ρ : Rˣ) (hρ : ((ρ : R)) ^ n = 1) (ha : IsUnit a)
+    (hdiff : ∀ i j : Fin n, i ≠ j → IsUnit ((ρ : R) ^ (i : ℕ) - (ρ : R) ^ (j : ℕ)))
+    [MulSemiringAction (Multiplicative (ZMod n)) (kummerCarrier R n a)]
+    (hRG : ∀ (g : Multiplicative (ZMod n)) (r : R) (t : kummerCarrier R n a),
+      g • (r • t) = r • (g • t))
+    (hact : ∀ (k : Multiplicative (ZMod n)) (x : kummerCarrier R n a),
+      k • x = kummerShiftK a ρ hρ k x) :
+    Function.Surjective (deltaToEndRingHom (S := kummerCarrier R n a) hRG) := by
+  classical
+  intro f
+  obtain ⟨s, hs⟩ := (kummerMomentMap_bijective hn a ρ ha hdiff).2
+    (fun i : Fin n => f ((AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      ^ (i : ℕ)))
+  let F : Multiplicative (ZMod n) →₀ kummerCarrier R n a :=
+    Finsupp.equivFunOnFinite.symm (fun g : Multiplicative (ZMod n) => s ((finEquivGZMod n).symm g))
+  refine ⟨SkewMonoidAlgebra.ofCoeff F, ?_⟩
+  have hcoeff : ∀ j : Fin n,
+      (SkewMonoidAlgebra.ofCoeff F).coeff (Multiplicative.ofAdd (j : ZMod n)) = s j := by
+    intro j
+    have h1 : (SkewMonoidAlgebra.ofCoeff F).coeff = F := rfl
+    rw [h1]
+    have h2 : F (Multiplicative.ofAdd (j : ZMod n))
+        = s ((finEquivGZMod n).symm (Multiplicative.ofAdd (j : ZMod n))) :=
+      congrFun (Finsupp.coe_equivFunOnFinite_symm
+        (fun g : Multiplicative (ZMod n) => s ((finEquivGZMod n).symm g)))
+        (Multiplicative.ofAdd (j : ZMod n))
+    rw [h2]
+    have h3 : (finEquivGZMod n).symm (Multiplicative.ofAdd (j : ZMod n)) = j :=
+      Equiv.symm_apply_apply (finEquivGZMod n) j
+    rw [h3]
+  have hval : ∀ i : Fin n,
+      deltaToEndRingHom hRG (SkewMonoidAlgebra.ofCoeff F)
+          ((AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ (i : ℕ))
+        = f ((AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ (i : ℕ)) := by
+    intro i
+    rw [kummerDelta_root_pow_eq_moment a ρ hρ hRG hact _ i]
+    rw [Finset.sum_congr rfl (fun j _ => by rw [hcoeff j])]
+    rw [← kummerMomentMap_apply a ρ s i, hs]
+  refine Module.Basis.ext (b := kummerBasis (R := R) hn a) (f₁ := _) (f₂ := f) (fun i => ?_)
+  rw [kummerBasis_apply]
+  exact hval i
+
+/-- **(乙) Kummer 档 `δ` 双射** ✓✅（**＝ 源 `proposition-0-6(a)` 的款③** ✓）。 -/
+theorem kummerDelta_bijective_of_moment {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} [NeZero n]
+    (hn : 1 ≤ n) (a : R) (ρ : Rˣ) (hρ : ((ρ : R)) ^ n = 1) (ha : IsUnit a)
+    (hdiff : ∀ i j : Fin n, i ≠ j → IsUnit ((ρ : R) ^ (i : ℕ) - (ρ : R) ^ (j : ℕ)))
+    [MulSemiringAction (Multiplicative (ZMod n)) (kummerCarrier R n a)]
+    (hRG : ∀ (g : Multiplicative (ZMod n)) (r : R) (t : kummerCarrier R n a),
+      g • (r • t) = r • (g • t))
+    (hact : ∀ (k : Multiplicative (ZMod n)) (x : kummerCarrier R n a),
+      k • x = kummerShiftK a ρ hρ k x) :
+    Function.Bijective (deltaToEndRingHom (S := kummerCarrier R n a) hRG) :=
+  ⟨kummerDelta_injective_of_moment hn a ρ hρ ha hdiff hRG hact,
+    kummerDelta_surjective_of_moment hn a ρ hρ ha hdiff hRG hact⟩
+
+
+end KummerSurj355
+
+#print axioms kummerBasis_apply
+#print axioms kummerDelta_surjective_of_moment
+#print axioms kummerDelta_bijective_of_moment
 
 
 end ABGV52

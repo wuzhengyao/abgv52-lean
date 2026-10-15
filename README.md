@@ -1990,3 +1990,17 @@ argument rather than the unit; and aligning the exponents of the nodes requires 
 representative of a residue class modulo the order, so the final step is not definitional.  Surjectivity of the
 crossed-product map, the Galois criterion for this carrier, the realization property in this case and the source's
 theorem for it are not addressed here.
+
+Round 355 completes the criterion for the Kummer carrier by proving surjectivity and hence bijectivity of the
+crossed-product map.  The values of the power basis are computed as in the additive case, and a given endomorphism
+is matched by the moment map applied to its values on the powers of the root; the preimage is assembled from the
+resulting coefficient family through the identification of the group with the indices, and the two maps agree on
+the basis, hence everywhere.  With the injectivity of the previous round this gives bijectivity, so that the
+criterion holds for this carrier in the same form as in the additive case, under the same formulation with the
+action, its invariance of coefficients and its agreement with the displayed shift taken as hypotheses.  The three
+clauses of the source's result for this carrier are therefore all present, but the packaged form of the criterion,
+in which the action is an instance, is not available for this carrier, since the distinguished unit and its
+primitivity cannot be recovered from the type; introducing a type class carrying that data is recorded as the next
+step.  Three declarations are recorded: the values of the power basis, the surjectivity, and the bijectivity.  No new
+practical difficulty arose in this round.  The packaged criterion, the realization property in this case and the
+source's theorem for it are not addressed here.
