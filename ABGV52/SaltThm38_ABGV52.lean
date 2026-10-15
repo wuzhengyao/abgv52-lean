@@ -11952,8 +11952,181 @@ end KummerCarrierCore348
 #print axioms kummer_finrank
 #print axioms kummer_subst
 #print axioms kummerShift_eval
-#print axioms kummerShiftH_of
-#print axioms kummerShiftH_root
+/-! ### 4.132 🔴 **T6-F 第二口（续）：Kummer 移位自同构 ＋ 复合律**（第 349 轮）
+—— **Kummer 档第二步** ✓（**§4.82／§4.84 的乘法类比** ✓）
+
+**靶** ✓：**源 `proposition-0-6(a)`** ✓（`raw/Saltman1982.tex:142` ✓）的**移位群结构** ✓ ——
+**`y ↦ ρ · y` 构成 `C_n`-作用的生成端** ✓（**下一步** ✗：**`C_n`-作用 ＋ 判据** ✓）。
+
+**落成三件** ✓✅：**(甲)** **`kummerShiftH_comp`** ✓✅ —— **`φ_ρ ∘ φ_{ρ'} = φ_{ρ·ρ'}`** ✓
+（**根支 ＋ 系数支** ✓，与 §4.84 的 `asShiftHMSA_comp` 同型 ✓）；
+**(乙)** **`kummerShiftH_one`** ✓✅ —— **`φ_1 = id`** ✓（`y ↦ 1 · y = y` ✓，与 §4.84 的 `asShiftH_zero` 对偶 ✓）；
+**(丙)** **`kummerShiftH_bijective`** ✓✅ —— **`ρ` 为单位 ⟹ `φ_ρ` 是自同构** ✓
+（**逆 ＝ `φ_{ρ⁻¹}`** ✓；**两边复合均为恒等** ✓）。
+
+**机制（(丙)）** ✓：**两边复合** ✓（**系数支** ✓：移位固定系数 ✓；**根支** ✓：
+`root ↦ ρ⁻¹·(ρ·root) = root` ✓）⟹ **`hL : f ∘ g = id`** ✓ ⟹ **单射** ✓（`x = g(f x) = g(f y) = y` ✓）；
+**`hR : g ∘ f = id`** ✓ ⟹ **满射** ✓（`y = f (g y)` ✓）✓。
+
+**⚠ 工艺（两条，入 §5.1）** ✓：**(#65)** **依赖位重写须避开** ✗ —— 复合法则的右端 `kummerShiftH a (ρ * ρ') _`
+**不能**把 `ρ * ρ'` 改写为 `1` ✗（**证明项的类型依赖该参数** ✓ —— **§5.1 的"依赖位重写"族** ✓，§4.84 ✓ 同款）；
+**正解 ＝ 在载体内算积** ✓：**`← map_mul`** ✓ ＋ **`Units.inv_mul`／`Units.mul_inv`** ✓ ＋ `map_one` ✓；
+**(#66)** **`simp only` 的未用参数计警告** ✗（`linter.unusedSimpArgs` ✓ —— 实测 `kummerShiftH_of`／`map_mul` 被报未用 ✓）
+⟹ **凡 `simp only` 参数表须按提示裁剪** ✓；且**大 `simp only` 表（含 `←` 规则）易不收敛** ✗ ⟹
+**改逐步 `rw`** ✓（**本轮实测** ✓）。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` 已证 ✗（**只落移位群结构** ✓ —— **`C_n`-作用 ＋ 判据 ＋ 实现未落** ✗）；
+**不**声称 `IsPrimitiveRoot ρ n` 已用 ✗（**本件只须 `ρ^n = 1` ＋ `ρ` 单位** ✓ —— **单射性留给 `C_n`-作用件** ✗）；
+**不**声称源 `theorem-1-2(b)` 已证 ✗；**不**声称源 `proposition-0-6(c)` 已证 ✗。 -/
+
+section KummerShiftGroup349
+
+/-- **(甲) 复合律** ✓：`φ_ρ ∘ φ_{ρ'} = φ_{ρ·ρ'}` ✓（**根支 ＋ 系数支** ✓）。 -/
+theorem kummerShiftH_comp {R : Type u} [CommRing R] {n : ℕ} (a ρ ρ' : R) (hρ : ρ ^ n = 1)
+    (hρ' : ρ' ^ n = 1) (hρρ' : (ρ * ρ') ^ n = 1) :
+    (kummerShiftH a ρ hρ).comp (kummerShiftH a ρ' hρ')
+      = kummerShiftH a (ρ * ρ') hρρ' := by
+  refine Ideal.Quotient.ringHom_ext (I := Ideal.span
+    {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)}) ?_
+  refine Polynomial.ringHom_ext ?_ ?_
+  · intro r
+    show (kummerShiftH a ρ hρ)
+        ((kummerShiftH a ρ' hρ')
+          ((Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r)))
+      = (kummerShiftH a (ρ * ρ') hρρ')
+          ((Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r))
+    rw [show (Ideal.Quotient.mk (Ideal.span
+          {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r)
+        = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r from rfl]
+    rw [kummerShiftH_of, kummerShiftH_of, kummerShiftH_of]
+  · show (kummerShiftH a ρ hρ)
+        ((kummerShiftH a ρ' hρ')
+          ((Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X)))
+      = (kummerShiftH a (ρ * ρ') hρρ')
+          ((Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X))
+    rw [show (Ideal.Quotient.mk (Ideal.span
+          {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X)
+        = AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) from rfl]
+    simp only [kummerShiftH_root, kummerShiftH_of, map_mul]
+    ring
+
+/-- **(乙) 单位移位 ＝ 恒等** ✓：`ρ = 1` 时 `y ↦ 1 · y = y` ✓。 -/
+theorem kummerShiftH_one {R : Type u} [CommRing R] {n : ℕ} (a : R) (h1 : (1 : R) ^ n = 1) :
+    kummerShiftH a (1 : R) h1 = RingHom.id (kummerCarrier R n a) := by
+  refine Ideal.Quotient.ringHom_ext (I := Ideal.span
+    {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)}) ?_
+  refine Polynomial.ringHom_ext ?_ ?_
+  · intro r
+    show (kummerShiftH a 1 h1)
+        ((Ideal.Quotient.mk (Ideal.span
+          {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r))
+      = (RingHom.id (kummerCarrier R n a))
+          ((Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r))
+    rw [show (Ideal.Quotient.mk (Ideal.span
+          {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r)
+        = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r from rfl]
+    simp only [kummerShiftH_of, RingHom.id_apply]
+  · show (kummerShiftH a 1 h1)
+        ((Ideal.Quotient.mk (Ideal.span
+          {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X))
+      = (RingHom.id (kummerCarrier R n a))
+          ((Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X))
+    rw [show (Ideal.Quotient.mk (Ideal.span
+          {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X)
+        = AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) from rfl]
+    simp only [kummerShiftH_root, map_one, one_mul, RingHom.id_apply]
+
+/-- **(丙) 移位是自同构** ✓✅（`ρ` 为单位 ✓）：**两边复合均为恒等** ✓
+（**⚠ 避依赖位重写** ✗：`ρ · ρ⁻¹` 的化简**在载体内做** ✓ —— `← map_mul` ＋ `Units.inv_mul` ✓）。 -/
+theorem kummerShiftH_bijective {R : Type u} [CommRing R] {n : ℕ} (a : R) (ρ : Rˣ)
+    (hρ : ((ρ : R)) ^ n = 1) (hρi : (((ρ⁻¹ : Rˣ) : R)) ^ n = 1) :
+    Function.Bijective (kummerShiftH a (ρ : R) hρ) := by
+  have hleft : (kummerShiftH a (ρ : R) hρ).comp (kummerShiftH a ((ρ⁻¹ : Rˣ) : R) hρi)
+      = RingHom.id (kummerCarrier R n a) := by
+    refine Ideal.Quotient.ringHom_ext (I := Ideal.span
+      {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)}) ?_
+    refine Polynomial.ringHom_ext ?_ ?_
+    · intro r
+      show (kummerShiftH a (ρ : R) hρ)
+          ((kummerShiftH a ((ρ⁻¹ : Rˣ) : R) hρi)
+            ((Ideal.Quotient.mk (Ideal.span
+              {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r)))
+        = (RingHom.id (kummerCarrier R n a))
+            ((Ideal.Quotient.mk (Ideal.span
+              {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r))
+      rw [show (Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r)
+          = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r from rfl]
+      simp only [kummerShiftH_of, RingHom.id_apply]
+    · show (kummerShiftH a (ρ : R) hρ)
+          ((kummerShiftH a ((ρ⁻¹ : Rˣ) : R) hρi)
+            ((Ideal.Quotient.mk (Ideal.span
+              {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X)))
+        = (RingHom.id (kummerCarrier R n a))
+            ((Ideal.Quotient.mk (Ideal.span
+              {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X))
+      rw [show (Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X)
+          = AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) from rfl]
+      rw [kummerShiftH_root, map_mul, kummerShiftH_of, kummerShiftH_root]
+      rw [← mul_assoc, ← map_mul, Units.inv_mul, map_one, one_mul]
+      rfl
+  have hright : (kummerShiftH a ((ρ⁻¹ : Rˣ) : R) hρi).comp (kummerShiftH a (ρ : R) hρ)
+      = RingHom.id (kummerCarrier R n a) := by
+    refine Ideal.Quotient.ringHom_ext (I := Ideal.span
+      {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)}) ?_
+    refine Polynomial.ringHom_ext ?_ ?_
+    · intro r
+      show (kummerShiftH a ((ρ⁻¹ : Rˣ) : R) hρi)
+          ((kummerShiftH a (ρ : R) hρ)
+            ((Ideal.Quotient.mk (Ideal.span
+              {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r)))
+        = (RingHom.id (kummerCarrier R n a))
+            ((Ideal.Quotient.mk (Ideal.span
+              {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r))
+      rw [show (Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.C r)
+          = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r from rfl]
+      simp only [kummerShiftH_of, RingHom.id_apply]
+    · show (kummerShiftH a ((ρ⁻¹ : Rˣ) : R) hρi)
+          ((kummerShiftH a (ρ : R) hρ)
+            ((Ideal.Quotient.mk (Ideal.span
+              {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X)))
+        = (RingHom.id (kummerCarrier R n a))
+            ((Ideal.Quotient.mk (Ideal.span
+              {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X))
+      rw [show (Ideal.Quotient.mk (Ideal.span
+            {((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)})) (Polynomial.X)
+          = AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) from rfl]
+      rw [kummerShiftH_root, map_mul, kummerShiftH_of, kummerShiftH_root]
+      rw [← mul_assoc, ← map_mul, Units.mul_inv, map_one, one_mul]
+      rfl
+  have hL : ∀ z : kummerCarrier R n a,
+      (kummerShiftH a (ρ : R) hρ) ((kummerShiftH a ((ρ⁻¹ : Rˣ) : R) hρi) z) = z := by
+    intro z
+    have h := congrArg
+      (fun (f : kummerCarrier R n a →+* kummerCarrier R n a) => f z) hleft
+    simpa only [RingHom.comp_apply, RingHom.id_apply] using h
+  have hR : ∀ z : kummerCarrier R n a,
+      (kummerShiftH a ((ρ⁻¹ : Rˣ) : R) hρi) ((kummerShiftH a (ρ : R) hρ) z) = z := by
+    intro z
+    have h := congrArg
+      (fun (f : kummerCarrier R n a →+* kummerCarrier R n a) => f z) hright
+    simpa only [RingHom.comp_apply, RingHom.id_apply] using h
+  exact ⟨fun x y hxy => by rw [← hR x, ← hR y, hxy],
+    fun y => ⟨(kummerShiftH a ((ρ⁻¹ : Rˣ) : R) hρi) y, hL y⟩⟩
+
+end KummerShiftGroup349
+
+#print axioms kummerShiftH_comp
+#print axioms kummerShiftH_one
+#print axioms kummerShiftH_bijective
 
 
 end ABGV52

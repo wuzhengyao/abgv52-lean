@@ -1893,3 +1893,17 @@ and the evaluation rule for constants produces the structure map rather than the
 identification of the two has to be inserted.  The Galois criterion for this carrier, the group action, the
 realization property and the source's theorem for this case are not addressed here.
 
+Round 349 records the group structure of the shift of the Kummer carrier.  Two shifts compose to the shift by the
+product of their coefficients, the shift by one is the identity, and a shift by a unit is an automorphism, its
+inverse being the shift by the inverse of that unit.  The composition law is proved on the two generators of the
+carrier, the coefficients and the root; the automorphism is proved by showing that the two composites with the
+inverse shift act as the identity, which is done inside the carrier, since rewriting the product of a unit with its
+inverse inside the argument of the shift would change the type of the proof that the coefficient is a root of
+unity.  Three declarations are recorded: the composition law, the identity of the shift by one, and the
+bijectivity of a shift by a unit.  Two practical points are recorded: a rewrite inside the argument of the shift is
+to be avoided because the proof that the coefficient is a root of unity depends on it, and instead the product is
+computed inside the carrier; and a large simplification with restricted lemmas easily fails to terminate and, when
+it does not, is reported as containing unused arguments, so the steps are given individually.  The action of the
+cyclic group on the carrier, the Galois criterion for it, the realization property in this case and the source's
+theorem for it are not addressed here.
+
