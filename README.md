@@ -1574,3 +1574,10 @@ makes it available for unpacking; and conversely the three clauses assemble into
 uniform way to package a Galois algebra from its parts, whether they come from the field case or from a future ring
 case.  One practical point is recorded about the name of the library lemma that turns a positive rank into finiteness.
 The existing field-case results are not rewritten in terms of the simplified interface here.
+
+Round 320 strengthens the field-case criterion: the finiteness of the extension is no longer requested, because it
+follows from the hypothesis that the degree equals the order of the group.  The helper that performs that step was
+landed in the previous round and is moved ahead of its uses here, since a declaration must precede its use within a
+file.  Existing callers are unaffected, as supplying an instance that is no longer required is harmless, and new
+instantiations of the criterion are spared one step.  One practical point is recorded about the ordering of
+declarations when strengthening a statement, and the round is a hardening round: it adds no new mathematics.

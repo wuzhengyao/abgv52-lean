@@ -9725,6 +9725,12 @@ end DeltaInjectiveField316
 **不**声称 `IsGaloisWithGroup` 整体（**须三款装配** ✓ —— **域档三款皆已落** ✓，**装配件下一手** ✓）；
 **不**声称源 `theorem-1-2` 已证 ✗；**不**声称残余 ①／③ 已证 ✗。 -/
 
+/-- **秩假设 ⟹ 有限** ✓（域档）。 -/
+theorem finite_of_finrank_eq_card {K : Type u} [Field K] {L : Type u} [AddCommGroup L]
+    [Module K L] {G : Type u} [Group G] [Fintype G]
+    (hcard : Module.finrank K L = Fintype.card G) : Module.Finite K L :=
+  Module.finite_of_finrank_pos (by rw [hcard]; exact Fintype.card_pos)
+
 section DeltaBijectiveField317
 
 open ABGV52.BTier
@@ -9732,12 +9738,13 @@ open ABGV52.BTier
 set_option maxHeartbeats 4000000 in
 /-- **🔴 域档款③** ✓✅：`δ` **双射** ✓（单射 ＋ 秩相等，域档判据）。 -/
 theorem delta_bijective_of_field {K : Type u} [Field K] {L : Type u} [Field L] [Algebra K L]
-    [Module.Finite K L] {G : Type u} [Group G] [Fintype G] [MulSemiringAction G L]
+    {G : Type u} [Group G] [Fintype G] [MulSemiringAction G L]
     (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r)
     (hRG : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
     (hfaith : Function.Injective (fun g : G => actionAlgEquiv (S := L) hfix g))
     (hcard : Module.finrank K L = Fintype.card G) :
     Function.Bijective (deltaToEndRingHom (S := L) hRG) := by
+  let _inst : Module.Finite K L := finite_of_finrank_eq_card hcard
   have hinj : Function.Injective (deltaToEndRingHom (S := L) hRG) :=
     delta_injective_of_field hfix hRG hfaith
   have hrank : Module.finrank K (SkewMonoidAlgebra L G) = Module.finrank K (Module.End K L) := by
@@ -9799,7 +9806,7 @@ theorem actionAlgEquiv_injective_of_faithful {K : Type u} [CommRing K] {L : Type
 
 /-- **🔴 域档 `IsGaloisWithGroup` 装配** ✓✅（源 §0 判据域档完成形）。 -/
 theorem isGaloisWithGroup_of_field {K : Type u} [Field K] {L : Type u} [Field L] [Algebra K L]
-    [Module.Finite K L] {G : Type u} [Group G] [Fintype G] [MulSemiringAction G L]
+    {G : Type u} [Group G] [Fintype G] [MulSemiringAction G L]
     (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r)
     (hRG : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
     (hfaith : FaithfulSMul G L)
@@ -9835,12 +9842,6 @@ section GaloisCriterionInterface319
 
 open ABGV52.BTier
 
-/-- **秩假设 ⟹ 有限** ✓（域档）。 -/
-theorem finite_of_finrank_eq_card {K : Type u} [Field K] {L : Type u} [AddCommGroup L]
-    [Module K L] {G : Type u} [Group G] [Fintype G]
-    (hcard : Module.finrank K L = Fintype.card G) : Module.Finite K L :=
-  Module.finite_of_finrank_pos (by rw [hcard]; exact Fintype.card_pos)
-
 /-- **判据拆装：拆卸形** ✓。 -/
 theorem isGaloisWithGroup_iff {R : Type u} [CommRing R] {S : Type u} [CommRing S] [Algebra R S]
     {G : Type u} [Group G] [Fintype G] [MulSemiringAction G S]
@@ -9865,6 +9866,24 @@ end GaloisCriterionInterface319
 #print axioms finite_of_finrank_eq_card
 #print axioms isGaloisWithGroup_iff
 #print axioms isGaloisWithGroup_of_clauses
+
+
+/-! ### 4.108 **加固：域档判据去掉有限性假设**（第 320 轮）
+—— §4.105／§4.106 **签名加固** ✓（**严格更强** ✓）
+
+**改动** ✓：**(i)** `finite_of_finrank_eq_card` ✓（§4.107 落 ✓）**前移**至 §4.105 之前 ✓（**Lean 须先声明后用** ✗）；
+**(ii)** **`delta_bijective_of_field`**（§4.105 ✓）与 **`isGaloisWithGroup_of_field`**（§4.106 ✓）的
+**`[Module.Finite K L]` 假设已删** ✓ —— 改为在证明内部 **`let _inst : Module.Finite K L :=
+finite_of_finrank_eq_card hcard`** ✓ 供给 ✓。
+
+**⚠ 意义** ✓：**签名严格变强** ✓（老调用方**无需改动** ✓：多给的实例**无害** ✓）；**新调用方免索有限性** ✓
+—— 对**实例化**（AS 载体、`C_p` 档、源 §2 构造 ✓）**省一步** ✓。
+
+**⚠ 工艺** ✓（入 §5.1 ✓）：**同文件内的前向引用不可用** ✗ —— 依赖件**必须在用点之前声明** ✓
+（否则报 **unknown identifier** ✗，实测 ✓）⟹ 加固时应把辅助件一并**前移** ✓。
+
+**🔴 不声称** ✗：**不**声称这是**新数学** ✗（**只**是接口加固 ✓）；**不**声称 §4.107 的其余两件已用 ✓；
+**不**声称环档判据 ✓；**不**声称残余 ①／③ 已证 ✗。 -/
 
 
 end ABGV52
