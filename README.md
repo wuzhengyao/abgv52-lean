@@ -2200,3 +2200,30 @@ unit elements differ: in the classical form the unit is the function
 step from the one form to the other is the substance of the Chase--Harrison--
 Rosenberg equivalence of the two definitions of a Galois extension and is the
 next round's target; it is a theorem, not a rewriting.
+
+## Round 365 (2026-10-15, appended)
+
+New file `ABGV52/LocalProduct_ABGV52.lean`: a finite commutative algebra over a
+field is a product of local rings, assembled from mathlib's existing pieces.
+
+* `isArtinianRing_of_finite`: `Module.Finite K L` gives `IsArtinianRing L`, via
+  `IsArtinianRing.of_finite`;
+* `localProductEquiv`: under `IsArtinianRing L`, the canonical isomorphism
+  `L ≃ₐ[L] MaximalSpectrum.PiLocalization L`, whose right-hand side is
+  `Π I : MaximalSpectrum L, Localization.AtPrime I.1`, via
+  `MaximalSpectrum.toPiLocalizationEquiv`;
+* `factor_isLocalRing`: each factor is a local ring;
+* `finite_maximalSpectrum_of_finite`: the index set is finite;
+* `exists_local_product_decomposition`: the packaged form.
+
+Two points of craft.  The `AlgEquiv` type in the statement itself needs the
+instance `DiscreteTopology (PrimeSpectrum L)`, so the decomposition can only be
+stated in the `IsArtinianRing L` context; passing from `Module.Finite K L` to it
+is the separate first item above.  And the instance
+`IsArtinianRing.instDiscreteTopologyPrimeSpectrum` lives in
+`Mathlib.RingTheory.Spectrum.Prime.Noetherian`, not in the file on prime
+spectra.
+
+This discharges the second of the three inputs of the `C_p`-Galois dichotomy
+recorded in the working notes; the first (finiteness) is still open and the
+third (transitivity of the `C_p`-action) is next.
