@@ -11099,5 +11099,36 @@ end SplitCarrierIso337
 
 #print axioms asCarrier_zero_algEquiv_pi
 
+/-! ### 4.123 🔴 **T7 前置：AS 载体的环档有限性**（第 339 轮）
+—— 子目标 (b)（环档判据）的**承重前置** ✓（**任意交换环 `R`** ✓，非域 ✓）
+
+**用途** ✓：环档款③ 的**秩论证**（§4.93 ✓ 的 `skew_finrank` ✓／`end_finrank` ✓）与
+**任何投影／有限性通道**（源 `proposition-0-5(c)` ✓ 的「`S ≅ R[G]`」✓）**都要 `S` 在 `R` 上模有限** ✓ ——
+**库内此前只有域档的 `let _inst`** ✗（§4.120／§4.122 各一处 ✓）⟹ **本件补环档** ✓。
+
+**落成一件** ✓✅：**`asCarrier_finite`** ✓✅：`[CommRing R] [Nontrivial R]` ✓、`2 ≤ p` ✓ ⟹
+**`Module.Finite R (asCarrier R p a)`** ✓✅。
+
+**机制** ✓：**§4.91** ✓ 的幂基 `asCarrierBasis` ✓ ⟹ **`Module.Free.of_basis`** ✓ 注册 `[Module.Free R _]` ✓
+（**§5.1 #41** ✓ —— **`finite_of_finrank_pos` 要 `Module.Free`** ✗，而幂基例**不自动**注册 `Free` ✗）⟹
+`Module.finite_of_finrank_pos` ✓ ＋ **`asCarrier_finrank`** ✓（秩 ＝ `p` ✓）。
+
+**🔴 不声称** ✗：**不**声称环档 `δ` 双射有进展 ✗（**本件只补前置** ✓）；**不**声称 `S` 在 `R` 上投射 ✗；
+**不**声称源 `proposition-0-5(c)` ✓ 已证 ✗；**不**声称 `RealizationProperty` 有实例 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section ASCarrierFinite339
+
+/-- **AS 载体的环档有限性** ✓✅：任意非平凡交换环上 `asCarrier R p a` 模有限 ✓。 -/
+theorem asCarrier_finite {R : Type u} [CommRing R] [Nontrivial R] {p : ℕ} (hp : 2 ≤ p) (a : R) :
+    Module.Finite R (asCarrier R p a) := by
+  let _inst : Module.Free R (asCarrier R p a) :=
+    Module.Free.of_basis (asCarrierBasis (R := R) hp a)
+  exact Module.finite_of_finrank_pos (by rw [asCarrier_finrank (R := R) hp a]; omega)
+
+end ASCarrierFinite339
+
+#print axioms asCarrier_finite
+
 
 end ABGV52

@@ -1738,3 +1738,11 @@ algebra-valued form with a single conversion at the end; and a local definition 
 cannot be substituted away, so the case of a degenerate coefficient has to be handled by rewriting instead.
 The identification of the algebra under consideration with such a product, and hence the split case itself, are
 not addressed here.
+
+Round 339 supplies the prerequisite of finiteness for the ring case of the Galois criterion: the Artin--Schreier
+carrier is a finite module over an arbitrary nontrivial commutative ring, not merely over a field.  The carrier
+carries a power basis by an earlier round, whence it is free, and finiteness follows from the positivity of its
+rank, which that earlier round computes as the prime.  One practical point is recorded: the criterion converting a
+positive rank into finiteness requires freeness, which a basis does not register as an instance by itself, so the
+freeness instance has to be introduced explicitly from the basis.  The bijectivity of the crossed-product map
+over a ring, and the projectivity of the carrier, are not addressed here.
