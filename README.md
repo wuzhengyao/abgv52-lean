@@ -2341,3 +2341,29 @@ A note of round 2 of this file is corrected here: the remark that
 old pin.  On the upgraded pin `MvPolynomial.map` and `MvPolynomial.renameEquiv`
 are both present; `MvPolynomial.finSumEquiv` indeed does not exist and is
 superseded by `sumAlgEquiv`.
+
+## Round 371 (2026-10-15, appended)
+
+A search of mathlib by content, rather than by name, shows that
+`Mathlib/Algebra/MvPolynomial/` and the fraction ring file have no lemmas in
+common, so the bridge from polynomials over a fraction field to polynomials over
+the base has to be built here.
+
+`RationalFunctionFieldTowerHyp`, with a type lock, records the first brick of G1
+and G2: the flattening `(K(t_k))(s_n) ≅ K(u_{k+n})` of a tower of rational
+function fields.  `isStablyRational_rationalFunctionField` then derives G1, the
+add-variables closure, from that brick: from `K(t_n) ≅ F(x_m)` one gets
+`(K(t_k))(s_n) ≅ K(u_{k+n}) ≅ K(u_{n+k}) ≅ (K(t_n))(s_k) ≅ (F(x_m))(s_k) ≅
+F(x_{m+k})`, using the brick three times, the extension of isomorphisms of round
+370 once, and commutativity of addition once.  The statement takes the brick both
+for the extension `K/F` and for `F/F`.
+
+The brick itself is not proved here.  Its proof is fixed for the next round: show
+that `MvPolynomial sigma (FractionRing A)` is the localisation of
+`MvPolynomial sigma A` at the non-zero divisors, the surjectivity clause by
+clearing denominators with the finite product of the denominators of the
+coefficients over the support.
+
+Two craft notes: eliminating a `Nonempty` into a large type trips
+`propRecLargeElim`, so `Classical.choice` is used instead; and for the same
+reason `h.1` cannot be used to project a `Nonempty`.

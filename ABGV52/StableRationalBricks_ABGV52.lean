@@ -96,6 +96,58 @@ theorem rationalFunctionField_algEquivMap {F K L : Type*} [Field F] [Field K] [F
 
 #print axioms rationalFunctionField_algEquivMap
 
+/-! ## §2.6 第 371 轮：**砖① 提为具名假设** ＋ **G1 条件化**
+
+**mathlib 侧实测** ✗：`Mathlib/Algebra/MvPolynomial/` 与 `Mathlib/RingTheory/Localization/FractionRing.lean`
+**完全没有交集** ✓（按**内容**检索而非按名字猜 —— L46 §2 ✓）⟹ **「多项式环上的局部化」桥须自建** ✗。
+**应有证法（已定，下一轮执行）** ✓：`IsLocalization (nonZeroDivisors A) (MvPolynomial σ (FractionRing A))` ✓ ——
+`surj` 用**清分母**：`p : MvPolynomial σ (Frac A)` 的系数 `c_i = a_i / s_i` ✓，
+取支集上的**有限积** `S := Π s_i ∈ nonZeroDivisors A` ✓ ⟹ `S * p` 的系数落在 `A` 的像里 ✓ ⟹ `p = (S*p)/S` ✓；
+`map_units` 显然 ✓；`eq_iff_exists` 由域上消去 ✓。
+**⚠ 本轮处置** ✗（B 档 ✓）：把砖① 提为**具名、类型锁定**的假设 `RationalFunctionFieldTowerHyp` ✓，
+并证出 **G1 条件于它** ✓ —— 于是 **G1 的残余 ＝ 这一块砖** ✓（砖②第 370 轮已无条件 ✓）。
+
+**⚠ 不声称** ✗：`RationalFunctionFieldTowerHyp` **未证** ✗（mathlib 缺件 ✓，证法已定 ✓）；**G2 仍未有条件形** ✗（下一轮）。 -/
+
+/-- **砖①（塔展平，具名假设）** ✓：`(K(t_k))(s_n) ≅_F K(u_{k+n})` ✓。 -/
+def RationalFunctionFieldTowerHyp (F : Type*) [Field F] (K : Type*) [Field K] [Algebra F K] :
+    Prop :=
+  ∀ k n : ℕ,
+    Nonempty (EM.rationalFunctionField (EM.rationalFunctionField K k) n ≃ₐ[F]
+      EM.rationalFunctionField K (k + n))
+
+/-- **外形锁定** ✓：砖① 的外形一旦改动，本 `Iff.rfl` 立即编译失败 ✓。 -/
+theorem rationalFunctionFieldTowerHyp_typeLock (F : Type*) [Field F] (K : Type*) [Field K]
+    [Algebra F K] :
+    (RationalFunctionFieldTowerHyp F K) =
+      (∀ k n : ℕ,
+        Nonempty (EM.rationalFunctionField (EM.rationalFunctionField K k) n ≃ₐ[F]
+          EM.rationalFunctionField K (k + n))) := rfl
+
+/-- **G1（加变元封闭）条件化** ✓：砖① ＋ `IsStablyRational F K` ⟹ **`IsStablyRational F (K(t_k))`** ✓。
+**证法链** ✓：`(K(t_k))(s_n) ≅ K(u_{k+n}) ≅ K(u_{n+k}) ≅ (K(t_n))(s_k) ≅ (F(x_m))(s_k) ≅ F(x_{m+k})`
+（砖① 三次 ✓ ＋ 砖② 一次 ✓ ＋ 变元序交换一次 ✓）。 -/
+theorem isStablyRational_rationalFunctionField (F : Type*) [Field F] (K : Type*) [Field K]
+    [Algebra F K] (hyp : RationalFunctionFieldTowerHyp F K)
+    (hypF : RationalFunctionFieldTowerHyp F F) (k : ℕ)
+    (h : EM.IsStablyRational F K) : EM.IsStablyRational F (EM.rationalFunctionField K k) := by
+  classical
+  obtain ⟨n, m, hφ⟩ := h
+  refine ⟨n, m + k, ?_⟩
+  -- 变元序：K(u_{k+n}) ≅ K(u_{n+k})（只差 `Nat.add_comm` ✓）
+  have hswap : Nonempty (EM.rationalFunctionField K (k + n) ≃ₐ[F]
+      EM.rationalFunctionField K (n + k)) := by
+    rw [Nat.add_comm k n]
+    exact ⟨AlgEquiv.refl⟩
+  exact ⟨(Classical.choice (hyp k n)).trans
+    ((Classical.choice hswap).trans
+      ((Classical.choice (hyp n k)).symm.trans
+        ((Classical.choice (rationalFunctionField_algEquivMap (Classical.choice hφ) k)).trans
+          (Classical.choice (hypF m k)))))⟩
+
+#print axioms rationalFunctionFieldTowerHyp_typeLock
+#print axioms isStablyRational_rationalFunctionField
+
 /-! ## §3 公理闸门 -/
 
 #print axioms isStablyRational_of_isRational
