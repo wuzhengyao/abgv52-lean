@@ -2416,3 +2416,18 @@ of the pending localisation statement, is *not* in this round: the draft ran int
 ten API errors, among them that `Finset.prod_mem` does not exist.  The draft was
 withdrawn and its proof plan, with the offending names, is kept in the file as a
 block comment; nothing is claimed to be proved there.
+
+## Round 375 (2026-10-15, appended)
+
+`prod_mem_nonZeroDivisors`: a finite product of non-zero divisors is a non-zero
+divisor, by `Submonoid.prod_mem`; the name `Finset.prod_mem` does not exist.
+
+The polynomial-level clearing lemma is again not in this round.  Two rounds of
+iteration left three API errors, so the draft was withdrawn and the facts
+established while trying are kept in the file as a block comment: the support of
+an `MvPolynomial` consists of exponent vectors `sigma →₀ ℕ` rather than elements
+of `sigma` (the cause of five type errors); `coeff_map` must be rewritten before
+`coeff_sum`; `coeff_map` exists while `map_coeff` does not; the main term is best
+closed with a backwards rewrite and `ring`.  Still undetermined: the orientation
+of the `if` in `coeff_monomial`, and the lemma giving `coeff = 0` outside the
+support, `Finsupp.not_mem_support_iff.mp` being absent.
