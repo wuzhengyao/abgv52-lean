@@ -9613,4 +9613,88 @@ end SumUnivSplit315
 #print axioms sum_univ_split
 
 
+/-! ### 4.104 **域档 `δ` 单射（Dedekind 通道组装完成）**（第 316 轮）
+—— 🔴 **域档款③ 的两半之一** ✓（秩相等已在 §4.93 ✓ ⟹ **双射** 只差一行 ✓）
+
+**落成** ✓✅：**`delta_injective_of_field`** ✓✅：设 `K` 交换环 ✓、**`L` 域** ✓、`[Algebra K L]` ✓、
+`G` 有限群 ✓ 作用于 `L` ✓、**(i)** `hfix`（**不动基** ✓）、**(ii)** `hRG`（与 `K`-纯量交换 ✓）、
+**(iii)** `hfaith`（**忠实** ✓：`g ↦ actionAlgEquiv hfix g` **单射** ✓）⟹ **`δ` 单射** ✓✅。
+
+**证明（五步，七件工具全用）** ✓：
+**(1)** 反设 `δ z = 0` ✓ 而 `z ≠ 0` ✓ ⟹ 取 `g₀` 使 `s := coeff z g₀ ≠ 0` ✓（`coeff_eq_zero` ✓ ＋ `Finsupp.ne_iff` ✓）；
+**(2)** 由 §4.100 ✓ ＋ §4.102 ✓ 得 `∀ w, ∑_{g : G} (coeff z g) * (g • w) = 0` ✓；
+**(3)** 由 §4.103 ✓（**具名三参** ✓）在 `g₀` 处分裂 ✓，乘 `s⁻¹` ✓ 并 `Finset.mul_sum` ✓ ⟹
+**`(g₀ • w) + ∑_{g ≠ g₀} s⁻¹ * (coeff z g * (g • w)) = 0`** ✓；
+**(4)** 取 **`d : G → L`**（`d g₀ := 1` ✓、他处 `d g := s⁻¹ * coeff z g` ✓）⟹ 由 **(3)** ✓ 得
+`∀ w, ∑_g d g * (g • w) = 0` ✓ ⟹ `LinearMap.ext` ✓ ＋ `LinearMap.sum_apply` ✓ ⟹
+**`∑_g d g • (actionAlgEquiv hfix g).toLinearMap = 0`** ✓；
+**(5)** 由 §4.99 ✓（**`hfaith`** ✓ ⟹ `g ↦ (actionAlgEquiv hfix g).toAlgHom` 单射 ✓，经 **`AlgEquiv.ext`** ✓）
+得 **`d g₀ = 0`** ✗ ⟹ **`1 = 0` 矛盾** ✓ ⟹ `z.coeff = 0` ✓ ⟹ `z = 0` ✓（`coeff_eq_zero` ✓）。
+
+**⚠ 工艺（三条，入 §5.1；均本轮实测）** ✓：**(甲)** `Finset.mul_sum` ✓ **须显式**推入（**sum 内外的因子搬移** ✗
+不能靠 `simp` ✓）；**(乙)** `Finset.sum_congr` 的证明项**逐点**给出 ✓（`fun g _ => by rw […]` ✓）——
+**`congr 1` 后的目标是函数相等** ✗（`mul_assoc` **不适用** ✗，实测 ✓）；**(丙)** `AlgEquiv.toAlgHom_injective`
+**不存在** ✗ ⟹ 用 **`AlgEquiv.ext`** ✓ ＋ `congrArg (fun φ : L →ₐ[K] L => φ x)` ✓ 自证单射 ✓。
+
+**🔴 不声称** ✗：**不**声称 `δ` **双射** ✗（**只**落**单射** ✓ —— 双射须接 §4.93 的**秩计数** ✓，**下一手** ✓）；
+**不**声称款③ 已证 ✗；**不**声称 `IsGaloisWithGroup` 无条件形 ✗；**不**声称源 `theorem-1-2` 已证 ✗。 -/
+
+section DeltaInjectiveField316
+
+open ABGV52.BTier
+
+set_option maxHeartbeats 4000000 in
+/-- **域档 `δ` 单射** ✓✅（Dedekind 通道）。 -/
+theorem delta_injective_of_field {K : Type*} [CommRing K] {L : Type*} [Field L] [Algebra K L]
+    {G : Type*} [Group G] [Fintype G] [MulSemiringAction G L]
+    (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r)
+    (hRG : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hfaith : Function.Injective (fun g : G => actionAlgEquiv (S := L) hfix g)) :
+    Function.Injective (deltaToEndRingHom (S := L) hRG) := by
+  classical
+  rw [injective_iff_map_eq_zero]
+  intro z hz
+  by_contra hz0
+  have hcoe : z.coeff ≠ 0 := fun h => hz0 (SkewMonoidAlgebra.coeff_eq_zero.mp h)
+  obtain ⟨g₀, hg₀⟩ := Finsupp.ne_iff.mp hcoe
+  have hrel : ∀ w : L, (∑ g ∈ z.support, z.coeff g * (g • w)) = 0 :=
+    fun w => (delta_eq_zero_iff (S := L) hRG z).mp hz w
+  have hall : ∀ w : L, ∑ g : G, z.coeff g * (g • w) = 0 := by
+    intro w
+    rw [← delta_sum_univ z w]
+    exact hrel w
+  have hsplit : ∀ w : L, (g₀ • w)
+      + ∑ g ∈ (Finset.univ.erase g₀), (z.coeff g₀)⁻¹ * (z.coeff g * (g • w)) = 0 := by
+    intro w
+    have h := hall w
+    rw [sum_univ_split (fun g => z.coeff g * (g • w)) g₀] at h
+    have hmul : (z.coeff g₀)⁻¹ * (z.coeff g₀ * (g₀ • w)
+        + ∑ g ∈ (Finset.univ.erase g₀), z.coeff g * (g • w)) = 0 := by rw [h, mul_zero]
+    rw [mul_add, ← mul_assoc, inv_mul_cancel₀ hg₀, one_mul, Finset.mul_sum] at hmul
+    exact hmul
+  let d : G → L := fun g => if g = g₀ then 1 else (z.coeff g₀)⁻¹ * z.coeff g
+  have hd : ∀ w : L, ∑ g : G, d g * (g • w) = 0 := by
+    intro w
+    rw [sum_univ_split (fun g => d g * (g • w)) g₀]
+    simp only [d, if_pos rfl, one_mul]
+    rw [Finset.sum_congr rfl (fun g hg => by rw [if_neg (Finset.mem_erase.mp hg).1])]
+    rw [Finset.sum_congr rfl (fun g _ => by rw [mul_assoc])]
+    exact hsplit w
+  have hlin : ∑ g : G, d g • (actionAlgEquiv (S := L) hfix g).toLinearMap = 0 := by
+    ext w
+    rw [LinearMap.sum_apply]
+    simp only [LinearMap.smul_apply, AlgEquiv.toLinearMap_apply]
+    exact hd w
+  have hindep := algHom_linearIndependent_of_injective (K := K) (L := L)
+    (fun g : G => (actionAlgEquiv (S := L) hfix g).toAlgHom)
+    (fun g h hgh => hfaith (AlgEquiv.ext (fun x =>
+      congrArg (fun φ : L →ₐ[K] L => φ x) hgh)))
+  have hzero := (Fintype.linearIndependent_iff.mp hindep) d hlin g₀
+  simp [d] at hzero
+
+end DeltaInjectiveField316
+
+#print axioms delta_injective_of_field
+
+
 end ABGV52

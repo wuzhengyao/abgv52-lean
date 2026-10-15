@@ -1540,3 +1540,12 @@ given explicitly; with the arguments elided it failed to match inside a longer p
 recorded obstruction.  Together with the previous rounds this completes the toolkit for the injectivity argument: the
 coefficient form of vanishing, the comparison between the support and the whole group, the splitting, the bridge from
 the action to algebra automorphisms, and the independence of a faithful family of automorphisms.
+
+Round 316 completes the injectivity half of the crossed-product clause over a field, assembling the seven tools landed
+in the preceding rounds.  Assuming the map vanishes on an element and that some coefficient is nonzero, one divides by
+that coefficient, splits the resulting relation at the corresponding group element, and reads off a linear dependence
+of that element on the others with coefficients in the extension; independence of a faithful family of automorphisms
+then forces the coefficient to be both one and zero.  Since the rank of the crossed product and of the endomorphism
+ring agree, bijectivity of the map is now one dimension count away.  Three practical points are recorded about moving a
+factor across a sum, about pointwise congruence of sums, and about deriving injectivity of a map into algebra
+homomorphisms from injectivity of the underlying algebra equivalences.
