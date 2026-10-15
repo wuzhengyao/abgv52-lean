@@ -1567,3 +1567,10 @@ faithfulness to injectivity of the family of automorphisms that the bijectivity 
 of that family agree, then the two group elements act identically, so their quotient is the identity.  A single
 practical point is recorded about the group cancellation used in that bridge.  With this, the criterion of the source
 is complete over fields, and the carrier-specific results of the preceding rounds appear as its special case.
+
+Round 319 adds three interface lemmas for the Galois criterion: the rank hypothesis of the field case implies
+finiteness, so that callers need not supply it; the criterion is stated as the conjunction of its three clauses, which
+makes it available for unpacking; and conversely the three clauses assemble into the criterion, which gives one
+uniform way to package a Galois algebra from its parts, whether they come from the field case or from a future ring
+case.  One practical point is recorded about the name of the library lemma that turns a positive rank into finiteness.
+The existing field-case results are not rewritten in terms of the simplified interface here.

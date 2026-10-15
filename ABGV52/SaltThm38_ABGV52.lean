@@ -9814,4 +9814,57 @@ end IsGaloisWithGroupField318
 #print axioms isGaloisWithGroup_of_field
 
 
+/-! ### 4.107 **判据的拆装件 ＋ 秩 ⟹ 有限**（第 319 轮）
+—— 供**装配**与**实例化**用的接口件 ✓
+
+**落成三件** ✓✅：**(i)** **`finite_of_finrank_eq_card`** ✓✅：域档下 **`finrank K L = |G|`** ✓ ⟹
+**`Module.Finite K L`** ✓（**免去**向调用方索取有限性 ✓ —— §4.105 的接口**可简化** ✓）；
+**(ii)** **`isGaloisWithGroup_iff`** ✓✅：判据 ＝ **三款合取** ✓（`Iff.rfl` ✓，**拆卸形** ✓）；
+**(iii)** **`isGaloisWithGroup_of_clauses`** ✓✅：**三款 ⟹ 判据** ✓（**装配形** ✓ —— §4.89／§4.106 的装配的**通用形** ✓）。
+
+**⚠ 工艺** ✓（入 §5.1 ✓）：**`Module.Finite.of_finrank_ne_zero` 不存在** ✗ ⟹ 用
+**`Module.finite_of_finrank_pos`** ✓（`Dimension/Free.lean:272` ✓）＋ `Fintype.card_pos` ✓。
+
+**⚠ 用途** ✓：**(i)** 使 §4.105／§4.106 的假设立式**可去掉 `[Module.Finite K L]`** ✓（**下一手可加固** ✓）；
+**(ii)/(iii)** 使**任何**三款来源都能**一次装配**为判据 ✓（含未来的**环档**来源 ✓）。
+
+**🔴 不声称** ✗：**不**声称 §4.105／§4.106 已按 (i) **改写** ✗（**本件只供件** ✓，**改写下一手** ✓）；
+**不**声称环档判据 ✓；**不**声称残余 ①／③ 已证 ✗。 -/
+
+section GaloisCriterionInterface319
+
+open ABGV52.BTier
+
+/-- **秩假设 ⟹ 有限** ✓（域档）。 -/
+theorem finite_of_finrank_eq_card {K : Type u} [Field K] {L : Type u} [AddCommGroup L]
+    [Module K L] {G : Type u} [Group G] [Fintype G]
+    (hcard : Module.finrank K L = Fintype.card G) : Module.Finite K L :=
+  Module.finite_of_finrank_pos (by rw [hcard]; exact Fintype.card_pos)
+
+/-- **判据拆装：拆卸形** ✓。 -/
+theorem isGaloisWithGroup_iff {R : Type u} [CommRing R] {S : Type u} [CommRing S] [Algebra R S]
+    {G : Type u} [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) :
+    IsGaloisWithGroup R S G hRG ↔ FaithfulSMul G S
+      ∧ (∀ (g : G) (r : R), g • algebraMap R S r = algebraMap R S r)
+      ∧ Function.Bijective (deltaToEndRingHom hRG) :=
+  Iff.rfl
+
+/-- **判据拆装：装配形** ✓（三款 ⟹ 判据）。 -/
+theorem isGaloisWithGroup_of_clauses {R : Type u} [CommRing R] {S : Type u} [CommRing S]
+    [Algebra R S] {G : Type u} [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (h1 : FaithfulSMul G S)
+    (h2 : ∀ (g : G) (r : R), g • algebraMap R S r = algebraMap R S r)
+    (h3 : Function.Bijective (deltaToEndRingHom hRG)) :
+    IsGaloisWithGroup R S G hRG :=
+  ⟨h1, h2, h3⟩
+
+end GaloisCriterionInterface319
+
+#print axioms finite_of_finrank_eq_card
+#print axioms isGaloisWithGroup_iff
+#print axioms isGaloisWithGroup_of_clauses
+
+
 end ABGV52
