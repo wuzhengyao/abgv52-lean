@@ -10475,5 +10475,84 @@ end ASShiftRoot330
 
 #print axioms asCarrier_algEquiv_of_shift_root
 
+/-! ### 4.116 🔴 **素数次扩域上非平凡自同构的不动点 ＝ 基域**（第 331 轮）
+—— 子目标 (c) 的**第三件之一** ✓：**`L^σ = K`** ✓
+
+**用途** ✓：§4.115 ✓ 的 `asCarrier_algEquiv_of_shift_root` 需要 **`y^p − y = b ∈ K`** ✓ ——
+而 `σ (y^p − y) = y^p − y` ✓（**char p** ✓ ＋ `σ y = y + 1` ✓）⟹ **`y^p − y ∈ L^σ`** ✓
+⟹ 本件给出 **`L^σ = K`** ✓（**须 `[L : K]` 为素数** ✓）。
+**同理** ✓：第三件（`∃ y, σ y = y + 1` ✓）的**秩论证**需要 **`ker (σ − 1) = K`** ✓ ——
+本件正是其**点值形** ✓（`σ` 忠实 ✓ ＋ `[L : K] = p` ✓）。
+
+**落成一件** ✓✅：**`fixed_of_finrank_prime`** ✓✅：`[L : K] = p` 为**素数** ✓、`σ ≠ 1` 为 `K`-代数自同构 ✓
+⟹ **`σ z = z ⟹ z ∈ K`** ✓（`∃ c : K, algebraMap K L c = z` ✓）。
+
+**机制（中间域论证，三步，全部消费 mathlib 现成件 ✓）** ✓：
+**(甲)** 取 **`F := K⟮z⟯`** ✓（`IntermediateField.adjoin` ✓）；
+**(乙)** **`[F : K] ∣ [L : K] = p`** ✓（`IntermediateField.finrank_dvd_of_le_right` ✓ ＋ `finrank_top'` ✓）
+⟹ **`[F : K] ∈ {1, p}`** ✓（`p` 素 ✓ ＋ `Nat.Prime.eq_one_or_self_of_dvd` ✓）；
+**(丙)** **两分** ✓：**若 `[F : K] = p`** ⟹ `F = ⊤` ✓（`eq_of_le_of_finrank_eq` ✓）
+⟹ `σ` **固定 `K⟮z⟯`** ✓（`IntermediateField.adjoin_induction` ✓ ＋ `AlgEquiv.commutes` ✓）
+⟹ `σ = 1` ✗（**与 `hσ1` 矛盾** ✓）；**故 `[F : K] = 1`** ⟹ `F = ⊥` ✓（`finrank_bot` ✓）
+⟹ **`z ∈ K`** ✓（`IntermediateField.mem_bot` ✓）。
+
+**⚠ 工艺（三条，入 §5.1；均本轮实测）** ✓：
+**(甲)** **`IsField L` ≠ `Field L`** ✗：`IntermediateField` **要 `Field L` 实例** ✓ ⟹ 须
+**`IsField.toField (IsField.of_isDomain_of_finite K L)`** ✓ 并**注册为 `let _inst : Field L`** ✓
+（**只给 `IsField L` 不够** ✗ —— 实测 `failed to synthesize Field L` ✗）；
+**(乙)** **`finrank_top` 与 `finrank_top'` 同名不同义** ✗：前者是 **`finrank ↥⊤ L = 1`** ✓
+（**顶域上的次数** ✓），后者（`@[simp]` ✓）才是 **`finrank K ↥⊤ = finrank K L`** ✓ —— **实测踩中** ✗；
+**(丙)** **`subset_adjoin` 的实参形状** ✗：它是 `s ⊆ ↑(adjoin K s)` ✓ ⟹ 须
+**`subset_adjoin K ({z} : Set L) (Set.mem_singleton z)`** ✓（**不是** `subset_adjoin K (Set.mem_singleton z)` ✗）。
+
+**🔴 不声称** ✗：**不**声称子目标 (c) 已克 ✗（**只**落**第三件的「不动点」半边** ✓）；
+**不**声称 **`∃ y, σ y = y + 1`** ✗（**未落** ✗ —— **下一手** ✓）；**不**声称环档判据（(b)）有进展 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section FixedOfFinrankPrime331
+
+/-- **素数次扩域上非平凡 `K`-自同构的不动点全部落在 `K` 内** ✓✅。 -/
+theorem fixed_of_finrank_prime {K L : Type u} [Field K] [CommRing L] [IsDomain L]
+    [Algebra K L] [Module.Finite K L] {p : ℕ} (hp : p.Prime)
+    (hcard : Module.finrank K L = p) {σ : L ≃ₐ[K] L} (hσ1 : σ ≠ 1)
+    {z : L} (hz : σ z = z) : ∃ c : K, algebraMap K L c = z := by
+  let _inst : Field L := IsField.toField (IsField.of_isDomain_of_finite K L)
+  set F : IntermediateField K L := IntermediateField.adjoin K ({z} : Set L) with hF
+  have hfix : ∀ x ∈ F, σ x = x := by
+    intro x hx
+    rw [hF] at hx
+    induction hx using IntermediateField.adjoin_induction with
+    | mem y hy =>
+      rw [Set.mem_singleton_iff] at hy
+      subst hy
+      exact hz
+    | algebraMap c => exact σ.commutes c
+    | add x y hx hy ihx ihy => rw [map_add, ihx, ihy]
+    | mul x y hx hy ihx ihy => rw [map_mul, ihx, ihy]
+    | inv x hx ih => simp [ih]
+  have hdvd : Module.finrank K F ∣ p := by
+    have h := IntermediateField.finrank_dvd_of_le_right (K := K) (F := F) (E := ⊤) le_top
+    rwa [IntermediateField.finrank_top', hcard] at h
+  have hzF : z ∈ F := by
+    rw [hF]
+    exact IntermediateField.subset_adjoin K ({z} : Set L) (Set.mem_singleton z)
+  rcases hp.eq_one_or_self_of_dvd (Module.finrank K F) hdvd with h1 | hp'
+  · have hbot : F = ⊥ := by
+      refine (IntermediateField.eq_of_le_of_finrank_eq (K := K) (F := ⊥) (E := F) bot_le ?_).symm
+      rw [h1, IntermediateField.finrank_bot]
+    rw [hbot] at hzF
+    exact IntermediateField.mem_bot.mp hzF
+  · exfalso
+    apply hσ1
+    have htop : F = ⊤ :=
+      IntermediateField.eq_of_le_of_finrank_eq (K := K) (F := F) (E := ⊤) le_top (by
+        rw [hp', IntermediateField.finrank_top', hcard])
+    ext x
+    exact hfix x (by rw [htop]; trivial)
+
+end FixedOfFinrankPrime331
+
+#print axioms fixed_of_finrank_prime
+
 
 end ABGV52
