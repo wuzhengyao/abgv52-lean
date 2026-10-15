@@ -301,3 +301,21 @@ theorem isIdempotentElem_pi_single {ι K : Type*} [DecidableEq ι] [MulZeroOneCl
   · simp [Pi.single_eq_of_ne, h]
 
 #print axioms isIdempotentElem_pi_single
+
+
+/-- **(丙) 轨道和论证基元 ②** ✓：**不同点的指示函数两两正交** ✓
+（`Pi.single i 1 * Pi.single j 1 = 0` ✓，当 `i ≠ j` ✓）。
+**证法** ✓：点式（`funext` ＋ `Pi.mul_apply` ＋ 按 `k = i` 分支 ✓ —— 与 `isIdempotentElem_pi_single` 同模式 ✓）。
+**用途** ✓：与指示幂等元合起来给出**轨道指示函数**（`Σ_{j ∈ orbit i} Pi.single j 1` ✓）的**幂等性** ✓，
+接第 390 轮**轨道 `G`-不变** ✓ ＋ 第 368 轮**引擎** ✓ ⟹ "轨道指示函数 ＝ 1" ⟹ 轨道＝全集 ⟹ 第 389 轮接口 ⟹ **传递性** ✓。 -/
+theorem pi_single_mul_pi_single_eq_zero {ι K : Type*} [DecidableEq ι] [MulZeroOneClass K]
+    {i j : ι} (h : i ≠ j) :
+    Pi.single (M := fun _ => K) i (1 : K) * Pi.single (M := fun _ => K) j (1 : K) = 0 := by
+  funext k
+  rw [Pi.mul_apply, Pi.zero_apply]
+  by_cases hk : k = i
+  · subst hk
+    simp [Pi.single_eq_same, Pi.single_eq_of_ne, h]
+  · simp [Pi.single_eq_of_ne, hk]
+
+#print axioms pi_single_mul_pi_single_eq_zero

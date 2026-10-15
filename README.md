@@ -2636,3 +2636,15 @@ Two API points: the type family of `Pi.single` is named `M`, not `alpha`, and th
 same holds for `Pi.mul_apply` and the evaluation lemmas; and `simp` alone does not
 see through the pointwise product, so the proof proceeds by `funext`, then
 `Pi.mul_apply`, then a case split on `j = i`.
+
+## Round 395 (2026-10-15, appended)
+
+`pi_single_mul_pi_single_eq_zero`: indicators of distinct points are orthogonal.
+With the idempotency of round 394 this makes the orbit indicator, the sum of the
+indicators over an orbit, idempotent; orbit invariance of round 390 and the
+idempotent lemma of round 368 then force it to be 1, the orbit to be everything,
+and round 389 turns that into transitivity.
+
+The proof follows the pointwise pattern established in round 394: funext, then
+Pi.mul_apply, then a case split on k = i, with the evaluation lemmas at the
+family name M.
