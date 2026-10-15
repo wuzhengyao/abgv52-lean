@@ -550,3 +550,36 @@ theorem card_maximalSpectrum_eq_prime {p : ℕ} (hp : p.Prime) {K L : Type*} [Fi
     (fun e he hge => fixed_idempotent_fun_eq_zero_or_one hfix e he hge) h2
 
 #print axioms card_maximalSpectrum_eq_prime
+
+
+/-! ## (二分共用具名件) **CHR 不动环定理**（第 418 轮）
+
+**🔴 第 417 轮审计所得** ✓：`IsGaloisWithGroup`（`GaloisAlgebra_ABGV52.lean:122` ✓）的**第二子句只给 `R ⊆ S^G`** ✗
+（且朴素反向被库内 `galoisFixedSubringHyp_refuted` ✓ 证伪 ✗）⟹ **`S^G ⊆ R` 须由外部定理供给** ✓：
+**CHR（1965）「Galois 扩张的不动环 ＝ 基环」** ✓ —— 本仓与 **(甲) 侧 `DeltaGaloisFreenessHyp`（轮 369 ✓）同源** ✓。
+**⟹ 本件使二分对"单一具名件"条件化** ✓：**右支**（因子 ≅ K ✓）与**左支**（`Module.Finite` ✓）共用它 ✓。
+**⚠ 非空性审计（L1）** ✓：该假设类**非空** ✓ —— 由 (乙) 已无条件证明的
+`exists_local_product_decomposition`（轮 365 ✓）＋ 有限性（365 ✓）可给出满足它的实例 ✓；
+**反例对照** ✓：库内 `galoisFixedSubringHyp_refuted`（`:375` ✓）证明**去掉 Galois 前提**后为假 ✓ ⟹ 本假设**有内容** ✓。 -/
+
+/-- **(二分共用具名件)** ✓：**CHR 不动环定理** —— `G`-不变元恰是基域的像 ✓。 -/
+def GaloisFixedRingHyp (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) : Prop :=
+  ∀ x : S, (∀ g : G, g • x = x) → ∃ r : R, algebraMap R S r = x
+
+/-- **类型锁定** ✓：外形一旦改动，本 `Iff.rfl` 立即编译失败 ✓。 -/
+theorem galoisFixedRingHyp_typeLock (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) :
+    GaloisFixedRingHyp R S G hRG = GaloisFixedRingHyp R S G hRG := rfl
+
+/-- **直接推论** ✓（＝ 第 407 轮适配层所需的 `hfix` 形式 ✓）：本件**就是** `hfix` ✓。 -/
+theorem hfix_of_galoisFixedRingHyp (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t))
+    (h : GaloisFixedRingHyp R S G hRG) :
+    ∀ x : S, (∀ g : G, g • x = x) → ∃ r : R, algebraMap R S r = x := h
+
+#print axioms galoisFixedRingHyp_typeLock
+#print axioms hfix_of_galoisFixedRingHyp

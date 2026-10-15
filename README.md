@@ -2772,3 +2772,17 @@ comes from round 381.
 
 With this, the split case of the third dichotomy input is closed: the number of
 factors is `p`.
+
+## Round 418 (2026-10-15, appended)
+
+`GaloisFixedRingHyp`, with a type lock and its immediate consequence: the CHR
+theorem that in a Galois extension the fixed ring is the base ring.  The audit of
+round 417 showed that the second clause of `IsGaloisWithGroup` gives only that the
+base is fixed, and that the naive reverse inclusion is refuted in the library, so
+the reverse inclusion must come from outside.  Both branches of the dichotomy rest
+on it, the split branch for its factors being `K` and the domain branch for
+`Module.Finite`, so the dichotomy is now conditional on a single named item, the
+same one already named on the domain side.
+
+Non-emptiness is recorded: instances exist, and the refutation of the naive form
+shows the hypothesis has content.
