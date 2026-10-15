@@ -319,3 +319,22 @@ theorem pi_single_mul_pi_single_eq_zero {ι K : Type*} [DecidableEq ι] [MulZero
   · simp [Pi.single_eq_of_ne, hk]
 
 #print axioms pi_single_mul_pi_single_eq_zero
+
+
+/-- **(丙) 轨道指示幂等元** ✓：**有限个两两正交的指示幂等元之和是幂等元** ✓
+（即**轨道指示函数** `Σ_{j ∈ s} Pi.single j 1` ✓ 是幂等元 ✓）。
+**🔴 制胜的一步（第 399 轮）** ✓：**先用 `trace_state` 打印目标** ✗ ——
+打印显示 `simp only [Finset.sum_apply, Pi.single_apply]` **已把两个和直接化掉** ✓，
+目标变为 `(if k ∈ s then 1 else 0) * (if k ∈ s then 1 else 0) = (if k ∈ s then 1 else 0)` ✓
+⟹ **根本不需要 `Finset.sum_ite_eq'`／`sum_ite_eq`／`sum_boole`** ✗（第 397／398 两轮都在猜一个**已被化简掉**的形态 ✗）。
+**用途** ✓：接第 390 轮**轨道 `G`-不变** ✓ ＋ 第 368 轮**引擎** ✓ ⟹ 轨道指示函数 ＝ 1 ⟹ 轨道＝全集 ✓
+⟹ 第 389 轮接口 ✓ ⟹ **传递性** ✓。 -/
+theorem isIdempotentElem_sum_pi_single {ι K : Type*} [DecidableEq ι] [Semiring K] (s : Finset ι) :
+    IsIdempotentElem (∑ j ∈ s, Pi.single (M := fun _ => K) j (1 : K)) := by
+  rw [IsIdempotentElem]
+  funext k
+  rw [Pi.mul_apply]
+  simp only [Finset.sum_apply, Pi.single_apply]
+  by_cases hk : k ∈ s <;> simp [hk]
+
+#print axioms isIdempotentElem_sum_pi_single

@@ -2648,3 +2648,17 @@ and round 389 turns that into transitivity.
 The proof follows the pointwise pattern established in round 394: funext, then
 Pi.mul_apply, then a case split on k = i, with the evaluation lemmas at the
 family name M.
+
+## Round 399 (2026-10-15, appended)
+
+`isIdempotentElem_sum_pi_single`: a finite sum of pairwise orthogonal indicator
+idempotents is idempotent, that is, the orbit indicator is idempotent.  With orbit
+invariance of round 390 and the idempotent lemma of round 368 the orbit indicator
+is therefore 1, the orbit is everything, and round 389 turns that into
+transitivity.
+
+The decisive step was to print the goal.  After `simp only [Finset.sum_apply,
+Pi.single_apply]` both sums are already collapsed, leaving
+`(if k ∈ s then 1 else 0) * (if k ∈ s then 1 else 0) = (if k ∈ s then 1 else 0)`,
+so none of `sum_ite_eq'`, `sum_ite_eq` or `sum_boole` is needed at all; the two
+preceding rounds had been guessing at a shape that no longer existed.
