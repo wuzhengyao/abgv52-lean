@@ -1828,3 +1828,22 @@ equal from their agreement on a basis by the named extensionality lemma of the b
 is not a domain, the remaining clauses of the source's structure result, and the realization property, are not
 addressed here.
 
+Round 345 removes the hypothesis that the base ring is a domain from the ring case of the Galois criterion for the
+Artin-Schreier carrier, so that the criterion holds over any commutative ring of the given prime characteristic.
+The hypothesis entered only through the injectivity of the structure map of the adjoining construction, which the
+library states for domains; over an arbitrary commutative ring the same conclusion follows from the fact that the
+defining polynomial is monic of positive degree, since a constant lying in the principal ideal it generates
+reduces to itself modulo that polynomial and also to zero.  With injectivity available, the faithfulness of the
+action, the compatibility of the action with scalars and the bijectivity of the crossed-product map are combined to
+give the criterion, all three without further hypothesis on the base beyond its characteristic.  Six declarations
+are recorded: that the characteristic and the primality force the base to be nontrivial, that a constant killed by
+the structure map is zero, that the structure map is injective, the faithfulness of the action, the compatibility
+of the action with scalars, and the Galois criterion for the carrier over an arbitrary commutative ring of that
+characteristic.  Three practical points are recorded: the degree computations for the defining polynomial require
+the base to be nontrivial, which the characteristic and the primality supply; the criterion for a polynomial to be
+its own remainder modulo a monic divisor is available as an equivalence rather than as a degree comparison, and the
+comparison of degrees is made through the transitivity of the order rather than by rewriting; and the general
+assembly lemma for the criterion requires the base, the algebra and the group to live in the same universe, which
+the group of residue classes does not, so the three clauses are filled in directly instead.  The remaining clauses
+of the source's structure result and the realization property are not addressed here.
+

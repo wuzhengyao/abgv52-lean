@@ -11553,4 +11553,123 @@ end T7Finale344
 #print axioms asCarrier_isGaloisWithGroup
 
 
+/-! ### 4.128 🔴🔴🔴 **去条件化：`of` 单射（任意交换环）⟹ 源 `proposition-0-6(b)` 全一般形**（第 345 轮）
+—— **`[IsDomain R]` 限制的去除** ✓（**源对任意 `F`-代数陈述** ✓）
+
+**缺口** ✓：§4.127 的 `asCarrier_isGaloisWithGroup` **限定 `[IsDomain R]`** ✗ —— 因其款① 走
+**`AdjoinRoot.of.injective_of_degree_ne_zero`** ✓（**须 `[IsDomain R]`** ✗，`AdjoinRoot.lean` ✓）。
+**其余三件皆不须域** ✓（**已核** ✓）：款② `asCarrier_smul_algebraMap` ✓（§4.85 ✓，只须 `CommRing` ✓）、
+款① 的**归约形** `asCarrierMSA_faithful_of_ofInjective` ✓（§4.86 ✓，只须 `of` 单射 ＋ 素域像单射 ✓）、
+`hRG` ✓（§4.89 的证明**未用** `[IsDomain R]` ✗）。
+
+**落成六件** ✓✅：**(甲)** **`nontrivial_of_charP`** ✓✅（`CharP R p` ＋ `p` 素 ⟹ `Nontrivial R` ✓，§4.86 同法 ✓）；
+**(乙)** **`asCarrier_of_eq_zero`** ✓✅ —— **`of x = 0 ⟹ x = 0`（任意交换环 ✓）** ✓：
+`C x ∈ (f)` ✓（`AdjoinRoot.mk_eq_zero` ✓）⟹ **`C x %ₘ f = 0`** ✓ 且 **`= C x`** ✓（**`f` 首一 ＋ 次数 `p ≥ 2`** ✓
+—— **`modByMonic_eq_zero_iff_dvd`** ✓ ＋ **`modByMonic_eq_self_iff`** ✓）⟹ `C x = 0` ✓ ⟹ `x = 0` ✓；
+**(丙)** **`asCarrier_of_injective`** ✓✅（**任意交换环** ✓）；**(丁)** **`asCarrierMSA_faithful`** ✓✅
+（**款① 全一般形** ✓ —— **不须 `[IsDomain R]`** ✓）；**(戊)** **`asCarrier_hRG'`** ✓✅（**`hRG` 全一般形** ✓）；
+**(己)** **`asCarrier_isGaloisWithGroup'`** ✓✅ —— **`IsGaloisWithGroup R (asCarrier R p a) (Multiplicative (ZMod p)) (asCarrier_hRG' a)`** ✓✅
+—— **任意特征 `p` 的交换环** ✓✅（**非域亦可** ✓）＝ **源 `proposition-0-6(b)` 的**全一般形** ✓✅**。
+
+**⚠ 工艺（三条，入 §5.1）** ✓：**(#56)** **`aspoly_monic`／`aspoly_natDegree` 须 `[Nontrivial R]`** ✗ ⟹
+由 **`nontrivial_of_charP`** ✓ ＋ **`let _inst`** ✓ 现场注册 ✓（`CharP` ＋ 素 ⟹ 非平凡 ✓）；
+**(#57)** **`Polynomial.modByMonic_eq_self_of_degree_lt` 不存在** ✗ ⟹ 用 **`modByMonic_eq_self_iff`** ✓（**`↔` 形** ✓）
+＋ **`lt_of_le_of_lt Polynomial.degree_C_le`** ✓（**`degree_C_le` 是 `≤` 证明** ✗，**不可 `rw`** ✗）；
+**(#58)** **`isGaloisWithGroup_of_clauses`（§4.107）须三型同宇宙** ✗（`{R S G : Type u}` ✓ —— **§5.1 #30 同型** ✓）
+而 **`G = Multiplicative (ZMod p) : Type`** ✓ ⟹ **正解 ＝ 直接以匿名构造子填三款** ✓
+（`IsGaloisWithGroup` 是 `def` ✓ ⟹ `⟨款①, 款②, 款③⟩` ✓）—— **绕开同宇宙约束** ✓。
+
+**⚠ 与 §4.127 的关系** ✓：**本件严格推广** ✓（§4.127 的 `[IsDomain R]` 档由本件在 `[IsDomain R]` 下复得 ✓）；
+两者的**款③ 同源** ✓（均为 `delta_bijective_of_moment` ✓）；**`hRG` 的载体**不同 ✓
+（§4.127 用 `asCarrier_hRG` ✓；本件用 `asCarrier_hRG'` ✓ —— **两者皆为真** ✓，后者假设更少 ✓）。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)`（`n` 档）／`(c)`（张量积档）已证 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗；**不**声称 **(c) 残支已克** ✗
+（**分裂档模型侧** ⚠ 缺外部理论、真值未定 ⚠；**非域环档的 `RealizationProperty`** ✗）；**`RealizationProperty` 仍零实例** ✗。 -/
+
+section UnconditionalRingTier345
+
+attribute [local instance] asCarrierMSA
+
+open ABGV52.BTier
+
+/-- **(甲) `CharP R p` ＋ `p` 素 ⟹ `Nontrivial R`** ✓（§4.86 同法 ✓）。 -/
+theorem nontrivial_of_charP {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p] :
+    Nontrivial R := by
+  rw [← not_subsingleton_iff_nontrivial]
+  intro h
+  have h1 : (1 : R) = 0 := Subsingleton.elim 1 0
+  exact (Fact.out : Nat.Prime p).not_dvd_one
+    ((CharP.cast_eq_zero_iff R p 1).mp (by simpa using h1))
+
+/-- **(乙) `of x = 0 ⟹ x = 0`（任意交换环 ✓，**不需 `[IsDomain R]`** ✓）**。 -/
+theorem asCarrier_of_eq_zero {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p] (a : R)
+    {x : R} (h : AdjoinRoot.of (ASpoly R p a) x = 0) : x = 0 := by
+  let _inst : Nontrivial R := nontrivial_of_charP (R := R) (p := p)
+  have hp2 : 2 ≤ p := (Fact.out : Nat.Prime p).two_le
+  have hmonic : (ASpoly R p a).Monic := aspoly_monic (R := R) hp2 a
+  have hdeg : (ASpoly R p a).natDegree = p := aspoly_natDegree (R := R) hp2 a
+  have hdvd : ASpoly R p a ∣ Polynomial.C x := by
+    rw [← AdjoinRoot.mk_eq_zero]
+    exact h
+  have hmod : (Polynomial.C x) %ₘ (ASpoly R p a) = 0 :=
+    (Polynomial.modByMonic_eq_zero_iff_dvd hmonic).mpr hdvd
+  have hself : (Polynomial.C x) %ₘ (ASpoly R p a) = Polynomial.C x := by
+    refine (Polynomial.modByMonic_eq_self_iff hmonic).mpr ?_
+    have hdeg' : (ASpoly R p a).degree = (p : WithBot ℕ) := by
+      rw [Polynomial.degree_eq_natDegree hmonic.ne_zero, hdeg]
+    refine lt_of_le_of_lt Polynomial.degree_C_le ?_
+    rw [hdeg']
+    exact_mod_cast (Fact.out : Nat.Prime p).pos
+  rw [hself] at hmod
+  exact Polynomial.C_eq_zero.mp hmod
+
+/-- **(丙) `of` 单射（任意交换环）** ✓。 -/
+theorem asCarrier_of_injective {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) : Function.Injective (AdjoinRoot.of (ASpoly R p a)) := by
+  intro r s h
+  have hsub : AdjoinRoot.of (ASpoly R p a) (r - s) = 0 := by
+    rw [map_sub, h, sub_self]
+  exact sub_eq_zero.mp (asCarrier_of_eq_zero (R := R) (p := p) a hsub)
+
+/-- **(丁) 款①（忠实）全一般形** ✓：**任意交换环** ✓（**不须 `[IsDomain R]`** ✓）。 -/
+theorem asCarrierMSA_faithful {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) : FaithfulSMul (Multiplicative (ZMod p)) (asCarrier R p a) :=
+  asCarrierMSA_faithful_of_ofInjective a (asCarrier_of_injective (R := R) (p := p) a)
+
+/-- **(戊) `hRG` 全一般形** ✓（**不须 `[IsDomain R]`** ✓）。 -/
+theorem asCarrier_hRG' {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p] (a : R) :
+    ∀ (g : Multiplicative (ZMod p)) (r : R) (t : asCarrier R p a),
+      g • (r • t) = r • (g • t) := by
+  intro k r t
+  rw [Algebra.smul_def, Algebra.smul_def]
+  show asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+      (castHom_pow (p := p) (Multiplicative.toAdd k))
+      (algebraMap R (asCarrier R p a) r * t)
+    = algebraMap R (asCarrier R p a) r
+      * asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+        (castHom_pow (p := p) (Multiplicative.toAdd k)) t
+  rw [map_mul]
+  congr 1
+  rw [show algebraMap R (asCarrier R p a) r = AdjoinRoot.of (ASpoly R p a) r from rfl]
+  rw [asShiftH_of]
+
+/-- **(己) 源 `proposition-0-6(b)` 全一般形** ✓✅：**任意特征 `p` 的交换环** ✓（**非域亦可** ✓）。 -/
+theorem asCarrier_isGaloisWithGroup' {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R) :
+    IsGaloisWithGroup R (asCarrier R p a) (Multiplicative (ZMod p)) (asCarrier_hRG' a) := by
+  let _inst : Nontrivial R := nontrivial_of_charP (R := R) (p := p)
+  exact ⟨asCarrierMSA_faithful a, asCarrier_smul_algebraMap a,
+    delta_bijective_of_moment a (asCarrier_hRG' a)⟩
+
+end UnconditionalRingTier345
+
+#print axioms nontrivial_of_charP
+#print axioms asCarrier_of_eq_zero
+#print axioms asCarrier_of_injective
+#print axioms asCarrierMSA_faithful
+#print axioms asCarrier_hRG'
+#print axioms asCarrier_isGaloisWithGroup'
+
+
 end ABGV52
