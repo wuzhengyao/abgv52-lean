@@ -2695,3 +2695,16 @@ structure and the permuted `MulSemiringAction` of round 403 being already presen
 The hypothesis `Nonempty ι` cannot be dropped: for empty `ι` the type `ι → K` is a
 singleton, so the map from a nontrivial field into it is not injective.  The proof
 evaluates at a chosen index on `Pi.single i 1`.
+
+## Round 407 (2026-10-15, appended)
+
+`fixed_idempotent_fun_eq_zero_or_one`: in the function space `ι → K` with the
+permuted action of round 403, a fixed idempotent is 0 or 1.  This is the adaptor
+that the engine of round 368 needs; it failed in rounds 404 and 405 and now goes
+through, because the engine takes `K` and `L` explicitly, and because
+`FaithfulSMul K (ι → K)` of round 406 supplies the missing instance, for which
+`Nonempty ι` is required.
+
+With the orbit indicator idempotent (round 399), invariant (round 390), and this
+adaptor, the indicator is 1, so every point lies in the orbit, and rounds 400 and
+389 give transitivity.

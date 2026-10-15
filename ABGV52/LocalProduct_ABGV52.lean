@@ -390,3 +390,20 @@ instance faithfulSMulPi {ι K : Type*} [Nonempty ι] [Field K] : FaithfulSMul K 
     simpa [Pi.smul_apply, Pi.single_eq_same] using this
 
 #print axioms faithfulSMulPi
+
+
+/-! ## (丙) 引擎适配层 ✓（第 407 轮）：`(ι → K)` 上的不变幂等元只有 0／1
+
+**三件已就位** ✓：引擎（368 ✓）＋ 置换作用（403 ✓）＋ **`FaithfulSMul K (ι → K)`（406 ✓，须 `[Nonempty ι]` ✓）
+＋ `CommRing (ι → K)`（mathlib ✓）⟹ 本适配层成立 ✓。
+**用途** ✓：接指示幂等元（399 ✓）＋ 轨道不变（390 ✓）⟹ 轨道指示函数 ＝ 1 ⟹ 第 400 轮接口 ⟹
+轨道＝全集 ⟹ 第 389 轮接口 ⟹ **传递性** ✓。 -/
+
+/-- **(丙) 引擎适配层** ✓：`(ι → K)` 上（坐标置换作用 ✓，`ι` 非空 ✓）的不变幂等元只有 0／1 ✓。 -/
+theorem fixed_idempotent_fun_eq_zero_or_one {G ι K : Type*} [Group G] [MulAction G ι] [Field K]
+    [Nonempty ι]
+    (hfix : ∀ x : ι → K, (∀ g : G, g • x = x) → ∃ c : K, algebraMap K (ι → K) c = x)
+    (e : ι → K) (he : IsIdempotentElem e) (hge : ∀ g : G, g • e = e) : e = 0 ∨ e = 1 :=
+  ABGV52.LocalProduct.fixed_idempotent_eq_zero_or_one K (ι → K) hfix e he hge
+
+#print axioms fixed_idempotent_fun_eq_zero_or_one
