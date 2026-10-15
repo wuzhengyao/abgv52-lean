@@ -1764,3 +1764,24 @@ under a ring homomorphism uses the direction of the power rule that produces a p
 direction that collects one.  That the orbit forms a basis, and hence the bijectivity of the crossed-product map
 over a ring, are not addressed here.
 
+Round 342 records the determinant half of the route to the ring case of the Galois criterion, after a probe shows
+that the route through the endomorphism ring as a module over the algebra cannot be taken: the library's algebra
+structure on the endomorphism ring of a module requires the scalars to act on the ring of endomorphisms, which the
+structure map of an algebra does not provide.  The record instead goes through the moment map on the space of
+coefficient vectors, whose matrix has as its entries the powers of the shifted roots.  Its determinant is the
+Vandermonde determinant of the shifted roots, and the difference of two shifted roots is the structure map applied
+to the difference of the corresponding residue classes.  Distinct residue classes have a nonzero difference in the
+residue ring, which is a field, so that difference is a unit there and its image under the structure map is a unit
+in the base; a product of units is a unit, so the determinant is a unit.  Eight declarations are recorded: that
+distinct residue classes have unit difference in the base, that the difference of two shifted roots is the
+structure map applied to the difference of the classes, that such a difference is a unit, that pairwise unit
+differences make a Vandermonde determinant a unit in general, the family of shifted roots itself, the injectivity
+of the numbering of the residue classes by the initial segment, the unitness of the Vandermonde determinant of the
+shifted roots, and the transposed form of that matrix, which is the one the next round consumes.  Four practical
+points are recorded: an additive identity involving the structure map is not closed by the ring tactic but by its
+normalizing variant; the injectivity of the numbering is best obtained from the congruence criterion for casts of
+natural numbers rather than from the value of a residue class; the transpose notation is unavailable in this file,
+so the matrix transpose has to be named; and the lemmas about units of finite products live in the namespace of the
+unit predicate rather than in that of finite sums.  The invertibility of the moment map itself, and hence the
+bijectivity of the crossed-product map over a ring, are not addressed here.
+

@@ -11175,4 +11175,126 @@ end HighWeightOrbit341
 #print axioms asShiftH_root_pow_sub_one
 
 
+/-! ### 4.125 🔴 **T7 路线（丙″）行列式半：移位节点 Vandermonde 为单位**（第 342 轮）
+—— 子目标 (b)（环档判据）的**路线（丙″）** ✓ —— **矩量映射 ＋ 单位行列式** ✓（**§303.3 的改判** ✓）
+
+**为何改判（第 342 轮探针实测）** ✗：**(a)** 路线（丙′）须 `End_R(S)` 的 **`S`-模结构** ✗ ——
+实测 **`Algebra S (Module.End R S)` 不可合成** ✗（`Module.End.instAlgebra` ✓ 要求 `[SMul S R]` ✗，
+而 `Algebra R S` **只给 `R → S`** ✗；逐件实测：`SMulCommClass R S S` ✓ 可合成，**卡在 `SMul S R`** ✗）；
+**(b)** **路线（丙″）绕开 `End_R(S)` 的模结构** ✓：改用**矩量映射**
+`Λ : (Fin p → S) →ₗ[S] (Fin p → S)` ✓（`Λ s i = Σ_j s_j * (root + of (castHom j))^i` ✓），
+其矩阵 **`M_{i,j} = (root + of (castHom j))^i`** ✓（＝ `(vandermonde shiftNode)ᵀ` ✓）的行列式**为单位** ✓
+⟹ **`Λ` 可逆** ✓（接线件：`Matrix.GeneralLinearGroup.toLin` ✓ ＋ `Matrix.toLin'` ✓ —— **下一手** ✗）。
+**本件 ＝ 该行列式的单位性** ✓✅（**路线（丙″）的"行列式半"** ✓）。
+
+**落成八件** ✓✅：**(甲)** **`isUnit_zmodCast_sub`** ✓✅ —— `k ≠ k'` ⟹ **`castHom k − castHom k'` 为单位** ✓
+（`ZMod p` **域** ✓ ⟹ `k − k' ≠ 0` 是单位 ✓ ⟹ **环同态保单位** ✓）；
+**(乙)** **`shiftNode_sub`** ✓✅ —— `(root + of k) − (root + of k') = of (k − k')` ✓（`map_sub` ✓）；
+**(丙)** **`isUnit_shiftNode_sub`** ✓✅；**(丁)** **`isUnit_det_vandermonde_of_isUnit_sub`** ✓✅ ——
+**逐对差为单位 ⟹ Vandermonde 行列式为单位** ✓（`det_vandermonde` ✓ ＋ `IsUnit.prod_univ_iff`／`IsUnit.prod_iff` ✓）；
+**(戊)** **`shiftNode a i := root + of (castHom (i : ZMod p))`** ✓✅；
+**(己)** **`finToZMod_injective`** ✓✅（`natCast_eq_natCast_iff` ✓ ＋ `Nat.ModEq.eq_of_lt_of_lt` ✓）；
+**(庚)** **`isUnit_det_vandermonde_shiftNode`** ✓✅ —— **移位节点 Vandermonde 之 det 为单位** ✓✅；
+**(辛)** **`isUnit_det_momentMatrix_shiftNode`** ✓✅ —— `M = (vandermonde shiftNode)ᵀ` ✓ 之 det 为单位 ✓
+（`Matrix.det_transpose` ✓）—— **即下一手要接线的矩阵** ✓。
+
+**⚠ 工艺（四条，入 §5.1）** ✓：**(#45)** `ring` 在**含 `AdjoinRoot.of` 项的加减恒等式**上**不闭合** ✗（实测 ✓）
+⟹ 用 **`ring_nf`** ✓；**(#46)** **`ZMod.val_natCast_of_lt` 的改写模式不命中** ✗（目标 `(i : ZMod p)` 的 `Nat.cast` 形与模式不符 ✓）
+⟹ **正解 ＝ `ZMod.natCast_eq_natCast_iff` ＋ `Nat.ModEq.eq_of_lt_of_lt`** ✓；
+**(#47)** **`ᵀ` 记法在本文件不可用** ✗（实测 "unexpected token" ✓）⟹ 用 **`Matrix.transpose`** ✓；
+**(#48)** **`IsUnit.prod_iff`／`IsUnit.prod_univ_iff` 在 `IsUnit` 命名空间** ✓（**非** `Finset.` ✗）。
+
+**⚠ 与「源 `proposition-0-5(c)`（正规基）」的关系** ✓：**本件不用正规基** ✗ —— 用的是
+**移位节点两两差为单位** ✓（＝ **素域是域**这一事实的推论 ✓）；**与源不矛盾** ✗（源在**域档**用正规基 ✓，
+环档两条源命题走 `[DI71]` ✓）。
+
+**🔴 不声称** ✗：**不**声称 **`Λ` 可逆已落** ✗（**只落其行列式为单位** ✓）；**不**声称 **`δ` 的矩量形已接线** ✗；
+**不**声称环档 `δ` 双射有进展 ✗；**不**声称源 `proposition-0-6(b)`／`theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section DetHalf342
+
+/-- **素域相异元之差的单位性** ✓：`k ≠ k'` ⟹ `castHom k − castHom k'` 在 `R` 中为单位 ✓
+（`k − k' ≠ 0` 在**域** `ZMod p` 中 ⟹ 单位 ✓ ⟹ **环同态保单位** ✓）。 -/
+theorem isUnit_zmodCast_sub {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    {k k' : ZMod p} (h : k ≠ k') :
+    IsUnit (ZMod.castHom (dvd_refl p) R k - ZMod.castHom (dvd_refl p) R k') := by
+  rw [← map_sub]
+  exact IsUnit.map _ (isUnit_iff_ne_zero.mpr (sub_ne_zero.mpr h))
+
+/-- **移位节点之差** ✓：`(root + of k) − (root + of k') = of (k − k')` ✓。 -/
+theorem shiftNode_sub {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) (k k' : ZMod p) :
+    (AdjoinRoot.root (ASpoly R p a) + AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R k))
+        - (AdjoinRoot.root (ASpoly R p a)
+            + AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R k'))
+      = AdjoinRoot.of (ASpoly R p a)
+          (ZMod.castHom (dvd_refl p) R k - ZMod.castHom (dvd_refl p) R k') := by
+  have h : (AdjoinRoot.root (ASpoly R p a)
+        + AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R k))
+      - (AdjoinRoot.root (ASpoly R p a)
+        + AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R k'))
+      = AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R k)
+        - AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R k') := by ring_nf
+  rw [h, map_sub]
+
+/-- **移位节点之差的单位性** ✓。 -/
+theorem isUnit_shiftNode_sub {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) {k k' : ZMod p} (h : k ≠ k') :
+    IsUnit ((AdjoinRoot.root (ASpoly R p a)
+          + AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R k))
+        - (AdjoinRoot.root (ASpoly R p a)
+          + AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R k'))) := by
+  rw [shiftNode_sub a k k']
+  exact IsUnit.map _ (isUnit_zmodCast_sub h)
+
+/-- **一般形** ✓：**逐对差为单位 ⟹ Vandermonde 行列式为单位** ✓。 -/
+theorem isUnit_det_vandermonde_of_isUnit_sub {S : Type u} [CommRing S] {n : ℕ} {v : Fin n → S}
+    (h : ∀ i j : Fin n, i ≠ j → IsUnit (v i - v j)) :
+    IsUnit (Matrix.vandermonde v).det := by
+  rw [Matrix.det_vandermonde, IsUnit.prod_univ_iff]
+  intro i
+  rw [IsUnit.prod_iff]
+  intro j hj
+  exact h j i (Finset.mem_Ioi.mp hj).ne'
+
+/-- **移位节点族** ✓：`v i := root + of (castHom (i : ZMod p))` ✓。 -/
+noncomputable def shiftNode {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) (i : Fin p) : asCarrier R p a :=
+  AdjoinRoot.root (ASpoly R p a)
+    + AdjoinRoot.of (ASpoly R p a) (ZMod.castHom (dvd_refl p) R (i : ZMod p))
+
+/-- **`Fin p → ZMod p` 的单射性** ✓。 -/
+theorem finToZMod_injective {p : ℕ} [Fact p.Prime] :
+    Function.Injective (fun i : Fin p => (i : ZMod p)) := by
+  intro i j h
+  have h1 : (i : ℕ) ≡ (j : ℕ) [MOD p] := (ZMod.natCast_eq_natCast_iff (i : ℕ) (j : ℕ) p).mp h
+  exact Fin.eq_of_val_eq (h1.eq_of_lt_of_lt i.isLt j.isLt)
+
+/-- **移位节点 Vandermonde 的行列式为单位** ✓✅（**路线（丙″）的行列式半** ✓）。 -/
+theorem isUnit_det_vandermonde_shiftNode {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R) :
+    IsUnit (Matrix.vandermonde (shiftNode (p := p) a)).det := by
+  refine isUnit_det_vandermonde_of_isUnit_sub (fun i j hij => ?_)
+  have hne : (i : ZMod p) ≠ (j : ZMod p) := fun h => hij (finToZMod_injective h)
+  exact isUnit_shiftNode_sub a hne
+
+/-- **矩量矩阵（转置形）的行列式为单位** ✓（`M i j = v j ^ i` ＝ `(vandermonde v)ᵀ` ✓）。 -/
+theorem isUnit_det_momentMatrix_shiftNode {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R) :
+    IsUnit (Matrix.det (fun i j : Fin p => (shiftNode (p := p) a j) ^ (i : ℕ))) := by
+  have h : (fun i j : Fin p => (shiftNode (p := p) a j) ^ (i : ℕ))
+      = Matrix.transpose (Matrix.vandermonde (shiftNode (p := p) a)) := rfl
+  rw [h, Matrix.det_transpose]
+  exact isUnit_det_vandermonde_shiftNode a
+
+end DetHalf342
+
+#print axioms isUnit_zmodCast_sub
+#print axioms shiftNode_sub
+#print axioms isUnit_shiftNode_sub
+#print axioms isUnit_det_vandermonde_of_isUnit_sub
+#print axioms isUnit_det_vandermonde_shiftNode
+#print axioms isUnit_det_momentMatrix_shiftNode
+
+
 end ABGV52
