@@ -2276,3 +2276,21 @@ action on `MaximalSpectrum L` (via a `G`-invariant idempotent argument), the
 conclusion `L ≅ K^p` in the case of `p` factors (fixed elements of a product
 under a cyclic permutation are diagonal), and the hardest step, that a single
 factor forces `L` to be a domain.
+
+## Round 368 (2026-10-15, appended)
+
+`fixed_idempotent_eq_zero_or_one`: if every element of `L` fixed by `G` lies in
+the image of the base field `K`, then a `G`-fixed idempotent of `L` is `0` or
+`1`.  Such an idempotent is `algebraMap k` for some `k`; idempotence plus
+injectivity of `algebraMap` gives `k * k = k`, hence `k * (k - 1) = 0`, and a
+field has no zero divisors.
+
+This is the engine of the first algebraic step of the third input of the
+dichotomy.  If the action on the factors of the product decomposition were not
+transitive, a non-empty proper `G`-stable subset `S` of the index set would give
+the `G`-fixed idempotent `sum over i in S of e_i`, neither `0` nor `1`, a
+contradiction; transitivity then combines with `card_eq_one_or_eq_prime_of_
+pretransitive` of round 367 to give index set `1` or `p`.
+
+The assembly itself is not in this round: it needs the factor permutation induced
+by the action to be tied to `localProductEquiv` of round 365.

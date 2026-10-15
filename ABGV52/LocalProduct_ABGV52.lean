@@ -114,6 +114,30 @@ theorem card_eq_one_or_eq_prime_of_pretransitive {p : ℕ} (hp : p.Prime)
   · exact Or.inl (by rw [← horbit, h])
   · exact Or.inr (by rw [← horbit, h])
 
+/-- **(丙) ③（幂等元核心）** ✓：若 `L` 的 **`G`-不变元都落在 `K` 的像**里（即 `L^G ⊆ K` ✓）
+而 `K` 是**域** ✓，则 **`G`-不变幂等元只有 `0` 与 `1`** ✓。
+
+**用途** ✓（(丙) 代数部分第 ① 步的引擎 ✓）：设 `L ≅ ∏_{i∈ι} L_i` ✓ 且 `G` 置换各因子 ✓。
+若 `G` 在 `ι` 上**不传递** ✗，取一个非空真 `G`-稳定子集 `S` ✓，则 `e_S := Σ_{i∈S} e_i` 是
+**`G`-不变幂等元**且 `≠ 0, 1` ✗ —— 与本条矛盾 ✓ ⟹ **作用必传递** ✓。
+**⚠ 不声称** ✗：本件**只给引擎**（幂等元二分 ✓）；「因子置换 ＋ `e_S` 构造」与「传递 ⟹ `card ι ∈ {1,p}`」
+的**拼接**仍待落 ✗（后者已由第 367 轮 `card_eq_one_or_eq_prime_of_pretransitive` ✓ 备好）。 -/
+theorem fixed_idempotent_eq_zero_or_one [FaithfulSMul K L]
+    {G : Type*} [Group G] [MulSemiringAction G L]
+    (hfix : ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x)
+    (e : L) (he : IsIdempotentElem e) (hge : ∀ g : G, g • e = e) :
+    e = 0 ∨ e = 1 := by
+  obtain ⟨k, hk⟩ := hfix e hge
+  have hkidem : IsIdempotentElem k := by
+    rw [isIdempotentElem_iff] at he ⊢
+    exact FaithfulSMul.algebraMap_injective K L (by rw [map_mul, hk, he])
+  rw [isIdempotentElem_iff] at hkidem
+  have hzero : k * (k - 1) = 0 := by rw [mul_sub, mul_one, hkidem, sub_self]
+  rcases mul_eq_zero.mp hzero with h | h
+  · exact Or.inl (by rw [← hk, h, map_zero])
+  · exact Or.inr (by rw [← hk, sub_eq_zero.mp h, map_one])
+
+#print axioms fixed_idempotent_eq_zero_or_one
 #print axioms card_orbit_eq_one_or_eq_prime
 #print axioms card_eq_one_or_eq_prime_of_pretransitive
 
