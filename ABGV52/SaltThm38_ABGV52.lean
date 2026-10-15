@@ -11839,4 +11839,121 @@ end ConditionalTheorem12347
 #print axioms nonempty_genericExtensionWitness_Cp_of_dichotomy
 
 
+/-! ### 4.131 🔴 **T6-F 第二口：Kummer 档地基（源 `proposition-0-6(a)` 的载体链）**（第 348 轮）
+—— **`C_n` 档（乘法／Kummer 档）的载体 ＋ 幂基 ＋ 秩 ＋ 移位** ✓（**路线（丙″）的乘法类比** ✓）
+
+**靶** ✓：**源 `proposition-0-6(a)`** ✓（`raw/Saltman1982.tex:142` ✓）：**`char F ∤ n`** ✓、**`ρ(n) ∈ F`** ✓、
+**`a` 是 `R` 的单位** ✓ ⟹ **`S = R{y^n − a}` 是 `C_n`-Galois** ✓ ——
+**本件落其**载体链**（Kummer 载体 ＋ 幂基 ＋ 秩 ＋ 移位自同态 ✓），**与 AS 档 §4.79／§4.91 对偶** ✓。
+
+**落成七件** ✓✅：**(甲)** **`kummerCarrier R n a := AdjoinRoot (X^n − C a)`** ✓✅（源 `R{y^n − a}` ✓）；
+**(乙)** **`kpoly_monic`** ✓✅（**`n ≥ 1`** ✓）＋ **`kpoly_natDegree`** ✓✅（**`= n`** ✓）；
+**(丙)** **`kummerBasis`** ✓✅（**幂基 `{1, y, …, y^{n−1}}`** ✓）＋ **`kummer_finrank`** ✓✅（**秩 `= n`** ✓）；
+**(丁)** **`kummer_subst`** ✓✅ —— **代入 `X ↦ C ρ · X` **保持定义多项式** ✓**（`ρ^n = 1` ✓）：
+**`X^n − C a ↦ C(ρ^n) X^n − C a = X^n − C a`** ✓ —— **与 AS 档 `X ↦ X + C k`（差一常数 ✓）对偶** ✓；
+**(戊)** **`kummerShift_eval`** ✓✅（**`eval₂` 义务** ✓：`of ρ · root` 满足定义关系 ✓ —— 由 **`root^n = of a`** ✓
+（**`AdjoinRoot.eval₂_root`** ✓）＋ **`(of ρ)^n = of 1`** ✓）；
+**(己)** **`kummerShiftH`** ✓✅ —— **载体上 `y ↦ ρ · y`** ✓（源 `C_n`-作用的**生成端** ✓）；
+**(庚)** **`kummerShiftH_of`** ✓✅（**固定系数** ✓）＋ **`kummerShiftH_root`** ✓✅（**根 ↦ `ρ · root`** ✓）。
+
+**⚠ 与 AS 档的关键差别（**路线（丙″）在乘法档为何更易** ✓）** ✓：**(i)** **定义多项式被移位固定** ✓
+（AS 档差一常数 `k^p − k` ✓）；**(ii)** **节点差为单位** ✓ —— 节点 `y ρ^k` ✓，差
+**`y ρ^{k'}(ρ^{k−k'} − 1)`** ✓：**`y` 单位** ✓ 由 **`a` 单位** ✓（`y^n = a` ✓），
+**`ρ^m − 1` 单位** ✓ 由 **`F` 是域** ✓（**`0 < m < n` ⟹ `ρ^m ≠ 1` ⟹ `ρ^m − 1 ≠ 0`** ✓ ⟹ **`F` 中为单位** ✓
+⟹ **其在 `R` 中的像是单位** ✓）—— **故 Kummer 档的 `det` 为单位可望同法落地** ✓（**下一手** ✗）。
+
+**⚠ 工艺（三条，入 §5.1）** ✓：**(#62)** **`Polynomial.monic_X_pow_sub_C` 要 `n ≠ 0`** ✗（**非** `1 ≤ n` ✗）⟹
+由 `hn : 1 ≤ n` 用 **`by omega`** ✓ 转写 ✓；**(#63)** **`Polynomial.natDegree_X_pow_sub_C` 无该假设** ✗
+（但须 **`[Nontrivial R]`** ✓，且**未用的显式假设须 `_` 前缀** ✓ —— **§5.1 #2** ✓）；
+**(#64)** **`Polynomial.aeval_C` 给 `algebraMap R (Polynomial R) a`** ✗ ⟹ 须 **`← Polynomial.C_eq_algebraMap`** ✓ 桥接
+（**`AdjoinRoot.aeval_root` 不存在** ✗ ⟹ 用 **`AdjoinRoot.eval₂_root`** ✓ 取 `sub_eq_zero.mp` ✓）。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` 已证 ✗（**只落载体链** ✓ —— **判据 ＋ 移位自同构 ＋ `C_n`-作用 ＋ 实现均未落** ✗）；
+**不**声称移位是**自同构** ✗（**只落自同态** ✓）；**不**声称源 `theorem-1-2(b)` 已证 ✗；
+**不**声称源 `proposition-0-6(c)`（张量积档 ✓）已证 ✗。 -/
+
+section KummerCarrierCore348
+
+/-- **Kummer 载体** ✓（源 `R{y^n − a}` ✓）：`R[y]/(y^n − a)` ✓。 -/
+abbrev kummerCarrier (R : Type u) [CommRing R] (n : ℕ) (a : R) : Type u :=
+  AdjoinRoot ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+
+/-- **首一性** ✓（`n ≥ 1` ✓）。 -/
+theorem kpoly_monic {R : Type u} [CommRing R] {n : ℕ} (hn : 1 ≤ n) (a : R) :
+    ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a).Monic :=
+  Polynomial.monic_X_pow_sub_C a (by omega)
+
+/-- **次数** ✓。 -/
+theorem kpoly_natDegree {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} (_hn : 1 ≤ n) (a : R) :
+    ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a).natDegree = n :=
+  Polynomial.natDegree_X_pow_sub_C
+
+/-- **Kummer 幂基** ✓：`{1, y, …, y^{n−1}}` ✓。 -/
+noncomputable def kummerBasis {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} (hn : 1 ≤ n)
+    (a : R) : Module.Basis (Fin n) R (kummerCarrier R n a) :=
+  (AdjoinRoot.powerBasisAux' (kpoly_monic (R := R) hn a)).reindex
+    (finCongr (kpoly_natDegree (R := R) hn a))
+
+/-- **Kummer 载体的秩 ＝ `n`** ✓。 -/
+theorem kummer_finrank {R : Type u} [CommRing R] [Nontrivial R] {n : ℕ} (hn : 1 ≤ n) (a : R) :
+    Module.finrank R (kummerCarrier R n a) = n := by
+  rw [Module.finrank_eq_card_basis (AdjoinRoot.powerBasisAux' (kpoly_monic (R := R) hn a)),
+    Fintype.card_fin, kpoly_natDegree (R := R) hn a]
+
+/-- **代入恒等式** ✓：`X ↦ C ρ · X` **保持** `X^n − C a`（当 `ρ^n = 1` ✓）。 -/
+theorem kummer_subst {R : Type u} [CommRing R] (a ρ : R) {n : ℕ} (hρ : ρ ^ n = 1) :
+    Polynomial.aeval ((Polynomial.C ρ) * (Polynomial.X : Polynomial R))
+        ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+      = (Polynomial.X : Polynomial R) ^ n - Polynomial.C a := by
+  rw [map_sub, Polynomial.aeval_X_pow, Polynomial.aeval_C, ← Polynomial.C_eq_algebraMap]
+  rw [mul_pow, ← Polynomial.C_pow, hρ, Polynomial.C_1, one_mul]
+
+/-- **载体上的义务** ✓（`eval₂` 形 ✓）：`of ρ · root` 满足定义关系 ✓。 -/
+theorem kummerShift_eval {R : Type u} [CommRing R] {n : ℕ} (a ρ : R) (hρ : ρ ^ n = 1) :
+    Polynomial.eval₂
+      (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) ρ
+        * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) = 0 := by
+  have hroot : (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)) ^ n
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) a := by
+    have h := AdjoinRoot.eval₂_root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a)
+    rw [Polynomial.eval₂_sub, Polynomial.eval₂_pow, Polynomial.eval₂_X, Polynomial.eval₂_C] at h
+    exact sub_eq_zero.mp h
+  rw [Polynomial.eval₂_sub, Polynomial.eval₂_pow, Polynomial.eval₂_X, Polynomial.eval₂_C,
+    mul_pow, ← map_pow, hρ, map_one, one_mul, hroot, sub_self]
+
+/-- **Kummer 移位自同态** ✓：**载体上 `y ↦ ρ · y`** ✓（`ρ^n = 1` ✓）。 -/
+noncomputable def kummerShiftH {R : Type u} [CommRing R] {n : ℕ} (a ρ : R) (hρ : ρ ^ n = 1) :
+    kummerCarrier R n a →+* kummerCarrier R n a :=
+  AdjoinRoot.lift (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+    (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) ρ
+      * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+    (kummerShift_eval a ρ hρ)
+
+/-- **计算件 ①** ✓：移位**固定系数** ✓。 -/
+theorem kummerShiftH_of {R : Type u} [CommRing R] {n : ℕ} (a ρ : R) (hρ : ρ ^ n = 1) (r : R) :
+    kummerShiftH a ρ hρ
+        (AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r)
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) r :=
+  AdjoinRoot.lift_of (kummerShift_eval a ρ hρ)
+
+/-- **计算件 ②** ✓：移位把根送到 `ρ · root` ✓。 -/
+theorem kummerShiftH_root {R : Type u} [CommRing R] {n : ℕ} (a ρ : R) (hρ : ρ ^ n = 1) :
+    kummerShiftH a ρ hρ (AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a))
+      = AdjoinRoot.of ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) ρ
+        * AdjoinRoot.root ((Polynomial.X : Polynomial R) ^ n - Polynomial.C a) :=
+  AdjoinRoot.lift_root (kummerShift_eval a ρ hρ)
+
+end KummerCarrierCore348
+
+#print axioms kpoly_monic
+#print axioms kpoly_natDegree
+#print axioms kummer_finrank
+#print axioms kummer_subst
+#print axioms kummerShift_eval
+#print axioms kummerShiftH_of
+#print axioms kummerShiftH_root
+
+
 end ABGV52

@@ -1875,3 +1875,21 @@ appears in a statement, and the hypotheses of the criterion for this carrier are
 than as an explicit proof, since the action on the carrier enters the elaboration of the statement itself.  The
 dichotomy is not proved here, and hence neither is the source's theorem unconditionally.
 
+Round 348 begins the multiplicative counterpart of the carrier chain, for the clause of the source's structure
+result that concerns the cyclic group of order coprime to the characteristic.  The carrier is the adjoining of a
+root of the polynomial that is the variable raised to that order minus the coefficient, its power basis and its
+rank are computed as in the additive case, and the substitution sending the variable to the coefficient times the
+variable is shown to fix the defining polynomial, which yields a ring homomorphism of the carrier sending the root
+to the coefficient times the root.  The contrast with the additive case is recorded: there the substitution shifts
+the defining polynomial by a constant, and it is the difference of two shifted roots rather than the polynomial
+itself that becomes the unit whose existence drives the criterion; here the polynomial is fixed, and the nodes of
+the corresponding matrix are the root times the powers of the coefficient, whose pairwise differences are products
+of the root with a unit of the base field.  Seven declarations are recorded: the carrier, the monicity and the
+degree of the defining polynomial, the power basis, the rank, the substitution identity, the evaluation obligation
+and the shift homomorphism together with its two computation rules.  Three practical points are recorded: the
+monicity lemma for this polynomial asks for a nonzero exponent rather than a positive one; the degree lemma asks
+for no exponent hypothesis but for the base to be nontrivial, and an unused explicit hypothesis has to be marked;
+and the evaluation rule for constants produces the structure map rather than the constant polynomial, so the
+identification of the two has to be inserted.  The Galois criterion for this carrier, the group action, the
+realization property and the source's theorem for this case are not addressed here.
+
