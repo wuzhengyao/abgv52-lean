@@ -2529,3 +2529,21 @@ the idempotent lemma of round 368 (a fixed idempotent is 0 or 1), the
 mathematical content of the third input is now in place.  What is not in place is
 the wiring: the action of `G` on the set of factors has to be constructed from
 `localProductEquiv` of round 365, and the domain case still has to be argued.
+
+## Round 382 (2026-10-15, appended)
+
+A whole-library search, as the reconnaissance rule now requires, shows that
+`PrimeSpectrum` already carries a `MulSemiringAction` in
+`Mathlib/RingTheory/Spectrum/Prime/Basic.lean`, so the action of a group of ring
+automorphisms on the prime spectrum does not have to be built here.  What is
+still missing is its descent to `MaximalSpectrum`, the set of factors of the
+product decomposition, which has no such instance in mathlib.
+
+`card_eq_prime_of_pretransitive_of_nontrivial`: if the action is transitive, the
+group has prime order `p`, and there are at least two factors, then the number of
+factors is `p`.  This is immediate from the orbit lemma of round 367, and gives
+the number of factors in the split case of the third dichotomy input.
+
+One API fact: the orbit lemma of round 367 is stated for
+`Multiplicative (ZMod p)` rather than for a general group, so it has to be
+invoked with that signature.

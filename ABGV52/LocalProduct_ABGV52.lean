@@ -177,7 +177,35 @@ theorem eq_const_of_perm_fixed [Nonempty ι] (σ : G →* Equiv.Perm ι)
 #print axioms eq_of_perm_transitive
 #print axioms eq_const_of_perm_fixed
 
+
+/-! ## (丙) 接线：**已核的 mathlib 现成件**（第 382 轮，L46 加固版检索所得 ✓）
+
+**命中** ✓：**`Mathlib/RingTheory/Spectrum/Prime/Basic.lean:508–513`** 已有
+**`PrimeSpectrum` 的 `MulSemiringAction`**（`smul g P := ⟨g • P, P.2.smul g⟩` ✓ ＋ `asIdeal_smul` ✓）——
+即"**环自同构（`MulSemiringAction`）作用于素谱**"**无需自建** ✗→✓。
+**⟹ (丙) 接线的剩余部分** ✓：把 `G` 的作用从 `PrimeSpectrum`（已有 ✓）落到
+**`MaximalSpectrum`**（极大理想 ✓，即 (乙) 的**因子集** ✓）上 —— 这一层 mathlib **未见现成实例** ✗
+（检索式：`grep -rn "MaximalSpectrum" Mathlib/ | grep -iE "smul|action|comap"` ✗），
+故须自建：`smul g I := ⟨g • I.1, I.2.smul g⟩`-型 ✓（极大性沿自同构保持 ✓）。
+**⚠ 不声称** ✗：本轮**未落**该实例 ✓。 -/
+
+/-- **(丙) 组合件** ✓：`G` **传递**作用于有限指标集 `ι`、`|G|` 为素数 `p`、且 `|ι| ≥ 2` ⟹ **`|ι| = p`** ✓
+（由第 367 轮的**轨道大小 ∈ {1, p}** ✓ 直接得 ✓；**用途** ✓：(丙) 分裂支的**因子个数** ✓）。 -/
+theorem card_eq_prime_of_pretransitive_of_nontrivial {p : ℕ} (hp : p.Prime)
+    {α : Type*} [Fintype α] [MulAction (Multiplicative (ZMod p)) α]
+    [MulAction.IsPretransitive (Multiplicative (ZMod p)) α] (x : α)
+    [Fintype (ZMod p)]
+    [Fintype (MulAction.orbit (Multiplicative (ZMod p)) x)]
+    [Fintype ↥(MulAction.stabilizer (Multiplicative (ZMod p)) x)]
+    (h2 : 2 ≤ Fintype.card α) : Fintype.card α = p := by
+  rcases card_eq_one_or_eq_prime_of_pretransitive hp x with h | h
+  · omega
+  · exact h
+
+#print axioms card_eq_prime_of_pretransitive_of_nontrivial
+
 end PermFixed
+
 
 end CpAction
 
