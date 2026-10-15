@@ -2662,3 +2662,12 @@ Pi.single_apply]` both sums are already collapsed, leaving
 `(if k ∈ s then 1 else 0) * (if k ∈ s then 1 else 0) = (if k ∈ s then 1 else 0)`,
 so none of `sum_ite_eq'`, `sum_ite_eq` or `sum_boole` is needed at all; the two
 preceding rounds had been guessing at a shape that no longer existed.
+
+## Round 400 (2026-10-15, appended)
+
+`orbit_eq_univ_of_forall_smul_eq`: if every `j` can be reached from `i` by some
+`g`, then the orbit of `i` is everything.  This is the interface produced by the
+indicator argument: the orbit indicator is idempotent (round 399) and invariant
+(round 390), so the idempotent lemma of round 368 makes it 1, every point has
+value 1 in it, and each point therefore lies in the orbit.  With round 389 this
+yields transitivity.

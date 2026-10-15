@@ -338,3 +338,16 @@ theorem isIdempotentElem_sum_pi_single {ι K : Type*} [DecidableEq ι] [Semiring
   by_cases hk : k ∈ s <;> simp [hk]
 
 #print axioms isIdempotentElem_sum_pi_single
+
+
+/-- **(丙) 传递性链的接口件** ✓：若每个 `j` 都能被某个 `g` 打到（`g • i = j` ✓），则**轨道是全集** ✓ ——
+接第 389 轮 `isPretransitive_of_orbit_eq_univ` ✓ 即得 `IsPretransitive` ✓。
+**来源** ✓：指示函数论证的**产出**正是"每个 `j` 落在轨道内" ✓
+（轨道指示幂等元 ✓〔轮 399〕＋ `G`-不变 ✓〔轮 390〕＋ 引擎 ✓〔轮 368〕⟹ 指示函数 ＝ 1 ⟹ 每个 `j` 的取值为 1 ⟹ `j` 在轨道内 ✓）。 -/
+theorem orbit_eq_univ_of_forall_smul_eq {G ι : Type*} [Group G] [MulAction G ι] (i : ι)
+    (h : ∀ j : ι, ∃ g : G, g • i = j) : MulAction.orbit G i = Set.univ := by
+  ext j
+  simp only [Set.mem_univ, iff_true]
+  exact MulAction.mem_orbit_iff.mpr (h j)
+
+#print axioms orbit_eq_univ_of_forall_smul_eq
