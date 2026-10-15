@@ -1755,3 +1755,12 @@ aside: the library's statement that an etale algebra is a finite product of sepa
 statement over a field, so it does not apply to the ring case and cannot serve as the wheel for the ring case of
 the criterion.  The bijectivity of the crossed-product map over a ring is not addressed here.
 
+Round 341 takes the first step of the explicit-inverse route to the ring case of the Galois criterion, by
+computing the orbit of the candidate normal basis element.  That element is the power of the root one below the
+prime; a power of a ring homomorphism applied to a power of the root is the power of the image of the root, and
+the previous rounds have recorded that the image of the root is the root shifted by the coefficient, so the orbit
+is given by the corresponding shifted powers.  One practical point is recorded: rewriting a power of the root
+under a ring homomorphism uses the direction of the power rule that produces a power of the image, not the
+direction that collects one.  That the orbit forms a basis, and hence the bijectivity of the crossed-product map
+over a ring, are not addressed here.
+

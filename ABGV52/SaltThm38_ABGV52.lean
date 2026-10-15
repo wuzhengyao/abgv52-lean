@@ -11142,5 +11142,37 @@ theorem asCarrier_projective {R : Type u} [CommRing R] [Nontrivial R] {p : ℕ} 
 #print axioms asCarrier_finite
 #print axioms asCarrier_projective
 
+/-! ### 4.124 🔴 **T7 路线（乙）第一小步：高权元的轨道**（第 341 轮）
+—— 子目标 (b)（环档判据）的**路线（乙）**（**显式逆 ＋ 环档正规基**）的**第 (i) 步** ✓
+
+**路线（乙）三小步** ✓：**(i)** `θ` 取**高权**元 ✓（`θ := root^(p−1)` ✓）；**(ii)** 证 **`{φ_g θ}` 是 `R`-基** ✗；
+**(iii)** 由基写 **`δ^{-1}`** ✗ ⟹ 款③ ✓ ⟹ 组装（§4.89 ✓）。
+**⚠ 路线（甲）已判否** ✗（**仅域档** ✓ —— §302 ✓）；**已判否两条捷径** ✗（§272.1 ✓／§4.92 ✓）。
+
+**落成一件** ✓✅：**`asShiftH_root_pow_sub_one`** ✓✅ —— **`φ_k (θ) = (root + k)^(p−1)`** ✓✅
+（`φ_k := asShiftH a k _` ✓，`k^p = k` ✓）—— **即 `θ` 的轨道逐点显式形** ✓。
+
+**机制** ✓：`map_pow` ✓ ＋ **§4.92 的 `asShiftH_root`** ✓（**根 ↦ `root + k`** ✓）。
+
+**⚠ 用途（路线（乙）为何需要它）** ✓：**(ii)** 的**基性**将由**过渡矩阵**证 ✓ ——
+`(root + k)^(p−1) = Σ_j binom(p−1, j) k^(p−1−j) root^j` ✓ ⟹ **过渡矩阵的下三角首项为 `k^(p−1−j)`** ✓
+—— **本件给出该展开的左端** ✓；**⚠ 但件本身不含基性结论** ✗。
+
+**🔴 不声称** ✗：**不**声称 **`{φ_g θ}` 是 `R`-基** ✗（**(ii) 未落** ✗）；**不**声称环档 `δ` 双射有进展 ✗；
+**不**声称 **`δ^{-1}` 已显式给出** ✗；**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section HighWeightOrbit341
+
+/-- **高权元的轨道** ✓✅：`φ_k (root^(p−1)) = (root + k)^(p−1)` ✓（`φ_k` ＝ 移位 `asShiftH` ✓）。 -/
+theorem asShiftH_root_pow_sub_one {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a k : R) (hk : k ^ p = k) :
+    asShiftH a k hk ((AdjoinRoot.root (ASpoly R p a)) ^ (p - 1))
+      = (AdjoinRoot.root (ASpoly R p a) + AdjoinRoot.of (ASpoly R p a) k) ^ (p - 1) := by
+  rw [map_pow, asShiftH_root]
+
+end HighWeightOrbit341
+
+#print axioms asShiftH_root_pow_sub_one
+
 
 end ABGV52
