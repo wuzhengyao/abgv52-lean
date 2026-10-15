@@ -1807,3 +1807,24 @@ bijectivity proof, whose point values are definitional, with the surjectivity of
 value of a residue class.  Surjectivity of the crossed-product map, and hence its bijectivity and the Galois
 criterion for the ring case, are not addressed here.
 
+Round 344 completes the ring case of the Galois criterion for the Artin-Schreier carrier by proving the
+crossed-product map surjective, hence bijective, and assembling the criterion.  The values of the carrier's power
+basis are identified with the powers of the root, so that a linear map can be checked on those powers.  An element
+with prescribed coefficients is produced by the construction of a skew monoid algebra element from a finitely
+supported function, so that no coefficient of a finite sum of basis vectors has to be computed; with the moment
+solution of the previous round, the crossed-product map at a power of the root is then the corresponding moment of
+that element, and agreement with the given linear map on the power basis finishes the proof.  Bijectivity follows,
+and the criterion is assembled from faithfulness, the fixed base and bijectivity, so that the Artin-Schreier
+carrier is Galois with the cyclic group of prime order over any domain of characteristic that prime, which is the
+statement the source derives from its structure results.  Four declarations are recorded: the values of the power
+basis, surjectivity of the crossed-product map, its bijectivity, and the Galois criterion for the carrier.  Four
+practical points are recorded: the equation expressing a power basis vector as a power of the generator is a field
+of the power basis structure rather than a lemma, so the index has to be supplied explicitly, and the
+identification of the generator with the root together with the equality of the exponents is best recorded
+separately; the evaluation of a finitely supported function built from a function is definitional, whereas a lemma
+naming it does not exist; an element with prescribed coefficients is best produced by the constructor from a
+finitely supported function, which avoids computing coefficients of finite sums; and two linear maps are proved
+equal from their agreement on a basis by the named extensionality lemma of the basis.  The case of a base ring that
+is not a domain, the remaining clauses of the source's structure result, and the realization property, are not
+addressed here.
+

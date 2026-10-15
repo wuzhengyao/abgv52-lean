@@ -11430,4 +11430,127 @@ end MomentWiring343
 #print axioms delta_injective_of_moment
 
 
+/-! ### 4.127 🔴🔴🔴 **T7 收官：环档 `δ` 双射 ⟹ 源 `proposition-0-6(b)` 落库**（第 344 轮）
+—— 子目标 (b)（环档判据）**全克** ✓✅（**(甲)(乙) §4.126** ✓ ＋ **(丙)(丁) 本件** ✓）
+
+**落成四件** ✓✅：**(甲)** **`asCarrierBasis_apply`** ✓✅ —— **`asCarrierBasis hp a i = root^(i:ℕ)`** ✓
+（**幂基取值引理** ✓ —— 满射的"幂基上相符"步所需 ✓）；
+**(乙)** **`delta_surjective_of_moment`** ✓✅ —— **环档 `δ` 满射** ✓✅（**矩量解 ＋ `ofCoeff` 造元 ＋ 幂基相符 ＋ `Basis.ext`** ✓）；
+**(丙)** **`delta_bijective_of_moment`** ✓✅ —— **环档 `δ` 双射** ✓✅（**＝ 源 §0 判据的第三款** ✓）；
+**(丁)** **`asCarrier_isGaloisWithGroup`** ✓✅ —— **`IsGaloisWithGroup R (asCarrier R p a) (Multiplicative (ZMod p)) (asCarrier_hRG a)`** ✓✅
+—— **即源 `proposition-0-6(b)`** ✓✅（**`raw/Saltman1982.tex:143`** ✓：`S = R{y^p − y − a}` ⟹ `S/R` 是 `C_p`-Galois ✓）。
+
+**机制（(乙) 满射）** ✓：给定 `f : End_R S` ✓，取 **`c i := f (root^i)`** ✓ ⟹ 由 **§4.126 的 `momentMap_bijective`** ✓
+解 **`s`**（`Λ s = c` ✓）⟹ 造元 **`z := ofCoeff F`** ✓（`F (ofAdd j) = s j` ✓）⟹
+**§4.126 的矩量形** ✓ 给出 `δ z (root^i) = Σ_j s_j (shiftNode j)^i = c i = f (root^i)` ✓ ⟹
+**`Module.Basis.ext`** ✓（幂基 ✓ ＋ **`asCarrierBasis_apply`** ✓）⟹ **`δ z = f`** ✓✅。
+
+**⚠ 量词域** ✗：本件限定 **`[IsDomain R]`** ✓（款① 的 `of` 单射通道 §4.87 ✓ 须域 ✓）——
+**源 `proposition-0-6(b)` 对任意 `F`-代数 `R` 陈述** ✓；本件给出其**域档** ✓；
+**源的实际用例 `R = F[x]` 是域** ✓（**`theorem-1-2(a)` 的 `(b)` 款所需** ✓）。
+
+**⚠ 工艺（四条，入 §5.1）** ✓：**(#52)** **`PowerBasis.basis_eq_pow` 是结构字段** ✗（**非**独立引理 ✗）——
+`rw` 时**须显式给索引** ✓（否则报 "not type-correct under implicit transparency" ✗）；
+且 **`gen = root`** ✓ 与**指数相等** ✓ 须各作 `have` ✓（`gen` 的 `PowerBasis.dim` 与 `natDegree` 的 defeq 不参与 `rw` ✗）；
+**(#53)** **`Finsupp.coe_equivFunOnFinite_symm : ⇑(equivFunOnFinite.symm f) = f`** ✓（**`rfl`** ✓）——
+**`equivFunOnFinite_symm_apply` 不存在** ✗；
+**(#54)** **造"系数已知"的 `SkewMonoidAlgebra` 元用 `ofCoeff`** ✓（`(ofCoeff F).coeff = F` **由 `rfl`** ✓）——
+**旁路**「有限个 `single` 之和的系数」✗（`coeff` 是**普通函数** ✗ ⟹ `rw [map_sum]` **不触发** ✗，
+须经 `coeffAddEquiv.toAddMonoidHom` ✓ 再对 Finsupp 之和取值 ✗ —— **两处皆不必走** ✓）；
+**(#55)** **`Module.Basis.ext`** ✓（**限定名** ✓；`Basis.ext` 报 unknown ✗）—— 由基上相符证线性映射相等 ✓。
+
+**⚠ 与已判否路线的关系** ✓：**（乙）（环档正规基）** 未使用 ✗；**（丙′）（`End_R(S)` 的 `S`-基）** 未使用 ✗
+（§304 已判受阻 ✓）；**（甲）（étale 轮子）** 未使用 ✗（§302 已判仅域档 ✓）——
+**路线（丙″）独立走通** ✓。
+
+**🔴 不声称** ✗：**不**声称 **任意（非域）`R` 上的 `IsGaloisWithGroup`** ✗（**本件限定 `[IsDomain R]`** ✓）；
+**不**声称源 `proposition-0-6(a)`（`n` 档）／`proposition-0-6(c)`（张量积档）已证 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗；**不**声称 **(c) 残支已克** ✗
+（**(c) 分裂档模型侧** ⚠ 缺外部理论、真值未定 ⚠；**非域环档** ✗）；**`RealizationProperty` 仍零实例** ✗。 -/
+
+section T7Finale344
+
+attribute [local instance] asCarrierMSA
+
+open ABGV52.BTier
+
+/-- **(甲) 幂基取值引理** ✓：`asCarrierBasis hp a i = root^(i:ℕ)` ✓。 -/
+theorem asCarrierBasis_apply {R : Type u} [CommRing R] [Nontrivial R] {p : ℕ} (hp : 2 ≤ p) (a : R)
+    (i : Fin p) :
+    asCarrierBasis (R := R) hp a i = (AdjoinRoot.root (ASpoly R p a)) ^ (i : ℕ) := by
+  rw [asCarrierBasis, Module.Basis.reindex_apply]
+  have hb := (AdjoinRoot.powerBasis' (aspoly_monic (R := R) hp a)).basis_eq_pow
+    ((finCongr (aspoly_natDegree (R := R) hp a)).symm i)
+  rw [show (AdjoinRoot.powerBasisAux' (aspoly_monic (R := R) hp a))
+        ((finCongr (aspoly_natDegree (R := R) hp a)).symm i)
+      = (AdjoinRoot.powerBasis' (aspoly_monic (R := R) hp a)).basis
+          ((finCongr (aspoly_natDegree (R := R) hp a)).symm i) from rfl, hb]
+  have hgen : (AdjoinRoot.powerBasis' (aspoly_monic (R := R) hp a)).gen
+      = AdjoinRoot.root (ASpoly R p a) := rfl
+  have hexp : (((finCongr (aspoly_natDegree (R := R) hp a)).symm i : Fin _) : ℕ) = (i : ℕ) := by
+    simp [finCongr_symm, finCongr_apply]
+  rw [hgen, hexp]
+
+/-- **(乙) 环档 `δ` 满射** ✓✅（**矩量解 ＋ `ofCoeff` 造元 ＋ 幂基相符 ＋ `Basis.ext`** ✓）。 -/
+theorem delta_surjective_of_moment {R : Type u} [CommRing R] [Nontrivial R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R)
+    (hRG : ∀ (g : Multiplicative (ZMod p)) (r : R) (t : asCarrier R p a), g • (r • t) = r • (g • t)) :
+    Function.Surjective (deltaToEndRingHom (S := asCarrier R p a) hRG) := by
+  classical
+  intro f
+  have hp : 2 ≤ p := (Fact.out : Nat.Prime p).two_le
+  obtain ⟨s, hs⟩ := (momentMap_bijective a).2
+    (fun i : Fin p => f ((AdjoinRoot.root (ASpoly R p a)) ^ (i : ℕ)))
+  let F : Multiplicative (ZMod p) →₀ asCarrier R p a :=
+    Finsupp.equivFunOnFinite.symm (fun g : Multiplicative (ZMod p) => s ((finEquivG p).symm g))
+  refine ⟨SkewMonoidAlgebra.ofCoeff F, ?_⟩
+  have hcoeff : ∀ j : Fin p,
+      (SkewMonoidAlgebra.ofCoeff F).coeff (Multiplicative.ofAdd (j : ZMod p)) = s j := by
+    intro j
+    have h1 : (SkewMonoidAlgebra.ofCoeff F).coeff = F := rfl
+    rw [h1]
+    have h2 : F (Multiplicative.ofAdd (j : ZMod p))
+        = s ((finEquivG p).symm (Multiplicative.ofAdd (j : ZMod p))) :=
+      congrFun (Finsupp.coe_equivFunOnFinite_symm
+        (fun g : Multiplicative (ZMod p) => s ((finEquivG p).symm g)))
+        (Multiplicative.ofAdd (j : ZMod p))
+    rw [h2]
+    have h3 : (finEquivG p).symm (Multiplicative.ofAdd (j : ZMod p)) = j :=
+      Equiv.symm_apply_apply (finEquivG p) j
+    rw [h3]
+  have hval : ∀ i : Fin p,
+      deltaToEndRingHom hRG (SkewMonoidAlgebra.ofCoeff F)
+          ((AdjoinRoot.root (ASpoly R p a)) ^ (i : ℕ))
+        = f ((AdjoinRoot.root (ASpoly R p a)) ^ (i : ℕ)) := by
+    intro i
+    rw [delta_root_pow_eq_moment a hRG _ i]
+    rw [Finset.sum_congr rfl (fun j _ => by rw [hcoeff j])]
+    rw [← momentMap_apply a s i, hs]
+  refine Module.Basis.ext (b := asCarrierBasis (R := R) hp a) (f₁ := _) (f₂ := f)
+    (fun i => ?_)
+  rw [asCarrierBasis_apply]
+  exact hval i
+
+/-- **(丙) 环档 `δ` 双射** ✓✅（**＝ 源 §0 判据的第三款** ✓）。 -/
+theorem delta_bijective_of_moment {R : Type u} [CommRing R] [Nontrivial R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R)
+    (hRG : ∀ (g : Multiplicative (ZMod p)) (r : R) (t : asCarrier R p a), g • (r • t) = r • (g • t)) :
+    Function.Bijective (deltaToEndRingHom (S := asCarrier R p a) hRG) :=
+  ⟨delta_injective_of_moment a hRG, delta_surjective_of_moment a hRG⟩
+
+/-- **(丁) 源 `proposition-0-6(b)` 的机检形** ✓✅：**AS 载体在任意 `[IsDomain R]` 上是 `C_p`-Galois** ✓✅。 -/
+theorem asCarrier_isGaloisWithGroup {R : Type u} [CommRing R] [IsDomain R] {p : ℕ} [Fact p.Prime]
+    [CharP R p] (a : R) :
+    IsGaloisWithGroup R (asCarrier R p a) (Multiplicative (ZMod p)) (asCarrier_hRG a) :=
+  asCarrier_isGaloisWithGroup_of_delta a
+    (delta_bijective_of_moment a (asCarrier_hRG a))
+
+end T7Finale344
+
+#print axioms asCarrierBasis_apply
+#print axioms delta_surjective_of_moment
+#print axioms delta_bijective_of_moment
+#print axioms asCarrier_isGaloisWithGroup
+
+
 end ABGV52
