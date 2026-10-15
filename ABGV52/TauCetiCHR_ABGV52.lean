@@ -386,3 +386,46 @@ end TauCeti.MulSemiringAction
 #print axioms TauCeti.MulSemiringAction.projective
 #print axioms TauCeti.MulSemiringAction.faithfullyFlat
 #print axioms TauCeti.MulSemiringAction.etale
+
+/-! ## 接入本工程记法（第 364 轮，2026-10-15）
+
+本节的四条只做**记法搬运** ✓：把移植件的定理用在"基环为域 `K`、代数 `L`"的场合，
+假设写成**本工程惯用的自由作用条件** `hG`。**不声称** ✗：`IsGaloisWithGroup`（`\delta` 双射款）
+⟹ `hG` 的**桥引理** —— 那是独立的一件（见 KB `proj-ABGV52-alpha-finiteness-routes` §6／§7）。 -/
+
+section Glue
+
+variable {K L : Type*} [CommRing K] [CommRing L] [Algebra K L]
+variable {G : Type*} [Group G] [Fintype G] [MulSemiringAction G L] [SMulCommClass G K L]
+
+/-- **自由作用 ＋ 不变量环 ⟹ `L` 在 `K` 上有限** ✓（移植件 `moduleFinite` 的工程记法版）。 -/
+theorem moduleFinite_of_freeness [Algebra.IsInvariant K L G]
+    (hG : ∀ g : G, g ≠ 1 → Ideal.span (Set.range fun a : L => g • a - a) = ⊤) :
+    Module.Finite K L :=
+  TauCeti.MulSemiringAction.moduleFinite (R := K) (A := L) (G := G) hG
+
+/-- **自由作用 ＋ 不变量环 ＋ `K → L` 单射 ⟹ `L` 是投射 `K`-模** ✓
+（＝**论文 `proposition-0-2(a)`** 的投射款 ✓）。 -/
+theorem projective_of_freeness [Algebra.IsInvariant K L G] [FaithfulSMul K L]
+    (hG : ∀ g : G, g ≠ 1 → Ideal.span (Set.range fun a : L => g • a - a) = ⊤) :
+    Module.Projective K L :=
+  TauCeti.MulSemiringAction.projective (R := K) (A := L) (G := G) hG
+
+/-- **自由作用 ＋ 不变量环 ＋ `K → L` 单射 ⟹ `L` 忠实平坦** ✓。 -/
+theorem faithfullyFlat_of_freeness [Algebra.IsInvariant K L G] [FaithfulSMul K L]
+    (hG : ∀ g : G, g ≠ 1 → Ideal.span (Set.range fun a : L => g • a - a) = ⊤) :
+    Module.FaithfullyFlat K L :=
+  TauCeti.MulSemiringAction.faithfullyFlat (R := K) (A := L) (G := G) hG
+
+/-- **自由作用 ＋ 不变量环 ⟹ `L` 在 `K` 上形式无分歧** ✓。 -/
+theorem formallyUnramified_of_freeness [Algebra.IsInvariant K L G]
+    (hG : ∀ g : G, g ≠ 1 → Ideal.span (Set.range fun a : L => g • a - a) = ⊤) :
+    Algebra.FormallyUnramified K L :=
+  TauCeti.MulSemiringAction.formallyUnramified (R := K) (A := L) (G := G) hG
+
+#print axioms moduleFinite_of_freeness
+#print axioms projective_of_freeness
+#print axioms faithfullyFlat_of_freeness
+#print axioms formallyUnramified_of_freeness
+
+end Glue

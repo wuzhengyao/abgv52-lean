@@ -2176,3 +2176,27 @@ depends only on `propext`, `Classical.choice` and `Quot.sound`.  What is *not*
 in this file is the bridge from this development's `IsGaloisWithGroup` (the
 bijectivity of `deltaToEndRingHom`) to the free-action hypothesis `hG` that the
 ported statements take; that bridge is the next round's target.
+
+## Round 364 (2026-10-15, appended)
+
+The ported file gains a section that restates four of its theorems in this
+development's notation, with the hypothesis written as the free-action
+condition `hG` together with `Algebra.IsInvariant K L G`:
+`moduleFinite_of_freeness`, `projective_of_freeness`,
+`faithfullyFlat_of_freeness` and `formallyUnramified_of_freeness`.  Of these,
+`projective_of_freeness` is the projective half of the paper's
+proposition-0-2(a).
+
+This round also corrects an earlier claim of this development.  Since
+`deltaToEndRingHom` is a ring homomorphism, `deltaToEndRingHom 1 = 1`, so by its
+injectivity the element produced in round 362 is necessarily `x = 1`; the
+pointwise identity of that round is therefore vacuous and carries no Galois
+content.  The reason is structural: the third clause of `IsGaloisWithGroup`
+speaks of the bijectivity of `deltaToEndRingHom`, whose target is
+`Module.End R S`, whereas the classical definition speaks of the bijectivity of
+`S ⊗[R] S → (G → S)`, `a ⊗ b ↦ (a * g • b)`.  The two targets differ, so their
+unit elements differ: in the classical form the unit is the function
+`g ↦ [g = 1]` (orthogonality), while here it is the identity endomorphism.  The
+step from the one form to the other is the substance of the Chase--Harrison--
+Rosenberg equivalence of the two definitions of a Galois extension and is the
+next round's target; it is a theorem, not a rewriting.
