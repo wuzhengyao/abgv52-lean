@@ -167,7 +167,7 @@ private theorem exists_tensorToPi_one_eq_one_and_eq_zero {g : G}
 
 /-- For a free action of a finite group, some element of `A ⊗[R] A` maps to the indicator function
 of the identity under `tensorToPi`. -/
-private theorem exists_tensorToPi_eq_single [Finite G] [DecidableEq G]
+theorem exists_tensorToPi_eq_single [Finite G] [DecidableEq G]
     (hG : ∀ g : G, g ≠ 1 → Ideal.span (Set.range fun a : A ↦ g • a - a) = ⊤) :
     ∃ u : A ⊗[R] A, tensorToPi R A G u = Pi.single 1 1 := by
   classical
@@ -184,7 +184,7 @@ private theorem exists_tensorToPi_eq_single [Finite G] [DecidableEq G]
 
 /-- An element of `A ⊗[R] A` mapping to the indicator function of the identity forces every
 `g ≠ 1` to act freely. -/
-private theorem span_eq_top_of_tensorToPi_eq_single [DecidableEq G] {u : A ⊗[R] A}
+theorem span_eq_top_of_tensorToPi_eq_single [DecidableEq G] {u : A ⊗[R] A}
     (hu : tensorToPi R A G u = Pi.single 1 1) {g : G} (hg : g ≠ 1) :
     Ideal.span (Set.range fun a : A ↦ g • a - a) = ⊤ := by
   obtain ⟨S, rfl⟩ := TensorProduct.exists_finset u
