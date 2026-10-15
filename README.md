@@ -1847,3 +1847,18 @@ assembly lemma for the criterion requires the base, the algebra and the group to
 the group of residue classes does not, so the three clauses are filled in directly instead.  The remaining clauses
 of the source's structure result and the realization property are not addressed here.
 
+Round 346 treats the split branch of the realization property for the cyclic group of prime order.  If the algebra
+to be realized is isomorphic, as an algebra over the field, to the product of the prime many copies of that field,
+then the specialization sending the variable to zero realizes it: the base change of the carrier along that
+specialization is the carrier at the zero coefficient, and that carrier is isomorphic to the product of the copies,
+so composing the two isomorphisms with the given one yields the required isomorphism.  This branch does not use the
+hypothesis that the algebra is Galois, only the isomorphism with the product.  With the branch in place, the
+realization property for the carrier over the polynomial ring follows from a single dichotomy, namely that a Galois
+algebra with the cyclic group of prime order over a field is either a finite domain or a product of copies of the
+field; the two branches of the dichotomy are supplied by the domain case of an earlier round and by the split
+branch proved here.  Two declarations are recorded: the split branch of the realization, and the reduction of the
+realization property to the dichotomy.  One practical point is recorded: the base change isomorphism is stated with
+the tensor product on the left, so its direction has to be reversed once before it is composed, and reversing it
+twice gives the wrong composite.  The dichotomy itself is not proved here, and neither is the realization
+property, the generic extension, nor the source's theorems.
+

@@ -11672,4 +11672,92 @@ end UnconditionalRingTier345
 #print axioms asCarrier_isGaloisWithGroup'
 
 
+/-! ### 4.129 🔴🔴 **T6-F 第一口：分裂档实现 ＋ (c) 缺口的二分精确化**（第 346 轮）
+—— 子目标 (c) 的**分裂支**落库 ✓ ＋ **缺口缩到单一二分命题** ✓
+
+**靶** ✓：(c)（`RealizationProperty` ✓）的**分裂档** —— 源 `proposition-0-5(e)` ✓ 覆盖**任意** `C_p`-Galois 代数
+（`L` **不必是域** ✗，可为**域之积** ✓ —— `raw/Saltman1982.tex:106` ✓ 逐字「here and in the rest of the paper,
+`L` is not necessarily a field. Of course, `L` is the direct sum of fields」✓）。
+
+**落成两件** ✓✅：**(甲)** **`realization_Cp_split`** ✓✅ —— 给定**分裂模型侧**
+**`Nonempty (L ≃ₐ[K] (ZMod p → K))`** ✓ ⟹ **`∃ φ A, algebraMap = φ.toRingHom ∧ L ≃ₐ[K] K ⊗_{F[x]} S`** ✓✅
+（**取 `φ := Polynomial.aeval 0`** ✓ ⟹ **`a = 0` 支** ✓）；
+**(乙)** **`realization_Cp_of_dichotomy`** ✓✅ —— **二分命题**（**未证** ✗）⟹ **`RealizationPropertyExplicit F C_p F[x] S`** ✓✅。
+
+**机制（(甲)，三步复合 ✓，全为本工程已落件）** ✓：**`φ := aeval 0`** ✓ ⟹ `algebraMap F[x] K X = 0` ✓ ⟹
+**§4.114** ✓ 给 **`K ⊗_{F[x]} S ≃ₐ[K] asCarrier K p 0`** ✓ ⟹ **§4.122** ✓ 给
+**`asCarrier K p 0 ≃ₐ[K] (ZMod p → K)`** ✓（取 `.symm` ✓）⟹ 与 `hsplit` 的 `e` 复合 ✓✅。
+**⚠ 本件不用 `hgal`／`hKL`** ✗ —— 分裂支的**实现**只需**模型侧同构** ✓（**判据本身的假设**在分支内**未被使用** ✓）。
+
+**机制（(乙)，二分 ✓）** ✓：**二分假设** ＝ **「`C_p`-Galois 代数 ＝ 有限域（`IsDomain` ＋ `Module.Finite`）或分裂（`≅ K^p`）」** ✓
+（**登记假设** ✓，见 `wiki/hyp-cp-galois-dichotomy.md` ✓）⟹ 两支分别由 **§4.120** ✓（域档 ✓）与 **(甲)** ✓（分裂档 ✓）供给 ✓
+⟹ **`RealizationPropertyExplicit`** ✓✅ —— **即 (c) 只欠这一个二分命题** ✓。
+
+**⚠ 工艺（一条，入 §5.1）** ✓：**(#59)** **张量同构的方向** ✗：**`asCarrier_tensorProduct` 的原方向是
+`K ⊗_R S ≃ₐ[K] asCarrier K p (algebraMap a)`** ✓ ⟹ 取 **`.symm`** ✓ 后才是
+**`asCarrier ≃ₐ[K] K ⊗_R S`** ✓（**复合时勿再取一次 `.symm`** ✗ —— **本轮实测** ✓，与 §4.120 的 `ht` 用法同 ✓）。
+
+**🔴 不声称** ✗：**不**声称**二分命题**为真 ✗（**登记假设** ✓，**未证** ✗，**真值未定** ⚠）；
+**不**声称 `RealizationProperty`（源形 ✓）已证 ✗（**本件只把它归约到二分** ✓）；
+**不**声称 **`L ≅ K^p`** 可自证 ✗（**缺外部理论** ✓ —— §300 ✓：**mathlib 无「Galois 代数有限投射」＋「有限维交换代数 ＝ 局部积」** ✗）；
+**不**声称 `IsGenericExtension` 有实例 ✗；**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section SplitCaseAndDichotomy346
+
+open ABGV52.BTier
+
+/-- **(甲) 分裂档实现** ✓：给定 **`L ≃ₐ[K] (ZMod p → K)`**（分裂模型侧 ✓）⟹
+**`∃ φ A, algebraMap = φ.toRingHom ∧ L ≃ₐ[K] K ⊗_{F[x]} S`** ✓（**取 `φ := aeval 0`** ✓）。 -/
+theorem realization_Cp_split {F : Type} [Field F] {p : ℕ} (hp : p.Prime) [CharP F p]
+    [NeZero p] (K : Type) [Field K] [Algebra F K]
+    (L : Type) [CommRing L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+    [MulSemiringAction (Multiplicative (ZMod p)) L]
+    (hsplit : Nonempty (L ≃ₐ[K] (ZMod p → K))) :
+    ∃ (φ : Polynomial F →ₐ[F] K) (A : Algebra (Polynomial F) K),
+      (@Algebra.algebraMap (Polynomial F) K _ _ A : Polynomial F →+* K) = φ.toRingHom ∧
+      letI : Algebra (Polynomial F) K := A
+      Nonempty (L ≃ₐ[K] (TensorProduct (Polynomial F) K
+        (asCarrier (Polynomial F) p Polynomial.X))) := by
+  classical
+  let _inst : Fact p.Prime := ⟨hp⟩
+  let _inst2 : CharP K p :=
+    charP_of_injective_algebraMap (algebraMap_injective_of_field (K := F) (L := K)) p
+  refine ⟨Polynomial.aeval (0 : K),
+    ((Polynomial.aeval (0 : K) : Polynomial F →ₐ[F] K)).toRingHom.toAlgebra, rfl, ?_⟩
+  let _inst : Algebra (Polynomial F) K :=
+    ((Polynomial.aeval (0 : K) : Polynomial F →ₐ[F] K)).toRingHom.toAlgebra
+  have hX : (algebraMap (Polynomial F) K Polynomial.X) = (0 : K) := by
+    show (Polynomial.aeval (0 : K) : Polynomial F →ₐ[F] K) Polynomial.X = 0
+    simp
+  obtain ⟨e⟩ := hsplit
+  obtain ⟨e0⟩ := asCarrier_zero_algEquiv_pi K (p := p)
+  have ht := (asCarrier_tensorProduct (R := Polynomial F) (K := K) p Polynomial.X).symm
+  rw [hX] at ht
+  exact ⟨e.trans (e0.symm.trans ht)⟩
+
+/-- **(乙) (c) 缺口的二分精确化** ✓：**二分命题**（**登记假设** ✓，**未证** ✗）⟹
+**`RealizationPropertyExplicit F C_p F[x] S`** ✓✅。 -/
+theorem realization_Cp_of_dichotomy {F : Type} [Field F] {p : ℕ} (hp : p.Prime) [CharP F p]
+    [NeZero p]
+    (hdich : ∀ (K : Type) [Field K] [Algebra F K]
+      (L : Type) [CommRing L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+      [MulSemiringAction (Multiplicative (ZMod p)) L]
+      (hKL : ∀ (g : Multiplicative (ZMod p)) (r : K) (t : L), g • (r • t) = r • (g • t)),
+      IsGaloisWithGroup K L (Multiplicative (ZMod p)) hKL →
+      (IsDomain L ∧ Module.Finite K L) ∨ Nonempty (L ≃ₐ[K] (ZMod p → K))) :
+    RealizationPropertyExplicit F (Multiplicative (ZMod p)) (Polynomial F)
+      (asCarrier (Polynomial F) p Polynomial.X) := by
+  intro K _ _ L _ _ _ _ _ hKL hgal
+  rcases hdich K L hKL hgal with ⟨hdom, hfin⟩ | hsplit
+  · let _inst : IsDomain L := hdom
+    let _inst2 : Module.Finite K L := hfin
+    exact realization_Cp_domain (F := F) (p := p) hp K L hKL hgal
+  · exact realization_Cp_split (F := F) (p := p) hp K L hsplit
+
+end SplitCaseAndDichotomy346
+
+#print axioms realization_Cp_split
+#print axioms realization_Cp_of_dichotomy
+
+
 end ABGV52
