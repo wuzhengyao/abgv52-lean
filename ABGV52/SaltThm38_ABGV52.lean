@@ -13149,7 +13149,148 @@ section KummerSupply359
 
 end KummerSupply359
 
+/-! ### 4.143 🔴🔴🔴 **T6-F 第四口收官：一般档供给 ＋ 源侧可用性收口**（第 360 轮）
+—— **源 `proposition-0-6(a)` 的源侧假设链闭合成类实例** ✓✅
+
+**靶** ✓：**§4.141／§4.142 登记的受阻点** ✗ —— **`KummerDatum.ofAlgebra`（一般档供给）** ✗ 与
+**`hdiff` 的源侧供给** ✗（障碍 ＝ **强制转换形 ≠ 环同态应用形** ✗ —— **§5.1 #86／#88 同族** ✓）。
+
+**落成七件** ✓✅：**(甲)** **`units_map_coe_pow`** ✓✅ —— **通用桥** ✓：
+**`(↑(Units.map f ρ))^m = f (↑ρ^m)`** ✓（**纯 `MonoidHom` 形** ✓ —— **证法 ＝ `Units.coe_map` ＋ `← map_pow`** ✓，
+**全程零强制转换** ✗）；**(乙)** **`units_map_algebraMap_coe_pow`** ✓✅ —— **`algebraMap` 档桥** ✓
+（**`rw` 后须显式补 `rfl`** ✓ —— **#86 族的最终解** ✓）；**(丙)** **`units_map_algebraMap_pow_eq_one_iff`** ✓✅ ——
+**`(↑ρ_R)^m = 1 ↔ (↑ρ)^m = 1`** ✓（**单射 ＋ `map_one`** ✓）；**(丁)** **`kummerDatumOfAlgebra`** ✓✅🔴 ——
+**一般档供给** ✓✅：**`F` 域 ＋ `R` 非平凡 `F`-代数 ＋ `ρ` 为本原 `n` 次单位根 ⟹ `KummerDatum R n a`** ✓✅
+（**`ρ := Units.map (algebraMap F R).toMonoidHom ρ`** ✓；**`hρ`／`hpow_dvd` 皆由 (丙) 供给** ✓）；
+**(戊-1)** **`kummer_pow_fin_ne`** ✓✅ —— **`Fin n` 上本原根的幂互异** ✓（**§4.140 的 `ZMod` 版之 `Fin` 对应物** ✓）；
+**(戊)** **`isUnit_kummerCoeff_sub_of_primitiveRoot`** ✓✅ —— **`hdiff` 的源侧供给** ✓✅（**`ρ^i − ρ^j ≠ 0` ⟹ `F` 中单位 ＋
+`IsUnit.map`** ✓，**系数桥用 (乙) ＋ `← map_sub`** ✓）；**(己)** **`kummer_isGaloisWithGroup_of_algebra`** ✓✅🔴🔴 ——
+**源侧可用性收口** ✓✅：**`1 ≤ n` ＋ `IsUnit a` ＋ `IsPrimitiveRoot (ρ:F) n` ⟹
+`IsGaloisWithGroup R (kummerCarrier R n a) C_n`** ✓✅（**实例以具名项供给** ✓ ——
+**`@KummerDatum.instMSA` ＋ `@KummerDatum.hRG` 逐槽指名** ✓，**§5.1 #58 同法** ✓）。
+
+**⚠ 源侧假设链（对照 `raw/Saltman1982.tex:142`** ✓）：源 `proposition-0-6(a)` 的条件 ＝
+**「`n` 与 `char F` 互素 ＋ `ρ = ρ(n) ∈ F` ＋ `a` 是 `R` 的单位 ＋ `S = R{y^n − a}`」** ✓ ——
+本件把 **「`ρ = ρ(n) ∈ F`」实现为 `ρ : Fˣ` ＋ `IsPrimitiveRoot (ρ:F) n`** ✓、「**`a` 是单位**」实现为 **`ha : IsUnit a`** ✓、
+「**`S = R{y^n − a}`**」实现为**载体 `kummerCarrier R n a`** ✓（§4.131 ✓）⟹ **三条源侧条件皆已接线** ✓✅。
+
+**⚠ 工艺（两条，入 §5.1）** ✓：**(#89)** **`rw` 在本版 Lean 不以 `rfl` 自动收尾** ✗ ——
+当残留目标是 **`↑(algebraMap F R) x = (algebraMap F R) x`** ✗（**`RingHom`→`MonoidHom` 强制形 vs `RingHom` 应用形** ✓，
+**二者 defeq** ✓）时，`rw` 报 **unsolved goals** ✗ ⟹ **正解 ＝ 显式补一行 `rfl`** ✓（**#86 族：不是"避免"，是"显式桥接"** ✓）；
+**(#90)** **`Units.coe_pow`／`Units.coe_one` 在本版 mathlib 不存在** ✗（**§4.142 的"下一手"曾写这两个名字** ✗ ——
+**实测 `unknown constant`** ✗）⟹ **正解 ＝ `Units.val_pow_eq_pow_val`** ✓／**`Units.val_one`** ✓；
+**且本件的正解根本不用它们** ✓ —— **改在 `Rˣ` 内做幂（(甲) 桥一次出到环）** ✓。
+
+**🔴 不声称** ✗：**不**声称源 `proposition-0-6(a)` 无条件已证 ✗（**本件只把源侧假设接成类实例 ＋ 供给 `hdiff`** ✓）；
+**不**声称类的 `hpow_dvd` 与源「`ρ = ρ(n)`」**逐字等价** ✗（**前者是阶的刻画** ✓，**后者另有构造性内容** ✓）；
+**不**声称「`n` 与 `char F` 互素」已单独接线 ✗（**本件以「`F` 中确有本原 `n` 次单位根」代之** ✓）；
+**不**声称源 `theorem-1-2(b)` 已证 ✗；**不**声称源 `proposition-0-6(c)` 已证 ✗；**不**声称二分命题已证 ✗。 -/
+
+section KummerSupply360
+
+/-- **(甲) 通用桥** ✓✅：**`Units.map` 的像的幂 ＝ 原像幂的像** ✓ ——
+**纯 `MonoidHom` 形** ✓，**全程零强制转换** ✗（**#86 族的一般解** ✓）。 -/
+theorem units_map_coe_pow {M : Type u} {N : Type v} [Monoid M] [Monoid N] (f : M →* N) (ρ : Mˣ)
+    (m : ℕ) : (((Units.map f ρ : Nˣ)) : N) ^ m = f ((ρ : M) ^ m) := by
+  rw [Units.coe_map, ← map_pow]
+
+/-- **(乙) `algebraMap` 档桥** ✓✅：**右端写 `algebraMap` 的应用形** ✓（**须显式补 `rfl`** ✓ —— **§5.1 #89** ✓）。 -/
+theorem units_map_algebraMap_coe_pow (F : Type u) [Field F] (R : Type v) [CommRing R]
+    [Algebra F R] (ρ : Fˣ) (m : ℕ) :
+    (((Units.map (algebraMap F R).toMonoidHom ρ : Rˣ)) : R) ^ m
+      = algebraMap F R ((ρ : F) ^ m) := by
+  rw [Units.coe_map, ← map_pow]
+  rfl
+
+/-- **(丙) 幂一判别** ✓✅：**成像的幂为 `1` ⟺ 原像的幂为 `1`** ✓（**单射 ＋ `map_one`** ✓）——
+**此即一般档供给的承重件** ✓。 -/
+theorem units_map_algebraMap_pow_eq_one_iff (F : Type u) [Field F] (R : Type v) [CommRing R]
+    [Nontrivial R] [Algebra F R] (ρ : Fˣ) (m : ℕ) :
+    (((Units.map (algebraMap F R).toMonoidHom ρ : Rˣ)) : R) ^ m = 1 ↔ (ρ : F) ^ m = 1 := by
+  have hinj : Function.Injective (algebraMap F R) := algebraMap_injective_of_field_univ F R
+  rw [units_map_algebraMap_coe_pow]
+  constructor
+  · intro h
+    exact hinj (by rw [h, map_one])
+  · intro h
+    rw [h, map_one]
+
+/-- **(丁) 🔴 一般档供给** ✓✅：**`F` 域 ＋ `R` 非平凡 `F`-代数 ＋ `ρ` 为本原 `n` 次单位根 ⟹
+`KummerDatum R n a`** ✓✅ —— **§4.141／§4.142 受阻点之解** ✓（**单位群内做幂 ＋ 一次桥出到环** ✓）。 -/
+@[instance_reducible] noncomputable def kummerDatumOfAlgebra (F : Type u) [Field F] (R : Type v)
+    [CommRing R] [Nontrivial R] [Algebra F R] (n : ℕ) (a : R) (ρ : Fˣ)
+    (hprim : IsPrimitiveRoot (ρ : F) n) : KummerDatum R n a where
+  ρ := Units.map (algebraMap F R).toMonoidHom ρ
+  hρ := (units_map_algebraMap_pow_eq_one_iff F R ρ n).mpr hprim.pow_eq_one
+  hpow_dvd := fun m =>
+    (units_map_algebraMap_pow_eq_one_iff F R ρ m).trans (hprim.pow_eq_one_iff_dvd m)
+
+/-- **(戊-1) `Fin n` 上本原根的幂互异** ✓✅（**§4.140 的 `ZMod` 版之 `Fin` 对应物** ✓ ——
+**互异性由 `ρ` 的阶供给** ✓）。 -/
+theorem kummer_pow_fin_ne (F : Type u) [Field F] {n : ℕ} (ρ : Fˣ)
+    (hprim : IsPrimitiveRoot (ρ : F) n) {i j : Fin n} (hij : i ≠ j) :
+    (ρ : F) ^ i.val ≠ (ρ : F) ^ j.val := by
+  intro h
+  apply hij
+  have hne_i : (ρ : F) ^ i.val ≠ 0 := pow_ne_zero _ (Units.ne_zero ρ)
+  have hne_j : (ρ : F) ^ j.val ≠ 0 := pow_ne_zero _ (Units.ne_zero ρ)
+  rcases le_total i.val j.val with hle | hle
+  · have hd : (ρ : F) ^ (j.val - i.val) = 1 := by
+      have h2 : (ρ : F) ^ (i.val + (j.val - i.val)) = (ρ : F) ^ i.val := by
+        rw [Nat.add_sub_cancel' hle, ← h]
+      rw [pow_add] at h2
+      exact mul_left_cancel₀ hne_i (by rw [h2, mul_one])
+    have hdvd : n ∣ (j.val - i.val) := (hprim.pow_eq_one_iff_dvd _).mp hd
+    have hlt : j.val - i.val < n := lt_of_le_of_lt (Nat.sub_le _ _) j.isLt
+    have hzero : j.val - i.val = 0 := Nat.eq_zero_of_dvd_of_lt hdvd hlt
+    exact Fin.ext (by omega)
+  · have hd : (ρ : F) ^ (i.val - j.val) = 1 := by
+      have h2 : (ρ : F) ^ (j.val + (i.val - j.val)) = (ρ : F) ^ j.val := by
+        rw [Nat.add_sub_cancel' hle, h]
+      rw [pow_add] at h2
+      exact mul_left_cancel₀ hne_j (by rw [h2, mul_one])
+    have hdvd : n ∣ (i.val - j.val) := (hprim.pow_eq_one_iff_dvd _).mp hd
+    have hlt : i.val - j.val < n := lt_of_le_of_lt (Nat.sub_le _ _) i.isLt
+    have hzero : i.val - j.val = 0 := Nat.eq_zero_of_dvd_of_lt hdvd hlt
+    exact Fin.ext (by omega)
+
+/-- **(戊) 🔴 `hdiff` 的源侧供给** ✓✅：**本原根的两个不同幂之差是单位** ✓✅ ——
+**源侧 `hdiff`（§4.139 的假设）自此自动满足** ✓（**非零 ⟹ 单位 ＋ `IsUnit.map`** ✓）。 -/
+theorem isUnit_kummerCoeff_sub_of_primitiveRoot (F : Type u) [Field F] (R : Type v) [CommRing R]
+    [Algebra F R] {n : ℕ} (ρ : Fˣ) (hprim : IsPrimitiveRoot (ρ : F) n) (i j : Fin n)
+    (hij : i ≠ j) :
+    IsUnit ((((Units.map (algebraMap F R).toMonoidHom ρ : Rˣ)) : R) ^ i.val
+      - (((Units.map (algebraMap F R).toMonoidHom ρ : Rˣ)) : R) ^ j.val) := by
+  have hne : (ρ : F) ^ i.val - (ρ : F) ^ j.val ≠ 0 :=
+    sub_ne_zero.mpr (kummer_pow_fin_ne F ρ hprim hij)
+  have hunit : IsUnit ((ρ : F) ^ i.val - (ρ : F) ^ j.val) := hne.isUnit
+  rw [units_map_algebraMap_coe_pow, units_map_algebraMap_coe_pow, ← map_sub]
+  exact hunit.map (algebraMap F R)
+
+/-- **(己) 🔴🔴 源侧可用性收口** ✓✅：**`1 ≤ n` ＋ `IsUnit a` ＋ `IsPrimitiveRoot (ρ:F) n` ⟹
+`IsGaloisWithGroup R (kummerCarrier R n a) C_n`** ✓✅ —— **源 `proposition-0-6(a)` 的源侧假设链闭合** ✓
+（**实例以具名项供给** ✓ —— **合成器无须回推** ✓）。 -/
+theorem kummer_isGaloisWithGroup_of_algebra (F : Type u) [Field F] (R : Type v) [CommRing R]
+    [Nontrivial R] [Algebra F R] {n : ℕ} [NeZero n] (hn : 1 ≤ n) (a : R) (ha : IsUnit a)
+    (ρ : Fˣ) (hprim : IsPrimitiveRoot (ρ : F) n) :
+    @BTier.IsGaloisWithGroup R (kummerCarrier R n a) _ _ _
+      (Multiplicative (ZMod n)) _ _
+      (@KummerDatum.instMSA R _ n a (kummerDatumOfAlgebra F R n a ρ hprim) _)
+      (@KummerDatum.hRG R _ n a (kummerDatumOfAlgebra F R n a ρ hprim) _) := by
+  let _inst := kummerDatumOfAlgebra F R n a ρ hprim
+  exact KummerDatum.kummer_isGaloisWithGroup (R := R) (n := n) (a := a) hn ha
+    (fun i j hij => isUnit_kummerCoeff_sub_of_primitiveRoot F R ρ hprim i j hij)
+
+end KummerSupply360
+
 #print axioms kummerDatumSelf
+#print axioms units_map_coe_pow
+#print axioms units_map_algebraMap_coe_pow
+#print axioms units_map_algebraMap_pow_eq_one_iff
+#print axioms kummerDatumOfAlgebra
+#print axioms kummer_pow_fin_ne
+#print axioms isUnit_kummerCoeff_sub_of_primitiveRoot
+#print axioms kummer_isGaloisWithGroup_of_algebra
 
 
 end ABGV52

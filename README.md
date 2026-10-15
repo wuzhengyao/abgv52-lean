@@ -2064,3 +2064,31 @@ transport it along the value map, so that the ring homomorphism is never applied
 order condition of the class directly for the coerced unit.  One declaration is recorded, namely the data class in
 the case of the base field.  The data class over a general algebra, the source-side usability of the criterion, and
 the source's remaining theorems are not addressed here.
+
+Round 360 supplies the data class of the previous two rounds over an arbitrary algebra from a primitive root of the
+base field, supplies the unitness of the differences of the distinct powers of that root, and thereby closes the
+source-side hypothesis chain of the criterion for orders coprime to the characteristic.  The obstruction recorded
+in the two previous rounds was that the coercion of the unit group map and the application of the ring
+homomorphism are not syntactically the same, so that neither rewriting nor reflexivity nor restricted
+simplification could bridge them.  The repair is to carry out all power computations inside the unit group and to
+cross into the ring exactly once, through a bridge stating that the value of a power of the image of a unit equals
+the monoid homomorphism applied to the power of that unit; the bridge is proved from the value lemma of the unit
+group map and the composition rule for powers, and it mentions the homomorphism as a free variable, so no coercion
+occurs.  The order condition of the data class is then the bridge combined with the equivalence between the
+vanishing of a power of a primitive root and divisibility by its order, together with the injectivity of the
+structure map of the field recorded in the previous round; the vanishing of the power itself is the bridge applied
+to the primitivity statement.  The powers of a primitive root indexed by the canonical representatives below the
+order are pairwise distinct, which is the finite-set counterpart of the distinctness of the split points of an
+earlier round and is proved by the same divisibility argument; consequently the differences of two distinct powers
+are nonzero in the field, hence units, and units are carried to units by the structure map.  Supplying the instance
+and that difference hypothesis to the packaged criterion of the criterion round gives the unconditional form of the
+source's statement over an arbitrary algebra, whose hypotheses are exactly the unitness of the coefficient and the
+membership of the root in the base field as printed in the source.  Seven declarations are recorded: the general
+bridge, its specialization to the structure map, the equivalence of the vanishing of a power with the vanishing of
+the corresponding power in the field, the data class over an arbitrary algebra, the distinctness of the powers, the
+unitness of their differences, and the unconditional criterion.  Two practical points are recorded: rewriting does
+not close a goal by reflexivity when the two sides differ only by the coercion of the ring homomorphism to a monoid
+homomorphism, so an explicit reflexivity step has to be added; and the value lemmas of the unit group carry
+different names in this version of the library than the ones anticipated in the previous round, so the proof was
+arranged so that none of them is needed.  The tensor product statement, the dichotomy for the group of prime order,
+the realization statements and the source's remaining theorems are not addressed here.
