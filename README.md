@@ -2758,3 +2758,17 @@ third dichotomy input.
 Craft: the group in the hypothesis must be pinned explicitly; transitivity must be
 supplied by haveI since it is a typeclass argument; the count lemma takes hp, then
 the point, then the bound; and omega closes both branches at once.
+
+## Round 415 (2026-10-15, appended)
+
+`card_maximalSpectrum_eq_prime`: the number of maximal ideals, hence the number of
+factors in the product decomposition, is `p`.  This is not a new proof but the
+instantiation of round 413 at the index set that the decomposition actually uses:
+`PiLocalization R` is by definition the product over `MaximalSpectrum R`, so the
+index set is literally `MaximalSpectrum L`.  The four ingredients are the action on
+`MaximalSpectrum` (round 386), the generic action on functions (round 403),
+finiteness (round 365), and the fixed-idempotent lemma (round 407) whose hypothesis
+comes from round 381.
+
+With this, the split case of the third dichotomy input is closed: the number of
+factors is `p`.

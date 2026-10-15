@@ -525,3 +525,28 @@ theorem card_factors_eq_prime {p : ℕ} (hp : p.Prime) {ι K : Type*} [Fintype �
     (Classical.arbitrary ι) h2 with h | h <;> omega
 
 #print axioms card_factors_eq_prime
+
+
+/-! ## (丙) **分裂支定理**（第 415 轮）：`Fintype.card (MaximalSpectrum L) = p` ✓
+
+**🔴 关键** ✓（第 414 轮检索所得 ✓）：`PiLocalization R := Π I : MaximalSpectrum R, …` ✓
+⟹ (乙) 的因子分解（365 ✓）的**指标集就是 `MaximalSpectrum L`** ✓ ⟹ 本定理是
+**`card_factors_eq_prime`（413 ✓）在该指标集上的实例化** ✓，**非新证明** ✓。
+**四件已就位** ✓：`G`-作用（386 ✓）／函数空间作用（403 ✓ 通用）／有限性（365 ✓）／
+不变幂等元（407 ✓，`hfix` 由 381 ✓ 供给）—— 本件把 `hidem` 用 `fixed_idempotent_fun_eq_zero_or_one` 装配 ✓。 -/
+
+/-- **(丙) 分裂支定理** ✓：**极大理想个数（＝因子个数）＝ p** ✓。 -/
+theorem card_maximalSpectrum_eq_prime {p : ℕ} (hp : p.Prime) {K L : Type*} [Field K] [CommRing L]
+    [Algebra K L] [MulSemiringAction (Multiplicative (ZMod p)) L]
+    [Fintype (MaximalSpectrum L)] [Nonempty (MaximalSpectrum L)]
+    (hfix : ∀ x : MaximalSpectrum L → K, (∀ g : Multiplicative (ZMod p), g • x = x) →
+      ∃ c : K, algebraMap K (MaximalSpectrum L → K) c = x)
+    [Fintype (ZMod p)]
+    [Fintype (MulAction.orbit (Multiplicative (ZMod p)) (Classical.arbitrary (MaximalSpectrum L)))]
+    [Fintype ↥(MulAction.stabilizer (Multiplicative (ZMod p)) (Classical.arbitrary (MaximalSpectrum L)))]
+    (h2 : 2 ≤ Fintype.card (MaximalSpectrum L)) :
+    Fintype.card (MaximalSpectrum L) = p :=
+  card_factors_eq_prime hp
+    (fun e he hge => fixed_idempotent_fun_eq_zero_or_one hfix e he hge) h2
+
+#print axioms card_maximalSpectrum_eq_prime
