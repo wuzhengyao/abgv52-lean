@@ -145,6 +145,22 @@ theorem isStablyRational_rationalFunctionField (F : Type*) [Field F] (K : Type*)
         ((Classical.choice (rationalFunctionField_algEquivMap (Classical.choice hφ) k)).trans
           (Classical.choice (hypF m k)))))⟩
 
+/-- **砖①a（多项式层塔展平）** ✓ **无条件**：`K[x_1..x_k][y_1..y_n] ≅ K[u_1..u_{k+n}]` ✓
+（**变元拼接** ✓，`K`-代数同构 ✓）。
+**路线** ✓：`MvPolynomial.sumAlgEquiv` ✓（`K[S₁⊕S₂] ≅ K[S₁][S₂]` ✓）＋
+`MvPolynomial.renameEquiv` ✓（沿 `finSumFinEquiv : Fin n ⊕ Fin k ≃ Fin (n+k)` ✓）＋
+`finCongr (Nat.add_comm n k)` ✓（变元序 ✓）。
+**⚠ 意义** ✓：这是**砖① 的无分母一半** ✓ —— 砖①（有理函数域塔展平 ✓）**只剩下一个局部化步骤** ✗：
+`FractionRing (MvPolynomial σ (FractionRing A)) ≅ FractionRing (MvPolynomial σ A)` ✓
+（＝「多项式环上的局部化」✗，mathlib 无 ✓，证法见 §2.6 的清分母计划 ✓）。 -/
+theorem mvPolynomial_tower (K : Type*) [CommRing K] (k n : ℕ) :
+    Nonempty (MvPolynomial (Fin n) (MvPolynomial (Fin k) K) ≃ₐ[K]
+      MvPolynomial (Fin (k + n)) K) :=
+  ⟨(MvPolynomial.sumAlgEquiv K (Fin n) (Fin k)).symm.trans
+    ((MvPolynomial.renameEquiv K (finSumFinEquiv (m := n) (n := k))).trans
+      (MvPolynomial.renameEquiv K (finCongr (Nat.add_comm n k))))⟩
+
+#print axioms mvPolynomial_tower
 #print axioms rationalFunctionFieldTowerHyp_typeLock
 #print axioms isStablyRational_rationalFunctionField
 

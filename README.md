@@ -2367,3 +2367,17 @@ coefficients over the support.
 Two craft notes: eliminating a `Nonempty` into a large type trips
 `propRecLargeElim`, so `Classical.choice` is used instead; and for the same
 reason `h.1` cannot be used to project a `Nonempty`.
+
+## Round 372 (2026-10-15, appended)
+
+`mvPolynomial_tower`, unconditional: `K[x_1,...,x_k][y_1,...,y_n]` and
+`K[u_1,...,u_{k+n}]` are isomorphic as `K`-algebras.  The proof assembles
+`MvPolynomial.sumAlgEquiv`, which identifies `K[S_1 ⊕ S_2]` with
+`K[S_1][S_2]`, and `MvPolynomial.renameEquiv` along `finSumFinEquiv`, with
+`finCongr` for commutativity of addition.
+
+This is the denominator-free half of the first brick, and it narrows that brick
+to a single localisation step: the fraction ring of `MvPolynomial sigma
+(FractionRing A)` is the fraction ring of `MvPolynomial sigma A`.  For that step
+mathlib was found to have nothing, and the pending proof is the clearing of
+denominators described in round 371.
