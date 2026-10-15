@@ -10122,5 +10122,158 @@ end SubgoalAPolynomial328
 
 #print axioms polynomial_isLocalizationAway
 
+/-! ### 4.114 🔴 **`AdjoinRoot` 的基变换**（第 329 轮）
+—— 子目标 (c) 的**第一口** ✓：源 `definition-1-1` 的 `S ⊗_φ K` ✓
+
+**源侧路线** ✓（**照源走** ✓）：`raw/Saltman1982.tex:174`（label `theorem-1-2` ✓ 的证明 ✓，**逐字** ✓）：
+「If `K ⊇ F` is a field and `L/K` is Galois with group `C_p`, then by `proposition-0-5(e)`
+`L ≅ K{y^p − y − a}`, for some `a ∈ K`. We define `φ : R → K` by setting **`φ(x) = a`**
+and observe that `φ` realizes `L/K`」 ✓
+⟹ **第一步 ＝ 把 `K ⊗_R R{y^p − y − a}` 认成 `K{y^p − y − φ(a)}`** ✓ —— 即本节的**基变换件** ✓。
+
+**落成四件** ✓✅：**(i)** **`adjoinRoot_algHom_ext`** ✓（出 `AdjoinRoot` 的代数同态**由根值决定** ✓ ——
+`AdjoinRoot.induction_on` ✓ ＋ `Polynomial.aeval_algHom_apply` ✓）；
+**(ii)** **`tensorProduct_adjoinRoot`** ✓✅：`K ⊗_R R[y]/(f) ≃ₐ[K] K[y]/(f.map (algebraMap R K))` ✓；
+**(iii)** **`ASpoly_map`** ✓（`(X^p − X − C a).map = X^p − X − C (φ a)` ✓）；
+**(iv)** **`asCarrier_tensorProduct`** ✓✅：`K ⊗_R R{y^p−y−a} ≃ₐ[K] K{y^p−y−φ(a)}` ✓
+（**源 `S ⊗_φ K` 的逐字形** ✓）＋ 映射形 `asCarrier_tensorProduct_map` ✓。
+
+**机制（四步，全部消费 mathlib 现成件 ✓）** ✓：
+**(甲)** 前向 `Φ` ✓：`AdjoinRoot.liftAlgHom` ✓ 给 `g : AdjoinRoot f →ₐ[R] AdjoinRoot (f.map φ)` ✓（`root ↦ root` ✓），
+再经 **`AlgHom.liftEquiv`** ✓（**基变换的泛性质** ✓）升为 `K`-代数同态 ✓；
+**(乙)** 反向 `Ψ` ✓：`AdjoinRoot.liftAlgHom` ✓（`root ↦ 1 ⊗ root` ✓），义务 ＝ `(f.map φ).eval₂ … = 0` ✓ ——
+由 `Polynomial.eval₂_map` ✓ ＋ `IsScalarTower.algebraMap_eq` ✓ ＋ `Polynomial.hom_eval₂` ✓ ＋ `AdjoinRoot.eval₂_root` ✓ 四步收口 ✓；
+**(丙)** 两向复合 ＝ 恒等 ✓：一向用 (i) ✓（**根值判定** ✓）；
+另一向用 **`Algebra.TensorProduct.adjoin_one_tmul_image_eq_top`** ✓ ＋ **`Algebra.adjoin_induction`** ✓
+（`1 ⊗ root` **生成** `K ⊗_R AdjoinRoot f` ✓ —— 与 `AdjoinRoot.adjoinRoot_eq_top` ✓ 合成 ✓）。
+
+**⚠ 口径** ✓：`K` 是 **`R`-代数** ✓（**`φ` 即 `algebraMap R K`** ✓ —— 源文的 `φ : R → K` 正是此形 ✓）。
+**⚠ 工艺** ✓（入 §5.1 ✓）：**(甲)** 本件**须 `open scoped TensorProduct`** ✓（`⊗ₜ` 记法 ✓；本文件此前未开 ✗）；
+**(乙)** 宿主 `open … MvPolynomial` ✓ 下 ✓ 多项式类名**一律具名限定** ✓（`Polynomial.X`／`Polynomial.C`／`Polynomial.map` ✓）。
+
+**本节不含** ✗：**AS 根在 `L` 中的存在性** ✗（源 `proposition-0-5(e)` ✓ —— 那是**下一手** ✓）；
+**次数计数** ✗（`L ≃ₐ[K] …` 的**另一向** ✓）。
+
+**🔴 不声称** ✗：**不**声称子目标 (c) 已克 ✗（**只**落其**第一件** ✓）；
+**不**声称 `RealizationProperty` 有实例 ✗；**不**声称 (b) 环档判据有进展 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+open scoped TensorProduct
+
+section BaseChangeAdjoinRoot329
+
+/-- **出 `AdjoinRoot` 的代数同态由根值决定** ✓（`AdjoinRoot.induction_on` ✓
+＋ `Polynomial.aeval_algHom_apply` ✓）。 -/
+theorem adjoinRoot_algHom_ext {K B : Type u} [CommRing K] [Semiring B] [Algebra K B]
+    {p : Polynomial K} {φ ψ : AdjoinRoot p →ₐ[K] B}
+    (h : φ (AdjoinRoot.root p) = ψ (AdjoinRoot.root p)) : φ = ψ := by
+  refine AlgHom.ext fun x => ?_
+  induction x using AdjoinRoot.induction_on with
+  | ih P =>
+    rw [← AdjoinRoot.aeval_eq (f := p) P, ← Polynomial.aeval_algHom_apply φ,
+      ← Polynomial.aeval_algHom_apply ψ, h]
+
+/-- **基变换件** ✓✅：`K ⊗_R R[y]/(f) ≃ₐ[K] K[y]/(f.map (algebraMap R K))` ✓。 -/
+noncomputable def tensorProduct_adjoinRoot {R K : Type u} [CommRing R] [CommRing K]
+    [Algebra R K] (f : Polynomial R) :
+    K ⊗[R] AdjoinRoot f ≃ₐ[K] AdjoinRoot (f.map (algebraMap R K)) := by
+  have hroot : f.eval₂ (algebraMap R (AdjoinRoot f)) (AdjoinRoot.root f) = 0 := by
+    simp [AdjoinRoot.algebraMap_eq]
+  have hroot' : f.eval₂ (algebraMap R (AdjoinRoot (f.map (algebraMap R K))))
+      (AdjoinRoot.root (f.map (algebraMap R K))) = 0 := by
+    rw [IsScalarTower.algebraMap_eq R K (AdjoinRoot (f.map (algebraMap R K))),
+      ← Polynomial.eval₂_map (f := algebraMap R K), AdjoinRoot.algebraMap_eq]
+    exact AdjoinRoot.eval₂_root _
+  have hcomp : algebraMap R (K ⊗[R] AdjoinRoot f) =
+      (Algebra.TensorProduct.includeRight (A := K) (R := R)).toRingHom.comp
+        (algebraMap R (AdjoinRoot f)) :=
+    RingHom.ext fun r =>
+      ((Algebra.TensorProduct.includeRight (A := K) (R := R)).commutes r).symm
+  -- 前向：`root ↦ root`
+  set g : AdjoinRoot f →ₐ[R] AdjoinRoot (f.map (algebraMap R K)) :=
+    AdjoinRoot.liftAlgHom (S := R) f
+      (Algebra.ofId R (AdjoinRoot (f.map (algebraMap R K))))
+      (AdjoinRoot.root (f.map (algebraMap R K))) hroot' with hg
+  have hg_root : g (AdjoinRoot.root f) = AdjoinRoot.root (f.map (algebraMap R K)) :=
+    AdjoinRoot.liftAlgHom_root _ _ _ _
+  set Φ : K ⊗[R] AdjoinRoot f →ₐ[K] AdjoinRoot (f.map (algebraMap R K)) :=
+    AlgHom.liftEquiv R K (AdjoinRoot f) (AdjoinRoot (f.map (algebraMap R K))) g
+    with hΦ
+  have hΦ_tmul : ∀ (s : K) (a : AdjoinRoot f), Φ (s ⊗ₜ[R] a) = s • g a := by
+    intro s a
+    simp only [hΦ, AlgHom.liftEquiv_tmul]
+  have hΦ_root : Φ ((1 : K) ⊗ₜ[R] AdjoinRoot.root f) =
+      AdjoinRoot.root (f.map (algebraMap R K)) := by
+    rw [hΦ_tmul, one_smul, hg_root]
+  -- 反向：`AdjoinRoot.liftAlgHom`
+  have hzero : (f.map (algebraMap R K)).eval₂
+      (algebraMap K (K ⊗[R] AdjoinRoot f)) ((1 : K) ⊗ₜ[R] AdjoinRoot.root f) = 0 := by
+    rw [Polynomial.eval₂_map (f := algebraMap R K),
+      ← IsScalarTower.algebraMap_eq R K (K ⊗[R] AdjoinRoot f), hcomp,
+      ← Algebra.TensorProduct.includeRight_apply (A := K) (R := R)
+        (b := AdjoinRoot.root f),
+      show (Algebra.TensorProduct.includeRight (A := K) (R := R)) (AdjoinRoot.root f)
+        = (Algebra.TensorProduct.includeRight (A := K) (R := R)).toRingHom
+            (AdjoinRoot.root f) from rfl,
+      ← Polynomial.hom_eval₂ (f := algebraMap R (AdjoinRoot f))
+        (g := (Algebra.TensorProduct.includeRight (A := K) (R := R)).toRingHom)
+        (p := f) (x := AdjoinRoot.root f), hroot, map_zero]
+  set Ψ : AdjoinRoot (f.map (algebraMap R K)) →ₐ[K] K ⊗[R] AdjoinRoot f :=
+    AdjoinRoot.liftAlgHom (f.map (algebraMap R K))
+      (Algebra.ofId K (K ⊗[R] AdjoinRoot f)) ((1 : K) ⊗ₜ[R] AdjoinRoot.root f) hzero
+    with hΨ
+  have hΨ_root : Ψ (AdjoinRoot.root (f.map (algebraMap R K))) =
+      (1 : K) ⊗ₜ[R] AdjoinRoot.root f :=
+    AdjoinRoot.liftAlgHom_root _ _ _ _
+  -- 生成性：`1 ⊗ root` 生成 `K ⊗_R AdjoinRoot f`
+  have hgen : Algebra.adjoin K
+      ({(1 : K) ⊗ₜ[R] AdjoinRoot.root f} : Set (K ⊗[R] AdjoinRoot f)) = ⊤ := by
+    have h := Algebra.TensorProduct.adjoin_one_tmul_image_eq_top (R := R) (A := K)
+      (B := AdjoinRoot f) ({AdjoinRoot.root f} : Set (AdjoinRoot f))
+      AdjoinRoot.adjoinRoot_eq_top
+    simpa using h
+  refine AlgEquiv.ofAlgHom Φ Ψ ?_ ?_
+  · -- `Φ ∘ Ψ = id`
+    refine adjoinRoot_algHom_ext ?_
+    simp [AlgHom.comp_apply, hΨ_root, hΦ_root]
+  · -- `Ψ ∘ Φ = id`
+    refine AlgHom.ext fun x => ?_
+    have hx : x ∈ Algebra.adjoin K
+        ({(1 : K) ⊗ₜ[R] AdjoinRoot.root f} : Set (K ⊗[R] AdjoinRoot f)) := by
+      rw [hgen]; exact Algebra.mem_top
+    induction hx using Algebra.adjoin_induction with
+    | mem y hy =>
+      rw [Set.mem_singleton_iff] at hy
+      subst hy
+      simp [AlgHom.comp_apply, hΦ_root, hΨ_root]
+    | algebraMap r => simpa using (Ψ.comp Φ).commutes r
+    | add y z hy hz ihy ihz => simp [map_add, ihy, ihz]
+    | mul y z hy hz ihy ihz => simp [map_mul, ihy, ihz]
+
+/-- **定义多项式的基变换** ✓：`(X^p − X − C a).map = X^p − X − C (φ a)` ✓。 -/
+theorem ASpoly_map {R K : Type u} [CommRing R] [CommRing K] [Algebra R K]
+    (p : ℕ) (a : R) :
+    (ASpoly R p a).map (algebraMap R K) = ASpoly K p (algebraMap R K a) := by
+  simp [ASpoly]
+
+/-- **AS 载体的基变换（映射形）** ✓：`K ⊗_R R{y^p−y−a} ≃ₐ[K] K[y]/((y^p−y−a).map)` ✓。 -/
+noncomputable def asCarrier_tensorProduct_map {R K : Type u} [CommRing R] [CommRing K]
+    [Algebra R K] (p : ℕ) (a : R) :
+    K ⊗[R] asCarrier R p a ≃ₐ[K] AdjoinRoot ((ASpoly R p a).map (algebraMap R K)) :=
+  tensorProduct_adjoinRoot (ASpoly R p a)
+
+/-- **AS 载体的基变换** ✓✅：`K ⊗_R R{y^p−y−a} ≃ₐ[K] K{y^p−y−φ(a)}` ✓
+（即源 `definition-1-1` 的 **`S ⊗_φ K`** ✓）。 -/
+noncomputable def asCarrier_tensorProduct {R K : Type u} [CommRing R] [CommRing K]
+    [Algebra R K] (p : ℕ) (a : R) :
+    K ⊗[R] asCarrier R p a ≃ₐ[K] asCarrier K p (algebraMap R K a) := by
+  show K ⊗[R] AdjoinRoot (ASpoly R p a) ≃ₐ[K] AdjoinRoot (ASpoly K p (algebraMap R K a))
+  rw [← ASpoly_map]
+  exact tensorProduct_adjoinRoot (ASpoly R p a)
+
+end BaseChangeAdjoinRoot329
+
+#print axioms tensorProduct_adjoinRoot
+
 
 end ABGV52

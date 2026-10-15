@@ -1618,3 +1618,17 @@ ring is a localization of itself away from a unit; composing these gives the req
 are recorded: the library lemma that provides that instance has to be imported and must be referenced with its
 namespace, and the algebra equivalence obtained from the general localization comparison is over the polynomial ring as
 base and has to be restricted to scalars over the original field.
+
+Round 329 lands the base change of adjoining a root: tensoring `R[y]/(f)` with a commutative `R`-algebra `K` over
+`R` yields `K[y]/(f.map)`, as a `K`-algebra, where the polynomial is mapped along the structure map of `K`.  The
+forward map comes from the universal property of the base change of algebras applied to the map that adjoins a root,
+and the backward map from the universal property of adjoining a root of the mapped polynomial, whose obligation
+reduces to the defining relation of the original root through the compatibility of evaluation with polynomial
+mapping and of the two structure maps of the tensor product.  The two composites are identities because they agree on
+the root, respectively on the image of the root in the tensor product, and the latter generates the tensor product as
+an algebra over the new base by the base change of the generation statement for the root.  The specialization to the
+Artin--Schreier carrier records the shape of a specialization as it occurs in the source, namely the tensor product
+of the carrier with the target field; the existence of a root of the mapped polynomial in a Galois extension of the
+target field is not addressed here.  Two practical points are recorded: the tensor notation has to be opened inside
+this section, and the polynomial operations have to be referred to with their namespace because the file has the
+multivariable polynomial namespace open.
