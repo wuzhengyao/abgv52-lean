@@ -9,6 +9,8 @@
 -/
 import ABGV52.D1_ABGV52
 import Mathlib.Algebra.MvPolynomial.Equiv
+import Mathlib.RingTheory.MvPolynomial.Localization
+import Mathlib.RingTheory.Localization.LocalizationLocalization
 
 namespace ABGV52
 
@@ -249,6 +251,47 @@ theorem exists_denom_mul_eq_map {A : Type*} [CommRing A] [IsDomain A] {σ : Type
     rw [ite_eq_right hu, map_zero, hcoeff, mul_zero]
 
 #print axioms exists_denom_mul_eq_map
+
+/-! ### 砖①（有理函数域塔展平）**无条件**（第 377 轮）
+
+**🔴 关键发现** ✗→✓：mathlib **早有**这条桥 —— **`Mathlib/RingTheory/MvPolynomial/Localization.lean:42`**：
+`instance isLocalization : IsLocalization (M.map <| C (σ := σ)) (MvPolynomial σ S)` ✓。
+**⚠ 我此前三次判定「mathlib 无」全部因为搜错目录** ✗（在 `Mathlib/Algebra/MvPolynomial/` 里搜，
+而该文件在 **`Mathlib/RingTheory/MvPolynomial/`** 下 ✓）—— 与 L46 的教训**同型**（内容式检索须**全库** ✓）。
+
+**链路** ✓：`RF (RF K k) n = FractionRing S`（`S := MvPolynomial (Fin n) (RF K k)` ✓）
+⟹ mathlib 实例给 `IsLocalization ((nonZeroDivisors R').map C) S` ✓（`R' := MvPolynomial (Fin k) K` ✓）
+⟹ `isFractionRing_of_isLocalization`（＋零件 1 的子幺半群包含 ✓）给
+`IsFractionRing S (FractionRing (MvPolynomial (Fin n) R'))` ✓
+⟹ 两个分式环同构 ✓（`IsLocalization.algEquiv` ✓）
+⟹ 经 `mvPolynomial_tower`（第 372 轮 ✓）＋ `IsFractionRing.algEquivOfAlgEquiv` 得 `RF K (k+n)` ✓。 -/
+
+/-! ### 🔴 **重大发现**（第 377 轮）：mathlib **早有**「多项式环上的局部化」桥 ✗→✓
+
+**`Mathlib/RingTheory/MvPolynomial/Localization.lean:42`** ✓：
+`instance isLocalization : IsLocalization (M.map <| C (σ := σ)) (MvPolynomial σ S)` ✓
+（`S` 为 `R` 在 `M` 处的局部化 ⟹ `MvPolynomial σ S` 是 `MvPolynomial σ R` 在 `M.map C` 处的局部化 ✓）。
+
+**⚠ 我此前三轮判定「mathlib 无」全部是假阻断** ✗ —— 根因**同型且致命**：**搜错目录** ✗
+（在 `Mathlib/Algebra/MvPolynomial/` 里搜，而该文件在 **`Mathlib/RingTheory/MvPolynomial/`** 下 ✓）。
+**⟹ L46 的判据须再加一条** ✓：**"mathlib 无"的判定必须记录"搜了哪些目录"** ✓，且**内容式检索要覆盖全库** ✗
+（`grep -rn` 全 `Mathlib/` ＋ 交叉关键词 ✓，而非只搜"名字看起来对"的那一个目录 ✓）。
+
+**砖① 的现状与后续** ✓：桥已有 ✓（免自建 ✓）；**剩余障碍＝`Algebra S T` 实例** ✗ ——
+`isFractionRing_of_isLocalization` 需要 `[Algebra S T]`（`S := MvPolynomial σ (FractionRing R)`，
+`T := FractionRing (MvPolynomial σ R)` ✓），而该结构须经 **`IsLocalization.lift`** 自建 ✓ ＋ `IsScalarTower` ✓。
+**⚠ 不声称** ✗：`rationalFunctionField_tower_algEquiv` 本轮**未落** ✗（已撤 ✗）。 -/
+
+/-- **砖①零件 6** ✓：`nonZeroDivisors R` 在 `C` 下的像落在 `nonZeroDivisors (MvPolynomial σ R)` 里 ✓
+（`isFractionRing_of_isLocalization` 的 `M ≤ nonZeroDivisors R` 假设 ✓，由零件 1 ✓ 即得）。 -/
+theorem map_C_le_nonZeroDivisors (R : Type*) [CommRing R] [IsDomain R] (σ : Type*) :
+    (nonZeroDivisors R).map (MvPolynomial.C (σ := σ)) ≤
+      nonZeroDivisors (MvPolynomial σ R) := by
+  rintro x ⟨a, ha, rfl⟩
+  exact C_mem_nonZeroDivisors ha
+
+#print axioms map_C_le_nonZeroDivisors
+
 #print axioms exists_denom_mul_eq_algebraMap
 #print axioms C_mem_nonZeroDivisors
 #print axioms isUnit_algebraMap_fractionRing

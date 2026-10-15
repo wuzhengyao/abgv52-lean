@@ -2454,3 +2454,26 @@ of them silently overwrote a lemma committed in the previous round; the file was
 restored with `git checkout` and the lemma inserted by line number instead.  Edits
 to the development are henceforth done by reading the file, inserting or
 replacing by line number, and compiling the single file immediately.
+
+## Round 377 (2026-10-15, appended)
+
+A search of mathlib by content, across the whole library rather than one
+directory, turned up the bridge this development had been trying to build for
+three rounds: `MvPolynomial.isLocalization`, in
+`Mathlib/RingTheory/MvPolynomial/Localization.lean`, states that if `S` is the
+localization of `R` at a submonoid `M`, then `MvPolynomial sigma S` is the
+localization of `MvPolynomial sigma R` at `M.map C`.  The earlier verdicts that
+mathlib had no such bridge were false, and the cause was that the searches were
+confined to `Mathlib/Algebra/MvPolynomial/` while the file lives under
+`Mathlib/RingTheory/MvPolynomial/`.  The reconnaissance rule now requires a
+verdict of "mathlib has nothing" to record which directories were searched.
+
+`map_C_le_nonZeroDivisors` is added: the image of the non-zero divisors of `R`
+under `C` consists of non-zero divisors of `MvPolynomial sigma R`, which is the
+hypothesis `M ≤ nonZeroDivisors R` needed by
+`IsFractionRing.isFractionRing_of_isLocalization`.
+
+The tower brick itself is *not* in this round.  With the bridge available, its
+remaining obstacle is the instance `Algebra S T` for
+`S = MvPolynomial sigma (FractionRing R)`, which has to be built through
+`IsLocalization.lift`, together with the corresponding `IsScalarTower`.
