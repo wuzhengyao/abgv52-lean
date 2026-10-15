@@ -9995,4 +9995,48 @@ end GenericExtensionInterface322
 #print axioms genericExtensionWitness_of_clauses
 
 
+/-! ### 4.111 **忠实形的单射／双射（接口收口）**（第 323 轮）
+—— §4.104／§4.105 的**忠实形** ✓（调用方持 `FaithfulSMul` 时**免转形** ✓）
+
+**落成两件** ✓✅：**(i)** **`delta_injective_of_field_of_faithful`** ✓✅（§4.104 ＋ §4.109 ✓）；
+**(ii)** **`delta_bijective_of_field_of_faithful`** ✓✅（§4.105 ＋ §4.109 ✓）。
+
+**⚠ 意义** ✓：**§4.106 已用忠实形** ✓，而 §4.104／§4.105 用**单射形** ✓ ⟹ 本件**补齐对称** ✓：
+无论调用方手里是 `FaithfulSMul G L` ✓（源侧常见 ✓）还是 `Function.Injective (fun g => actionAlgEquiv hfix g)` ✓，
+都**恰有一件**对得上 ✓ ⟹ **组装时少一次转形** ✓（对**源两条陈述的实例化**有用 ✓）。
+
+**🔴 不声称** ✗：**不**声称新数学 ✗（**只**接口收口 ✓）；**不**声称环档判据 ✓；**不**声称残余 ①／③ 已证 ✗；
+**不**声称源两条陈述已证 ✗。 -/
+
+section FaithfulForms323
+
+open ABGV52.BTier
+
+set_option maxHeartbeats 4000000 in
+/-- **忠实形：域档 `δ` 单射** ✓。 -/
+theorem delta_injective_of_field_of_faithful {K : Type u} [CommRing K] {L : Type u} [Field L]
+    [Algebra K L] {G : Type u} [Group G] [Fintype G] [MulSemiringAction G L]
+    (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r)
+    (hRG : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hfaith : FaithfulSMul G L) :
+    Function.Injective (deltaToEndRingHom (S := L) hRG) :=
+  delta_injective_of_field hfix hRG (actionAlgEquiv_injective_of_faithful hfaith hfix)
+
+set_option maxHeartbeats 4000000 in
+/-- **忠实形：域档 `δ` 双射** ✓。 -/
+theorem delta_bijective_of_field_of_faithful {K : Type u} [Field K] {L : Type u} [Field L]
+    [Algebra K L] {G : Type u} [Group G] [Fintype G] [MulSemiringAction G L]
+    (hfix : ∀ (g : G) (r : K), g • algebraMap K L r = algebraMap K L r)
+    (hRG : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hfaith : FaithfulSMul G L)
+    (hcard : Module.finrank K L = Fintype.card G) :
+    Function.Bijective (deltaToEndRingHom (S := L) hRG) :=
+  delta_bijective_of_field hfix hRG (actionAlgEquiv_injective_of_faithful hfaith hfix) hcard
+
+end FaithfulForms323
+
+#print axioms delta_injective_of_field_of_faithful
+#print axioms delta_bijective_of_field_of_faithful
+
+
 end ABGV52

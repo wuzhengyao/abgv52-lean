@@ -1596,3 +1596,9 @@ packages the three clauses together with the carrier data into the witness whose
 theorem asserts.  This splits the remaining gap for that theorem into three named subgoals, of which the Galois clause
 is already available in the field case and the other two remain open.  One practical point is recorded about the
 namespace in which these predicates live.
+
+Round 323 adds the faithfulness form of the injectivity and bijectivity results for the crossed-product map.  The
+criterion is stated in terms of faithfulness while two of its ingredients were stated in terms of injectivity of the
+family of automorphisms attached to the action; the equivalence of the two forms was established two rounds ago, and
+these wrappers apply it once so that a caller holding either form has a matching statement, which spares a conversion
+when instantiating the criterion.  No new mathematics is added.
