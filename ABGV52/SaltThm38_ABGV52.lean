@@ -52,6 +52,20 @@ noncomputable section
 
 namespace ABGV52
 
+/-- **升级波（2026-10-15，mathlib `aa35a48`／Lean 4.35.0）**：`NoetherField F G = FractionRing (MvPolynomial G F)`
+的 `F`-代数结构在 4.35 下有两个**可合成**候选 —— `OreLocalization.instAlgebra` ✓ 与
+`DivisionRing.toRatAlgebra` ✓ —— 二者仅**命题相等**（非 defeq）⟹ 4.35 对"合成实例与推断实例不同一"**报错**
+（4.33 静默取一 ✗）。此处按本工程既有语义**钉住前者** ✓，与升级前实际取值一致 ✓。 -/
+local instance noetherFieldAlgebra (F G : Type u) [Field F] :
+    Algebra F (NoetherField F G) := OreLocalization.instAlgebra
+
+/- **同波第二支**：把通用实例 `DivisionRing.toRatAlgebra`（对 `F = ℚ` 且底环为除环时与上式
+**命题相等而非 defeq**）在本文件内屏蔽，使 `OreLocalization.instAlgebra` 成为唯一来源。
+Lean 按文件编译 ⟹ 本改动**只影响本文件的精化**（不改变源码层语义）。 -/
+attribute [-instance] DivisionRing.toRatAlgebra
+
+
+
 /-! ## 1. 工具：`Algebra.FiniteType` 在单元局部化下保持 ✓ -/
 
 /-- **工具** ✓✓：`Algebra.FiniteType F S` ⟹ `Algebra.FiniteType F (S(1/r))` ✓。
@@ -1777,7 +1791,7 @@ theorem not_nonempty_algEquiv_rat_of_mvPolynomial (T : Type) [CommRing T] [Algeb
     apply φ.injective
     rw [hC, φ.commutes]
     simp only [Algebra.algebraMap_self, RingHom.id_apply]
-  have hc := congrArg (MvPolynomial.coeff (Finsupp.single m 1)) hfix
+  have hc := congrArg (fun p => p.coeff (Finsupp.single m 1)) hfix
   rw [MvPolynomial.coeff_X_same, MvPolynomial.coeff_C] at hc
   have hne : ¬ (0 = Finsupp.single m 1) := by
     intro h0
@@ -2399,7 +2413,7 @@ theorem subsingleton_of_fixed_generating {n : ℕ} {a : Fin n → NoetherField F
       ∀ g : G, g • x = x := by
     intro x
     refine IntermediateField.adjoin_induction F (s := Set.range a)
-      (p := fun x _ => ∀ g : G, g • x = x) ?_ ?_ ?_ ?_ ?_
+      (motive := fun x _ => ∀ g : G, g • x = x) ?_ ?_ ?_ ?_ ?_
     · rintro y ⟨i, rfl⟩ g
       exact ha_fix g i
     · intro c g

@@ -361,10 +361,11 @@ lemma card_quotient_free (hcard : Fintype.card X = 73)
       have h1 : MulAction.fixedBy (FreePart X) (1 : H) = Set.univ := by
         ext y
         simp [MulAction.mem_fixedBy]
-      rw [if_pos rfl]
-      exact (Fintype.card_congr (Equiv.setCongr h1)).trans
+      rw [ite_eq_left rfl]
+      exact (Fintype.card_congr
+        (Equiv.subtypeEquivRight (fun y => by rw [h1]))).trans
         ((Fintype.card_congr (Equiv.Set.univ _)).trans (card_freePart hcard hfix hx₀))
-    · rw [if_neg hg, Fintype.card_eq_zero_iff]
+    · rw [ite_eq_right hg, Fintype.card_eq_zero_iff]
       exact ⟨fun z => hg (z.1.2 g (Subtype.ext_iff.mp z.2))⟩
   have hsum : (∑ g : H, Fintype.card (MulAction.fixedBy (FreePart X) g)) = 72 :=
     (Finset.sum_congr rfl hterm).trans (by rw [Finset.sum_ite_eq']; simp)

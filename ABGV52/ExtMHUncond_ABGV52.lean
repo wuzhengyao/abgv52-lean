@@ -100,7 +100,7 @@ lemma lmapDomain_smul_apply_smul (X : Type) [DecidableEq X] [MulAction H X]
     calc a = x⁻¹ • (x • a) := (inv_smul_smul x a).symm
       _ = x⁻¹ • (x • b) := congrArg (fun z : X => x⁻¹ • z) hab
       _ = b := inv_smul_smul x b
-  have h := Finsupp.mapDomain_apply hinj f (x⁻¹ • y)
+  have h := Finsupp.mapDomain_apply_of_injective hinj f (x⁻¹ • y)
   simpa only [smul_inv_smul] using h
 
 lemma coeff_rho_Q (X : Type) [MulAction H X] (g : H) (w : MonoidAlgebra ℚ X) :

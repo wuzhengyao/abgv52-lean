@@ -1569,7 +1569,7 @@ theorem exists_div_eq_of_adjoin_eq_top {a : ι → K}
           / algebraMap (Algebra.adjoin F (Set.range a)) K y = z := by
     intro z hz
     refine IntermediateField.adjoin_induction F (s := Set.range a)
-      (p := fun z _ => ∃ x y : Algebra.adjoin F (Set.range a), y ≠ 0 ∧
+      (motive := fun z _ => ∃ x y : Algebra.adjoin F (Set.range a), y ≠ 0 ∧
         algebraMap (Algebra.adjoin F (Set.range a)) K x
           / algebraMap (Algebra.adjoin F (Set.range a)) K y = z) ?_ ?_ ?_ ?_ ?_ hz
     · rintro z ⟨i, rfl⟩
@@ -4048,12 +4048,13 @@ theorem realizationMap_equivariant {t : MvPolynomial G F}
     (hΨG : ∀ (g : G) (x : Localization.Away t), Ψ (g • x) = g • Ψ x) :
     ∀ (g : G) (z : TensorProduct R K' (Localization.Away t)), f (g • z) = g • f z := by
   intro g z
-  exact TensorProduct.induction_on z
-    (by simp)
+  exact TensorProduct.inductionOn z
     (fun k x => by
       rw [hact g k x, hf, hf, hΨG g x]
       exact (smul_comm g k (Ψ x)).symm)
-    (fun x y hx hy => by simp only [smul_add, map_add, hx, hy])
+    (fun x y hx hy => by
+      have h1 : g • (x + y) = g • x + g • y := smul_add g x y
+      rw [h1, map_add, hx, hy, map_add, smul_add])
 
 end RealizationMapEquivariant
 

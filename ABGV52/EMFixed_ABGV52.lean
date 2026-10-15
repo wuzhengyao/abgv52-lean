@@ -400,7 +400,7 @@ theorem Esm_le_fixed
   refine IntermediateField.adjoin_induction
     (F := ↥(K0 (G := G) (F := F) (M := M) (P := P)))
     (s := Set.range (Yf (F := F) (M := M) (P := P) B n y))
-    (p := fun x _ => x ∈ FixedPoints.subfield G
+    (motive := fun x _ => x ∈ FixedPoints.subfield G
       (semiFunctionField (F := F) (M := M) (P := P))) ?_ ?_ ?_ ?_ ?_ hx
   · intro x' hx'
     obtain ⟨i, rfl⟩ := hx'
@@ -490,7 +490,7 @@ theorem SlI_eq_adjoin_primitive :
       (F := ↥(FixedPoints.subfield G (latticeFunctionField F M)))
       (E := latticeFunctionField F M)
       (s := ({θ} : Set (latticeFunctionField F M)))
-      (p := fun c _ => algebraMap (latticeFunctionField F M)
+      (motive := fun c _ => algebraMap (latticeFunctionField F M)
           (semiFunctionField (F := F) (M := M) (P := P)) c
         ∈ IntermediateField.adjoin ↥(K0 (G := G) (F := F) (M := M) (P := P))
             {algebraMap (latticeFunctionField F M)

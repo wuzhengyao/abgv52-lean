@@ -356,7 +356,7 @@ lemma shapiroOfCoindLiftG_smul_aux (K : Subgroup G) (h : G) (f : coindCarrierG K
       = Finsupp.mapDomain (h • ·) (shapiroOfCoindLiftG K f) (h • q') := by
   induction q' using Quotient.inductionOn' with
   | h b =>
-    rw [Finsupp.mapDomain_apply (smulLeft_injectiveG K h) (shapiroOfCoindLiftG K f) b]
+    rw [Finsupp.mapDomain_apply_of_injective (smulLeft_injectiveG K h) (shapiroOfCoindLiftG K f) b]
     rw [show h • (QuotientGroup.mk b : G ⧸ K) = QuotientGroup.mk (h * b) from rfl]
     rw [shapiroOfCoindLiftG_apply, shapiroOfCoindLiftG_apply, coindG_apply]
     show f.1 ((h * b)⁻¹ * h) = f.1 (b⁻¹)

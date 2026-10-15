@@ -114,8 +114,8 @@ theorem adjoin_Esm_singleton_eq_top
         subst hz
         exact IntermediateField.subset_adjoin
           (F := ↥(Esm (G := G) (F := F) (M := M) (P := P) B n y))
-          (S := {algebraMap (latticeFunctionField F M)
-            (semiFunctionField (F := F) (M := M) (P := P)) θ})
+          (S := Set.singleton (algebraMap (latticeFunctionField F M)
+            (semiFunctionField (F := F) (M := M) (P := P)) θ))
           (Set.mem_singleton _)
     · refine IntermediateField.adjoin_le_iff.mpr ?_
       intro z hz

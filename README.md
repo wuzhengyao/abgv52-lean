@@ -189,12 +189,17 @@ witness recorded side by side |
 
 ## Build
 
-The toolchain is `leanprover/lean4:v4.33.1` (see `lean-toolchain`) and the
+The toolchain is `leanprover/lean4:v4.35.0` (see `lean-toolchain`) and the
 development is pinned to mathlib4 commit
-`db584cd6d46c92f209a44c0f1c829460d327499d` (see `lakefile.toml`).
+`aa35a481e5f0cdb3b04a899ead15d6ca7305a624` (see `lakefile.toml`) — an
+upgrade of 2026-10-15 from `db584cd6d46c92f209a44c0f1c829460d327499d`
+(2026-08-10) and Lean 4.33.
 
-    lake exe cache get
     lake build
+
+(The prebuilt-object cache of the mathlib community was not usable at the
+time of the upgrade; `lake build` compiles mathlib locally, which takes
+roughly half an hour on a 20-core machine with sufficient memory.)
 
 `SHA256SUMS` records the SHA-256 of every Lean source file.
 
@@ -2109,3 +2114,27 @@ not yet known to be a function and cannot be applied; and rewriting an equation 
 the very term one wants to rewrite rewrites those inner occurrences as well, so the transport has to be composed
 explicitly instead.  Finiteness over the base field, the identification of the degree with the order of the group,
 the dichotomy and the source's remaining theorems are not addressed here.
+
+## Toolchain upgrade (2026-10-15, appended)
+
+The development was moved from mathlib `db584cd6` (2026-08-10) / Lean 4.33 to
+mathlib `aa35a481e5` (2026-10-15) / Lean 4.35.0.  Twelve files needed
+adaptation; all changes are local and preserve the statements:
+
+| file(s) | adaptation |
+|---|---|
+| `P5b`, `S3`, `SubgroupPerm`, `ExtMHUncond` | `Finsupp.mapDomain_apply hf` became `Finsupp.mapDomain_apply_of_injective hf` |
+| `EMFixed`, `SaltGeneric`, `SaltThm38` | the motive argument of `adjoin_induction` is named `motive`, not `p` |
+| `EMIndep`, `SaltThm38` | `MvPolynomial.coeff v p` is now the projection `p.coeff v` |
+| `SaltGeneric` | `TensorProduct.induction_on` lost its zero case and is now `TensorProduct.inductionOn` with the two cases `tmul` and `add` |
+| `TateLayer`, `TateTrivial` | `End X` is a structure: `M.norm.asHom.toModuleCatHom`, `M.norm = 1` rather than `= 𝟙 M` |
+| `PC` | `Equiv.setCongr` changed meaning; use `Equiv.subtypeEquivRight` |
+| `EMDegree` | a set literal in named-argument position needs `Set.singleton` |
+| `SaltThm38` | on `NoetherField F G = FractionRing (MvPolynomial G F)` two `F`-algebra instances are synthesizable and only propositionally equal; the intended one is pinned by a `local instance` together with a file-level `attribute [-instance] DivisionRing.toRatAlgebra` |
+
+After the upgrade the development again compiles with no `sorry`
+(`lake build`, 9176 jobs, zero errors), every declaration still depends only
+on `propext`, `Classical.choice` and `Quot.sound`, and `SaltThm38_ABGV52.lean`
+still declares 368 declarations.  The warning count of a full build is 924
+lines (918 distinct), of which 218 are deprecations of names renamed in
+mathlib; these are recorded, not yet rewritten.

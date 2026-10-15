@@ -133,15 +133,15 @@ theorem aeval_xm_as_sum (B : Module.Basis ι ℤ P)
     (p : MvPolynomial ι (latticeFunctionField F M)) :
     MvPolynomial.aeval (xm (F := F) (M := M) (P := P) B) p
       = ∑ v ∈ p.support,
-          MonoidAlgebra.single (monoPow (P := P) B v) (MvPolynomial.coeff v p) := by
+          MonoidAlgebra.single (monoPow (P := P) B v) (p.coeff v) := by
   have h1 : MvPolynomial.aeval (xm (F := F) (M := M) (P := P) B) p
       = MvPolynomial.aeval (xm (F := F) (M := M) (P := P) B)
-          (∑ v ∈ p.support, MvPolynomial.monomial v (MvPolynomial.coeff v p)) :=
+          (∑ v ∈ p.support, MvPolynomial.monomial v (p.coeff v)) :=
     congrArg (fun z : MvPolynomial ι (latticeFunctionField F M) =>
       MvPolynomial.aeval (xm (F := F) (M := M) (P := P) B) z) (MvPolynomial.as_sum p)
   rw [h1, map_sum]
   exact Finset.sum_congr rfl fun v _ =>
-    aeval_xm_monomial (F := F) (M := M) (P := P) B v (MvPolynomial.coeff v p)
+    aeval_xm_monomial (F := F) (M := M) (P := P) B v (p.coeff v)
 
 /-- **`aeval xm` 单射**（`xm` 的单项式互异，故 `MonoidAlgebra` 系数逐项可读）。 -/
 theorem aeval_xm_injective (B : Module.Basis ι ℤ P) :
@@ -150,7 +150,7 @@ theorem aeval_xm_injective (B : Module.Basis ι ℤ P) :
         MonoidAlgebra (latticeFunctionField F M) (Multiplicative P)) := by
   classical
   intro p q hpq
-  have hcoeff : ∀ v : ι →₀ ℕ, MvPolynomial.coeff v p = MvPolynomial.coeff v q := by
+  have hcoeff : ∀ v : ι →₀ ℕ, p.coeff v = q.coeff v := by
     intro v
     have hpq' : MvPolynomial.aeval (xm (F := F) (M := M) (P := P) B) p
         = MvPolynomial.aeval (xm (F := F) (M := M) (P := P) B) q := hpq
@@ -158,8 +158,8 @@ theorem aeval_xm_injective (B : Module.Basis ι ℤ P) :
       aeval_xm_as_sum (F := F) (M := M) (P := P) B q] at hpq'
     have h10 := congrArg (fun z : MonoidAlgebra (latticeFunctionField F M)
         (Multiplicative P) => z.coeff (monoPow (P := P) B v)) hpq'
-    have h1 : (∑ v' ∈ p.support, (if v' = v then MvPolynomial.coeff v' p else 0))
-        = (∑ v' ∈ q.support, (if v' = v then MvPolynomial.coeff v' q else 0)) := by
+    have h1 : (∑ v' ∈ p.support, (if v' = v then p.coeff v' else 0))
+        = (∑ v' ∈ q.support, (if v' = v then q.coeff v' else 0)) := by
       simpa [MonoidAlgebra.coeff_sum, MonoidAlgebra.coeff_single, MonoidAlgebra.coeff_zero,
         Finsupp.single_apply, (monoPow_injective (P := P) B).eq_iff,
         Finsupp.zero_apply] using h10

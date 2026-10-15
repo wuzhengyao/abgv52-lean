@@ -73,12 +73,12 @@ theorem subsingleton_tateCohomology_neg_one_of_mono_tateNorm (G : Type) [Group G
 
 /-- **一般砖**：`M.norm` 单 ⟹ `M.tateNorm` 单。
 
-`Rep.tateNorm = chainsIso₀ ≫ M.norm.toModuleCatHom ≫ cochainsIso₀.inv`（mathlib 定义），
+`Rep.tateNorm = chainsIso₀ ≫ M.norm.asHom.toModuleCatHom ≫ cochainsIso₀.inv`（mathlib 定义），
 两端是 `≅ M` 的同构 ⟹ 单性只取决于中间的 `M.norm`。 -/
 theorem mono_tateNorm_of_mono_norm (G : Type) [Group G] [Fintype G]
-    (M : Rep.{0,0,0} ℤ G) (h : Mono M.norm.toModuleCatHom) : Mono M.tateNorm := by
+    (M : Rep.{0,0,0} ℤ G) (h : Mono M.norm.asHom.toModuleCatHom) : Mono M.tateNorm := by
   haveI := h
-  show Mono ((groupHomology.chainsIso₀ M).hom ≫ M.norm.toModuleCatHom ≫
+  show Mono ((groupHomology.chainsIso₀ M).hom ≫ M.norm.asHom.toModuleCatHom ≫
     (groupCohomology.cochainsIso₀ M).inv)
   infer_instance
 
@@ -111,20 +111,20 @@ theorem norm_eq_one_of_subsingleton (G : Type) [Group G] [Fintype G] [Subsinglet
 
 /-- **T1 第二步**：平凡群上 `M.norm = 𝟙 M`（逐元素经 `Rep.norm_apply`）。 -/
 theorem norm_eq_id_of_subsingleton (G : Type) [Group G] [Fintype G] [Subsingleton G]
-    (M : Rep.{0,0,0} ℤ G) : M.norm = 𝟙 M := by
+    (M : Rep.{0,0,0} ℤ G) : M.norm = 1 := by
   have h0 : M.ρ.norm = 1 := norm_eq_one_of_subsingleton G M
-  rw [Rep.hom_ext_iff, Representation.IntertwiningMap.ext_iff]
+  apply End.ext
+  rw [End.one_asHom, Rep.hom_ext_iff, Representation.IntertwiningMap.ext_iff]
   apply LinearMap.ext
   intro x
-  change (Rep.Hom.hom M.norm) x = x
-  rw [Rep.norm_apply, h0]
-  rfl
+  change (M.norm.asHom.hom) x = x
+  simp [Rep.norm_apply, h0]
 
 /-- **T1 第三步**：平凡群上 `tateNorm` 是恒等（复合两个同构与 `𝟙`）⟹ 单。 -/
 theorem mono_tateNorm_of_subsingleton (G : Type) [Group G] [Fintype G] [Subsingleton G]
     (M : Rep.{0,0,0} ℤ G) : Mono M.tateNorm := by
   apply mono_tateNorm_of_mono_norm
-  rw [show M.norm.toModuleCatHom = 𝟙 (ModuleCat.of ℤ M.V) from by
+  rw [show M.norm.asHom.toModuleCatHom = 𝟙 (ModuleCat.of ℤ M.V) from by
     rw [norm_eq_id_of_subsingleton G M]; rfl]
   infer_instance
 
@@ -167,12 +167,13 @@ example (M : Rep.{0,0,0} ℤ PUnit) :
 theorem norm_trivialRep_eq_card_nsmul (G : Type) [Group G] [Fintype G] :
     (Rep.trivial ℤ G ℤ).ρ.norm = Fintype.card G • (LinearMap.id : Module.End ℤ ℤ) := by
   rw [Representation.norm]
-  simp [Finset.sum_const, Finset.card_univ]
+  ext v
+  simp [Finset.sum_const, Finset.card_univ, Representation.trivial_apply]
 
 /-- **T2b 第二步**：`(M.norm).toModuleCatHom = ×|G|`，在 `ℤ` 上单（无挠 ＋ `|G| ≠ 0`）。 -/
 theorem mono_norm_toModuleCatHom_trivialRep (G : Type) [Group G] [Fintype G] :
-    Mono (Rep.trivial ℤ G ℤ).norm.toModuleCatHom := by
-  rw [show (Rep.trivial ℤ G ℤ).norm.toModuleCatHom
+    Mono (Rep.trivial ℤ G ℤ).norm.asHom.toModuleCatHom := by
+  rw [show (Rep.trivial ℤ G ℤ).norm.asHom.toModuleCatHom
       = ModuleCat.ofHom ((Rep.trivial ℤ G ℤ).ρ.norm) from rfl,
     norm_trivialRep_eq_card_nsmul G, ModuleCat.mono_iff_injective]
   intro a b hab

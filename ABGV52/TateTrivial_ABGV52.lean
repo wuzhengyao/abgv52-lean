@@ -4,7 +4,7 @@
   **用途**：命名假设 `FlasqueClassWellDefinedHyp` 在 `PUnit` 档的反例需要两半，本件给出其中
   「**平凡群上一切模皆 flasque**」这一半 ✓（另一半 `ℤ/2 ≁ ℤ` 见假设状态笔记的登记 ✗）。
 
-  **路线**：`G` 为平凡群（`[Subsingleton G]`）时 `M.ρ.norm = 1` ✓ ⟹ `M.norm.toModuleCatHom = 𝟙` ✓
+  **路线**：`G` 为平凡群（`[Subsingleton G]`）时 `M.ρ.norm = 1` ✓ ⟹ `M.norm.asHom.toModuleCatHom = 𝟙` ✓
   ⟹ **`Mono M.tateNorm`** ✓；Tate 复形在 `-1` 处 `d (-1) 0 = tateNorm` ✓ ⟹ 该处 **`cycles`（核）为零** ✓
   ⟹ 由 `homologyπ` 是 **epi** 与 `IsZero.of_epi` 得 **该处同调为零** ✓ ⟹ `Ĥ^{-1} = 0` ⟹ flasque ✓。
 
@@ -31,11 +31,11 @@ theorem tateNorm_mono_of_subsingleton (M : Rep.{0,0,0} ℤ G) : Mono M.tateNorm 
     · simp
     · intro b _ hb; exact absurd (Subsingleton.elim b 1) hb
     · intro h; exact absurd (Finset.mem_univ 1) h
-  have hnorm' : M.norm.toModuleCatHom = 𝟙 (ModuleCat.of ℤ M.V) := by
+  have hnorm' : M.norm.asHom.toModuleCatHom = 𝟙 (ModuleCat.of ℤ M.V) := by
     apply ModuleCat.hom_ext; apply LinearMap.ext; intro x
-    show (Rep.Hom.hom M.norm) x = x
+    show (M.norm.asHom.hom) x = x
     rw [Rep.norm_apply, hnorm]; rfl
-  show Mono ((groupHomology.chainsIso₀ M).hom ≫ M.norm.toModuleCatHom ≫
+  show Mono ((groupHomology.chainsIso₀ M).hom ≫ M.norm.asHom.toModuleCatHom ≫
     (groupCohomology.cochainsIso₀ M).inv)
   rw [hnorm']
   simp only [Category.id_comp]
