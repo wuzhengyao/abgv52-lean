@@ -10711,5 +10711,55 @@ end ShiftRootExistence332
 
 #print axioms exists_shift_root
 
+/-! ### 4.118 🔴🔴 **AS 结构定理（域档）**（第 333 轮）
+—— 子目标 (c) 的**装配之一** ✓：源 `proposition-0-5(e)` ✓ 的**域档结论** ✓✅
+
+**源侧定位** ✓（**逐字** ✓）：`raw/Saltman1982.tex:174`（label `theorem-1-2` ✓ 的证明 ✓）：
+「If `K ⊇ F` is a field and `L/K` is Galois with group `C_p`, then **by `proposition-0-5(e)`
+`L ≅ K{y^p − y − a}`, for some `a ∈ K`**」✓ —— 本件**即该结论的域档机检形** ✓✅。
+
+**落成一件** ✓✅：**`exists_algEquiv_asCarrier`** ✓✅：`char K = p` ✓、`[L : K] = p` **素数** ✓、
+`σ ^ p = 1` ✓、`σ ≠ 1` ✓ ⟹ **`∃ b : K, Nonempty (L ≃ₐ[K] asCarrier K p b)`** ✓✅。
+
+**机制（三件拼装，全部为本工程已落件 ✓）** ✓：
+**(甲)** **§4.117** ✓ 给移位根 `y`（`σ y = y + 1` ✓）；
+**(乙)** **`σ (y^p − y) = y^p − y`** ✓（`add_pow_char` ✓ ＋ **`CharP L p`** ✓（`charP_of_injective_algebraMap` ✓
+＋ §4.115 的 `algebraMap_injective_of_field` ✓））⟹ **§4.116** ✓ 给 **`b : K`**（`algebraMap K L b = y^p − y` ✓）；
+**(丙)** **§4.115** ✓ 给 **`L ≃ₐ[K] asCarrier K p b`** ✓✅。
+
+**⚠ 意义** ✓：**源 `proposition-0-5(e)` 的域档半边全克** ✓✅ ——
+**(c) 的「装配」只剩两小步** ✗：**(i)** 把 `σ` 从 **`G`-作用**（`actionAlgEquiv` ✓ §4.98 ✓）**造出来** ✓
+＋ **`finrank K L = p`** ✓（`finrank_eq_card_of_isGaloisWithGroup` ✓）；**(ii)** **分裂档**（`L ≅ K^p` ✗）。
+
+**⚠ 工艺** ✓（入 §5.1 ✓）：**`add_pow_char` 要 `[Fact p.Prime]`** ✗ ⟹ 由 `hp : p.Prime` **现场注册
+`let _inst : Fact p.Prime := ⟨hp⟩`** ✓（**§5.1 #27 的第二次命中** ✓）。
+
+**🔴 不声称** ✗：**不**声称 `RealizationProperty` 已有实例 ✗（**装配未落** ✗）；
+**不**声称**分裂档**已处理 ✗；**不**声称环档 `L` 的一般形已处理 ✗；**不**声称 (b) 环档判据有进展 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section ASStructureTheorem333
+
+/-- **AS 结构定理（域档）** ✓✅：素数次 `C_p`-Galois 域扩张都是 Artin–Schreier 扩张 ✓
+（即源 `proposition-0-5(e)` 的域档结论 ✓）。 -/
+theorem exists_algEquiv_asCarrier {K L : Type u} [Field K] [CommRing L] [IsDomain L]
+    [Algebra K L] [Module.Finite K L] {p : ℕ} (hp : p.Prime) [CharP K p]
+    (hcard : Module.finrank K L = p) {σ : L ≃ₐ[K] L} (hσ : σ ^ p = 1) (hσ1 : σ ≠ 1) :
+    ∃ b : K, Nonempty (L ≃ₐ[K] asCarrier K p b) := by
+  classical
+  let _inst : Fact p.Prime := ⟨hp⟩
+  obtain ⟨y, hy⟩ := exists_shift_root hp hcard hσ hσ1
+  have hIa : Function.Injective (algebraMap K L) := algebraMap_injective_of_field
+  let _inst : CharP L p := charP_of_injective_algebraMap hIa p
+  have hfix : σ (y ^ p - y) = y ^ p - y := by
+    rw [map_sub, map_pow, hy, add_pow_char, one_pow]
+    ring
+  obtain ⟨b, hb⟩ := fixed_of_finrank_prime hp hcard hσ1 hfix
+  exact ⟨b, asCarrier_algEquiv_of_shift_root (σ := σ) hp hy hb hcard⟩
+
+end ASStructureTheorem333
+
+#print axioms exists_algEquiv_asCarrier
+
 
 end ABGV52

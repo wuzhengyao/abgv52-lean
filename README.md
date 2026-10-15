@@ -1674,3 +1674,13 @@ endomorphisms with composition and the recursion of powers live in the endomorph
 linear map one; and there is no lemma stating that the image of the kernel is the bottom submodule, so that
 identity is proved directly.  The realization property itself, which assembles these ingredients, is not
 addressed here.
+
+Round 333 assembles the three preceding rounds into the structure theorem for cyclic extensions of prime degree
+in prime characteristic: a Galois extension of a field by a cyclic group of prime order, in characteristic that
+prime, is obtained by adjoining a root of a polynomial of the form the prime-th power minus the element minus a
+constant of the base.  An element moved to its successor by a generating automorphism exists by the previous
+round, the difference of its prime-th power and itself is fixed by the automorphism and hence lies in the base by
+the round before, and the isomorphism between the extension and the carrier is the one of the round before that.
+One practical point is recorded: the Frobenius identity for a sum also requires the primality of the exponent as
+an instance, which again has to be registered from the hypothesis.  The realization property, which additionally
+requires producing the specialization and treating the case of a split algebra, is not addressed here.
