@@ -470,3 +470,33 @@ theorem smul_orbit_indicator {G ι K : Type*} [Group G] [MulAction G ι] [Field 
 
 #print axioms smul_mem_orbit_iff
 #print axioms smul_orbit_indicator
+
+
+/-! ## (丙) **传递性**（第 411 轮）：链条收口 ✓
+
+**链条** ✓：指示幂等元（408 ✓）＋ 指示非零（408 ✓）＋ 指示的 `G`-不变性（410 ✓）⟹
+**引擎适配层**（407 ✓）给"指示函数 ＝ 0 或 ＝ 1" ⟹ 非零 ⟹ **指示函数 ＝ 1** ⟹
+每点取值为 1 ⟹ 每点在轨道内 ⟹ 第 400 轮接口 ⟹ 第 389 轮接口 ⟹ **`IsPretransitive`** ✓。
+**§意义** ✓：这是 (丙) 分裂支"因子集上作用传递"的完整机检版本 ✓ —— 配 (乙) 的因子分解（365 ✓）
+与 `MaximalSpectrum` 作用（386 ✓）即可完成 (丙)。 -/
+
+/-- **(丙) 传递性** ✓：`(ι → K)` 上（坐标置换作用 ✓，`ι` 非空 ✓）的不变幂等元只有 0／1 ⟹
+`G` 在 `ι` 上**传递** ✓。 -/
+theorem isPretransitive_of_fixed_idempotent {G ι K : Type*} [Group G] [MulAction G ι] [Field K]
+    [Nonempty ι]
+    (hidem : ∀ e : ι → K, IsIdempotentElem e → (∀ g : G, g • e = e) → e = 0 ∨ e = 1) :
+    MulAction.IsPretransitive G ι := by
+  classical
+  refine isPretransitive_of_orbit_eq_univ fun i => orbit_eq_univ_of_forall_smul_eq i fun j => ?_
+  set e : ι → K := fun k => if k ∈ MulAction.orbit G i then (1 : K) else 0 with he
+  have hid : IsIdempotentElem e := isIdempotentElem_indicator (MulAction.orbit G i)
+  have hinv : ∀ g : G, g • e = e := fun g => smul_orbit_indicator i g
+  have hne : e ≠ 0 := indicator_ne_zero (MulAction.mem_orbit_self i)
+  rcases hidem e hid hinv with h | h
+  · exact absurd h hne
+  · have h1 : e j = 1 := by rw [h]; rfl
+    by_cases hjn : j ∈ MulAction.orbit G i
+    · exact MulAction.mem_orbit_iff.mp hjn
+    · exact absurd h1 (by simp [e, hjn])
+
+#print axioms isPretransitive_of_fixed_idempotent

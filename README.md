@@ -2733,3 +2733,16 @@ Four points of craft: an `if` in a *statement* needs a `DecidablePred` argument;
 rewriting under an `if` condition fails with "motive is not type correct" both for
 `rw` and for `simp only`; the way through is `by_cases` together with `simp`; and
 the group parameter of the orbit iff must be `g⁻¹`, not `g`.
+
+## Round 411 (2026-10-15, appended)
+
+`isPretransitive_of_fixed_idempotent`: if every fixed idempotent in the function
+space `ι → K`, with the permuted action and non-empty `ι`, is 0 or 1, then the
+action on `ι` is transitive.  This closes the transitivity chain: the orbit
+indicator is idempotent and non-vanishing (round 408) and invariant (round 410), so
+the engine adaptor (round 407) forces it to be 1, every point has value 1 and hence
+lies in the orbit, and the interfaces of rounds 400 and 389 give transitivity.
+
+This is the machine-checked form of transitivity of the action on the set of
+factors, which with the factor decomposition of round 365 and the action on
+MaximalSpectrum of round 386 completes the third dichotomy input.
