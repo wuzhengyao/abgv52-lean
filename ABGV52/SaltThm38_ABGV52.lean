@@ -12938,11 +12938,153 @@ theorem kummer_isGaloisWithGroup [Nontrivial R] [NeZero n] (hn : 1 ≤ n) (ha : 
 end KummerDatum
 end KummerDatum356
 
-#print axioms KummerDatum.smul_eq_shift
-#print axioms KummerDatum.smul_algebraMap
-#print axioms KummerDatum.hRG
-#print axioms KummerDatum.faithful
-#print axioms KummerDatum.kummer_isGaloisWithGroup
+/-! ### 4.140 🔴🔴 **T6-F 第三口：Kummer 分裂档载体同构**（第 357 轮）
+—— **源 `theorem-1-2(b)` 的 (c) 款第一件** ✓（**§4.122 的乘法类比** ✓）
+
+**靶** ✓：**`K{y^n − 1} ≅ K^n`** ✓ —— **分裂档的「载体侧」** ✓（源 `theorem-1-2(b)` 的 `R = F[x](1/x)` 档之分裂端 ✓）。
+
+**落成三件** ✓✅：**(甲)** **`kummer_one_aeval_eq_zero`** ✓✅ —— **`aeval (ρ^i) (X^n − C 1) = 0`** ✓
+（`(ρ^i)^n = (ρ^n)^i = 1` ✓）；**(乙)** **`kummer_splitPoint_injective`** ✓✅ —— **分裂点 `i ↦ ρ^{i.val}` 单射** ✓
+（**由 `ρ` 的阶恰为 `n`** ✓：`ρ^{|i−j|} = 1` ⟹ `n ∣ |i−j|` ⟹ `< n` ⟹ `= 0` ✓）；
+**(丙)** 🔴 **`kummer_one_algEquiv_pi`** ✓✅ —— **`Nonempty (kummerCarrier K n 1 ≃ₐ[K] (ZMod n → K))`** ✓✅
+（**求值通道 ＋ 插值零判 ＋ 秩相等** ✓ —— **§4.122 的逐字类比** ✓）。
+
+**⚠ 与 AS 档的结构差别（承重 ✓）** ✗：**AS 档的互异性由 `zmod_castHom_injective` 供给** ✓（§4.86 ✓，
+**因 `ℤ/p → K` 在 `CharP K p` 下是单射** ✓）；**乘法档不能用它** ✗ ——
+**`ℤ/n → K` 在 `p ∣ k`（`k < n`）时非单** ✗（**实反例** ✓：**`K = 𝔽₅`、`n = 6`、`k = 5`：`5·1 = 0`** ✗）
+⟹ **正解 ＝ 互异性由 `ρ` 的阶供给** ✓（**`hpow` 的 `↔ n ∣ m` 形** ✓ —— **本件即其首个用户** ✓）。
+
+**⚠ 工艺（三条，入 §5.1）** ✓：**(#83)** **`intro i j hij` 后的等式是函数应用形** ✗
+（`(fun i => ρ^{i.val}) i = (fun i => ρ^{i.val}) j` ✗）⟹ **`rw [← hij]` 无法命中** ✗ ⟹
+**正解 ＝ 先 `have hij' : ρ^{i.val} = ρ^{j.val} := hij`** ✓（**beta 归约显式化** ✓ —— **§5.1 #20 族** ✓）；
+**(#84)** **`le_total` 的两支公式须对号** ✗（**`Or.inl : a ≤ b`** ✓ —— **写反即报 "Did not find an occurrence"** ✗，
+**本轮实测** ✓）；**(#85)** **`omega` 不识整除** ✗（**须先 `Nat.eq_zero_of_dvd_of_lt`** ✓ 给 `= 0` ✓ 再 `omega` ✓）。
+
+**🔴 不声称** ✗：**不**声称 **`L ≅ K^n`（分裂档模型侧）** ✗（**载体侧已落** ✓ —— **模型侧须结构定理** ✗）；
+**不**声称源 `theorem-1-2(b)` 已证 ✗；**不**声称 Kummer 实现（域档）已落 ✗；**不**声称源 `proposition-0-6(c)` 已证 ✗。 -/
+
+section KummerSplitIso357
+
+/-- **Kummer 分裂点满足定义关系** ✓：`aeval (ρ^i) (X^n − C 1) = 0` ✓（`(ρ^i)^n = (ρ^n)^i = 1` ✓）。 -/
+theorem kummer_one_aeval_eq_zero (K : Type u) [Field K] {n : ℕ} [NeZero n] (ρ : Kˣ)
+    (hpow : ∀ m : ℕ, ((ρ : K)) ^ m = 1 ↔ n ∣ m) (i : ZMod n) :
+    Polynomial.aeval (((ρ : K)) ^ (i.val)) ((Polynomial.X : Polynomial K) ^ n - Polynomial.C 1) = 0 := by
+  rw [map_sub, Polynomial.aeval_X_pow, Polynomial.aeval_C, map_one, ← pow_mul, Nat.mul_comm,
+    pow_mul, (hpow n).mpr (dvd_refl n), one_pow, sub_self]
+
+/-- **分裂点互异** ✓（**由 `ρ` 的阶恰为 `n`** ✓ —— AS 档用 `zmod_castHom_injective` ✗，
+**乘法档不能用它** ✗：`ℤ/n → K` 在 `p ∣ k` 时非单 ✗）。 -/
+theorem kummer_splitPoint_injective (K : Type u) [Field K] {n : ℕ} [NeZero n] (ρ : Kˣ)
+    (hpow : ∀ m : ℕ, ((ρ : K)) ^ m = 1 ↔ n ∣ m) :
+    Function.Injective (fun i : ZMod n => ((ρ : K)) ^ (i.val)) := by
+  intro i j hij
+  have hij' : ((ρ : K)) ^ i.val = ((ρ : K)) ^ j.val := hij
+  have hne_i : ((ρ : K)) ^ i.val ≠ 0 := pow_ne_zero _ (Units.ne_zero ρ)
+  have hne_j : ((ρ : K)) ^ j.val ≠ 0 := pow_ne_zero _ (Units.ne_zero ρ)
+  rcases le_total i.val j.val with hle | hle
+  · have hd : ((ρ : K)) ^ (j.val - i.val) = 1 := by
+      have h2 : ((ρ : K)) ^ (i.val + (j.val - i.val)) = ((ρ : K)) ^ i.val := by
+        rw [Nat.add_sub_cancel' hle, ← hij']
+      rw [pow_add] at h2
+      exact mul_left_cancel₀ hne_i (by rw [h2, mul_one])
+    have hdvd : n ∣ (j.val - i.val) := (hpow _).mp hd
+    have hlt : j.val - i.val < n := lt_of_le_of_lt (Nat.sub_le _ _) (ZMod.val_lt j)
+    have hzero : j.val - i.val = 0 := Nat.eq_zero_of_dvd_of_lt hdvd hlt
+    exact ZMod.val_injective n (by omega)
+  · have hd : ((ρ : K)) ^ (i.val - j.val) = 1 := by
+      have h2 : ((ρ : K)) ^ (j.val + (i.val - j.val)) = ((ρ : K)) ^ j.val := by
+        rw [Nat.add_sub_cancel' hle, hij']
+      rw [pow_add] at h2
+      exact mul_left_cancel₀ hne_j (by rw [h2, mul_one])
+    have hdvd : n ∣ (i.val - j.val) := (hpow _).mp hd
+    have hlt : i.val - j.val < n := lt_of_le_of_lt (Nat.sub_le _ _) (ZMod.val_lt i)
+    have hzero : i.val - j.val = 0 := Nat.eq_zero_of_dvd_of_lt hdvd hlt
+    exact ZMod.val_injective n (by omega)
+
+/-- 🔴 **Kummer 分裂档载体同构** ✓✅：**`K{y^n − 1} ≅ K^n`** ✓（**求值通道 ＋ 插值 ＋ 秩相等** ✓ ——
+§4.122 的乘法类比 ✓）。 -/
+theorem kummer_one_algEquiv_pi (K : Type u) [Field K] {n : ℕ} [NeZero n] (ρ : Kˣ)
+    (hpow : ∀ m : ℕ, ((ρ : K)) ^ m = 1 ↔ n ∣ m) :
+    Nonempty (kummerCarrier K n 1 ≃ₐ[K] (ZMod n → K)) := by
+  classical
+  have hn : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr (NeZero.ne n)
+  set Φ : kummerCarrier K n 1 →ₐ[K] (ZMod n → K) :=
+    AlgHom.pi (fun i : ZMod n =>
+      AdjoinRoot.liftAlgHom ((Polynomial.X : Polynomial K) ^ n - Polynomial.C 1)
+        (Algebra.ofId K K) (((ρ : K)) ^ (i.val))
+        (by simpa [Polynomial.aeval_def] using kummer_one_aeval_eq_zero K ρ hpow i)) with hΦ
+  have hval : ∀ (P : Polynomial K) (i : ZMod n),
+      Φ (AdjoinRoot.mk ((Polynomial.X : Polynomial K) ^ n - Polynomial.C 1) P) i
+        = Polynomial.aeval (((ρ : K)) ^ (i.val)) P := by
+    intro P i
+    rw [hΦ, AlgHom.pi_apply, AdjoinRoot.liftAlgHom_mk]
+    exact (Polynomial.aeval_def ..).symm
+  have hker : ∀ x : kummerCarrier K n 1, Φ x = 0 → x = 0 := by
+    intro x hx
+    obtain ⟨P, rfl⟩ := AdjoinRoot.mk_surjective x
+    rw [AdjoinRoot.mk_eq_zero]
+    have hP : ∀ i : ZMod n, Polynomial.aeval (((ρ : K)) ^ (i.val)) P = 0 := by
+      intro i
+      have h := congrFun hx i
+      rw [hval P i] at h
+      exact h
+    set f := (Polynomial.X : Polynomial K) ^ n - Polynomial.C 1 with hf
+    have hfmonic : f.Monic := kpoly_monic (R := K) hn 1
+    have hfd : f.natDegree = n := kpoly_natDegree (R := K) hn 1
+    have hf1 : f ≠ 1 := by
+      intro h
+      rw [h, Polynomial.natDegree_one] at hfd
+      exact (NeZero.ne n) hfd.symm
+    have hfroot : ∀ i : ZMod n,
+        Polynomial.aeval (((ρ : K)) ^ (i.val)) f = 0 := by
+      intro i
+      exact kummer_one_aeval_eq_zero K ρ hpow i
+    have hR : ∀ i : ZMod n,
+        Polynomial.aeval (((ρ : K)) ^ (i.val)) (P %ₘ f) = 0 := by
+      intro i
+      have h := Polynomial.modByMonic_add_div P f
+      have h2 := congrArg (Polynomial.aeval (((ρ : K)) ^ (i.val))) h
+      simp only [map_add, map_mul, hP i, hfroot i, zero_mul, add_zero] at h2
+      exact h2
+    have hReval : ∀ i : ZMod n,
+        Polynomial.eval (((ρ : K)) ^ (i.val)) (P %ₘ f) = 0 := by
+      intro i
+      rw [← aeval_eq_eval_self]
+      exact hR i
+    have hdeg : (P %ₘ f).natDegree < n := by
+      have := Polynomial.natDegree_modByMonic_lt P hfmonic hf1
+      rw [hfd] at this
+      exact this
+    have hzero : P %ₘ f = 0 :=
+      Polynomial.eq_zero_of_natDegree_lt_card_of_eval_eq_zero (P %ₘ f)
+        (kummer_splitPoint_injective K ρ hpow) hReval (by rw [ZMod.card]; exact hdeg)
+    exact (Polynomial.modByMonic_eq_zero_iff_dvd hfmonic).mp hzero
+  have hinj : Function.Injective Φ := by
+    intro x z hxz
+    have h1 : Φ (x - z) = 0 := by rw [map_sub, hxz, sub_self]
+    exact sub_eq_zero.mp (hker (x - z) h1)
+  have hfin1 : Module.finrank K (kummerCarrier K n 1) = n := kummer_finrank (R := K) hn 1
+  have hfin2 : Module.finrank K (ZMod n → K) = n := by
+    rw [Module.finrank_pi, ZMod.card]
+  have hpos : 0 < n := Nat.pos_of_ne_zero (NeZero.ne n)
+  let _inst2 : Module.Finite K (kummerCarrier K n 1) :=
+    Module.finite_of_finrank_pos (by rw [hfin1]; exact hpos)
+  let _inst3 : Module.Finite K (ZMod n → K) :=
+    Module.finite_of_finrank_pos (by rw [hfin2]; exact hpos)
+  have hbij : Function.Bijective Φ := by
+    refine ⟨hinj, ?_⟩
+    have hinjL : Function.Injective (Φ.toLinearMap : kummerCarrier K n 1 →ₗ[K] (ZMod n → K)) := hinj
+    exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+      (V := kummerCarrier K n 1) (V₂ := ZMod n → K) (f := Φ.toLinearMap)
+      (by rw [hfin1, hfin2])).mp hinjL
+  exact ⟨AlgEquiv.ofBijective Φ hbij⟩
+
+
+end KummerSplitIso357
+
+#print axioms kummer_one_aeval_eq_zero
+#print axioms kummer_splitPoint_injective
+#print axioms kummer_one_algEquiv_pi
 
 
 end ABGV52

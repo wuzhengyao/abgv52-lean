@@ -2021,3 +2021,19 @@ placed before the documentation comment rather than between it and the declarati
 are instead given as explicit binders of the affected theorems; and the projections of the data class have to be
 applied with all their arguments named.  The realization property in this case, the corresponding statement for
 orders coprime to the characteristic and the source's remaining theorems are not addressed here.
+
+Round 357 identifies the split Kummer carrier with a power of the base field.  The carrier with coefficient one is
+the quotient by the polynomial that is the variable raised to the order minus one, and its points are the powers of
+the distinguished unit; these satisfy the defining relation, since the order of the unit divides the order of the
+group.  They are pairwise distinct, and here the multiplicative case differs from the additive one: in the additive
+case distinctness comes from the injectivity of the structure map of the residue classes, which fails here, as for
+instance the class of five in the integers modulo six maps to zero in a field of five elements; instead
+distinctness follows from the order of the unit being exactly the order of the group.  The evaluation channel at
+these points is injective by the interpolation criterion for a polynomial of degree below the order, and the two
+sides have the same rank, so the channel is an isomorphism.  Three declarations are recorded: the defining relation
+at the points, their distinctness, and the isomorphism.  Three practical points are recorded: the equation obtained
+from an injective function has to be restated in the unfolded form before it can be used for rewriting; the two
+branches of the dichotomy on the canonical representatives have to be matched with the correct formula; and the
+arithmetic decision procedure does not know about divisibility, so the vanishing of the difference has to be
+extracted first.  The model side of the split case, the Kummer realization for fields, the corresponding statement
+for orders coprime to the characteristic and the source's remaining theorems are not addressed here.
