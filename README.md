@@ -1684,3 +1684,16 @@ the round before, and the isomorphism between the extension and the carrier is t
 One practical point is recorded: the Frobenius identity for a sum also requires the primality of the exponent as
 an instance, which again has to be registered from the hypothesis.  The realization property, which additionally
 requires producing the specialization and treating the case of a split algebra, is not addressed here.
+
+Round 334 extracts, from the hypothesis that a Galois algebra over a field carries an action of the cyclic group
+of prime order, the explicit data consumed by the structure theorem of the preceding rounds.  The generator of the
+group yields an algebra automorphism whose prime-th power is the identity, since the powers of the generator
+correspond to the multiples of the unit of the residue ring, and the automorphism is nontrivial because the action
+is faithful and the generator is not the identity.  The degree of the extension over the base equals the prime
+because the degree equals the order of the group and the order of the residue ring is the prime.  Three practical
+points are recorded: the round is carried out at the lowest universe, because the degree computation available
+requires the base, the algebra and the group to live in the same universe while the residue ring does not; the
+lemmas relating powers of the additive-to-multiplicative tag to multiples live in the root namespace rather than
+under the tag; and the fact that the unit of the residue ring is nonzero is best obtained from the characteristic
+rather than from the general lemma about units of nontrivial rings.  The assembly of the specialization and the
+tensor product, and the case of a split algebra, are not addressed here.

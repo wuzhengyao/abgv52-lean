@@ -10761,5 +10761,107 @@ end ASStructureTheorem333
 
 #print axioms exists_algEquiv_asCarrier
 
+/-! ### 4.119 🔴 **装配之二的承重前置：`σ` 与次数由 `G`-作用提取**（第 334 轮）
+—— 子目标 (c) 的**装配之二（域档装配）的输入** ✓
+
+**靶** ✓：§4.115–§4.118 的**全部前提**都要**显式数据** ✓（`σ : L ≃ₐ[K] L` ✓、`σ ^ p = 1` ✓、`σ ≠ 1` ✓、
+`finrank K L = p` ✓）—— 而 `RealizationProperty` 的假设里**只有 `G`-作用** ✓ ⟹ **本件把数据从作用提取出来** ✓。
+
+**落成两件** ✓✅：
+**(i)** **`exists_shift_automorphism`** ✓✅：`IsGaloisWithGroup K L (Multiplicative (ZMod p)) hKL` ✓
+（`p` 素 ✓、`[NeZero p]` ✓）⟹ **`∃ σ : L ≃ₐ[K] L, σ ^ p = 1 ∧ σ ≠ 1`** ✓✅；
+**(ii)** **`finrank_eq_prime_of_isGaloisWithGroup`** ✓✅：同假设 ＋ `[Module.Finite K L]` ✓ ＋ `[Nontrivial L]` ✓
+⟹ **`Module.finrank K L = p`** ✓✅。
+
+**机制** ✓：**(i)** `g₀ := Multiplicative.ofAdd (1 : ZMod p)` ✓（**生成元** ✓）⟹
+`σ := actionAlgEquiv hfix g₀` ✓（§4.98 ✓）⟹ `σ ^ p = 1` ✓（`ofAdd_nsmul` ✓ ＋ **`ZMod.natCast_self`** ✓
+＋ `ofAdd_zero` ✓ ＋ **同态律** `actionAlgEquiv (a * b) = actionAlgEquiv a * actionAlgEquiv b` ✓
+（`ext x; simp [actionAlgEquiv, mul_smul]` ✓））；**`σ ≠ 1`** ✓ 由 **忠实性** ✓
+（`faithfulSMul_iff` ✓ ＋ `g₀ ≠ 1` ✓ —— 后者的证法：`ofAdd.injective` ✓ ＋ **`p ∤ 1`** ✓
+（`CharP.cast_eq_zero_iff` ✓ ＋ `hp.not_dvd_one` ✓））；
+**(ii)** `finrank_eq_card_of_isGaloisWithGroup` ✓（§286 件 ✓）＋ `Fintype.card (Multiplicative (ZMod p)) = Fintype.card (ZMod p)` ✓
+（`Fintype.card_congr (Multiplicative.ofAdd)` ✓）＋ **`ZMod.card`** ✓。
+
+**⚠ 工艺（三条，入 §5.1；均本轮实测）** ✓：
+**(甲)** **宇宙约束（§5.1 #12 的新命中）** ✗：`finrank_eq_card_of_isGaloisWithGroup` ✓（本工程 §286 件 ✓）
+**要求 `R`／`S`／`G` 同宇宙** ✗ ⟹ 而 `G = Multiplicative (ZMod p) : Type` ✓ ⟹ **(ii) 须在 `Type`（宇宙 0）陈述** ✓
+（**(i) 无此约束** ✓ —— `actionAlgEquiv` ✓ 与 `faithfulSMul_iff` ✓ 皆多宇宙 ✓）；
+**(乙)** **`ofAdd_nsmul`／`ofAdd_zero` 在根命名空间** ✗（**`Multiplicative.ofAdd_nsmul` 不存在** ✗ ——
+实测 ✓）；`Multiplicative.ofAdd.injective` ✓ 走 `Equiv.injective` ✓；
+**(丙)** **`one_ne_zero` 在此处不可用** ✗（实测 `synthInstanceFailed : NeZero 1` ✗）⟹
+**正解 ＝ `CharP.cast_eq_zero_iff` ✓ ＋ `Nat.Prime.not_dvd_one` ✓** 证 `(1 : ZMod p) ≠ 0` ✓。
+
+**🔴 不声称** ✗：**不**声称装配已完成 ✗（**只**落其**输入提取** ✓ —— `φ` 与张量半边**未落** ✗）；
+**不**声称分裂档已处理 ✗；**不**声称 (b) 环档判据有进展 ✗；
+**不**声称源 `theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+open ABGV52.BTier
+
+section CpDataExtraction334
+
+/-- **移位自同构的提取** ✓：`C_p`-Galois 作用给出非平凡的 `p` 阶 `K`-代数自同构 ✓。 -/
+theorem exists_shift_automorphism {K L : Type u} [Field K] [CommRing L] [IsDomain L]
+    [Algebra K L] {p : ℕ} (hp : p.Prime) [NeZero p]
+    [MulSemiringAction (Multiplicative (ZMod p)) L]
+    (hKL : ∀ (g : Multiplicative (ZMod p)) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hgal : IsGaloisWithGroup K L (Multiplicative (ZMod p)) hKL) :
+    ∃ σ : L ≃ₐ[K] L, σ ^ p = 1 ∧ σ ≠ 1 := by
+  classical
+  have hfix : ∀ (g : Multiplicative (ZMod p)) (r : K),
+      g • algebraMap K L r = algebraMap K L r := hgal.2.1
+  set g₀ : Multiplicative (ZMod p) := Multiplicative.ofAdd (1 : ZMod p) with hg₀
+  have hhom : ∀ a b : Multiplicative (ZMod p),
+      actionAlgEquiv (S := L) hfix (a * b) =
+        actionAlgEquiv (S := L) hfix a * actionAlgEquiv (S := L) hfix b := by
+    intro a b
+    ext x
+    simp [actionAlgEquiv, mul_smul]
+  have hone : actionAlgEquiv (S := L) hfix 1 = 1 := by
+    ext x
+    simp [actionAlgEquiv]
+  have hg₀p : g₀ ^ p = 1 := by
+    rw [hg₀, ← ofAdd_nsmul, nsmul_eq_mul, ZMod.natCast_self,
+      zero_mul, ofAdd_zero]
+  have hg₀1 : g₀ ≠ 1 := by
+    rw [hg₀]
+    intro h
+    have h1 : (1 : ZMod p) = 0 := Multiplicative.ofAdd.injective h
+    have h2 : ¬ ((1 : ZMod p) = 0) := by
+      intro hz
+      exact hp.not_dvd_one ((CharP.cast_eq_zero_iff (ZMod p) p 1).mp (by simpa using hz))
+    exact h2 h1
+  refine ⟨actionAlgEquiv (S := L) hfix g₀, ?_, ?_⟩
+  · -- σ ^ p = 1
+    have : ∀ n : ℕ, (actionAlgEquiv (S := L) hfix g₀) ^ n
+        = actionAlgEquiv (S := L) hfix (g₀ ^ n) := by
+      intro n
+      induction n with
+      | zero => simp [hone]
+      | succ n ih => rw [pow_succ, ih, pow_succ, hhom]
+    rw [this, hg₀p, hone]
+  · -- σ ≠ 1
+    intro hσ
+    have hpt : ∀ x : L, g₀ • x = x := by
+      intro x
+      have := congrArg (fun φ : L ≃ₐ[K] L => φ x) hσ
+      simpa [actionAlgEquiv] using this
+    exact hg₀1 ((faithfulSMul_iff.mp hgal.1) g₀ hpt)
+
+/-- **次数的提取** ✓：`C_p`-Galois 域档 ⟹ `[L : K] = p` ✓。 -/
+theorem finrank_eq_prime_of_isGaloisWithGroup {K L : Type} [Field K] [CommRing L] [Nontrivial L]
+    [Algebra K L] [Module.Finite K L] {p : ℕ} [NeZero p]
+    [MulSemiringAction (Multiplicative (ZMod p)) L]
+    (hKL : ∀ (g : Multiplicative (ZMod p)) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hgal : IsGaloisWithGroup K L (Multiplicative (ZMod p)) hKL) :
+    Module.finrank K L = p := by
+  rw [BTier.finrank_eq_card_of_isGaloisWithGroup hKL hgal,
+    ← Fintype.card_congr (Multiplicative.ofAdd : ZMod p ≃ Multiplicative (ZMod p)), ZMod.card p]
+
+
+end CpDataExtraction334
+
+#print axioms exists_shift_automorphism
+#print axioms finrank_eq_prime_of_isGaloisWithGroup
+
 
 end ABGV52
