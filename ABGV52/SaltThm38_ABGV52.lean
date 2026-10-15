@@ -11297,4 +11297,137 @@ end DetHalf342
 #print axioms isUnit_det_momentMatrix_shiftNode
 
 
+/-! ### 4.126 🔴🔴 **T7 路线（丙″）接线半之一：矩量映射可逆 ＋ 环档 `δ` 单射**（第 343 轮）
+—— 子目标 (b)（环档判据）的**第二步** ✓（**行列式半** ✓ §4.125 ⟹ **矩量映射** ✓）
+
+**路线（丙″）的接线** ✓：**(甲)** **矩量映射 `Λ` 可逆** ✓✅（**本件** ✓）；
+**(乙)** **`δ` 单射** ✓✅（**本件** ✓ —— **不用 Dedekind、不用正规基** ✗）；
+**(丙)** **`δ` 满射** ✗（**须幂基取值引理** ✓ —— **下一手** ✓）；**(丁)** 组装 §4.89 ✓。
+
+**落成五件** ✓✅：**(L1)** **`asCarrierMSA_smul_root_pow`** ✓✅ —— **`k • root^n = (root + of (castHom (toAdd k)))^n`** ✓
+（**§4.124 的幂基推广** ✓；机制：`map_pow` ✓ ＋ `asShiftH_root` ✓）；
+**(L2)** **`finEquivG`** ✓✅ —— **`Fin p ≃ Multiplicative (ZMod p)`** ✓（`i ↦ ofAdd (i : ZMod p)` ✓，
+**逐点定义形** ✓ —— 供 `Equiv.sum_comp` 重索引 ✓；单射由 §4.125 的 `finToZMod_injective` ✓，
+满射由 `ZMod.val_lt` ✓ ＋ `ZMod.natCast_zmod_val` ✓）；
+**(L3)** **`delta_root_pow_eq_moment`** ✓✅ —— **`δ` 的矩量形** ✓：
+**`(δ z) (root^i) = ∑_j (coeff z (ofAdd j)) * (shiftNode a j)^i`** ✓；
+**(L4)** **`momentMatrix`** ✓✅（`M_{i,j} = (shiftNode a j)^i` ✓）＋ **`momentMap`** ✓✅（`＝ Matrix.toLin' M` ✓）
+＋ **`momentMap_bijective`** ✓✅（**由 §4.125 的单位行列式** ✓ ＋ `Matrix.toLinearEquiv'` ✓）
+＋ **`momentMap_apply`** ✓✅；
+**(L5)** **`delta_injective_of_moment`** ✓✅ —— **环档 `δ` 单射** ✓✅：
+`δ z = 0` ⟹ **矩量方程** ✓ ⟹ **`Λ` 单射** ⟹ **系数全零** ✓ ⟹ `z = 0` ✓。
+
+**⚠ 意义** ✓：**(乙) 是域档单射（§4.104，**Dedekind 通道** ✓）的**环档替代** ✓ ——
+域档须**除**（`[Field L]` ✓）以把系数归一 ✗；环档**不可除** ✗ ⟹ 改由**矩量映射的可逆性** ✓ 供给 ✓
+（**`Λ` 的可逆性来自行列式为单位** ✓，而单位性来自**素域是域** ✓ —— **与源环档走 `[DI71]` 不矛盾** ✓）。
+
+**⚠ 工艺（三条，入 §5.1）** ✓：**(#49)** **`k • x` 不显式暴露 `asShiftH`** ✗ ⟹ `rw [map_pow, …]` **不命中** ✗；
+**正解 ＝ `change`** ✓（`asCarrierMSA` 是 `@[instance_reducible]` ✓，`change` 按 defeq 通过 ✓）；
+**(#50)** **「单位行列式 ⟹ 可逆线性映射」的接线** ✓：**`Matrix.invertibleOfIsUnitDet`** ✓ ＋
+**`Matrix.toLinearEquiv'`** ✓，其 **`toLinearEquiv'_apply` 为 `rfl`** ✓（**无须给基底** ✓ —— 比 `toLinearEquiv` 省一层 ✓）；
+**(#51)** **群和重索引到 `Fin p`** ✓：用 **`Equiv.sum_comp`** ✓ ＋ **`Equiv.ofBijective`** 自建等价 ✓
+（**关键** ✓：以 **`fun i => ofAdd (i : ZMod p)`** 为 `toFun` ⟹ **逐点值定义相等** ✓ ⟹ 后续 `rfl` 收口 ✓）；
+满射支用 **`ZMod.val_lt`** ✓ ＋ **`ZMod.natCast_zmod_val`** ✓；**`NeZero p` 须 `let _inst`** ✓（`haveI` 计样式警告 ✗）。
+
+**🔴 不声称** ✗：**不**声称 **`δ` 满射已落** ✗（**须幂基取值引理** ✓）；**不**声称环档 `δ` 双射已证 ✗；
+**不**声称 `IsGaloisWithGroup R S G hRG` 已证 ✗；**不**声称源 `proposition-0-6(b)`／`theorem-1-2`／`theorem-2-1`／`theorem-5-1` 已证 ✗。 -/
+
+section MomentWiring343
+
+attribute [local instance] asCarrierMSA
+
+open ABGV52.BTier
+
+/-- **(L1) 群作用在幂基上的值** ✓：`k • root^n = (root + of (castHom (toAdd k)))^n` ✓。 -/
+theorem asCarrierMSA_smul_root_pow {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) (k : Multiplicative (ZMod p)) (n : ℕ) :
+    k • ((AdjoinRoot.root (ASpoly R p a)) ^ n)
+      = (AdjoinRoot.root (ASpoly R p a)
+          + AdjoinRoot.of (ASpoly R p a)
+              (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))) ^ n := by
+  change asShiftH a (ZMod.castHom (dvd_refl p) R (Multiplicative.toAdd k))
+      (castHom_pow (p := p) (Multiplicative.toAdd k)) ((AdjoinRoot.root (ASpoly R p a)) ^ n) = _
+  rw [map_pow, asShiftH_root]
+
+/-- **(L2) 编号等价** ✓：`Fin p ≃ Multiplicative (ZMod p)`（`i ↦ ofAdd (i : ZMod p)` ✓，
+**逐点定义形** ✓ —— 供 `Equiv.sum_comp` 重索引 ✓）。 -/
+noncomputable def finEquivG (p : ℕ) [Fact p.Prime] : Fin p ≃ Multiplicative (ZMod p) :=
+  Equiv.ofBijective (fun i : Fin p => Multiplicative.ofAdd (i : ZMod p))
+    ⟨fun i j h => finToZMod_injective (Equiv.injective Multiplicative.ofAdd h), by
+      intro g
+      let _inst : NeZero p := ⟨(Fact.out : Nat.Prime p).ne_zero⟩
+      refine ⟨⟨(Multiplicative.toAdd g).val, ZMod.val_lt _⟩, ?_⟩
+      show Multiplicative.ofAdd (((Multiplicative.toAdd g).val : ℕ) : ZMod p) = g
+      rw [ZMod.natCast_zmod_val]
+      exact Equiv.apply_symm_apply Multiplicative.ofAdd g⟩
+
+/-- **(L3) `δ` 的矩量形** ✓：`(δ z) (root^i) = ∑_{j} (coeff z (ofAdd j)) * (shiftNode a j)^i` ✓。 -/
+theorem delta_root_pow_eq_moment {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R)
+    (hRG : ∀ (g : Multiplicative (ZMod p)) (r : R) (t : asCarrier R p a), g • (r • t) = r • (g • t))
+    (z : SkewMonoidAlgebra (asCarrier R p a) (Multiplicative (ZMod p))) (i : Fin p) :
+    deltaToEndRingHom hRG z ((AdjoinRoot.root (ASpoly R p a)) ^ (i : ℕ))
+      = ∑ j : Fin p, z.coeff (Multiplicative.ofAdd (j : ZMod p)) * (shiftNode a j) ^ (i : ℕ) := by
+  rw [delta_apply_sum hRG z, delta_sum_univ z]
+  rw [← Equiv.sum_comp (finEquivG p) (fun g : Multiplicative (ZMod p) =>
+    z.coeff g * (g • ((AdjoinRoot.root (ASpoly R p a)) ^ (i : ℕ))))]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [asCarrierMSA_smul_root_pow]
+  rfl
+
+/-- **(L4-a) 矩量矩阵** ✓：`M_{i,j} = (shiftNode a j)^i` ✓。 -/
+noncomputable def momentMatrix {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) : Matrix (Fin p) (Fin p) (asCarrier R p a) :=
+  fun i j => (shiftNode a j) ^ (i : ℕ)
+
+/-- **(L4-b) 矩量映射** ✓：`Λ = Matrix.toLin' M` ✓。 -/
+noncomputable def momentMap {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) : (Fin p → asCarrier R p a) →ₗ[asCarrier R p a] (Fin p → asCarrier R p a) :=
+  Matrix.toLin' (momentMatrix a)
+
+/-- **(L4-c) 矩量映射可逆** ✓✅（**单位行列式 ＋ `toLinearEquiv'`** ✓）。 -/
+theorem momentMap_bijective {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) : Function.Bijective (momentMap a) :=
+  (Matrix.toLinearEquiv' (momentMatrix a)
+    (Matrix.invertibleOfIsUnitDet _ (isUnit_det_momentMatrix_shiftNode a))).bijective
+
+/-- **(L4-d) 矩量映射的取值形** ✓。 -/
+theorem momentMap_apply {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R) (s : Fin p → asCarrier R p a) (i : Fin p) :
+    momentMap a s i = ∑ j : Fin p, s j * (shiftNode a j) ^ (i : ℕ) := by
+  rw [momentMap, Matrix.toLin'_apply, Matrix.mulVec]
+  exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+
+/-- **(L5) 环档 `δ` 单射** ✓✅（**矩量形 ＋ 矩量映射单射 ＋ 系数消去** ✓ —— **不用幂基取值引理** ✓）。 -/
+theorem delta_injective_of_moment {R : Type u} [CommRing R] {p : ℕ} [Fact p.Prime] [CharP R p]
+    (a : R)
+    (hRG : ∀ (g : Multiplicative (ZMod p)) (r : R) (t : asCarrier R p a), g • (r • t) = r • (g • t)) :
+    Function.Injective (deltaToEndRingHom (S := asCarrier R p a) hRG) := by
+  rw [injective_iff_map_eq_zero]
+  intro z hz
+  have hzero : ∀ i : Fin p,
+      momentMap a (fun j : Fin p => z.coeff (Multiplicative.ofAdd (j : ZMod p))) i = 0 := by
+    intro i
+    rw [momentMap_apply, ← delta_root_pow_eq_moment a hRG z i, hz]
+    rfl
+  have hvec : (fun j : Fin p => z.coeff (Multiplicative.ofAdd (j : ZMod p))) = 0 := by
+    apply (momentMap_bijective a).1
+    ext i
+    simp [hzero i]
+  apply SkewMonoidAlgebra.coeff_eq_zero.mp
+  ext g
+  obtain ⟨i, hi⟩ := (finEquivG p).surjective g
+  rw [← hi]
+  change z.coeff (Multiplicative.ofAdd (i : ZMod p)) = 0
+  exact congrFun hvec i
+
+end MomentWiring343
+
+#print axioms asCarrierMSA_smul_root_pow
+#print axioms delta_root_pow_eq_moment
+#print axioms momentMap_bijective
+#print axioms momentMap_apply
+#print axioms delta_injective_of_moment
+
+
 end ABGV52

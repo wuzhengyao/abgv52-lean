@@ -1785,3 +1785,25 @@ so the matrix transpose has to be named; and the lemmas about units of finite pr
 unit predicate rather than in that of finite sums.  The invertibility of the moment map itself, and hence the
 bijectivity of the crossed-product map over a ring, are not addressed here.
 
+Round 343 wires the moment map to the crossed-product map for the ring case of the Galois criterion.  The action
+of a group element on a power of the root is the corresponding power of the shifted root, and the numbering of the
+residue classes by the initial segment is an equivalence whose values are definitionally the tagged residue
+classes, so that a sum over the group can be reindexed to a sum over the initial segment.  Reading the
+crossed-product map at a power of the root then gives the moments of the coefficient vector of the element, that
+is, the product of the moment matrix with that vector.  The moment map so defined is invertible because the
+determinant of the moment matrix is a unit by the previous round, and the passage from an invertible determinant
+to an invertible linear map is supplied by the library's construction of a linear equivalence on a function space,
+which needs no choice of basis.  Injectivity of the crossed-product map follows: if the map vanishes on an element,
+then all moments of its coefficient vector vanish, so that vector is zero, and since every group element is a
+tagged residue class the element itself vanishes.  This replaces the argument of the field case, which divides by
+a nonzero coefficient and therefore needs the algebra to be a field; over a ring the moment map supplies the same
+conclusion.  Five declarations are recorded: the action on a power of the root, the numbering equivalence, the
+moment form of the crossed-product map, the moment matrix together with the moment map, its invertibility and its
+evaluation formula, and injectivity.  Three practical points are recorded: the scalar action does not expose the
+shift map syntactically, so the goal has to be restated by definitional equality before the power and root rules
+apply; an invertible determinant is turned into an invertible linear map by the library's construction on function
+spaces, which avoids naming a basis; and reindexing a sum over the group is done along an equivalence built from a
+bijectivity proof, whose point values are definitional, with the surjectivity of the numbering obtained from the
+value of a residue class.  Surjectivity of the crossed-product map, and hence its bijectivity and the Galois
+criterion for the ring case, are not addressed here.
+
