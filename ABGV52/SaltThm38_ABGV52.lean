@@ -13283,6 +13283,87 @@ theorem kummer_isGaloisWithGroup_of_algebra (F : Type u) [Field F] (R : Type v) 
 
 end KummerSupply360
 
+/-! ### 4.144 🔴🔴🔴 **靶 1ʹ（有限性）第一件：不动环 —— 无条件形**（第 361 轮）
+—— **既有件 `SaltGeneric:5128` 的 `[FiniteDimensional K L]` 假设被去掉** ✓（**严格更强** ✓）
+
+**靶** ✓：**§4.2 靶 1ʹ（有限性（甲））之第一件** ✓ —— **不动环 `L^G = K`** ✓，**且不用任何有限性假设** ✗。
+
+**机制（初等，不借 Artin）** ✓：**款③ 的 `δ` 双射** ✓ ＋ **一条线性泛函** ✗：
+**(i)** **`im δ ⊆ {L^G-线性映射}`** ✓ —— **每个 `g` 固定 `L^G` 的元素** ✓（`g • (μ * x) = (g • μ) * (g • x) = μ * (g • x)` ✓），
+**由 `induction_on` 升为整体** ✓；
+**(ii)** **`im δ = End_K L`** ✓（**款③** ✓）⟹ **`End_{L^G}(L) = End_K(L)`** ✓ —— **即『`K`-线性 ⟺ `L^G`-线性』** ✓✅；
+**(iii)** **若 `a ∈ L^G \ K`** ✗：取 **`φ : L →ₗ[K] K` 使 `φ 1 = 1`** ✓（`Module.Projective.exists_dual_eq_one` ✓ —— **`K` 域 ⟹ `L` 投射** ✓），
+令 **`f := id − φ(·)·1`** ✓ ⟹ **`f 1 = 0`** ✓、**`f a = a − φ(a)·1 ≠ 0`** ✓（**否则 `a = algebraMap (φ a)`** ✗）；
+**(iv)** 由 **(ii)** `f` 是 `L^G`-线性 ✓ ⟹ **`f a = f (a · 1) = a · f 1 = 0`** ✗ —— **矛盾** ✓✅。
+
+**⚠ 与既有件的关系** ✓：**`SaltGeneric_ABGV52.lean:5128` 的 `fixedPoints_eq_of_isGaloisWithGroup`** ✓ **走 Artin ＋ 次数** ✓
+⟹ **带 `[FiniteDimensional K L]`** ✗；**本件走 `δ` 的像** ✓ ⟹ **无需有限性** ✓✅（**两者结论同形** ✓ ——
+**本件为严格更强版** ✓；**既有件保留在册** ✓，**不作废** ✗）。
+
+**⚠ 工艺（两条，入 §5.1）** ✓：**(#91)** **`show` 对 `let`-局部定义须带类型标注** ✗ ——
+`show (LinearMap.id - φ.smulRight (1:L)) 1 = 0` 报 **"Function expected … ?m.158"** ✗（**类型未定 ⟹ 不能作函数应用** ✗）⟹
+**正解 ＝ `show (… : L →ₗ[K] L) 1 = 0`** ✓；**(#92)** **`rw` 会改写被改写项内部的同名子项** ✗ ——
+目标 `algebraMap K L (φ a) = a` 上 `rw [h']`（`h' : a = φ a • 1` ✓）**连 `φ a` 里的 `a` 一起改写** ✗ ⟹
+**正解 ＝ 先作 `h2 : algebraMap K L (φ a) = φ a • 1`** ✓ **再 `h2.trans h'.symm`** ✓（**§5.1 #35 同族** ✓）。
+
+**🔴 不声称** ✗：**有限性（甲）未证** ✗（**本件只给不动环** ✓）；**`L` 域档的次数未证** ✗（**须把 `L^G` 与 `K` 的
+`finrank` 对齐** ✗ —— **下一手** ✓）；**二分未证** ✗；**源 `theorem-1-2(a)` 未无条件成立** ✗。 -/
+
+section FixedRing361
+
+/-- **🔴🔴 不动环（无条件形）** ✓✅：**`G` 的不动点全在 `K` 的像中** ✓ ——
+**不假设 `[FiniteDimensional K L]`** ✗（**较 `SaltGeneric:5128` 严格更强** ✓）。
+**机制** ✓：**`δ` 的像 ＝ `End_K L`** ✓（款③ ✓）**而 `im δ` 中的每个映射都是 `L^G`-线性的** ✓
+（**每个 `g` 固定 `L^G`** ✓）⟹ **`End_{L^G}(L) = End_K(L)`** ✓ ⟹ **一条 `K`-线性泛函造出的 `f` 既 `K`-线性
+（故 `L^G`-线性）又在 `1` 上为 `0`、在 `a` 上非零** ✓ —— **矛盾** ✗。 -/
+theorem fixed_mem_of_isGaloisWithGroup {K : Type u} [Field K] {L : Type v} [CommRing L]
+    [Nontrivial L] [Algebra K L] {G : Type w} [Group G] [Fintype G] [MulSemiringAction G L]
+    (hKL : ∀ (g : G) (r : K) (x : L), g • (r • x) = r • (g • x))
+    (hgal : BTier.IsGaloisWithGroup K L G hKL) :
+    ∀ x : L, (∀ g : G, g • x = x) → ∃ k : K, algebraMap K L k = x := by
+  intro a ha
+  by_contra hne
+  obtain ⟨-, -, hbij⟩ := hgal
+  obtain ⟨φ, hφ1⟩ := Module.Projective.exists_dual_eq_one K (one_ne_zero (α := L))
+  let f : L →ₗ[K] L := LinearMap.id - φ.smulRight (1 : L)
+  have hf1 : f 1 = 0 := by
+    show (LinearMap.id - φ.smulRight (1 : L) : L →ₗ[K] L) 1 = 0
+    rw [LinearMap.sub_apply, LinearMap.id_apply, LinearMap.smulRight_apply, hφ1, one_smul,
+      sub_self]
+  have hfa : f a ≠ 0 := by
+    intro h
+    apply hne
+    have h' : a = φ a • (1 : L) := by
+      have h2 : a - φ a • (1 : L) = 0 := h
+      exact sub_eq_zero.mp h2
+    have h3 : algebraMap K L (φ a) = φ a • (1 : L) := by
+      rw [Algebra.smul_def, mul_one]
+    exact ⟨φ a, h3.trans h'.symm⟩
+  obtain ⟨y, hy⟩ := hbij.2 f
+  have hAlin : ∀ y : SkewMonoidAlgebra L G, ∀ μ : L, (∀ g : G, g • μ = μ) → ∀ x : L,
+      BTier.deltaToEndRingHom hKL y (μ * x) = μ * BTier.deltaToEndRingHom hKL y x := by
+    intro y
+    induction y using SkewMonoidAlgebra.induction_on with
+    | zero => intro μ _ x; simp
+    | single g s =>
+      intro μ hμ x
+      show BTier.deltaToEndAdd hKL (SkewMonoidAlgebra.single g s) (μ * x)
+        = μ * BTier.deltaToEndAdd hKL (SkewMonoidAlgebra.single g s) x
+      rw [BTier.deltaToEndAdd_single]
+      show s * (g • (μ * x)) = μ * (s * (g • x))
+      rw [MulSemiringAction.smul_mul, hμ g]
+      ring
+    | add y z hy hz =>
+      intro μ hμ x
+      simp only [map_add, LinearMap.add_apply]
+      rw [hy μ hμ x, hz μ hμ x, mul_add]
+  have hlin := hAlin y a ha 1
+  rw [hy] at hlin
+  rw [mul_one, hf1, mul_zero] at hlin
+  exact hfa hlin
+
+end FixedRing361
+
 #print axioms kummerDatumSelf
 #print axioms units_map_coe_pow
 #print axioms units_map_algebraMap_coe_pow
@@ -13291,6 +13372,7 @@ end KummerSupply360
 #print axioms kummer_pow_fin_ne
 #print axioms isUnit_kummerCoeff_sub_of_primitiveRoot
 #print axioms kummer_isGaloisWithGroup_of_algebra
+#print axioms fixed_mem_of_isGaloisWithGroup
 
 
 end ABGV52

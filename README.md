@@ -2092,3 +2092,20 @@ homomorphism, so an explicit reflexivity step has to be added; and the value lem
 different names in this version of the library than the ones anticipated in the previous round, so the proof was
 arranged so that none of them is needed.  The tensor product statement, the dichotomy for the group of prime order,
 the realization statements and the source's remaining theorems are not addressed here.
+
+Round 361 proves the fixed point theorem for the criterion without any finiteness assumption, which is strictly
+stronger than the version already in the library.  The existing version derives the fixed points from the theorem of
+Artin on the cardinality of a group of automorphisms together with the degree of the extension, and therefore
+carries finite dimensionality as a hypothesis; the new proof reads the fixed points off the third clause of the
+criterion instead, which is the bijectivity of the trivial crossed product onto the endomorphism ring.  The image
+of that map consists of endomorphisms that are linear over the fixed subring, because every group element fixes
+that subring, and by the third clause this image is the whole endomorphism ring; hence linearity over the base field
+and linearity over the fixed subring are the same notion.  If an element were fixed by the group but outside the
+image of the field, a linear functional taking the value one at the unit would produce an endomorphism that
+vanishes at the unit and does not vanish at that element, so that it would be linear over the base field without
+being linear over the fixed subring, a contradiction.  One declaration is recorded.  Two practical points are
+recorded: a conversion command for a local definition has to carry the type ascription, since otherwise the term is
+not yet known to be a function and cannot be applied; and rewriting an equation whose left hand side occurs inside
+the very term one wants to rewrite rewrites those inner occurrences as well, so the transport has to be composed
+explicitly instead.  Finiteness over the base field, the identification of the degree with the order of the group,
+the dichotomy and the source's remaining theorems are not addressed here.
