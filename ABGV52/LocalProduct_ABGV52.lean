@@ -647,3 +647,24 @@ theorem deltaToEndAdd_single_apply {R S G : Type*} [CommRing R] [CommRing S] [Al
   rfl
 
 #print axioms deltaToEndAdd_single_apply
+
+
+/-! ## CHR 路线 · 条件层桥 **第 2 步的工具**（第 474 轮 ✓）：Δ 侧纯分量公式
+
+**所证** ✓：**Δ 在单点上的取值 ＝ 系数乘作用** ✓（**纯 Δ 形式** ✓，不再参照 `tensorToPi` ✓）：
+```lean
+deltaToEndAdd hRG (SkewMonoidAlgebra.single g s) t = s * (g • t)
+```
+**证明** ✓：`deltaToEndAdd_single` ✓ ＋ **`rfl`** ✓（`coeffToEnd s` 即「乘 `s`」✓、`actEnd hRG g` 即「作用 `g`」✓）。
+**⟹ 用途** ✓（§28 第 ③ 步 ✓）：**装配 `u := Σ_g (s_g ⊗ t_g)` 时的转项公式** ✓ ——
+把 Δ 侧 `single` 的系数与作用**逐项对到张量的两个因子** ✓。 -/
+
+/-- **桥 · 第 2 步工具** ✓：Δ 侧**纯分量公式** ✓。 -/
+theorem deltaToEndAdd_single_apply' {R S G : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • (r • t) = r • (g • t)) (g : G) (s t : S) :
+    ABGV52.BTier.deltaToEndAdd hRG (SkewMonoidAlgebra.single g s) t = s * (g • t) := by
+  rw [ABGV52.BTier.deltaToEndAdd_single]
+  rfl
+
+#print axioms deltaToEndAdd_single_apply'
