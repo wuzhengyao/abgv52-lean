@@ -2496,3 +2496,20 @@ The tower statement itself is not in this round.  What remains is the
 `IsScalarTower`, the assembly through `isFractionRing_of_isLocalization`, the
 isomorphism between the two fraction rings, and the composition with
 `mvPolynomial_tower`.
+
+## Round 379 (2026-10-15, appended)
+
+`towerAlgHom`: the ring homomorphism from `MvPolynomial (Fin n) (FractionRing A)`
+to `FractionRing (MvPolynomial (Fin n) A)`, built by `MvPolynomial.eval₂Hom` from
+the coefficient embedding of round 378, sending the variables to the images of
+the `X i`.
+
+The matching `IsScalarTower`, the third component, is not in this round.  The way
+to do it is recorded: it must not be stated as a separate theorem, since
+`IsScalarTower` is a class and passing the instance explicitly with `@` is
+rejected; it belongs inside the proof of the tower, as
+`letI := (towerAlgHom K k n).toAlgebra` followed by
+`haveI := IsScalarTower.of_algebraMap_eq (fun x => ...)`.
+
+One more API fact is recorded for the next attempt: the cases of
+`MvPolynomial.induction_on` are `C`, `add` and `mul_X`; there is no `mul`.

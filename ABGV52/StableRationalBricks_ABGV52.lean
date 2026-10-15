@@ -314,6 +314,24 @@ noncomputable def coeffMap (K : Type*) [Field K] (k n : ℕ) :
 
 #print axioms coeffMap
 
+/-- **塔构件 2** ✓：`S →+* T`（`S := MvPolynomial (Fin n) (RF K k)` ✓，`T := FractionRing (MvPolynomial (Fin n) A)` ✓，`A := MvPolynomial (Fin k) K` ✓）
+—— 用构件 1 ✓ 作系数映射、把变元送到 `T` 中的 `X i` ✓（`MvPolynomial.eval₂Hom` ✓）。 -/
+noncomputable def towerAlgHom (K : Type*) [Field K] (k n : ℕ) :
+    MvPolynomial (Fin n) (EM.rationalFunctionField K k) →+*
+      FractionRing (MvPolynomial (Fin n) (MvPolynomial (Fin k) K)) :=
+  MvPolynomial.eval₂Hom (coeffMap K k n)
+    (fun i => algebraMap (MvPolynomial (Fin n) (MvPolynomial (Fin k) K))
+      (FractionRing (MvPolynomial (Fin n) (MvPolynomial (Fin k) K)))
+      (MvPolynomial.X i))
+
+/-! **⚠ 塔构件 3（`IsScalarTower`）本轮未落** ✗ —— **改法（下一轮）** ✓：
+**不要**把它陈述为独立定理 ✗（`IsScalarTower` 是**类**，用 `@` 强传实例会报 "Function expected" ✗ ✗）；
+**应在塔证明内部**用 `letI := (towerAlgHom K k n).toAlgebra` ＋ `haveI : IsScalarTower … :=
+IsScalarTower.of_algebraMap_eq (fun x => by …)` ✓。
+**⚠ 已核 API** ✓：`MvPolynomial.induction_on` 的分支名是 **`C`／`add`／`mul_X`** ✓（**没有 `mul`** ✗）。 -/
+
+#print axioms towerAlgHom
+
 #print axioms exists_denom_mul_eq_algebraMap
 #print axioms C_mem_nonZeroDivisors
 #print axioms isUnit_algebraMap_fractionRing
