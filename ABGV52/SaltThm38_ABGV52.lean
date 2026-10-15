@@ -11760,4 +11760,83 @@ end SplitCaseAndDichotomy346
 #print axioms realization_Cp_of_dichotomy
 
 
+/-! ### 4.130 🔴🔴🔴 **条件形源 `theorem-1-2(a)`：二分假设下三款齐**（第 347 轮）
+—— **源 `theorem-1-2(a)` 的**条件形**落库** ✓✅（**唯一未证件 ＝ 二分命题** ⚠ —— [[hyp-cp-galois-dichotomy]] ✓）
+
+**靶** ✓：**源 `theorem-1-2(a)`** ✓（`raw/Saltman1982.tex:166–175` ✓）：**`R = F[x]`** ✓、**`S = R{y^p − y − x}`** ✓、
+**`G = C_p`** ✓ ⟹ **`S/R` 是 `F` 上 `C_p` 的 generic extension** ✓（**def-1-1 三款** ✓）。
+
+**落成两件** ✓✅：**(甲)** **`isGenericExtension_Cp_of_dichotomy`** ✓✅ —— **二分假设** ✓（§4.129 ✓）⟹
+**`IsGenericExtension F (Multiplicative (ZMod p)) (Polynomial F) (asCarrier (Polynomial F) p Polynomial.X) …`** ✓✅
+（**＝ 源 `theorem-1-2(a)` 的结论** ✓）；**(乙)** **`nonempty_genericExtensionWitness_Cp_of_dichotomy`** ✓✅ ——
+**二分假设 ⟹ `Nonempty (GenericExtensionWitness F (Multiplicative (ZMod p)))`** ✓✅（**`C_p` 档的见证形** ✓）。
+
+**机制（三款齐 ✓，全为本工程已落件）** ✓：**(a)** **`polynomial_isLocalizationAway F`** ✓（§4.113 ✓：
+`R = F[x]` 是 `Localization.Away 1` ✓）；**(b)** **`asCarrier_isGaloisWithGroup'`** ✓（§4.128 ✓ —— **任意交换环** ✓）；
+**(c)** **`realizationProperty_of_realizationPropertyExplicit`** ✓（`GenericExtension.lean:746` ✓ —— **显式形 ⟹ 旧形** ✓）
+∘ **`realization_Cp_of_dichotomy`** ✓（§4.129 ✓）⟹ **`RealizationProperty`** ✓ ⟹
+**`isGenericExtension_of_clauses`** ✓（§4.110 ✓）／**`genericExtensionWitness_of_clauses`** ✓（§4.110 ✓）收口 ✓✅。
+
+**⚠ 意义** ✓：**源 `theorem-1-2(a)` 的**全部内容**已形式化** ✓ —— **只差二分命题** ⚠（**登记假设** ✓，**未证** ✗）；
+即 **「源 `theorem-1-2(a)` ⟺ 二分」** ✓（**归纳到底** ✓）。
+
+**⚠ 工艺（两条，入 §5.1）** ✓：**(#60)** **`asCarrierMSA` 须注册为局部实例** ✗ ——
+**凡语句中出现 `g • t`（`asCarrier` 档 ✓）者，须 `attribute [local instance] asCarrierMSA`** ✓
+（**否则报 `MulSemiringAction` 合成失败** ✗）；**(#61)** **`asCarrier_hRG'`／`asCarrier_isGaloisWithGroup'` 的实参序** ✗：
+其 `R` **隐式** ✓、`a` **显式** ✓ ⟹ 须写 **`(R := Polynomial F) (p := p) Polynomial.X`** ✓
+（**写成 `(Polynomial F) (p := p)` 会把 `Polynomial F` 当作 `a` ⟹ 报 `CommRing Type`** ✗，**本轮实测** ✓）；
+且**语句含 `g • t` 时不能用 `(hp : p.Prime)`** ✗ ⟹ **须 `[Fact p.Prime]`** ✓（**§5.1 #27 同族** ✓）。
+
+**🔴 不声称** ✗：**不**声称**二分命题**为真 ✗（**登记假设** ✓，**真值未定** ⚠）；
+**不**声称源 `theorem-1-2(a)` **无条件**成立 ✗（**本件为条件形** ✓）；
+**不**声称源 `theorem-1-2(b)`（`n` 档 ✓）／`theorem-2-1`／`theorem-5-1` 已证 ✗；
+**不**声称 `RealizationProperty`（源形 ✓）**无条件**已证 ✗；**不**声称源 `proposition-0-6(a)`／`(c)` 已证 ✗。 -/
+
+section ConditionalTheorem12347
+
+attribute [local instance] asCarrierMSA
+
+open ABGV52.BTier
+
+/-- **(甲) 条件形 `IsGenericExtension`** ✓✅：**二分假设** ⟹ **源 `theorem-1-2(a)` 的结论** ✓。 -/
+theorem isGenericExtension_Cp_of_dichotomy {F : Type} [Field F] {p : ℕ} [Fact p.Prime]
+    [CharP F p] [NeZero p]
+    (hdich : ∀ (K : Type) [Field K] [Algebra F K]
+      (L : Type) [CommRing L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+      [MulSemiringAction (Multiplicative (ZMod p)) L]
+      (hKL : ∀ (g : Multiplicative (ZMod p)) (r : K) (t : L), g • (r • t) = r • (g • t)),
+      IsGaloisWithGroup K L (Multiplicative (ZMod p)) hKL →
+      (IsDomain L ∧ Module.Finite K L) ∨ Nonempty (L ≃ₐ[K] (ZMod p → K))) :
+    IsGenericExtension F (Multiplicative (ZMod p)) (Polynomial F)
+      (asCarrier (Polynomial F) p Polynomial.X) (asCarrier_hRG' (R := Polynomial F) (p := p) Polynomial.X) :=
+  isGenericExtension_of_clauses
+    (asCarrier_hRG' (R := Polynomial F) (p := p) Polynomial.X)
+    (polynomial_isLocalizationAway F)
+    (asCarrier_isGaloisWithGroup' (R := Polynomial F) (p := p) Polynomial.X)
+    (realizationProperty_of_realizationPropertyExplicit
+      (realization_Cp_of_dichotomy (F := F) (p := p) (Fact.out : p.Prime) hdich))
+
+/-- **(乙) 见证形** ✓✅：**二分假设 ⟹ `Nonempty (GenericExtensionWitness F C_p)`** ✓（**`C_p` 档的见证** ✓）。 -/
+theorem nonempty_genericExtensionWitness_Cp_of_dichotomy {F : Type} [Field F] {p : ℕ} [Fact p.Prime]
+    [CharP F p] [NeZero p]
+    (hdich : ∀ (K : Type) [Field K] [Algebra F K]
+      (L : Type) [CommRing L] [Algebra K L] [Algebra F L] [IsScalarTower F K L]
+      [MulSemiringAction (Multiplicative (ZMod p)) L]
+      (hKL : ∀ (g : Multiplicative (ZMod p)) (r : K) (t : L), g • (r • t) = r • (g • t)),
+      IsGaloisWithGroup K L (Multiplicative (ZMod p)) hKL →
+      (IsDomain L ∧ Module.Finite K L) ∨ Nonempty (L ≃ₐ[K] (ZMod p → K))) :
+    Nonempty (GenericExtensionWitness F (Multiplicative (ZMod p))) :=
+  ⟨genericExtensionWitness_of_clauses
+    (asCarrier_hRG' (R := Polynomial F) (p := p) Polynomial.X)
+    (polynomial_isLocalizationAway F)
+    (asCarrier_isGaloisWithGroup' (R := Polynomial F) (p := p) Polynomial.X)
+    (realizationProperty_of_realizationPropertyExplicit
+      (realization_Cp_of_dichotomy (F := F) (p := p) (Fact.out : p.Prime) hdich))⟩
+
+end ConditionalTheorem12347
+
+#print axioms isGenericExtension_Cp_of_dichotomy
+#print axioms nonempty_genericExtensionWitness_Cp_of_dichotomy
+
+
 end ABGV52

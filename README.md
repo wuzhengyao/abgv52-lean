@@ -1862,3 +1862,16 @@ the tensor product on the left, so its direction has to be reversed once before 
 twice gives the wrong composite.  The dichotomy itself is not proved here, and neither is the realization
 property, the generic extension, nor the source's theorems.
 
+Round 347 assembles the whole of the source's theorem on the generic extension for the cyclic group of prime order,
+conditionally on the dichotomy of the previous round.  The first clause, that the ring is a localization of a
+polynomial ring, holds for the polynomial ring itself; the second, that the carrier is Galois, holds over any
+commutative ring of the prime characteristic; and the third, the realization property, is obtained from the
+reduction of the previous round together with the equivalence between its explicit and its plain form.  The
+resulting statement is the source's theorem for the cyclic group of prime order, and the witness form of the
+generic extension follows from the same three clauses.  Two declarations are recorded: the generic extension for
+the carrier over the polynomial ring, and the nonemptiness of the witness, both under the dichotomy.  Two practical
+points are recorded: the action on the carrier has to be registered as a local instance whenever a scalar action
+appears in a statement, and the hypotheses of the criterion for this carrier are best given as a type class rather
+than as an explicit proof, since the action on the carrier enters the elaboration of the statement itself.  The
+dichotomy is not proved here, and hence neither is the source's theorem unconditionally.
+
