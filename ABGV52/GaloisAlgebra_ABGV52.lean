@@ -2720,4 +2720,61 @@ theorem moduleFinite_of_field_galois [Fintype G]
 
 end Round366
 
+/-! ## 第 369 轮（甲）：把**桥**锐化为**一个具名假设** ＋ 已证接线（2026-10-15）
+
+**第 364 轮的定性** ✓：我方 `IsGaloisWithGroup` 的第三款是 **`δ` 到 `End_R(S)` 的双射**，
+而 **CHR 原本的定义**是**张量形 `Δ : S ⊗_R S → ∏_G S`** 的双射 ✓；两者**单位元不同**（`id` vs 正交函数 ✓）
+⟹ 由前者推后者的**自由作用条件 `hG`** 是 **CHR 两种定义等价**的实质内容 ✓ —— **是一个定理，不是形式改写** ✗。
+**第 366 轮的域情形** ✓ 已把它解决（域上忠实作用即得 `hG` ✓）；**一般交换环情形** ✗ 未解（`g•a - a` 可全为零因子 ✗）。
+
+**本轮的处置** ✓（**B 档纪律** ✗：外部理论**显式化为具名假设** ✓，**不假称已证** ✗）：
+把"桥"提为**具名、类型锁定、有出处**的假设 `DeltaGaloisFreenessHyp` ✓，
+并**证出**由它出发的全部接线 ✓ —— 于是 **(甲) 的残余 ＝ 这一个假设** ✓（其余皆已机检 ✓）。
+**出处** ✓：Chase–Harrison–Rosenberg（1965）两种 Galois 扩展定义的等价；本仓移植件
+`TauCetiCHR_ABGV52.lean` 提供**张量形侧**的全部结论 ✓（`moduleFinite`／`projective` ✓）。
+**⚠ 不声称** ✗：本假设**未被证明** ✓，也**未找到反例** ⚠；其"真值"未定 ⟹ 一切下游结论**条件于它** ✓。 -/
+
+section Round369
+
+variable {K L : Type*} [Field K] [CommRing L] [Algebra K L]
+variable {G : Type*} [Group G] [Fintype G] [MulSemiringAction G L]
+
+/-- **桥假设（具名）** ✓：本工程 `IsGaloisWithGroup`（`δ` 到 `End` 的双射款）
+⟹ **CHR 的自由作用条件 `hG`** ✓（＝张量形 `Δ` 的满射性 ✓，见移植件 `tensorToPi_surjective_iff` ✓）。 -/
+def DeltaGaloisFreenessHyp : Prop :=
+  ∀ (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+    IsGaloisWithGroup K L G hKL →
+      ∀ g : G, g ≠ 1 → Ideal.span (Set.range fun a : L => g • a - a) = ⊤
+
+/-- **类型锁定** ✓：外形一旦改动，本 `Iff.rfl` 立即编译失败 ✓。 -/
+theorem deltaGaloisFreenessHyp_typeLock :
+    (DeltaGaloisFreenessHyp (K := K) (L := L) (G := G)) =
+      (∀ (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t)),
+        IsGaloisWithGroup K L G hKL →
+          ∀ g : G, g ≠ 1 → Ideal.span (Set.range fun a : L => g • a - a) = ⊤) := rfl
+
+/-- **(甲) 条件化** ✓：桥假设 ＋ `[Algebra.IsInvariant K L G]` ⟹ **`Module.Finite K L`** ✓
+（经移植件 `moduleFinite_of_freeness` ✓）。 -/
+theorem moduleFinite_of_deltaGaloisFreenessHyp [SMulCommClass G K L]
+    (hyp : DeltaGaloisFreenessHyp (K := K) (L := L) (G := G))
+    [Algebra.IsInvariant K L G]
+    (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hgal : IsGaloisWithGroup K L G hKL) : Module.Finite K L :=
+  moduleFinite_of_freeness (hyp hKL hgal)
+
+/-- **论文 `proposition-0-2(a)`（投射款）条件化** ✓：桥假设 ＋ 不变量环 ＋ `K → L` 单射
+⟹ **`Module.Projective K L`** ✓。 -/
+theorem projective_of_deltaGaloisFreenessHyp [SMulCommClass G K L]
+    (hyp : DeltaGaloisFreenessHyp (K := K) (L := L) (G := G))
+    [Algebra.IsInvariant K L G] [FaithfulSMul K L]
+    (hKL : ∀ (g : G) (r : K) (t : L), g • (r • t) = r • (g • t))
+    (hgal : IsGaloisWithGroup K L G hKL) : Module.Projective K L :=
+  projective_of_freeness (hyp hKL hgal)
+
+#print axioms deltaGaloisFreenessHyp_typeLock
+#print axioms moduleFinite_of_deltaGaloisFreenessHyp
+#print axioms projective_of_deltaGaloisFreenessHyp
+
+end Round369
+
 end ABGV52.BTier

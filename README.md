@@ -2294,3 +2294,25 @@ pretransitive` of round 367 to give index set `1` or `p`.
 
 The assembly itself is not in this round: it needs the factor permutation induced
 by the action to be tied to `localProductEquiv` of round 365.
+
+## Round 369 (2026-10-15, appended)
+
+The finiteness half is reduced to a single named hypothesis, with all the wiring
+around it proved.
+
+`DeltaGaloisFreenessHyp` is the bridge: it says that this development's
+`IsGaloisWithGroup`, whose third clause is the bijectivity of `deltaToEndRingHom`
+into `Module.End R S`, implies the free-action condition used by the classical
+theory, equivalently the surjectivity of `S ⊗[R] S → (G → S)`.  It is named,
+type-locked, and carries its source: the equivalence of the two definitions of a
+Galois extension is the substance of Chase--Harrison--Rosenberg (1965), and it is
+a theorem rather than a rewriting.  The field case is proved in this development
+(round 366); the general commutative case is not, the elements `g • a - a` being
+allowed to be zero divisors there.
+
+`moduleFinite_of_deltaGaloisFreenessHyp` and
+`projective_of_deltaGaloisFreenessHyp` then derive, from that hypothesis and
+`Algebra.IsInvariant K L G`, that `L` is finite and projective over `K`.  The
+latter is the paper's proposition-0-2(a).  Nothing here is claimed to be proved
+unconditionally: the hypothesis is recorded, and every conclusion that uses it is
+conditional on it.
