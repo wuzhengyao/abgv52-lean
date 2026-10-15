@@ -2402,3 +2402,17 @@ still the dot notation `p.coeff v`, as already corrected in round 364; there is
 no `coeff_mul_C`, so one commutes and uses `coeff_C_mul`.  A further trap: over a
 domain `simpa` will over-simplify `x * a = 0` into the disjunction
 `a = 0 ∨ x = 0`, so the goal has to be fixed by an ascription before `exact`.
+
+## Round 374 (2026-10-15, appended)
+
+`exists_denom_mul_eq_algebraMap`: every element of the fraction ring, multiplied
+by a suitable non-zero divisor, lies in the image of the base.  This is the
+coefficient-level statement of clearing denominators, obtained from
+`IsLocalization.surj`, whose shape is
+`exists x : R x M, z * algebraMap R S x.2 = algebraMap R S x.1`.
+
+The polynomial-level version, which is the substance of the surjectivity clause
+of the pending localisation statement, is *not* in this round: the draft ran into
+ten API errors, among them that `Finset.prod_mem` does not exist.  The draft was
+withdrawn and its proof plan, with the offending names, is kept in the file as a
+block comment; nothing is claimed to be proved there.

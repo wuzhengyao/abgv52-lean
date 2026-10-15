@@ -185,6 +185,25 @@ theorem isUnit_algebraMap_fractionRing {A : Type*} [CommRing A] [IsDomain A] {a 
     (ha : a ∈ nonZeroDivisors A) : IsUnit (algebraMap A (FractionRing A) a) :=
   IsLocalization.map_units (FractionRing A) ⟨a, ha⟩
 
+/-- **砖①零件 3（系数层清分母）** ✓：`FractionRing A` 的每个元素乘以某个**非零因子**后落在 `A` 的像里 ✓
+（`c = a / s` ✓，`IsLocalization.surj` ✓）。 -/
+theorem exists_denom_mul_eq_algebraMap {A : Type*} [CommRing A] [IsDomain A]
+    (c : FractionRing A) :
+    ∃ (s : A) (_ : s ∈ nonZeroDivisors A) (a : A),
+      c * algebraMap A (FractionRing A) s = algebraMap A (FractionRing A) a := by
+  obtain ⟨⟨a, ⟨s, hs⟩⟩, h⟩ := IsLocalization.surj (nonZeroDivisors A) c
+  exact ⟨s, hs, a, h⟩
+
+/-! **砖①零件 4（多项式层清分母）—— 计划（第 374 轮未落 ✗）**
+
+**目标** ✓：`∀ p : MvPolynomial σ (FractionRing A), ∃ (s ∈ nonZeroDivisors A) (q : MvPolynomial σ A),
+p * C (algebraMap s) = MvPolynomial.map (algebraMap A _) q` ✓（＝ `IsLocalization` 的 **`surj'` 实质** ✓）。
+**证法** ✓：对每个系数用零件 3（`exists_denom_mul_eq_algebraMap` ✓）取分母 ✓，取**支集上有限积** `s := Π_{v∈support} s_v` ✓，
+`q := Σ_{v∈support} monomial v (a v * Π_{w∈support.erase v} s w)` ✓，最后 `ext` ＋ 逐系数验证 ✓。
+**⚠ 本轮实测的 API 缺件/坑** ✗：`Finset.prod_mem` **不存在** ✗（须查非零因子子幺半群的积封闭引理名 ✓）；
+`choose` 配合 `refine` 的**依赖类型**须显式给 ✓；`coeff_monomial` 的 `if` 形态须注意 ✓（`if_neg` 已弃用 ⟹ `ite_eq_right` ✓，见第 362 轮 ✓）。
+**⚠ 不声称** ✗：本轮**未落**该件 ✓；零件 1–3 ✓ 已落。 -/
+#print axioms exists_denom_mul_eq_algebraMap
 #print axioms C_mem_nonZeroDivisors
 #print axioms isUnit_algebraMap_fractionRing
 #print axioms mvPolynomial_tower
