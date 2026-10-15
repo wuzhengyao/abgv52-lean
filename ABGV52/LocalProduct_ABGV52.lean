@@ -433,3 +433,40 @@ theorem indicator_ne_zero {ι K : Type*} [DecidableEq ι] [MulZeroOneClass K] [N
 
 #print axioms isIdempotentElem_indicator
 #print axioms indicator_ne_zero
+
+
+/-! ## (丙) 传递性链**最后一环**：轨道指示函数的 `G`-不变性 ✓（第 410 轮）
+
+**两件** ✓：**轨道成员关系 `iff`** ✓（第 390 轮 `smul_mem_orbit` ✓ ＋ `inv_smul_smul` ✓）
+＋ **轨道指示函数 `G`-不变性** ✓（沿第 403 轮 `smul g x = fun i => x (g⁻¹ • i)` ✓ 点式化简 ✓）。
+**⚠ 四条工艺** ✓：① 陈述层的 `if` 须 **`[DecidablePred (· ∈ orbit G i)]`** 参数 ✓；
+② `if` 条件下 `rw`／`simp only` 报 "motive is not type correct" ✗；③ 正确做法 = **`by_cases`** ＋ `simp [h, h2]` ✓；
+④ **`iff` 的群参数须取 `g⁻¹`** ✗（要的是 `g⁻¹ • k ↔ k` ✓，不是 `g • k ↔ k` ✗）。
+**用途** ✓：接指示幂等／非零（408 ✓）⟹ 引擎适配层（407 ✓）⟹ 指示函数 ＝ 1 ⟹ 每点在轨道内 ⟹
+第 400 轮接口 ⟹ 第 389 轮接口 ⟹ **传递性** ✓。 -/
+
+/-- **(丙) 轨道成员关系 `iff`** ✓：轨道的 `G`-不变性 ✓。 -/
+theorem smul_mem_orbit_iff {G ι : Type*} [Group G] [MulAction G ι] (g : G) (i j : ι) :
+    g • j ∈ MulAction.orbit G i ↔ j ∈ MulAction.orbit G i := by
+  constructor
+  · intro h
+    have := smul_mem_orbit g⁻¹ h
+    rwa [inv_smul_smul] at this
+  · exact smul_mem_orbit g
+
+/-- **(丙) 轨道指示函数 `G`-不变性** ✓。 -/
+theorem smul_orbit_indicator {G ι K : Type*} [Group G] [MulAction G ι] [Field K] (i : ι) (g : G)
+    [DecidablePred (· ∈ MulAction.orbit G i)] :
+    g • (fun k : ι => if k ∈ MulAction.orbit G i then (1 : K) else 0)
+      = fun k : ι => if k ∈ MulAction.orbit G i then (1 : K) else 0 := by
+  funext k
+  show (if (g⁻¹ • k) ∈ MulAction.orbit G i then (1 : K) else 0)
+      = (if k ∈ MulAction.orbit G i then (1 : K) else 0)
+  by_cases h : (g⁻¹ • k) ∈ MulAction.orbit G i
+  · have h2 : k ∈ MulAction.orbit G i := (smul_mem_orbit_iff g⁻¹ i k).mp h
+    simp [h, h2]
+  · have h2 : k ∉ MulAction.orbit G i := fun hk => h ((smul_mem_orbit_iff g⁻¹ i k).mpr hk)
+    simp [h, h2]
+
+#print axioms smul_mem_orbit_iff
+#print axioms smul_orbit_indicator

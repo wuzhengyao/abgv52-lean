@@ -2719,3 +2719,17 @@ avoids a reindexing argument: `isIdempotentElem_indicator` is pointwise, and
 What remains for transitivity is the invariance of the orbit indicator under the
 action, which uses `smul_mem_orbit` of round 390, and then the adaptor of round 407
 and the interfaces of rounds 400 and 389.
+
+## Round 410 (2026-10-15, appended)
+
+`smul_mem_orbit_iff` and `smul_orbit_indicator`: an orbit is invariant under the
+action, and so is the indicator of an orbit.  This is the last link of the
+transitivity chain: with the idempotency and non-vanishing of indicators (round
+408) the engine adaptor (round 407) makes the orbit indicator equal to one, so
+every point lies in the orbit, and the interfaces of rounds 400 and 389 give
+transitivity.
+
+Four points of craft: an `if` in a *statement* needs a `DecidablePred` argument;
+rewriting under an `if` condition fails with "motive is not type correct" both for
+`rw` and for `simp only`; the way through is `by_cases` together with `simp`; and
+the group parameter of the orbit iff must be `g⁻¹`, not `g`.
