@@ -2708,3 +2708,14 @@ through, because the engine takes `K` and `L` explicitly, and because
 With the orbit indicator idempotent (round 399), invariant (round 390), and this
 adaptor, the indicator is 1, so every point lies in the orbit, and rounds 400 and
 389 give transitivity.
+
+## Round 408 (2026-10-15, appended)
+
+Two lemmas on set indicators, taking the indicator as the function
+`fun j => if j ∈ s then 1 else 0` rather than as a finite sum over the orbit.  This
+avoids a reindexing argument: `isIdempotentElem_indicator` is pointwise, and
+`indicator_ne_zero` evaluates at a point of the set.
+
+What remains for transitivity is the invariance of the orbit indicator under the
+action, which uses `smul_mem_orbit` of round 390, and then the adaptor of round 407
+and the interfaces of rounds 400 and 389.

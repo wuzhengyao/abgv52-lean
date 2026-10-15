@@ -407,3 +407,29 @@ theorem fixed_idempotent_fun_eq_zero_or_one {G ι K : Type*} [Group G] [MulActio
   ABGV52.LocalProduct.fixed_idempotent_eq_zero_or_one K (ι → K) hfix e he hge
 
 #print axioms fixed_idempotent_fun_eq_zero_or_one
+
+
+/-! ## (丙) 传递性链：**指示函数路线**（第 408 轮 ✓，比 `Finset` 和式更简 ✓）
+
+**思路** ✓：把**轨道指示函数**写成 `fun j => if j ∈ orbit G i then 1 else 0` ✓ ——
+避开 `Finset` 重指标论证 ✗，改用**点式**性质 ✓（与第 399 轮同一模式 ✓）。
+**两件基础** ✓：指示幂等元 ✓ ＋ 指示非零 ✓（本轮）；**待做** ✗：`G`-不变性（用第 390 轮 `smul_mem_orbit` ✓）
+⟹ 引擎（407 ✓）⟹ 指示函数 ＝ 1 ⟹ 每点在轨道内 ⟹ 第 400 轮接口 ⟹ 第 389 轮接口 ⟹ **传递性** ✓。 -/
+
+/-- **(丙) 指示幂等元** ✓：集合指示函数（取值 0／1 ✓）是幂等元 ✓。 -/
+theorem isIdempotentElem_indicator {ι K : Type*} [DecidableEq ι] [MulZeroOneClass K] (s : Set ι)
+    [DecidablePred (· ∈ s)] : IsIdempotentElem (fun j : ι => if j ∈ s then (1 : K) else 0) := by
+  rw [IsIdempotentElem]
+  funext j
+  by_cases hj : j ∈ s <;> simp [Pi.mul_apply, hj]
+
+/-- **(丙) 指示非零** ✓：非空集合的指示函数**不是零函数** ✓（在集合内一点取值为 1 ✓）。 -/
+theorem indicator_ne_zero {ι K : Type*} [DecidableEq ι] [MulZeroOneClass K] [Nontrivial K]
+    {s : Set ι} [DecidablePred (· ∈ s)] {i : ι} (hi : i ∈ s) :
+    (fun j : ι => if j ∈ s then (1 : K) else 0) ≠ 0 := by
+  intro h
+  have := congrFun h i
+  simp [hi] at this
+
+#print axioms isIdempotentElem_indicator
+#print axioms indicator_ne_zero
