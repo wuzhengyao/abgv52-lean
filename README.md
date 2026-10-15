@@ -2153,3 +2153,26 @@ classical proof that a Galois extension of rings is a finitely generated
 projective module.  The finiteness statement itself is *not* proved in this
 round: what is still missing is the step that turns the coefficients into
 elements of the fixed ring.
+
+## Round 363 (2026-10-15, appended)
+
+`ABGV52/TauCetiCHR_ABGV52.lean` (new, 388 lines) is a verbatim port of the
+Chase--Harrison--Rosenberg Theorem 1.3 from the TauCeti project
+(https://github.com/TauCetiProject/TauCeti, Apache-2.0), namely
+`TauCeti/RingTheory/Invariant/Free.lean` together with `TauCeti.smul_sum_smul`
+from `TauCeti/RingTheory/Invariant/Basic.lean`.  The port holds the original
+Apache-2.0 header; the file is otherwise unchanged.
+
+It provides `tensorToPi` (the map `A ⊗[R] A → (G → A)` of the theorem), the
+criterion `tensorToPi_surjective_iff` for free actions, `tensorToPi_bijective`,
+and — under a free action with invariant ring `R` — `moduleFinite`,
+`projective`, `faithfullyFlat`, `formallyUnramified` and `etale`.  Of these,
+`projective` supplies the paper's `proposition-0-2(a)`, and `moduleFinite` is
+the statement to be reused for the finiteness half of the dichotomy.
+
+The port compiles unchanged because the TauCeti pin and this development's
+upgraded pin are of the same generation; every declaration of the new file
+depends only on `propext`, `Classical.choice` and `Quot.sound`.  What is *not*
+in this file is the bridge from this development's `IsGaloisWithGroup` (the
+bijectivity of `deltaToEndRingHom`) to the free-action hypothesis `hG` that the
+ported statements take; that bridge is the next round's target.
