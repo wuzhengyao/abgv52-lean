@@ -141,6 +141,44 @@ theorem fixed_idempotent_eq_zero_or_one [FaithfulSMul K L]
 #print axioms card_orbit_eq_one_or_eq_prime
 #print axioms card_eq_one_or_eq_prime_of_pretransitive
 
+
+/-! ## (丙) 代数部分：**置换作用下的不动函数 ＝ 对角**（第 381 轮）
+
+**所攻问句** ✓：分裂支 `L ≅ K^p` 上 `G` 按**坐标置换**作用 —— 其**不动元**是什么？
+**答案** ✓：若置换作用在指标集上**传递** ✓，则不动函数**恰是常函数**（即"对角" ✓），
+故不动子代数 `≅ K` ✓ —— 这正是「`L ≅ K^p` ⟹ `L^G ≅ K`」所需的计算 ✓。
+
+**⚠ 不声称** ✗：本节**只给该计算本身** ✓；把它接到 (乙) 的 `localProductEquiv`（**因子置换接线** ✗）
+与 `C_p` 的轨道引理（第 367 轮 ✓）、幂等元引擎（第 368 轮 ✓）**仍是下一段** ✗。 -/
+
+section PermFixed
+
+variable {K ι G : Type*} [Group G]
+
+/-- **(丙) 代数 ①（传递 ⟹ 坐标相等）** ✓：传递置换作用下，轨道上各坐标相等 ✓
+（即 `x (σ g i) = x i` 沿整个轨道传播 ✓）。 -/
+theorem eq_of_perm_transitive (σ : G →* Equiv.Perm ι)
+    (htrans : ∀ i j : ι, ∃ g : G, σ g i = j)
+    (x : ι → K) (hx : ∀ (g : G) (i : ι), x (σ g i) = x i) :
+    ∀ i j : ι, x i = x j := by
+  intro i j
+  obtain ⟨g, hg⟩ := htrans i j
+  rw [← hg]
+  exact (hx g i).symm
+
+/-- **(丙) 代数 ②（不动 ⟹ 对角）** ✓：传递置换作用下的不动函数**是常函数** ✓。 -/
+theorem eq_const_of_perm_fixed [Nonempty ι] (σ : G →* Equiv.Perm ι)
+    (htrans : ∀ i j : ι, ∃ g : G, σ g i = j)
+    (x : ι → K) (hx : ∀ (g : G) (i : ι), x (σ g i) = x i) :
+    ∃ c : K, ∀ i : ι, x i = c :=
+  ⟨x (Classical.arbitrary ι), fun i =>
+    eq_of_perm_transitive σ htrans x hx i (Classical.arbitrary ι)⟩
+
+#print axioms eq_of_perm_transitive
+#print axioms eq_const_of_perm_fixed
+
+end PermFixed
+
 end CpAction
 
 end ABGV52.LocalProduct

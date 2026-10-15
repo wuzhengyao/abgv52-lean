@@ -2513,3 +2513,19 @@ rejected; it belongs inside the proof of the tower, as
 
 One more API fact is recorded for the next attempt: the cases of
 `MvPolynomial.induction_on` are `C`, `add` and `mul_X`; there is no `mul`.
+
+## Round 381 (2026-10-15, appended)
+
+Two computations for the algebraic part of the third dichotomy input, on the
+split side where `L` is a product of copies of `K` permuted by `G`.
+
+`eq_of_perm_transitive`: under a transitive permutation action, coordinates
+along an orbit are equal.  `eq_const_of_perm_fixed`: consequently a fixed
+function is constant, that is diagonal.  This is the computation behind
+`L ≅ K^p ⟹ L^G ≅ K`.
+
+Togther with the orbit cardinality lemma of round 367 (orbits of size 1 or p) and
+the idempotent lemma of round 368 (a fixed idempotent is 0 or 1), the
+mathematical content of the third input is now in place.  What is not in place is
+the wiring: the action of `G` on the set of factors has to be constructed from
+`localProductEquiv` of round 365, and the domain case still has to be argued.
