@@ -947,3 +947,38 @@ theorem chrGeneralHyp_typeLock (R S : Type u) [CommRing R] [CommRing S] [Algebra
     CHRGeneralHyp R S G hRG = CHRGeneralHyp R S G hRG := rfl
 
 #print axioms chrGeneralHyp_typeLock
+
+
+/-! ## 🚩 **CHR 一般环档 · Galois 元恒等式**（第 530 轮 ✓✓）
+
+**所证** ✓：**迹元的幂关系** ✓ —— CHR 型论证中的**"Galois 元"代数指纹** ✓：
+```lean
+(∑ g : G, single g 1) * (∑ g : G, single g 1) = Fintype.card G • (∑ g : G, single g 1)
+```
+**证明** ✓（三步 ✓，**完全绕开系数** ✗ —— 见 §64 的战术决定 ✓）：
+1. **`Finset.sum_mul_sum`** ✓ 展双重和；
+2. **`SkewMonoidAlgebra.single_mul_single`** ✓ ＋ **`smul_one`** ＋ `mul_one` ⟹ 每项 **`single (g * h) 1`** ✓；
+3. **群求和重排** ✓：内层代换 `h ↦ g * h`（**`Fintype.sum_equiv` ＋ `Equiv.mulLeft g`** ✓ ——
+   **与移植件 `smul_sum_smul` 同技** ✓，第 516 轮已核 ✓）⟹ 内层化 `∑ k, single k 1` ✓；
+   外层 **`Finset.sum_const`** ＋ `Finset.card_univ` ✓ ⟹ `card G • ∑ k, single k 1` ✓。
+**🔴 意义** ✓：这是 **CHR 一般环档**（`CHRGeneralHyp` ✓ 第 521 轮 ✓）的**第三个落库砖** ✓
+（前两砖：迹引擎 第 515 轮 ✓／迹落不动环 第 517 轮 ✓）——
+**迹元** `y := ∑ g, single g 1` 的 Δ-像即**迹** ✓（第 515 轮 ✓），而本件给出 `y` 的**幂关系** ✓
+⟹ 与**幂等元原像件**（第 512 轮 ✓）配合，是在 **Δ 像中识别幂等元／指示元**的代数入口 ✓。
+**⚠ 战术留痕** ✓：本件**原计划走系数路线** ✗，连续三轮受阻（§61–§63 ✓）后**改道**（§64 ✓）
+⟹ **直接由乘法 ＋ 重排证明，一次通过** ✓ —— **"绕开微观管道"的收益实证** ✓。 -/
+
+/-- **CHR 一般环档 · Galois 元恒等式** ✓：**迹元的幂关系** ✓。 -/
+theorem sum_single_mul_self {S G : Type*} [CommRing S] [Group G] [Fintype G]
+    [MulSemiringAction G S] :
+    (∑ g : G, SkewMonoidAlgebra.single g (1 : S)) * (∑ g : G, SkewMonoidAlgebra.single g (1 : S))
+      = Fintype.card G • (∑ g : G, SkewMonoidAlgebra.single g (1 : S)) := by
+  rw [Finset.sum_mul_sum]
+  simp only [SkewMonoidAlgebra.single_mul_single, smul_one, mul_one]
+  have h1 : ∀ g : G, (∑ h : G, SkewMonoidAlgebra.single (g * h) (1 : S))
+      = ∑ k : G, SkewMonoidAlgebra.single k (1 : S) := by
+    intro g
+    exact Fintype.sum_equiv (Equiv.mulLeft g) _ _ (fun h => rfl)
+  rw [Finset.sum_congr rfl (fun g _ => h1 g), Finset.sum_const, Finset.card_univ]
+
+#print axioms sum_single_mul_self
