@@ -781,3 +781,23 @@ theorem galoisFixedRingHyp_pi_of_perm {K : Type u} {ι : Type u} {G : Type*}
   rfl
 
 #print axioms galoisFixedRingHyp_pi_of_perm
+
+
+/-! ## **L1 非空性见证**（第 501 轮 ✓）：`GaloisFixedRingHyp` **不是空真**
+
+**所证** ✓：**平凡扩张**（`S = R` ✓）上具名件**成立** ✓：`GaloisFixedRingHyp K K G hRG` ✓
+（**每个 `x` 都是 `algebraMap K K x`** ✓ ⟹ 取 `r := x` ✓）。
+**⟹ 意义** ✓（**L1 纪律** ✓）：**假设类非空** ✓ —— 即该具名件**不被空类平凡满足** ✗，
+其内容（不动环 ＝ 基环 ✓）是**实质条件** ✓；与**反例对照**（`galoisFixedSubringHyp_refuted` ✓，
+去掉 Galois 前提后为假 ✓）合起来给出**双向界定** ✓。
+**⚠ 工艺** ✓：证明**三行** ✓（`intro x _; exact ⟨x, rfl⟩` ✓ —— `algebraMap K K` 即恒等 ✓）。 -/
+
+/-- **L1 非空性见证** ✓：平凡扩张上具名件成立 ✓。 -/
+theorem galoisFixedRingHyp_self {K G : Type*} [CommRing K] [Group G] [Fintype G]
+    [MulSemiringAction G K]
+    (hRG : ∀ (g : G) (r : K) (t : K), g • r • t = r • g • t) :
+    GaloisFixedRingHyp K K G hRG := by
+  intro x _
+  exact ⟨x, rfl⟩
+
+#print axioms galoisFixedRingHyp_self
