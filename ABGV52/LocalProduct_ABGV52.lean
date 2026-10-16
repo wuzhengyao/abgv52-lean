@@ -690,3 +690,55 @@ theorem SkewMonoidAlgebra_coeff_single {S G : Type*} [CommRing S] [DecidableEq G
   by_cases h : g' = g <;> simp [h, Finsupp.single_eq_same, Finsupp.single_eq_of_ne]
 
 #print axioms SkewMonoidAlgebra_coeff_single
+
+
+/-! ## 🔴🔴 **CHR 不动环定理 · 域情形**（第 491 轮 ✓✓✓）：`GaloisFixedRingHyp` **无条件成立**
+
+**所证** ✓：**域上**，由本仓 Δ 判据（`IsGaloisWithGroup` ✓）**直接推出**「**不动域 ＝ 基域**」的像形式 ✓ ——
+即 **CHR 1965 固定环定理的域情形** ✓（**本仓无条件件** ✓）。
+
+**机制（五步 ✓，全用现成件 ✓）**：
+1. **ⓐ 维数** ✓：`finrank K L = Fintype.card G`（**本仓第 184 轮** `finrank_eq_card_of_isGaloisWithGroup` ✓，由 Δ 双射 ✓）；
+2. **ⓑ Artin** ✓：`finrank (E^G) L = Fintype.card G`（`FixedPoints.finrank_eq_card` ✓，
+   其前提 **`FaithfulSMul G L`** 正是 Δ 判据**第一子句** ✓）；
+3. **ⓒ 塔** ✓：`finrank K (E^G) * finrank (E^G) L = finrank K L`（`Module.finrank_mul_finrank` ✓）；
+4. **ⓓ 算术** ✓：代入 ⟹ `finrank K (E^G) * card G = card G` ⟹ **`finrank K (E^G) = 1`** ✓；
+5. **ⓔ 收口** ✓：`IntermediateField.finrank_eq_one_iff` ✓ 给 `E^G = ⊥` ✓，
+   再由 `FixedPoints.mem_intermediateField_iff` ✓ ＋ `IntermediateField.mem_bot` ✓ 化为**像形式** ✓。
+
+**⚠ 两条工艺（本轮实证 ✓）**：
+① **`FixedPoints` 两形须具名绑定** ✗ —— 直写 `↥(FixedPoints.intermediateField G)` 报 **`stuck`** ✗
+（其 `F` 参数成元变量 ✓）；具名后 **两形 carrier `rfl` 相等** ✓ ⟹ Artin（`subfield` 形 ✓）的结论**可直接搬运**到塔（`intermediateField` 形 ✓）。
+② **算术步须钉实例** ✗ —— `Nat.eq_of_mul_eq_mul_right (Fintype.card_pos) …` 报**误导性** `Type mismatch`
+（报文含元变量 `Fintype.card ?m` ✓ ⟹ **实例未定** ✗ 而非类型不匹配 ✗）；
+须写 **`(show 0 < Fintype.card G from Fintype.card_pos)`** ✓ ＋ **逐字同形** `(by rw [hmul, Nat.one_mul])` ✓。
+
+**⚠ 定位** ✓：本件含**前提 `Module.Finite K L`** ✓ —— 在 ABGV-5.2 二分的左支中该条正是**待证结论** ⚠
+⟹ 本件立为**域情形的独立成果** ✓；其在二分内的**用法另议** ✗（**不声称**已消去二分 ✗）。 -/
+
+/-- **CHR 不动环定理 · 域情形** ✓：Δ 判据 ⟹ **不动域 ＝ 基域**（像形式 ✓）。 -/
+theorem galoisFixedRingHyp_of_field {K L G : Type} [Field K] [Field L] [Algebra K L]
+    [Group G] [Fintype G] [MulSemiringAction G L] [SMulCommClass G K L] [FaithfulSMul G L]
+    [Module.Finite K L]
+    (hRG : ∀ (g : G) (r : K) (t : L), g • r • t = r • g • t)
+    (hgal : ABGV52.BTier.IsGaloisWithGroup K L G hRG) :
+    GaloisFixedRingHyp K L G hRG := by
+  let E' : IntermediateField K L := FixedPoints.intermediateField G
+  let E'' : Subfield L := FixedPoints.subfield G L
+  have hrank : Module.finrank K L = Fintype.card G :=
+    ABGV52.BTier.finrank_eq_card_of_isGaloisWithGroup hRG hgal
+  have hartin : Module.finrank ↥E'' L = Fintype.card G := FixedPoints.finrank_eq_card G L
+  have hartin' : Module.finrank ↥E' L = Fintype.card G := hartin
+  have htower := Module.finrank_mul_finrank K ↥E' L
+  have hmul : Module.finrank K ↥E' * Fintype.card G = Fintype.card G := by
+    simpa [hrank, hartin'] using htower
+  have hone : Module.finrank K ↥E' = 1 :=
+    Nat.eq_of_mul_eq_mul_right (show 0 < Fintype.card G from Fintype.card_pos)
+      (by rw [hmul, Nat.one_mul])
+  have hbot : E' = ⊥ := IntermediateField.finrank_eq_one_iff.mp hone
+  intro x hx
+  have hxmem : x ∈ E' := FixedPoints.mem_intermediateField_iff.mpr hx
+  rw [hbot, IntermediateField.mem_bot] at hxmem
+  exact hxmem
+
+#print axioms galoisFixedRingHyp_of_field
