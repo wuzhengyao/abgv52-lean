@@ -830,3 +830,32 @@ theorem galoisFixedRingHyp_iff_isInvariant {K : Type u} {L : Type u} {G : Type*}
     exact h.isInvariant x hx
 
 #print axioms galoisFixedRingHyp_iff_isInvariant
+
+
+/-! ## 🚩 **CHR 一般环档 · 硬核第一块砖**（第 512 轮 ✓）：**Galois 幂等元的存在**
+
+**所证** ✓：Δ **双射** ⟹ 「**单位元端点的原像 `y` 是幂等元**」✓：
+```lean
+∃ y : SkewMonoidAlgebra S G, deltaToEndRingHom hRG y = 1 ∧ y * y = y
+```
+**证明** ✓（三行 ✓，**只用 Δ 是环同态 ＋ 单射性** ✓）：
+由**满射**取原像 `y`（`Δ y = 1` ✓）；由**乘性** `Δ (y * y) = Δ y * Δ y = 1 * 1 = 1 = Δ y` ✓；
+再由**单射**得 `y * y = y` ✓。
+**🔴 意义** ✓：**CHR 经典论证的入口对象** ✓ —— `y` 即「**Galois 幂等元** `e`」在 Δ 像中的对应物 ✓
+（其坐标化后即张量像中的 `Pi.single 1 1` 的原像 ✓）；**下一步**用它 ＋ **Δ 的分量公式**（轮 470／474／477 ✓）
+逼出 **Δ-条件**「`∀ g ≠ 1, Ideal.span (Set.range fun a => g • a - a) = ⊤`」✓（**§52 的 ③′** ✓）。
+**⚠ 工艺** ✓：`Function.Bijective` 是 `Injective ∧ Surjective` ✓ —— **`.1` 是单射、`.2` 是满射** ✗（易错 ✓）。 -/
+
+/-- **CHR 硬核第一块砖** ✓：Δ 双射 ⟹ **幂等原像存在** ✓。 -/
+theorem exists_idempotent_of_bijective {R S G : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • r • t = r • g • t)
+    (hbij : Function.Bijective (ABGV52.BTier.deltaToEndRingHom hRG)) :
+    ∃ y : SkewMonoidAlgebra S G,
+      ABGV52.BTier.deltaToEndRingHom hRG y = 1 ∧ y * y = y := by
+  obtain ⟨y, hy⟩ := hbij.2 1
+  refine ⟨y, hy, ?_⟩
+  apply hbij.1
+  rw [map_mul, hy, mul_one]
+
+#print axioms exists_idempotent_of_bijective
