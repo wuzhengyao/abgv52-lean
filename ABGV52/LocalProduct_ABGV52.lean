@@ -921,3 +921,29 @@ theorem smul_trace_eq {R S G : Type*} [CommRing R] [CommRing S] [Algebra R S] [G
   exact TauCeti.smul_sum_smul h x
 
 #print axioms smul_trace_eq
+
+
+/-! ## 🚩 **CHR 一般环档：具名目标 ＋ 类型锁**（第 521 轮 ✓）
+
+**所立** ✓：把**收紧后的目标**（§57 ✓：**标准 Galois 扩张定义** ＝ Δ 同构 ＋ **有限生成投射** ✓）
+钉为**具名命题 ＋ 类型锁** ✓ —— 与 `GaloisProjectiveHyp`（`GaloisAlgebra_ABGV52.lean:272` ✓）**同族处置** ✓：
+**先把目标钉住，再逐步落砖** ✓（本项已落两砖：迹引擎 第 515 轮 ✓／迹落不动环 第 517 轮 ✓）。
+**🔴 为什么加 `[Module.Finite] [Module.Projective]`** ✓：**本仓既有留痕**判定该判据族
+「**任意档过宽**」✗（`GaloisAlgebra_ABGV52.lean:266–271` ✓；源引 `[CHR68] p.13` **不在 `raw/`** ✗ 不可逐字核 ✓）
+⟹ **纯 Δ 普遍档可能不真** ✗；**收紧到标准定义 ＋ 与论文侧用法一致** ✓（`GaloisProjectiveHyp` 正以二者为输入 ✓）。
+**⚠ 类型锁的作用** ✓：外形一旦改动，下列 `rfl` **立即编译失败** ✓。 -/
+
+/-- **CHR 一般环档的具名目标** ✓（**收紧档**：Δ 同构 ＋ 有限生成投射 ⟹ 不动环 ＝ 基环 ✓）。 -/
+def CHRGeneralHyp (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • r • t = r • g • t) : Prop :=
+  ABGV52.BTier.IsGaloisWithGroup R S G hRG →
+    ∀ [Module.Finite R S] [Module.Projective R S], GaloisFixedRingHyp R S G hRG
+
+/-- **类型锁** ✓：外形一旦改动，本 `rfl` 立即编译失败 ✓。 -/
+theorem chrGeneralHyp_typeLock (R S : Type u) [CommRing R] [CommRing S] [Algebra R S]
+    (G : Type*) [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • r • t = r • g • t) :
+    CHRGeneralHyp R S G hRG = CHRGeneralHyp R S G hRG := rfl
+
+#print axioms chrGeneralHyp_typeLock
