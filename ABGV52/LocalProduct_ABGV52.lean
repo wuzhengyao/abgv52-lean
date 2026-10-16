@@ -982,3 +982,49 @@ theorem sum_single_mul_self {S G : Type*} [CommRing S] [Group G] [Fintype G]
   rw [Finset.sum_congr rfl (fun g _ => h1 g), Finset.sum_const, Finset.card_univ]
 
 #print axioms sum_single_mul_self
+
+
+/-! ## 🚩 **CHR 一般环档 · 原像交换约束**（第 533 轮 ✓✓）：**等变端的原像与群元交换**
+
+**所证** ✓：设 `x` **被全群固定** ✓、`z` 是**乘法端的原像** ✓（`Δ z = coeffToEnd x` ✓），则
+```lean
+single h 1 * z = z * single h 1        -- 对每个 h : G
+```
+**证明** ✓（三步 ✓，只用已落库件 ✓）：
+1. **端层交换** ✓：`actEnd h * coeffToEnd x = coeffToEnd x * actEnd h` ✓
+   —— 逐点：`h • (x * t) = (h • x) * (h • t) = x * (h • t)` ✓（**`MulSemiringAction.smul_mul`** ✓ ＋ **`hx h`** ✓）；
+2. **Δ 乘性** ✓：`map_mul` 两端 ✓ ⟹ `Δ(single h 1 * z) = Δ z * Δ(single h 1)` 与对称式 ✓；
+3. **`single h 1` 的 Δ-像 ＝ `actEnd h`** ✓（`deltaToEndAdd_single` ＋ `coeffToEnd 1 = 1` ✓ 第 515 轮 ✓）
+   ⟹ 两侧同 ⟹ **Δ 单射**（`hbij.1` ✓）给出所要 ✓。
+**🔴 意义** ✓：CHR 一般环档的**第四个落库砖** ✓ —— 把**等变端的原像**锁进**交换约束** ✓，
+其**系数形式**即 `h • s_{h⁻¹k} = s_{k h⁻¹}` ✓（§66 步 ③ ✓），是**逼出 Δ-条件**的代数入口 ✓。
+**⚠ 两条工艺（实证 ✓）**：① **`deltaToEndRingHom` 与其底层 `deltaToEndAdd` 不同形** ✗
+⟹ 引用分量引理前**须先 `show` 转形** ✓；② **乘法作用律名为 `MulSemiringAction.smul_mul`** ✓（**裸 `smul_mul` 不存在** ✗）。 -/
+
+/-- **CHR 一般环档 · 原像交换约束** ✓：**等变端的原像与群元交换** ✓。 -/
+theorem single_mul_comm_of_fixed {R S G : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    [Group G] [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • r • t = r • g • t)
+    (hbij : Function.Bijective (ABGV52.BTier.deltaToEndRingHom hRG))
+    {x : S} (hx : ∀ g : G, g • x = x) {z : SkewMonoidAlgebra S G}
+    (hz : ABGV52.BTier.deltaToEndRingHom hRG z = ABGV52.BTier.coeffToEnd x) (h : G) :
+    SkewMonoidAlgebra.single h (1 : S) * z = z * SkewMonoidAlgebra.single h (1 : S) := by
+  apply hbij.1
+  rw [map_mul, map_mul, hz]
+  have h2 : ABGV52.BTier.deltaToEndRingHom hRG (SkewMonoidAlgebra.single h (1 : S))
+      = ABGV52.BTier.actEnd hRG h := by
+    show ABGV52.BTier.deltaToEndAdd hRG (SkewMonoidAlgebra.single h (1 : S)) = ABGV52.BTier.actEnd hRG h
+    rw [ABGV52.BTier.deltaToEndAdd_single]
+    have h3 : ABGV52.BTier.coeffToEnd (R := R) (1 : S) = 1 := by
+      ext t
+      simp [ABGV52.BTier.coeffToEnd]
+    rw [h3, one_mul]
+  rw [h2]
+  have h1 : ABGV52.BTier.actEnd hRG h * ABGV52.BTier.coeffToEnd x
+      = ABGV52.BTier.coeffToEnd x * ABGV52.BTier.actEnd hRG h := by
+    ext t
+    show h • (x * t) = x * (h • t)
+    rw [MulSemiringAction.smul_mul, hx h]
+  rw [h1]
+
+#print axioms single_mul_comm_of_fixed
