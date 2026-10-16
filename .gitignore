@@ -1,1 +1,19 @@
 /.lake/
+
+# LaTeX 构建产物（paper/ 下 ✓，非源文件 ✗）
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.brf
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.bcf
+paper/*.run.xml
+paper/c*.log
+
+# 本 campaign 的 scratch（按设计 untracked ✓）
+.abgv52-scratch/
+
+# Lake 构建目录
+.lake/
