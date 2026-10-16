@@ -1028,3 +1028,29 @@ theorem single_mul_comm_of_fixed {R S G : Type*} [CommRing R] [CommRing S] [Alge
   rw [h1]
 
 #print axioms single_mul_comm_of_fixed
+
+
+/-! ## 🚩 **CHR 一般环档 · 迹的经典小件**（第 534 轮 ✓）：`Tr(1) = |G| • 1`
+
+**所证** ✓：**迹在单位元处的取值 ＝ 群阶** ✓：
+```lean
+(∑ g : G, actEnd hRG g) 1 = Fintype.card G • (1 : S)
+```
+**证明** ✓（两步 ✓）：`LinearMap.sum_apply` ✓ 内推应用 ⟹ `∑ g, g • 1 = ∑ g, 1` ✓（**`smul_one`** ✓）
+⟹ **`Finset.sum_const`** ✓ ＝ `card G • 1` ✓。
+**🔴 用途** ✓：这是**迹满射性论证的经典输入** ✓ ——
+当 `|G|` 在 `R` 中可逆时，`Tr(1) = |G| • 1` 直接给出 **`1 ∈ range Tr`** ✓
+⟹ **`R` 是 `S` 的直和项** ✓ ⟹ `S` 投射 ✓（CHR 投射性步的另一条经典入口 ✓）。
+**⚠ 路线决定（本轮 ✓，诚实 ✓）**：**§66 的步 ③（系数关系）不在关键路径** ✗ ——
+关键路径是**经典 CHR 论证**（**局部自由 → 自由档 → 对偶基／迹 → 投射 ＋ 秩 → 收口** ✓）；
+步 ③ 的交换约束（第 533 轮 ✓）**保留为库件** ✓，但**系数展开不再作为下一靶** ✗。 -/
+
+/-- **CHR 一般环档 · 迹的经典小件** ✓：`Tr(1) = |G| • 1` ✓。 -/
+theorem trace_one {R S G : Type*} [CommRing R] [CommRing S] [Algebra R S] [Group G]
+    [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • r • t = r • g • t) :
+    (∑ g : G, ABGV52.BTier.actEnd hRG g) 1 = Fintype.card G • (1 : S) := by
+  rw [LinearMap.sum_apply]
+  simp [ABGV52.BTier.actEnd]
+
+#print axioms trace_one
