@@ -892,3 +892,32 @@ theorem trace_eq_delta_sum_single {R S G : Type*} [CommRing R] [CommRing S] [Alg
   rw [h1, one_mul]
 
 #print axioms trace_eq_delta_sum_single
+
+
+/-! ## 🚩 **CHR 投射性步 · 第二件**（第 517 轮 ✓✓）：**迹落在不动环**
+
+**所证** ✓：迹 end 的**取值被全群固定** ✓（**CHR 投射性论证的另一半入口** ✓）：
+```lean
+h • ((∑ g : G, actEnd hRG g) x) = (∑ g : G, actEnd hRG g) x
+```
+**证明** ✓（两步 ✓）：① **求值律** `LinearMap.sum_apply` ✓ 把 `(∑ g, actEnd g) x` 化为 `∑ g, g • x` ✓；
+② 用**移植件既有的** `TauCeti.smul_sum_smul` ✓（**逐字**："有限群作用下的迹是不变的" ✓，
+证明用 **`Fintype.sum_equiv (Equiv.mulLeft h)`** ✓）。
+**🔴 意义** ✓：**迹的像落在 `S^G`** ✓ —— 与**第 515 轮的引擎**（迹 ＝ Δ(Σ_g single g 1) ✓）合起来，
+**CHR 投射性步的两件入口件在库** ✓；余下的是 **③ 后半**（迹满 ⟹ `R` 是直和项 ⟹ 投射 ＋ 秩 ✓）。
+**⚠ 三条工艺（两轮实证 ✓）**：① 须 **`[DistribMulAction G S]`**（**`MulSemiringAction` 要求 `Semiring`** ✗ ——
+移植件的形参正是 `DistribMulAction` ✓）；② 求值律须先把**应用内推**（`LinearMap.sum_apply` ✓），
+`simp only` 直接改写**无进展** ✗；③ **L46 收益（第二次 ✓）**：迹的不变性**已在移植件** ✓，**无需重证** ✓。 -/
+
+/-- **CHR 投射性步 · 第二件** ✓：**迹落在不动环** ✓。 -/
+theorem smul_trace_eq {R S G : Type*} [CommRing R] [CommRing S] [Algebra R S] [Group G]
+    [Fintype G] [MulSemiringAction G S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • r • t = r • g • t) (h : G) (x : S) :
+    h • ((∑ g : G, ABGV52.BTier.actEnd hRG g) x) = (∑ g : G, ABGV52.BTier.actEnd hRG g) x := by
+  have hsum : (∑ g : G, ABGV52.BTier.actEnd hRG g) x = ∑ g : G, g • x := by
+    rw [LinearMap.sum_apply]
+    simp [ABGV52.BTier.actEnd]
+  rw [hsum]
+  exact TauCeti.smul_sum_smul h x
+
+#print axioms smul_trace_eq
