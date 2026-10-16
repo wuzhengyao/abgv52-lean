@@ -859,3 +859,36 @@ theorem exists_idempotent_of_bijective {R S G : Type*} [CommRing R] [CommRing S]
   rw [map_mul, hy, mul_one]
 
 #print axioms exists_idempotent_of_bijective
+
+
+/-! ## 🚩 **CHR 投射性步的引擎**（第 515 轮 ✓✓）：**迹 ＝ Δ(Σ_g g 的分量)**
+
+**所证** ✓：**单位系数群元和的原像**给出了**经典迹映射** ✓：
+```lean
+deltaToEndAdd hRG (∑ g : G, single g 1) = ∑ g : G, actEnd hRG g
+```
+—— 右侧在 `t` 处即 **`∑_g g • t`**（**经典迹 `Tr`** ✓）。
+**证明** ✓：`map_sum`（`deltaToEndAdd` 是 `+`-同态 ✓）＋ 逐项 `deltaToEndAdd_single` ✓ ＋
+**`coeffToEnd 1 = 1`** ✓（恒等 end ✓，`ext` ＋ `simp` ✓）。
+**🔴 意义** ✓：这是 **CHR 投射性步的引擎** ✓ ——
+**若迹满（`Tr` 满射）则 `R` 是 `S` 的直和项** ✓ ⟹ `S` 投射 ✓（＋ 秩 `|G|` ✓）＝ **③ 的前半** ✓。
+**⚠ 三条工艺（本轮实证 ✓）**：① **须在 `Module.End R S` 层面陈述** ✓ ——
+逐点形（`… x = ∑ g • x`）在 `Finset.sum` 的类型推断上**不稳** ✗（两轮报错 ✓，见 §54 ✓）；
+② **辅助引理须置于证明开头** ✗ —— 放在 `sum_congr` 之后会丢参数 ⟹ 报 **`Algebra ?m S` 卡住** ✗；
+③ **`deltaToEndAdd_single_apply'` 等在顶层（裸名 ✓）** ✗ —— 误加前缀即 unknown ✗（轮 440／470／514 同族 ✓）。 -/
+
+/-- **CHR 投射性步的引擎** ✓：**迹 ＝ Δ(Σ_g single g 1)** ✓。 -/
+theorem trace_eq_delta_sum_single {R S G : Type*} [CommRing R] [CommRing S] [Algebra R S]
+    [Group G] [Fintype G] [MulSemiringAction G S] [SMulCommClass G R S]
+    (hRG : ∀ (g : G) (r : R) (t : S), g • r • t = r • g • t) :
+    ABGV52.BTier.deltaToEndAdd hRG (∑ g : G, SkewMonoidAlgebra.single g (1 : S))
+      = ∑ g : G, ABGV52.BTier.actEnd hRG g := by
+  have h1 : ABGV52.BTier.coeffToEnd (R := R) (1 : S) = 1 := by
+    ext t
+    simp [ABGV52.BTier.coeffToEnd]
+  rw [map_sum]
+  refine Finset.sum_congr rfl fun g _ => ?_
+  rw [ABGV52.BTier.deltaToEndAdd_single]
+  rw [h1, one_mul]
+
+#print axioms trace_eq_delta_sum_single
