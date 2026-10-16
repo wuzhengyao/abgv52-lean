@@ -742,3 +742,42 @@ theorem galoisFixedRingHyp_of_field {K L G : Type} [Field K] [Field L] [Algebra 
   exact hxmem
 
 #print axioms galoisFixedRingHyp_of_field
+
+
+/-! ## 🎯 **(丙) 假设面下降**（第 499 轮 ✓✓）：**传递性 ⟹ 函数环上的具名件**
+
+**所证** ✓：置换作用下**传递** ⟹ 函数环 `ι → K` 上 **`GaloisFixedRingHyp` 成立** ✓。
+**机制** ✓：置换作用逐坐标置换 ✓ ⟹ **被全群固定 ⟺ 在每个轨道上取常值** ✓；
+**传递 ＋ `ι` 非空 ⟹ 每个轨道 ＝ 全体 `ι`** ✓ ⟹ `f` **是常函数** ✓ ⟹ `f ∈ Set.range (algebraMap K (ι → K))` ✓。
+**🔴 意义** ✓：本件**与 Δ 判据无关、与有限性无关** ✓ ⟹ **`(丙)` 计数定理的假设面可从
+「外部不动环定理」降为「作用在 `MaximalSpectrum L` 上传递」** ✓（**本目标首个"假设减少"** ✓）。
+**⚠ 三条工艺（实证 ✓）**：
+① **宇宙须对齐** ✗（`GaloisFixedRingHyp` 要求 `R S : Type u` ✗，而 `ι → K : Type (max u₁ u₂)` ✓
+   ⟹ **`K` 与 `ι` 须同宇宙** ✓ —— 与轮 441／455 同型 ✓）；
+② 须 **`[Fintype G]`** ✓（具名件的要求 ✓）；
+③ **🔴 不得把 `[MulSemiringAction G (ι → K)]` 声明为变量** ✗ —— 声明后 `•` 解析到**该不透明变量实例** ✗
+   ⟹ 求值律**不再定义性成立** ✗（`simpa`／`convert`／`show … from rfl` 皆失败 ✓）；
+   **删去该 binder、让实例解析供给本仓 `permMulSemiringAction`** ✓ ⟹ `rfl` 即通 ✓。
+**⚠ 循环风险未结** ✗：**`(丙)` 链中的传递性是否独立于该 `h`** —— 待核 ✓。 -/
+
+/-- **(丙) 假设面下降** ✓：**传递作用 ⟹ 函数环上的 `GaloisFixedRingHyp`** ✓。 -/
+theorem galoisFixedRingHyp_pi_of_perm {K : Type u} {ι : Type u} {G : Type*}
+    [CommRing K] [Nonempty ι] [Group G] [Fintype G] [MulAction G ι]
+    (hRG : ∀ (g : G) (r : K) (t : ι → K), g • r • t = r • g • t)
+    (htrans : ∀ i j : ι, ∃ g : G, g • i = j) :
+    GaloisFixedRingHyp K (ι → K) G hRG := by
+  intro x hx
+  have hx'' : ∀ (g : G) (i : ι), x (g • i) = x i := by
+    intro g i
+    have key : ∀ (h : G), (h • x) i = x (h⁻¹ • i) := fun h => rfl
+    have h := congrFun (hx g⁻¹) i
+    rw [key g⁻¹, inv_inv] at h
+    exact h
+  obtain ⟨c, hc⟩ := ABGV52.LocalProduct.eq_const_of_perm_fixed (σ := MulAction.toPermHom G ι)
+    (fun i j => by obtain ⟨g, hg⟩ := htrans i j; exact ⟨g, hg⟩) x (fun g i => hx'' g i)
+  refine ⟨c, ?_⟩
+  funext i
+  rw [hc i]
+  rfl
+
+#print axioms galoisFixedRingHyp_pi_of_perm
