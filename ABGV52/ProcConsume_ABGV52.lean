@@ -1,23 +1,57 @@
 /-
-  ABGV-5.2 —— ③ C″ 消费端接线：`thm:retract` 的装配（Procesi 档）
+  ABGV-5.2 —— ③ C″ 消费端接线（Procesi 档）
+  ∝-re-scope（2026-10-10，论文第四十四改后）：由「`thm:retract` 的装配」
+  改定位为「**开放问句（Z_H(F,9) 的 retract 有理性）的条件装配载体**」。
 
-  论文侧对应（逐字）
-  ==================
-  论文 `thm:retract`（`raw/ABGV-5.2-resolution.tex` :1541–1560）：
+  ⚠ ∝-re-scope 横幅（读本件前必读）
+  =================================
+  【2026-10-11 追加更正（主循环）】论文 2026-10-11 版**已把该开放问句判否** ✓：
+  `rem:retract-open` 已改名并改写为 `rem:retract-comparison`（仅保留 \(F(V)^H\) 与
+  \(F(M|_H)^H\) 的对比论证），其位置由**新增定理** `thm:not-retract-rational`（4.13）
+  取代 —— 「\(Z_H(F,9)\) 非 retract rational over \(F\)（char 0）」✓，另有新增判据
+  `thm:retract-criterion`（4.12，\(F(M)^G\) RR \(\iff\) flabby 类可逆）✓。
+  该结论走的是**另一条路**（flasque 消解商不 coflasque 的指数障碍，见论文 4.13 的证明），
+  **不**经由本文件装配的旧路线 ✓。⟹ 本文件以下 ∝-re-scope 横幅中「判为开放」的措辞**已过时** ⚠，
+  本文件保留为**旧路线的条件装配留痕** ✓；其结论**不得**引作论文主张 ✓（同上）。
+  论文第四十四改撤下 `thm:retract`（现为 `rem:retract-open`，tex :1582）：
+  「Whether \(Z_H(F,9)\) is retract rational over \(F\) is left open here.」
+  ——Z_H(F,9) 的 retract 有理性**判为开放**；且被撤证法的第 ② 步
+  「\(F(V)^H \cong F(M|_H)^H\)」被 Fischer 反证（rem:retract-open 逐字：
+  \(F \ni \zeta_3\) 时线性侧 \(F(V)^H\) 纯超越，而单项侧 \(F(M|_H)^H\)
+  非稳定有理）。⟹ 本件**不再是论文主张的形式化**，re-scope 为开放问句的
+  **条件装配载体**：
+    * 输入 1（C″，`Z ≃ₐ[K] K(t₁,…,t_k)`）：论文现文**仍断言**（tex :1449
+      「Recall that \(Z_H(F,9)\) is rational over \(F(M|_H)^H\)」；
+      p 档 :1699 同形）。
+    * 输入 2（`SaltmanHypU`：K′ RR）＝**开放问句的 K′ 侧**——旧路线称该输入
+      由 Cor 3.13＋识别 ② 供给；识别既假，此输入不再由论文供给
+      （**也不再被否认**：论文现文对 K′ 侧 RR 无断言）。
+    * 主定理 =「K′ 在 F 上 RR ⟹ Z 在 F 上 RR」（旧路线第 ④ 步「有理扩张
+      传递」的库内严格版，`SaltmanRatOver.isRetractRational_of_isRationalOver`）。
+  **合法的 Cor 3.13 论文实例 = 正则表示场**（rem:retract-open 对照句：
+  \(F(V)^H\)，\(V = F[H]\)——线性形式、无需识别）；本件对 `base p F`
+  （单项场）的 Saltman 实例化**仅作条件装配的输入位**保留，不代表论文内容。
+  下游使用限制：本件结论**不得**引作「论文已证 Z_H(F,9) RR」；此外仍受
+  §9.9 的 P 档 ∝-stale 限制（不涉本件语句，见 audit §9）。
+
+  被撤路线的论文原文（pre44；供对照）
+  ==================================
+  论文旧 `thm:retract`（旧 :1541–1560；存档 `raw/ABGV-5.2-resolution.pre44.tex`）：
   「The field \(Z_H(F,9)\) is retract rational over \(F\).」
-  其证明四步：
+  其证明四步（**② 已判假——Fischer 反证，见横幅；③ 的适用性随 ② 失效**）：
     ① C″：`Z_H(F,9)` 在 `K := F(M|_H)^H` 上**有理**——`rem:procesi-geometric`
        （tex :718 起）：「it is \emph{rational} over \(F(M|_H)^H\)」（经
        Lenstra1974, Prop 1.4 作用在置换模 \(U|_H\) 上）；
-    ② `K ≅ F(V)^H`（\(V = M|_H \otimes_{\mathbb{Z}} F\)）；
+    ② `K ≅ F(V)^H`（\(V = M|_H \otimes_{\mathbb{Z}} F\)）——**已判假**（44 改）；
     ③ Saltman 1984 Cor 3.13（\(A = H\)，exp 奇 ⟹ 2^r 条件空）⟹ `K` 在 `F` 上
-       retract rational；
+       retract rational——**对单项场 K 的此实例化随 ② 失效**；合法实例 = 正则场；
     ④ 「Hence \(F(V)^H\), and therefore its rational extension \(Z_H(F,9)\),
        is retract rational over \(F\).」——「有理扩张保持 retract 有理性」。
 
-  Lean 侧本件做什么（消费端接线）
-  ==============================
-  本件把第 ④ 步做成**主定理**，第 ①／③ 步做成**接口输入**：
+  Lean 侧本件做什么（消费端接线；∝-re-scope 后口径）
+  =================================================
+  本件把第 ④ 步做成**主定理**，第 ① 步与「第 ③ 步的结论（K′ RR）」做成
+  **接口输入**（② **不在件内**——旧路线中它连接 ①③，今判假；消费端不经过它）：
 
     * **输入 1（C″，K-线性强化形）**：`ProcesiHypStableK K Z` —— `Z ≃ₐ[K] K(t₁,…,t_k)`。
       基域 `K` 取 C″ 的具体基 `base p F := ↥(latticeInvariants F (Hp p) (ker φ))`
@@ -64,10 +98,12 @@
      （秩 73，缺 `U = ℤ[Ω]` 分量），C′ 修正后为假形状；更正形在 `ProcHyp_ABGV52.lean`
      （`ProcesiHypExact`／`ProcesiHypStable`）。本件**不**引用旧外形；下游
      `G2p.ZH_iso` 链本轮未触碰（M7/M8 决策）。
-  ⑦ **路线对齐**：论文第 32 改后的文本（`thm:retract` 引 `rem:procesi-geometric`
-     的「rational over \(F(M|_H)^H\)」＋ Saltman Cor 3.13 ＋ 有理扩张传递）与本
-     Lean 路线（`ProcesiHypStableK`（= C″ K-线性）＋ `SaltmanHypU` ＋ 双塔引理）
-     **同路线，路线级偏差 0**；技术级字面偏差见 ①②③。
+  ⑦ **路线对齐（∝-re-scope 后口径）**：pre44 论文文本（旧 `thm:retract` 引
+     `rem:procesi-geometric` 的「rational over \(F(M|_H)^H\)」＋ Saltman Cor 3.13
+     ＋ 有理扩张传递）与本 Lean 路线（`ProcesiHypStableK`（= C″ K-线性）＋
+     `SaltmanHypU` ＋ 双塔引理）曾**同路线、路线级偏差 0**；**44 改后该对齐终止**
+     （`thm:retract` 撤下）——现文对应 = 顶横幅（C″ 仍断言〔tex :1449／:1699〕；
+     K′ RR 输入为开放问句侧）；技术级字面偏差见 ①②③。
 
   **无 sorry、无自造公理**（公理闸门见 §6：逐条 `#print axioms` 均为
   `[propext, Classical.choice, Quot.sound]`）。
@@ -90,7 +126,8 @@ variable (p : ℕ) [Fact p.Prime]
   其 `Field` 实例由 `SubfieldClass.toField` 合成（两条 `inferInstance` 见证）；
   `Algebra F (base p F)` **无**实例（头注偏离 ①），故全程显式传入。 -/
 
-/-- C″ 基域 `K = F(M|_H)^H`（论文 `thm:retract` 的 `K`）。 -/
+/-- C″ 基域 `K = F(M|_H)^H`（论文**旧** `thm:retract` 的 `K`；现文出处：
+tex :1449／:1699 的 `F(M|_H)^H`；∝-re-scope 见顶横幅）。 -/
 abbrev base (F : Type u) [Field F] : Type u :=
   ↥(EM.latticeInvariants F (Hp p) ↥(LinearMap.ker (G.phiFun p)))
 
@@ -177,20 +214,26 @@ theorem thm_retract_saltmanU (K : Type u) (RRet : Type u → Prop)
 theorem saltmanHypU_compat (K : Type) (RRet : Type → Prop) (hS : SaltmanHyp K RRet) :
     RRet K := thm_retract_saltmanU K RRet hS
 
-/-! ## 4. 主定理（论文 `thm:retract` 的装配） -/
+/-! ## 4. 主定理（被撤路线 pre44 `thm:retract` 的消费端装配；
+  ∝-re-scope 后 = 开放问句的条件载体，见顶横幅） -/
 
-/-- 论文第 ③ 步，在 C″ 具体基上：`K = F(M|_H)^H` 在 `F` 上 retract rational
-（Saltman Cor 3.13 ＋ F1 忠实性；条件层已并入接口，见头注偏离 ④）。 -/
+/-- 被撤路线的第 ③ 步形状——**∝-re-scope：对单项场 `K = F(M|_H)^H` 的此
+实例化不再是论文内容**（识别 ② 被 Fischer 反证；Cor 3.13 的合法论文实例
+= 正则表示场 `V = F[H]`，见 `rem:retract-open`）。本定理保留为**条件装配**
+（`SaltmanHypU` 具名假设的消费接线；条件层已并入接口，见头注偏离 ④）。 -/
 theorem saltman_base_retract (F : Type u) [Field F] [Algebra F (base p F)]
     (hSalt : SaltmanHypU (base p F) (fun _ => IsRetractRational F (base p F))) :
     IsRetractRational F (base p F) :=
   thm_retract_saltmanU _ _ hSalt
 
-/-- **论文 `thm:retract` 的消费端主定理**：设
-  * `Z` 在 `K = F(M|_H)^H` 上有理（输入 1，C″ K-线性形）；
-  * Saltman 接口成立（输入 2，忠实性 ⟹ `K` 在 `F` 上 retract rational），
-  则 `Z` 在 `F` 上 retract rational（论文第 ④ 步；证明经 File 1 的双塔引理
-  `isRetractRational_of_isRationalOver`）。 -/
+/-- **被撤路线（pre44 `thm:retract`）的消费端主定理；∝-re-scope 后 = 开放
+问句的条件载体**：设
+  * `Z` 在 `K = F(M|_H)^H` 上有理（输入 1，C″ K-线性形；**论文现文仍断言**，
+    tex :1449）；
+  * Saltman 接口成立（输入 2；**此即 K′ 侧开放输入**：K′ 在 `F` 上 retract
+    rational——论文现文无断言，见顶横幅），
+  则 `Z` 在 `F` 上 retract rational（旧路线第 ④ 步；证明经 File 1 的双塔引理
+  `isRetractRational_of_isRationalOver`）。**不得**引作「论文已证 Z_H(F,9) RR」。 -/
 theorem thm_retract_procesiStable (F : Type u) [Field F] [Algebra F (base p F)]
     (Z : Type u) [Field Z] [Algebra (base p F) Z] [Algebra F Z]
     [IsScalarTower F (base p F) Z]
@@ -203,8 +246,8 @@ theorem thm_retract_procesiStable (F : Type u) [Field F] [Algebra F (base p F)]
 
 /-- **判别力探针（端到端点火）**：取 `Z := K(t₁,…,t_n)`（C″ 的右端本身）、
 Saltman 侧取「`K` retract rational」的现成见证——主定理在满输入上给出
-「有理扩张 `K(t₁,…,t_n)` 仍在 `F` 上 retract rational」（论文第 ④ 步形状；
-同时是 File 1 双塔引理在 Procesi 数据上的落地）。 -/
+「有理扩张 `K(t₁,…,t_n)` 仍在 `F` 上 retract rational」（旧路线第 ④ 步形状；
+探针——**不代表论文结论**；同时是 File 1 双塔引理在 Procesi 数据上的落地）。 -/
 theorem thm_retract_procesiStable_probe (F : Type u) [Field F] [Algebra F (base p F)]
     (hRet : IsRetractRational F (base p F)) (n : ℕ) :
     IsRetractRational F (EM.rationalFunctionField (base p F) n) :=
