@@ -801,3 +801,32 @@ theorem galoisFixedRingHyp_self {K G : Type*} [CommRing K] [Group G] [Fintype G]
   exact ⟨x, rfl⟩
 
 #print axioms galoisFixedRingHyp_self
+
+
+/-! ## **接口桥**（第 502 轮 ✓）：`GaloisFixedRingHyp` ↔ mathlib `Algebra.IsInvariant`
+
+**`#print Algebra.IsInvariant` 逐字所得** ✓：
+```lean
+class Algebra.IsInvariant (A B G) [CommSemiring A] [Semiring B] [Algebra A B] [Group G]
+    [MulSemiringAction G B] : Prop where
+  isInvariant : ∀ (b : B), (∀ (g : G), g • b = b) → ∃ a, (algebraMap A B) a = b
+```
+—— 与 `GaloisFixedRingHyp` **同形**（同一命题 ✓，仅包装不同：**`def` ＋ 显式 `hRG`** ✗ vs **`class`** ✓）。
+**⟹ 桥的意义** ✓：**打通两侧 API** ✓ —— 本仓具名件（与**第 491 轮的域情形定理** ✓）**可直接供给**
+mathlib 的 `Algebra.IsInvariant` 消费者 ✓（如 `moduleFinite_of_field_galois` ✓／`tensorToPi_bijective` ✓ 一族 ✓）。
+**⚠ 工艺（实证 ✓）**：① **宇宙须对齐** ✗（`GaloisFixedRingHyp` 要求 `R S : Type u` —— 同轮 441／455／499 型 ✓，**第五次** ✓）；
+② **`Algebra.IsInvariant` 是类** ✗ ⟹ 须用**构造子 `⟨…⟩`／字段 `.isInvariant`** ✓，**不可 `intro`** ✗
+（与轮 368 的"类值命题须匿名构造子"同型 ✓）。 -/
+
+/-- **接口桥** ✓：本仓具名件 ⟺ mathlib 的 `Algebra.IsInvariant` ✓。 -/
+theorem galoisFixedRingHyp_iff_isInvariant {K : Type u} {L : Type u} {G : Type*}
+    [CommRing K] [CommRing L] [Algebra K L] [Group G] [Fintype G] [MulSemiringAction G L]
+    (hRG : ∀ (g : G) (r : K) (t : L), g • r • t = r • g • t) :
+    GaloisFixedRingHyp K L G hRG ↔ Algebra.IsInvariant K L G := by
+  constructor
+  · intro h
+    exact ⟨fun x hx => h x hx⟩
+  · intro h x hx
+    exact h.isInvariant x hx
+
+#print axioms galoisFixedRingHyp_iff_isInvariant
