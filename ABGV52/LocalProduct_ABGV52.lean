@@ -668,3 +668,25 @@ theorem deltaToEndAdd_single_apply' {R S G : Type*} [CommRing R] [CommRing S] [A
   rfl
 
 #print axioms deltaToEndAdd_single_apply'
+
+
+/-! ## CHR 路线 · **Δ 版判据的最后一件工具**（第 477 轮 ✓）：单点系数律
+
+**所证** ✓：`SkewMonoidAlgebra` 的 `coeff` 在 `single` 上的取值 ✓
+```lean
+(single g s).coeff g' = if g' = g then s else 0
+```
+**证明** ✓：`by_cases h : g' = g` ✓ ＋ `Finsupp.single_eq_same`／`Finsupp.single_eq_of_ne` ✓
+（`coeff` 与 `ofCoeff` 皆 `rfl` 级 ✓ ⟹ 归结为 `Finsupp` 的对应律 ✓）。
+**⚠ 前提** ✓：须 **`[DecidableEq G]`** ✗（`if` 的条件需要 ✓）。
+**⟹ 用途** ✓（§29 第 ② 步：「**Δ 版 `span_eq_top` 论证**」✓）：TauCeti 的
+`span_eq_top_of_tensorToPi_eq_single` ✓ 只用**逐点值** ✓；Δ 侧的逐点值即 **`coeff`** ✓
+⟹ 本件使该论证可在 Δ 侧复刻 ✓（**至此 Δ 版论证的工具已全部就位** ✓）。 -/
+
+/-- **Δ 版判据的工具** ✓：单点系数律 ✓。 -/
+theorem SkewMonoidAlgebra_coeff_single {S G : Type*} [CommRing S] [DecidableEq G]
+    (g g' : G) (s : S) :
+    (SkewMonoidAlgebra.single g s).coeff g' = if g' = g then s else 0 := by
+  by_cases h : g' = g <;> simp [h, Finsupp.single_eq_same, Finsupp.single_eq_of_ne]
+
+#print axioms SkewMonoidAlgebra_coeff_single
