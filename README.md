@@ -23,10 +23,12 @@ What is checked here, and which inputs are still named hypotheses, is listed und
 
 The paper is included in this repository:
 
-* `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-10);
-* `paper/ABGV-5.2-resolution.pdf` — a compiled PDF.
+* `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-23);
+* `paper/ABGV-5.2-resolution.pdf` — the compiled PDF (21 pages).
 
-The PDF was compiled from the current TeX source (2026-10-10).
+The PDF was compiled from the TeX source of 2026-10-23. This revision updates the
+paragraph recording the machine-checked status of the formalization and the disclosure of the
+tools used; the mathematical results are unchanged.
 
 ## Verification code
 
