@@ -8,10 +8,10 @@ transitive subgroup of $S_9$. Let $Z_H(F,9)$ be the center of the generic divisi
 degree $9$ with $H$-action. Problem 5.2 of the Auel--Brussel--Garibaldi--Vishne problem list
 asks for its birational class. The answer proved in the paper is that $Z_H(F,9)$ is **not**
 stably rational and **not** rational, but is **retract rational** over $F$. Non-stable
-rationality comes from $\coh^2(H, M|_H) \cong C_9$ for the restricted Procesi lattice, whose
+rationality comes from $H^2(H, M|_H) \cong C_9$ for the restricted Procesi lattice, whose
 exponent $9$ is incompatible with quasi-permutation, while every permutation lattice has
-$\coh^2$-exponent dividing $3$. For $H = C_p \times C_p \subset S_{p^2}$ with $p$ odd the same
-computation gives $\coh^2(H, M|_H) \cong C_{p^2}$ against exponent $p$, so $Z_H(F,p^2)$ is not
+$H^2$-exponent dividing $3$. For $H = C_p \times C_p \subset S_{p^2}$ with $p$ odd the same
+computation gives $H^2(H, M|_H) \cong C_{p^2}$ against exponent $p$, so $Z_H(F,p^2)$ is not
 stably rational.
 
 This repository contains the machine-checked Lean 4 development of that chain: the lattice
