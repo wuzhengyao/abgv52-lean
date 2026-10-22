@@ -20,9 +20,10 @@ The PDF was compiled from the current TeX source (2026-10-10).
 
 ## Verification code
 
-The two verification programs of the paper's Appendix A (Python and GAP
-with HAP) and their recorded output are in `verification/`; see
-`verification/README.md`.  They can be re-run with `verification/run.sh`.
+The two verification programs (Python and GAP with HAP) and their recorded output are shipped
+in `verification/` for reproducibility. They are **no longer part of the paper** (the appendix
+that used to contain them has been removed). Re-run with `verification/run.sh`; details in
+`verification/README.md`.
 
 ## Verification status
 
@@ -66,109 +67,28 @@ says where each layer lives.
 
 ## Layout
 
+The figure below is the dependency graph of the H2 layer (the Procesi identification): blue
+boxes are self-authored theorems, each a link to its declaration in the Lean sources; green
+dashed boxes are mathlib lemmas that are used directly; an arrow means "uses". The graph is
+generated mechanically from the sources, so it replaces a long file-by-file description.
+
+![H2 dependency graph](h2-dependency-graph.svg)
+
+[`h2-dependency-graph.pdf`](h2-dependency-graph.pdf) is the printable version (one A4 landscape
+page).
+
 | Files | Content |
 |:--|:--|
 | `Hyp_*`, `C1`--`C8b` | shared setup (group, lattice, Procesi map) and the computation H^2(H, M\|_H) ≅ C_9 |
-| `S1`--`S5` | exponent and stable-* statements, and the wiring of the criterion |
-| `D1`--`D14` | criterion-facing definitions and interfaces |
+| `S1`--`S5` | exponent and stable-* statements |
 | `P1`--`P6` (with `P5a`, `P5b`), `PThm`, `PChallenge` | p-general lattice and theorem statements, with an independent restatement |
-| `G1b`--`G4`, `GThm`, `GChallenge` | the geometric-identification reduction layer (named-hypothesis transport) |
+| `G1b`--`G4`, `GThm`, `GChallenge` | reduction to the geometric identification (named-hypothesis transport) |
+| `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi track: lattice rank account, named interface, stabilizer layer, its wiring, consumption |
 | `MH`, `MQ`, `MI`, `BR` | the rational model of the Procesi kernel and the base-change bridge |
-| `F1`, `R1`, `PC2`, `FaithfulMH` | faithfulness of the action, retract-rationality wiring, permutation-class lemma, faithfulness obstruction |
-| `EM_ABGV52`, `Saltman_ABGV52`, `Procesi_ABGV52` | the three named hypotheses (`EMHyp`/`EMHypP`, `SaltmanHyp`, `ProcesiHyp`) with definitional-shape locks, wiring theorems, and non-vacuity probes |
-| `EMArtin`, `EMTrans`, `EMSpeiser`, `EMSemilinear`, `EMRational`, `EMFixed`, `EMDegree`, `EMIndep`, `EMRouteS`, `EMBridge`, `EMConsume` | the proof layers behind the criterion: Artin's fixed-field theorem, invariant transport, Speiser's theorem, the semilinear machinery, Lenstra's (1.4), the degree chain, algebraic independence, and the assembly of the converse |
-| `EM1betaGen_*` | the permutation-lattice rationality engine (character-basis layer, monomial lattice, rationality closure, consumption) with a non-vacuity probe |
-| `EMQuasi`, `EMCounter`, `ExtBridge`, `ExtLES`, `ExtMH`, `ExtMHUncond`, `ProbeLES1`, `ProbeLES2`, `S2b` | the criterion-clearing track: the corrected quasi-permutation form of the criterion with its cohomological refutation witness, the machine-checked counterexample to the original form, and the Ext^1 machinery with its unconditional closure |
-| `SaltDef`, `SaltT2`, `SaltSwan`, `SaltCor`, `SaltCond`, `SaltGeneric`, `SaltRatOver` | the Saltman-track layers: the 1984 definitions, the rational-to-retract bridge, Swan's lemma, the corollary/reduction pair, the 2-power/cyclotomic condition layer, the named generic-object residual (which now also carries the source's two existence theorems -- theorem 2.1 of the 1982 paper, and its theorem 5.1 via Noether's construction, with rationality over the base field defined and the fixed field of a group action used for its hypothesis -- as named statements, with the witness of existence packaged, the pages of the 1982 paper actually cited by the 1984 text census-completed, rationality over the base field given a non-vacuity probe, and the source's Noether action built on the polynomial ring and carried to its fraction field with source-faithful locks and a faithfulness probe), the opening of the 1982 paper's lemma 5.2 (the product of the conjugates of a polynomial is invariant, its evaluation lands in the fixed points, the evaluation itself being equivariant so that the statement carries no extra hypothesis, the nonvanishing of that product transfers to the polynomial itself, which is the source's unit clause, and the determinant of the coordinate matrix of the conjugates is characterised as the criterion for those conjugates to be independent in the field itself, the transport from coordinates to vectors being carried by the definition of linear independence as injectivity of the finitely supported linear combination, the determinant then exhibited as an honest polynomial in the coordinates, the infinite-field step that two nonzero polynomials share a nonvanishing point, through the bridge that reads the group action as algebra automorphisms, the abstract normal basis theorem together with the nonvanishing of that polynomial, the carrier of the companion polynomial for the conjugates together with the identity identifying its values with the evaluation of the source polynomial at the conjugates, and the derivation of finite-dimensionality from the basis, and closing the paper's determinant argument end to end, the last hypothesis then removed by two further steps: first, that a polynomial over the field which vanishes at every point with coordinates in the base field is zero, which frees the avoidance step from having to be run on base-field coefficients, and second, the algebraic independence of the conjugates, in the form that the linear substitution attached to them is injective, proved from Dedekind's independence of the algebra homomorphisms through the invertibility of the matrix of the conjugates of a basis and the inverse substitution that matrix supplies) with that lemma's nonvanishing recorded as a theorem rather than as a hypothesis, the first step of the source's proof of theorem 5.1 formalized as well -- from rationality of a field over the ground field one extracts a transcendence basis, as an algebraically independent family generating the field, the generating half proved for the fraction field directly and then transported along the isomorphism, which keeps the algebraicity transfer across an algebra equivalence out of the proof, the interface between that extraction and the descent proposition then supplied by the fraction form of the generated subalgebra -- every element of the field being a quotient of two elements of it, proved by structural induction on the field adjunction and recorded also in the multiplication form needed to clear denominators, with the bridge to the library's transcendence basis predicate registered together with the inference failure that blocks it, the clearing of denominators then carried out for a finite family -- the single multiplier being the product of the denominators, its nonvanishing coming from the no-zero-divisor instance on a subalgebra of a field, and the finite form specialized to the generated-field setting so that it consumes the fraction form directly, and the same clearing for a finitely generated algebra, where the single multiplier is the product of the denominators of a finite generating set and the powers are tracked through the generators, the ground field, sums and products, with the generated-field specialization of that form supplied as well, and the cleared elements then placed inside the localization at that single element, taken as the subalgebra generated by the inverse of the multiplier, so that the image of the finitely generated algebra lands where the source requires it, and the transcendence basis predicate of the library reached as well, by proving that the generated subalgebra is algebraic over the field, which together with algebraic independence yields that predicate, so that the extraction of rationality now produces the library's own notion, and the localization at a single element made an explicit carrier inside the field, containing the ground ring and finitely generated over it, into which the finitely generated algebra's structure map factors, the subalgebra generated by an algebraically independent family then identified with a polynomial ring and shown finitely generated over the ground field, with a map from the abstract localization back into the field supplied by its universal property, and the elements of that localization written with a common denominator as powers of the multiplier, the powers of the multiplier shown to lie in the nonzero divisors so that the library's localization subalgebra applies, and that subalgebra identified with the one generated by the inverse of the multiplier, which is thereby a localization and isomorphic to the abstract one, localizations being transported along an isomorphism of the base rings, and the resulting identification of the localized subalgebra with a localized polynomial ring assembled, the fraction-ring structure of the generated subalgebra supplied on the way, then the realization argument's evaluation map, taken as a named algebra homomorphism together with its value on the variables, extended to the localization at the polynomial once that value is a unit, the resulting package of a basis and a map on the localized polynomial ring that the source's lemma 5.2 supplies, the spanning half of that basis clause, and finally the descent of a group-equivariant map out of a Galois algebra to the fixed field, which is where the map on the base ring comes from, with the fixed-field identification and the embedding of the descended algebra into the Noether field registered as the remaining inputs, then the half of that bridge coming from the denominators of the transcendence basis: every finite family of the Noether field lands in a single localization of the polynomial ring, in the subalgebra form the source's ring generated by a transcendence basis takes, and with the inverse of a nonzero element included, which is the source's localized polynomial ring; two field identities and the multiplicative form of an element of a fraction ring are factored out first so that the heavy fraction-ring term occurs only at the application site, then the second mechanism: the localization at one element is contained in the localization at a multiple of it, two such localizations join into one, and consequently the denominators of the transcendence basis and those of any further family of elements are absorbed by a single multiplier, which is the product the source takes, and the wiring that puts the two together: the image of a
-finitely generated algebra over the base lands in a single localization once the base's own image
-does, the multiplier being exhibited explicitly, and a Galois algebra embeds into the big ring
-along the descent isomorphism, so that the embedding half of the source's containment is a
-theorem, together with the first block of the map on the base field: a nonzero polynomial is
-replaced by an invariant multiple, the localization at an invariant element carries an action of
-the group, and the lift of an equivariant map to that localization is equivariant again, by
-uniqueness of the lift; the boundary map into a subalgebra is recorded as well, and the fixed-field step in the form where
-the subring is pointwise fixed rather than the base of a Galois pair, together with the
-compatibility of the action on the localization with the canonical map into the field, which is
-what makes the preimages of the base elements fixed.  The two are then put together: the
-canonical map out of the localization is injective, so the base can be transported into the
-localization and its preimages are fixed there, and the fixed-field step produces the map of the
-base into the fixed field, so the whole chain from the base to the fixed field is a theorem -- supplied
-from the source side with the missing input of that chain: the localization at a nonzero polynomial
-sits inside the range of the canonical map into the field, the inverse of the polynomial being reached
-through the ring inverse rather than through a field inverse, since a localization is only a
-commutative ring, so that the image of a base ring presented by a family together with the inverse of
-one element lies in that range once the multiplier is replaced by an invariant multiple; the result is
-an end-to-end theorem that, from that presentation, an equivariant evaluation map, and the fixed-field
-step, produces the map of the base into the fixed field of a Galois extension together with its
-compatibility equations, and a strengthened form in which a further finitely generated algebra over
-the base is placed inside one and the same invariant localization, so that the base and the descended
-algebra share a single multiplier -- and the tensor side of that realization is reduced to one input: the
-base change of the equivariant evaluation along the algebra adjunction is a map from the tensor product
-of the fixed field with the localization onto the field, surjective because the conjugates of the
-distinguished element span the field and are the evaluations of the variables, and an equality of
-dimensions upgrades that surjection to an isomorphism, so that only the rank of the localization over
-the base remains, the source's own criterion being that a group-equivariant map whose image together
-with the field generates the extension realizes it.  That tensor side is now complete as well: the
-map produced there is equivariant whenever the evaluation is, the group acting on the second tensor
-factor and commuting with the scalars of the fixed field, and the dimension of the base change,
-which had been the only remaining input, is supplied by the rank of a Galois algebra over a field,
-so that a surjection of equal dimensions becomes an isomorphism preserving the group actions, as the
-source's definition of realization requires -- and now packaged end to end: the
-Galois structure of the base change, the action on the tensor product with its formula on pure
-tensors, and the finiteness of that tensor product are all supplied inside one statement, so that a
-caller brings the Galois structure of the localization, the projectivity input, and a linear
-equivariant evaluation, and receives the isomorphism preserving the group actions.  The packaging
-cannot be pushed further, and the reason is recorded in the file: the tensor product and the facts
-assumed of it mention the algebra structure on the fixed field, which the assembly point produces,
-so an identity between that structure and the produced map is the price of stating the result, and
-it is registered rather than claimed away -- and the realization is now assembled: from the Galois
-data of the target extension and the transport of the base ring, a single theorem produces both the
-map of the base ring into the fixed field and an isomorphism from the extension to the tensor
-product of the fixed field with the localization which preserves the group actions, the evaluation,
-its equivariance and the rank all being supplied inside.  Two inputs remain explicit and are
-recorded: the action on the localization must agree with the canonical one on the polynomial ring,
-and its algebra structure must be the embedding into the Noether field.  The lift of an equivariant
-evaluation is also recorded in the generality that an arbitrary action requires, since that is what
-the assembly point has -- and the base ring may be taken to be the
-subalgebra generated by the fixed elements, and then the transport of that ring into the Noether
-field, its containment in the localization, and its invariance under the group are theorems of the
-construction rather than inputs, a fixed subalgebra being recognised by induction on its
-generators, leaving the identification of the algebra structure, the two structures asked by
-condition (b), and the fixed-field hypothesis as the recorded inputs -- and that subalgebra is itself a localization of a polynomial ring, as
-condition (a) asks, provided the generators are algebraically independent, they generate the
-field, and the distinguished element is a polynomial in them, the comparison of the carrier with
-the adjunction over the polynomial subalgebra being the library's own decomposition of an
-adjunction -- and retract rationality
-along rational extensions, and the reading of the realization clause of the generic-extension
-definition settled from the source's own emphasis that the algebra realising an extension need not
-be a field -- so that the library's ring-level form is the faithful one and the field-level form is
-a weaker specialisation, whose witness is constructed from the assembly's data while the
-source-level witness is registered as still open, and the bridge between the Galois-algebra
-predicate and the automorphism group is closed in the field case -- the action map bijective, a
-group-indexed normal basis on which the action multiplies indices, the spanning element the
-source's lemma produces, and the fixed points identified with the base field -- so that the three
-clauses the assembly had assumed are supplied rather than hypothesized, the field-level
-restriction and the finite-dimensionality input being registered alongside, and the source's
-lemma on the normal basis closed on top of that bridge: its two data hypotheses, a basis and the
-identification, are supplied rather than assumed, in the form the source writes, with the unit
-clause stated literally and the finiteness input registered, and the realization clause restated
-with finite-dimensionality inside its quantifier and proved outright in that form, without the
-data hypothesis the assembly had carried -- a separate name from the faithful clause, since the
-source's clause does not carry finiteness, with a definitional lock whose discriminating power is
-checked against a mutant that drops that binder, the faithful clause implying the restated one and
-the converse registered as the finiteness gap, the page citations of the 1982 source audited and
-corrected, and the source-side data wired to the witness in one theorem, with the carrier
-concretized, the two compatibility hypotheses discharged and the two named inputs left
-explicit; the witness at that level is reached as before.
-clauses there are packaged into a witness of their own, and from the source-side data alone -- with
-no data hypothesis, the realization clause being supplied on the spot -- such a witness is obtained,
-the first witness in the library that needs nothing beyond that data, with the three levels of
-witness recorded side by side |
-| `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi-track layers: the lattice rank account, the corrected named interface, the stabilizer layer, its wiring, and the consumer assembly |
-| `Thm_*`, `Challenge_*` | type-locked statements with independent restatements |
-| `Probe*` | auxiliary probes retained for auditability |
+| `Procesi/` | the H2 formalization itself: statement, the scalar-matrix bypass, non-vacuity (see the figure) |
+| `Thm_*`, `Challenge_*`, `Probe*` | type-locked statements with independent restatements, and auxiliary probes |
 | `paper/` | the paper: TeX source and compiled PDF |
-| `verification/` | the Python and GAP verification programs of the paper's Appendix A, with recorded output |
+| `verification/` | the two verification programs and their recorded output |
 
 ## Build
 
