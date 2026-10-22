@@ -63,15 +63,16 @@ says where each layer lives.
 
 ## Layout
 
-The figure below is the dependency graph of the H2 layer (the Procesi identification): blue
-boxes are self-authored theorems, each a link to its declaration in the Lean sources; green
-dashed boxes are mathlib lemmas that are used directly; an arrow means "uses". The graph is
-generated mechanically from the sources, so it replaces a long file-by-file description.
+The dependency graph of the H2 layer (the Procesi identification) is generated mechanically from
+the Lean sources. Blue boxes are self-authored theorems; green dashed boxes are mathlib lemmas
+used directly; an arrow points from a lemma to the statement that uses it.
 
-![H2 dependency graph](h2-dependency-graph.svg)
+* **[`index.html`](index.html)** — the clickable version: every blue box opens its declaration in
+  the Lean sources on GitHub.
+* **[`h2-dependency-graph.pdf`](h2-dependency-graph.pdf)** — the printable version (one A4
+  landscape page).
 
-[`h2-dependency-graph.pdf`](h2-dependency-graph.pdf) is the printable version (one A4 landscape
-page).
+The sources of the graph are in `dag-src/`; regenerate with `python3 dag-src/build_dag.py`.
 
 | Files | Content |
 |:--|:--|
@@ -81,8 +82,9 @@ page).
 | `G1b`--`G4`, `GThm`, `GChallenge` | reduction to the geometric identification (named-hypothesis transport) |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi track: lattice rank account, named interface, stabilizer layer, its wiring, consumption |
 | `MH`, `MQ`, `MI`, `BR` | the rational model of the Procesi kernel and the base-change bridge |
-| `Procesi/` | the H2 formalization itself: statement, the scalar-matrix bypass, non-vacuity (see the figure) |
+| `Procesi/` (83 files) | the H2 formalization: statement layer, the scalar-matrix bypass, non-vacuity |
 | `Thm_*`, `Challenge_*`, `Probe*` | type-locked statements with independent restatements, and auxiliary probes |
+| `dag-src/` | the script that regenerates the figure from the sources |
 | `paper/` | the paper: TeX source and compiled PDF |
 | `verification/` | the two verification programs and their recorded output |
 

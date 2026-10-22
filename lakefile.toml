@@ -7,4 +7,4 @@ rev = "aa35a481e5f0cdb3b04a899ead15d6ca7305a624"
 
 [[lean_lib]]
 name = "ABGV52"
-globs = ["ABGV52.+"]
+globs = ["ABGV52.+", "Procesi.+"]
