@@ -1,13 +1,23 @@
 # Rationality of the center of a generic division algebra with a group action
 over a field of characteristic 0
 
-Lean 4 formalization companion.
+Lean 4 companion to the paper with the same title.
 
-This repository contains a machine-checked Lean 4 development verifying the
-logical chain of the arguments in the accompanying paper on the Procesi
-lattice obstruction to stable rationality (Problem 5.2 of the
-Auel--Brussel--Garibaldi--Vishne problem list), for the group
-H = C_3 x C_3 and its generalizations H = C_p x C_p.
+Let $F$ be a field of characteristic $0$ and let $H = C_3 \times C_3$ act regularly as a
+transitive subgroup of $S_9$. Let $Z_H(F,9)$ be the center of the generic division algebra of
+degree $9$ with $H$-action. Problem 5.2 of the Auel--Brussel--Garibaldi--Vishne problem list
+asks for its birational class. The answer proved in the paper is that $Z_H(F,9)$ is **not**
+stably rational and **not** rational, but is **retract rational** over $F$. Non-stable
+rationality comes from $\coh^2(H, M|_H) \cong C_9$ for the restricted Procesi lattice, whose
+exponent $9$ is incompatible with quasi-permutation, while every permutation lattice has
+$\coh^2$-exponent dividing $3$. For $H = C_p \times C_p \subset S_{p^2}$ with $p$ odd the same
+computation gives $\coh^2(H, M|_H) \cong C_{p^2}$ against exponent $p$, so $Z_H(F,p^2)$ is not
+stably rational.
+
+This repository contains the machine-checked Lean 4 development of that chain: the lattice
+computations, the statement layers, and the wiring from the named inputs to the conclusions.
+What is checked here, and which inputs are still named hypotheses, is listed under
+*Verification status* below.
 
 ## Paper
 
@@ -48,22 +58,6 @@ above**.
 
 See `paper/` for the paper and `verification/` for the two verification programs; `## Layout`
 says where each layer lives.
-
-## Highlights
-
-* The cohomological computation H^2(H, M|_H) ≅ C_9 is reproduced inside
-  the development, together with the discriminant pair it yields.
-* M|_H is not a stably permutation lattice: the relevant exponent bound
-  on H^2 of permutation lattices is proved by combining Shapiro's lemma
-  with the short exact sequence 0 -> Z -> Q -> Q/Z -> 0 of trivial
-  modules over the corresponding subgroup.
-* Z_H(F, 9) is not stably rational, with the Endo--Miyata--Voskresenskii
-  criterion as the only hypothesis.
-* Base change to the rationals: M|_H ⊗_Z Q ≅ 8 · Q[H] ⊕ Q as
-  Q[H]-modules; both the linear isomorphism and its equivariance are
-  formalized, together with the dimension count dim_Q = 73.
-* The p-general statements for H = C_p x C_p (odd p) are formalized with
-  p as a parameter; the case p = 3 is the corresponding instance.
 
 ## Layout
 
