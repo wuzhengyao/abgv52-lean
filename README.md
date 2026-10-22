@@ -26,47 +26,27 @@ with HAP) and their recorded output are in `verification/`; see
 
 ## Verification status
 
-* The development compiles with no `sorry`.
-* Every declaration depends only on the three standard axioms
-  `propext`, `Classical.choice` and `Quot.sound`.
-* The Endo--Miyata--Voskresenskii criterion is used as an explicit named
-  hypothesis, exactly as in the paper; it is not reproved.  It is
-  formalized as the type-locked interfaces `EMHyp` (H-level) and
-  `EMHypP` (p-general), each with a definitional-shape lock, a wiring
-  theorem, and a non-vacuity probe (`EM_ABGV52.lean`).
-* Saltman's Corollary 3.13 (retract rationality) is quoted as an explicit
-  named hypothesis, not reproved.  It is formalized as the type-locked
-  interface `SaltmanHyp` with a wiring theorem that fills the
-  faithfulness input from the elementary proof of faithfulness, and with
-  a non-vacuity probe (`Saltman_ABGV52.lean`).
-* As of the 2026-10-10 revision of the paper, the retract rationality
-  of Z_H(F, 9) is left open in the paper (Remark 4.12), and the earlier
-  comparison through the linear invariant field is recorded there as
-  invalid.  The formalized retract-rationality wiring (`R1_ABGV52.lean`,
-  `SaltT2_ABGV52.lean`, `Saltman_ABGV52.lean`, `ProcConsume_ABGV52.lean`)
-  is retained as a record of the conditional assembly of that thread.
-* In the same revision the quasi-permutation form of the criterion,
-  together with a machine-checked counterexample to its original
-  stably-permutation form, is formalized in `EMQuasi_ABGV52.lean` and
-  `EMCounter_ABGV52.lean`.
-* The geometric identification Z_H(F, p^2) ≅ F(M|_H)^H (Procesi, 1967)
-  is used as a named hypothesis: the development formalizes the reduction
-  to the regular restriction and the transport of invariants along that
-  identification, but neither constructs the field Z_H(F, p^2) nor proves
-  Procesi's theorem.  The interface `ProcesiHyp` carries a
-  definitional-shape lock, and `Procesi_ABGV52.lean` supplies the
-  named-hypothesis consumption theorem and a non-vacuity probe.  The
-  formalization of the stable-rationality chain is therefore conditional
-  on these named inputs.
-* The development also formalizes proof layers behind the three named
-  hypotheses, as described in the paper: for the converse direction of
-  the criterion in the abelian case with roots of unity, the stable
-  rationality of the invariant field is derived from the stably
-  permutation condition together with faithfulness and a unique-product
-  condition, with the rationality of the invariant field of an arbitrary
-  permutation lattice, the identification of the two-step localization
-  with the function field of the product lattice, and the comparison of
-  the lattice bases all proved, not assumed.
+* The development compiles with **no `sorry`**, and every declaration depends only on the
+three standard axioms `propext`, `Classical.choice`, `Quot.sound`.
+* **Named hypotheses**, used exactly as in the paper and *not* reproved: the
+Endo--Miyata--Voskresenskii criterion (`EMHyp` for the H-level form, `EMHypP` for the
+p-general form) and Saltman's Corollary 3.13 (`SaltmanHyp`). Each is a type-locked interface
+with a wiring theorem and a non-vacuity probe. The geometric identification of
+`Z_H(F,p^2)` with the fixed field is consumed through `ProcesiHyp`; **this repository does not
+prove it** (it is proved in the companion development `procesi-lean`).
+* **Proof layers behind the named hypotheses** are formalized where the paper lists them: the
+converse direction of the criterion in the abelian case with roots of unity, the
+quasi-permutation form together with a machine-checked counterexample to its
+stably-permutation form (`EMQuasi_ABGV52.lean`, `EMCounter_ABGV52.lean`), and the Saltman
+condition layers.
+* **Left open in the paper** (Remark 4.12 of the 2026-10-10 revision): retract rationality of
+`Z_H(F,9)`; the earlier comparison through the linear invariant field is recorded there as
+invalid. The corresponding wiring is kept only as a record of that conditional thread.
+* Consequently the stable-rationality chain verified here is **conditional on the named inputs
+above**.
+
+See `paper/` for the paper and `verification/` for the two verification programs; `## Layout`
+says where each layer lives.
 
 ## Highlights
 
