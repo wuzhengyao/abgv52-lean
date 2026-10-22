@@ -1,4 +1,7 @@
-# Lean 4 formalization: the Procesi lattice and stable rationality of Z_H(F, 9)
+# Rationality of the center of a generic division algebra with a group action
+over a field of characteristic 0
+
+Lean 4 formalization companion.
 
 This repository contains a machine-checked Lean 4 development verifying the
 logical chain of the arguments in the accompanying paper on the Procesi
