@@ -186,6 +186,58 @@ theorem retractCriterionEta_not {M : Rep.{0,0,0} ℤ H} {K : Type} {RRat : Type 
     (h : RetractCriterionEtaHyp M K RRat) (hE : ¬ EtaVanishes H M) : ¬ RRat K :=
   fun hRR => hE (h.mp hRR)
 
+/-! ## §4.1 `IsInvertible` 的封闭性（`⊞`／直和项／同构）—— 为 `eta` 的可加性铺路
+
+源（`raw/Saltman1984.tex` §2「An invertible module is a direct summand of a permutation
+module」）⟹ 可逆性对 `⊞` 封闭、对直和项封闭、沿同构不变。三者是 `eta` 可加性与
+「相似类不变」的**代数目录**（Saltman1987 Prop 1.7／`proj-ABGV52-retract-criterion-refutation` §3）。
+-/
+
+/-- **可逆被 `⊞` 保持**：`M ⊕ M' = P`、`N ⊕ N' = Q` ⟹ `(M⊕N) ⊕ (M'⊕N') = P ⊕ Q`（置换）。 -/
+theorem isInvertible_biprod {G : Type} [Group G] {M N : Rep.{0,0,0} ℤ G}
+    (hM : IsInvertible G M) (hN : IsInvertible G N) : IsInvertible G (M ⊞ N) := by
+  obtain ⟨M', P, hP, ⟨e₁⟩⟩ := hM
+  obtain ⟨N', Q, hQ, ⟨e₂⟩⟩ := hN
+  refine ⟨M' ⊞ N', P ⊞ Q, isPermutationLattice_biprod hP hQ, ⟨?_⟩⟩
+  exact (biprod.associator M N (M' ⊞ N')) ≪≫
+    biprod.mapIso (Iso.refl M)
+      ((biprod.associator N M' N').symm ≪≫
+       biprod.mapIso (biprod.braiding N M') (Iso.refl N') ≪≫
+       biprod.associator M' N N') ≪≫
+    (biprod.associator M M' (N ⊞ N')).symm ≪≫
+    biprod.mapIso e₁ e₂
+
+/-- **可逆的直和项可逆**：`M ⊕ N` 可逆 ⟹ `M` 可逆（补项取 `N ⊕ N'`）。 -/
+theorem isInvertible_of_isInvertible_biprod {G : Type} [Group G] {M N : Rep.{0,0,0} ℤ G}
+    (h : IsInvertible G (M ⊞ N)) : IsInvertible G M := by
+  obtain ⟨N', P, hP, ⟨e⟩⟩ := h
+  exact ⟨N ⊞ N', P, hP, ⟨(biprod.associator M N N').symm ≪≫ e⟩⟩
+
+/-- **可逆性沿同构搬运**。 -/
+theorem isInvertible_of_iso {G : Type} [Group G] {M N : Rep.{0,0,0} ℤ G}
+    (e : M ≅ N) (h : IsInvertible G M) : IsInvertible G N := by
+  obtain ⟨M', P, hP, ⟨f⟩⟩ := h
+  exact ⟨M', P, hP, ⟨biprod.mapIso e.symm (Iso.refl M') ≪≫ f⟩⟩
+
+/-- **右直和项可逆**（左引理的交换形）。 -/
+theorem isInvertible_of_isInvertible_biprod_right {G : Type} [Group G]
+    {M N : Rep.{0,0,0} ℤ G} (h : IsInvertible G (M ⊞ N)) : IsInvertible G N :=
+  isInvertible_of_isInvertible_biprod (M := N) (N := M)
+    (isInvertible_of_iso (biprod.braiding M N) h)
+
+section ZeroWitness
+
+-- `0 : Rep ℤ G` 的 `Zero` 实例是 `scoped[ZeroObject]`（`Flasque_ABGV52` §4.6 的工艺读数 39）
+open scoped ZeroObject
+
+/-- **L19 判别力（非退化，正例）**：`IsInvertible` 在 `⊞` 下确实非空——
+由 `isInvertible_zero` 与 `isInvertible_biprod` 得 `0 ⊞ 0` 可逆（不是空类上的断言）。 -/
+theorem isInvertible_zero_biprod (G : Type) [Group G] :
+    IsInvertible G ((0 : Rep.{0,0,0} ℤ G) ⊞ 0) :=
+  isInvertible_biprod (isInvertible_zero G) (isInvertible_zero G)
+
+end ZeroWitness
+
 /-! ## §5 缺口登记（M1 段的诚实边界）
 
 | 缺口 | 内容 | 状态 |
@@ -211,5 +263,10 @@ theorem retractCriterionEta_not {M : Rep.{0,0,0} ℤ H} {K : Type} {RRat : Type 
 #print axioms etaVanishes_iff_isInvertible_H
 #print axioms retractCriterionHyp_iff_eta
 #print axioms retractCriterionEta_not
+#print axioms isInvertible_biprod
+#print axioms isInvertible_of_isInvertible_biprod
+#print axioms isInvertible_of_iso
+#print axioms isInvertible_of_isInvertible_biprod_right
+#print axioms isInvertible_zero_biprod
 
 end ABGV52
