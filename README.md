@@ -90,9 +90,11 @@ The sources of the graph are in `dag-src/`; regenerate with `python3 dag-src/bui
 
 ## Build
 
-The toolchain is `leanprover/lean4:v4.35.0` (see `lean-toolchain`) and the
-development is pinned to mathlib4 commit
-`aa35a481e5f0cdb3b04a899ead15d6ca7305a624` (see `lakefile.toml`) — an
+The development requires Lean `leanprover/lean4:v4.35.0` (there is no
+`lean-toolchain` file in the repository: select that toolchain yourself, for
+example with `elan override set leanprover/lean4:v4.35.0`), and it is pinned to
+mathlib4 commit `aa35a481e5f0cdb3b04a899ead15d6ca7305a624` (see
+`lakefile.toml`) — an
 upgrade of 2026-10-15 from `db584cd6d46c92f209a44c0f1c829460d327499d`
 (2026-08-10) and Lean 4.33.
 
