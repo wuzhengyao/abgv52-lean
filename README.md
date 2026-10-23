@@ -5,18 +5,24 @@ Lean 4 companion to the paper with the same title.
 Let `F` be a field of characteristic `0`, and let `H = C₃ × C₃` act regularly as a transitive
 subgroup of `S₉`. Let `Z_H(F,9)` be the center of the generic division algebra of degree `9` with
 H-action. Problem 5.2 of the Auel--Brussel--Garibaldi--Vishne problem list asks for its birational
-class. The answer proved in the paper is that `Z_H(F,9)` is **not** stably rational, **not**
-rational and **not** retract rational over `F`. Non-stable and non-retract rationality both come
-from the integral cohomology group `H²(H, M|_H) ≅ C₉` of the restricted Procesi lattice: its
-exponent `9` is incompatible with quasi-permutation and with every finite-index permutation
-superlattice, while every permutation lattice has exponent dividing `3`. For `H = Cₚ × Cₚ` inside
-`S(p²)` with `p` odd the same computation gives `H²(H, M|_H) ≅ C_{p²}` against exponent `p`, so
-`Z_H(F,p²)` is not stably rational.
+class. The paper computes the integral cohomology group `H²(H, M|_H) ≅ C₉` of the restricted
+Procesi lattice and shows that its exponent `9` is incompatible both with quasi-permutation and
+with every finite-index permutation superlattice, while every permutation lattice has exponent
+dividing `3`. Consequently `M|_H` is neither quasi-permutation nor stably permutation, and its
+flasque class is not the class of an invertible lattice.
 
-This repository contains the machine-checked Lean 4 development of that chain: the lattice
+**Whether `Z_H(F,9)` is rational, stably rational, or retract rational is left open** in the
+paper. Passing from those integral obstructions to a rationality verdict would require the
+*untwisted* forms of the Endo--Miyata and flasque-class criteria; the literature supplies these
+criteria only for twisted invariant fields, and they fail in general for the fields `F(M)^G`
+(Remark 2.7 of the paper recalls the standard counterexample). For `H = Cₚ × Cₚ` inside `S(p²)`
+with `p` odd the same computation gives `H²(H, M|_H) ≅ C_{p²}` against exponent `p`; there too no
+rationality verdict is claimed.
+
+This repository contains the Lean 4 development of the surrounding chain: the lattice
 computations, the statement layers, and the wiring from the named inputs to the conclusions.
-What is checked here, and which inputs are still named hypotheses, is listed under
-*Verification status* below.
+What is checked here, and the status of the classical criteria that the paper no longer uses, is
+listed under *Verification status* below and in the status note at the end.
 
 ## Paper
 
@@ -25,9 +31,12 @@ The paper is included in this repository:
 * `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-23);
 * `paper/ABGV-5.2-resolution.pdf` — the compiled PDF (22 pages).
 
-The PDF was compiled from the TeX source of 2026-10-23. This revision adds the paragraph that
-records the machine-checked status of the formalization (after Proposition 3.2) and updates the
-disclosure of the tools used; the mathematical results are unchanged.
+The PDF was compiled from the TeX source of 2026-10-23. This revision states the rationality
+type of `Z_H(F,9)` as **open** — the lattice-theoretic results (`H²(H, M|_H) ≅ C₉`, exponent
+`3` for permutation lattices, `M|_H` neither quasi-permutation nor stably permutation,
+`ρ(M|_H)` not invertible) are unchanged — replaces the two untwisted criteria by a remark
+recording that only their twisted forms are available, and cites Snider's theorem explicitly.
+See the status note at the end of this file.
 
 ## Verification code
 
@@ -40,12 +49,15 @@ that used to contain them has been removed). Re-run with `verification/run.sh`; 
 
 * The development compiles with **no `sorry`**, and every declaration depends only on the
 three standard axioms `propext`, `Classical.choice`, `Quot.sound`.
-* **Named hypotheses**, used as in the paper and *not* reproved: the
+* **Named hypotheses** carried over from the earlier draft, *not* reproved: the
 Endo--Miyata--Voskresenskii criterion (`EMHyp` for the H-level form, `EMHypP` for the
 p-general form) and the retract-rationality criterion (`RetractCriterionHyp`,
 `ABGV52/RetractCrit_ABGV52.lean`); each is a type-locked interface with a wiring theorem and a
-non-vacuity probe. Saltman's Corollary 3.13 is no longer quoted in the paper; the
-type-locked interface `SaltmanHyp` is kept in the development for the Saltman track.
+non-vacuity probe. **The paper no longer asserts either criterion in the untwisted setting**
+(Remark 2.7), so these interfaces are now documentation of what the *twisted* theorems give and
+of the gap between them and the untwisted fields, rather than hypotheses of a paper theorem.
+Saltman's Corollary 3.13 is likewise no longer quoted in the paper; the type-locked interface
+`SaltmanHyp` is kept for the Saltman track.
 
 ## Dependency graph
 
