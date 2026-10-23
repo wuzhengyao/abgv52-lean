@@ -51,25 +51,31 @@ group action over a field of characteristic \(0\)}
 \begin{abstract}
 Let \(F\) be a field of characteristic \(0\) and let
 \(H = C_3 \times C_3\) act regularly as a transitive subgroup of \(S_9\).
-We resolve Problem~5.2 of Auel--Brussel--Garibaldi--Vishne for stable
-rationality and rationality: \(Z_H(F,9)\), the center of the generic
-division algebra of degree~\(9\) with \(H\)-action, is \emph{not} stably
-rational, \emph{not} rational, and \emph{not} retract rational.  The
-non-stable-rationality and the non-retract-rationality are proved by
-computing \(\coh^2(H, M|_H) \cong C_9\) for the restricted Procesi
-lattice and showing that its exponent~\(9\) is incompatible with
-quasi-permutation and with every finite-index permutation
-superlattice, while all permutation lattices have
-\(\coh^2\)-exponent dividing~\(3\).  This integral cohomological
-obstruction is of a different nature from the classical unramified
-Brauer group.
+We compute the second integral cohomology group of the restricted
+Procesi lattice \(M|_H\) attached to Problem~5.2 of
+Auel--Brussel--Garibaldi--Vishne: \(\coh^2(H, M|_H) \cong C_9\).  Its
+exponent~\(9\) is incompatible both with quasi-permutation and with
+every finite-index permutation superlattice, while all permutation
+lattices have \(\coh^2\)-exponent dividing~\(3\); consequently \(M|_H\)
+is neither quasi-permutation nor stably permutation, and its flasque
+class is not the class of an invertible lattice.  This integral
+cohomological obstruction is of a different nature from the classical
+unramified Brauer group.  \emph{Whether \(Z_H(F,9)\), the center of the
+generic division algebra of degree~\(9\) with \(H\)-action, is rational,
+stably rational, or retract rational is left open}: converting the
+integral obstruction into a rationality verdict would require the
+untwisted forms of the Endo--Miyata and flasque-class criteria, which the
+literature supplies only for twisted invariant fields and which fail in
+general for the fields \(F(M)^G\)
+(Remark~\ref{rem:untwisted-criteria}).
 %(\(\Br_{\mathrm{nr}}(F(H)^H/F) \cong C_3\), Proposition~\ref{prop:B0}\);
 % 2026-10-01 第十改：原「which governs the Noether problem but not
 % \(Z_H(F,9)\)」从句已删——比较说明归附录 app:brauer。)
-The proof generalizes to all odd primes~\(p\):
+The computation generalizes to all odd primes~\(p\):
 for \(H = C_p \times C_p \subset S_{p^2}\),
 one obtains \(\coh^2(H, M|_H) \cong C_{p^2}\) while permutation lattices
-have exponent dividing~\(p\), so \(Z_H(F, p^2)\) is not stably rational.
+have exponent dividing~\(p\); there too no rationality verdict is
+claimed.
 \end{abstract}
 
 \medskip\noindent
@@ -161,12 +167,11 @@ In this paper we determine the stable rationality and rationality of
 \hline
 \emph{Property} & \emph{Status} & \emph{Method} \\
 \hline
-Stably rational & \textbf{No (char~0)}
-& \(\coh^2(H, M|_H) \cong C_9\) \\
-Rational & \textbf{No (char~0)}
-& rational \(\Rightarrow\) stably rational \\
-Retract rational & \textbf{No (char~0)}
-& Theorem~\ref{thm:not-retract-rational} \\
+Stably rational & \textbf{Open}
+& \(M|_H\) not quasi-permutation (Lemma~\ref{lem:not-quasi-perm}) \\
+Rational & \textbf{Open} & --- \\
+Retract rational & \textbf{Open}
+& \(\rho(M|_H)\) not invertible (Proposition~\ref{prop:rho-not-invertible}) \\
 \hline
 \end{tabular}
 \caption{Status of the rationality properties of \(Z_H(F,9)\) for
@@ -181,11 +186,11 @@ this group directly obstructs quasi-permutation: we prove that for any
 permutation \(\mathbb{Z}[H]\)-lattice \(P\) (Definition~\ref{def:lattice}),
 every element of \(\coh^2(H, P)\) has order dividing~\(3\)
 (Proposition~\ref{prop:perm-exponent}).
-Consequently \(M|_H\) cannot be quasi-permutation
-(Lemma~\ref{lem:not-quasi-perm}), and by
-Theorem~\ref{thm:endo-miyata},
-\(Z_H(F,9)\) is not stably rational over \(F\)
-(Corollary~\ref{thm:not-stably-rational}).  This integral cohomological
+Consequently \(M|_H\) is neither quasi-permutation
+(Lemma~\ref{lem:not-quasi-perm}) nor stably permutation
+(Theorem~\ref{thm:not-stably-perm}), and the flasque class
+\(\rho(M|_H)\) is not the class of an invertible lattice
+(Proposition~\ref{prop:rho-not-invertible}).  This integral cohomological
 obstruction appears to be new for \emph{multiplicative invariant fields},
 i.e.\ the fields \(F(M)^G\) above.
 
@@ -195,16 +200,19 @@ The logical chain is:
 &\coh^2(H, M|_H) \cong C_9 \\
 &\;\Longrightarrow\; M|_H \text{ is not quasi-permutation}
   \qquad\text{(Lemma~\ref{lem:not-quasi-perm})} \\
-&\;\Longrightarrow\; Z_H(F,9) \text{ is not stably rational}
-  \qquad\text{(Theorem~\ref{thm:endo-miyata}, assumed)} \\
-&\;\Longrightarrow\; Z_H(F,9) \text{ is not rational}
-  \qquad\text{(rationality } \Rightarrow \text{ stable rationality)}.
+&\;\Longrightarrow\; \rho(M|_H) \text{ is not invertible}
+  \qquad\text{(Theorem~\ref{thm:not-stably-perm},
+  Proposition~\ref{prop:rho-not-invertible})}.
 \end{aligned}
 \]
-Thus both non-stable-rationality and non-rationality hold over any field
-of characteristic~\(0\) (via Theorem~\ref{thm:endo-miyata}, used as a
-hypothesis), without reliance on its converse.  The proof generalizes
-verbatim to all odd primes~\(p\) (Theorem~\ref{thm:Cp-general}).
+Turning the last item into a statement about \(Z_H(F,9)\) would require
+the untwisted forms of the Endo--Miyata and flasque-class criteria; the
+literature supplies these criteria only for twisted invariant fields, and
+they fail in general for the fields \(F(M)^G\)
+(Remark~\ref{rem:untwisted-criteria}).  \emph{We therefore leave open
+whether \(Z_H(F,9)\) is rational, stably rational, or retract rational
+over \(F\)}: what is proved here is the integral obstruction above and
+its generalization to all odd primes~\(p\) (Theorem~\ref{thm:Cp-general}).
 
 % [2026-10-01 第九改] 「As complementary evidence」段已注释（用户指令：
 % complementary 说明不重要）。原文存档：
@@ -226,12 +234,11 @@ The original statement in \cite[Problem~5.2]{ABGV2011} is made over an
 arbitrary field.  The cohomological computations
 (\(\coh^2(H, M|_H) \cong C_9\) and \(\exp(\coh^2(H, P)) \mid 3\))
 are purely integral, valid whenever \(\Char F \nmid 9\).
-The geometric conclusions (non-stable-rationality, non-rationality,
-non-retract-rationality) require \(\Char F = 0\) (the criteria are
-stated in characteristic \(0\)): Theorem~\ref{thm:endo-miyata} and
-Theorem~\ref{thm:retract-criterion}, used as hypotheses.  None of the
-three conclusions relies on the converse implication of
-Theorem~\ref{thm:endo-miyata}.
+They yield the lattice-theoretic conclusions of this paper
+(non-quasi-permutation, non-stable-permutation, and non-invertibility of
+\(\rho(M|_H)\)) over any such field.  No rationality verdict for
+\(Z_H(F,9)\) is claimed: Remark~\ref{rem:untwisted-criteria} explains why
+the two classical criteria are not available in the untwisted setting.
 
 % [2026-10-01 第九改] 原 \textbf{Generalizability.} 段已前移（用户指令）：
 % 去粗体标签，句子并入上方 logic chain 段末（同段）。
@@ -305,10 +312,10 @@ Claude Code and DeepSeek Harness, both with DeepSeek V4.1 Flash as the
 underlying LLM, were used under the author's direction and review, for
 literature searching, language polishing, debugging GAP scripts, the
 verification programs in the accompanying code package, and the
-machine-checked Lean development; in its present state that development is
-conditional on the two named hypotheses of the Hypotheses paragraph, the
-Endo--Miyata criterion (Theorem~\ref{thm:endo-miyata}) and the
-retract-rationality criterion (Theorem~\ref{thm:retract-criterion}).
+machine-checked Lean development; in its present state that development
+formalizes the lattice-theoretic layer of the paper, while the two
+classical criteria discussed in Remark~\ref{rem:untwisted-criteria} are
+shown there to be unavailable in the untwisted setting.
 
 % [2026-10-01 第二十三改 → 第二十六改] 本块（原自「Code availability」段移入）
 % 已按用户追加指令合并为单段：AI 使用披露＋两个验证程序与 Lean 的 GitHub
@@ -614,30 +621,41 @@ Since \(K_i\) acts trivially on \(\mathbb{Z}\),
 % 源精度与裁决备忘见 wiki/proj-ABGV52-EM-criterion-correction.md）。文献判据
 % （Saltman1987 Thm 1.3(b)／Lenstra (1.7)／EM1973）一律为序列形；新引理
 % lem:not-quasi-perm（下方）供给反证输入。
-\begin{theorem}\label{thm:endo-miyata}
-Let \(G\) be a finite group and \(M\) a \(\mathbb{Z}[G]\)-lattice on
-which \(G\) acts faithfully.  Let \(F\) be a field of characteristic
-\(0\).  Here \(F(M)\) and \(F(M)^G\) are as in the Introduction, and
-\(G\) acts on \(F(M)\) through the \(\mathbb{Z}[G]\)-module structure
-of~\(M\).  If \(F(M)^G\) is \emph{stably rational} over \(F\), then
-\(M\) is a quasi-permutation \(\mathbb{Z}[G]\)-lattice
-(Definition~\ref{def:lattice}).
-% [2026-10-07 第三十改，用户指令] 原环境内之文献评述句（「In the
-% literature … this paper.」）移至环境外（theorem 环境仅保留数学）；
-% 引文随句保留为正文行内 \cite，未采用环境尾 `\cite[...]{}` 挂引。
-\end{theorem}
+\begin{remark}\label{rem:untwisted-criteria}
+Two criteria are used in the literature for the \emph{twisted} invariant
+field \(Q(L/K,M) = L(M)^G\), where \(L/K\) is Galois with group \(G\) and
+\(G\) acts on the coefficient field as well: \emph{stable rationality
+implies quasi-permutation} \cite[Theorem~1.6]{EndoMiyata1973a}
+\cite[Theorem~1.3(b)]{Saltman1987}, and \emph{retract rationality if and
+only if \(\rho(M)\) is the class of an invertible lattice}
+\cite[Theorem~3.14(a)]{Saltman1984}.  For the untwisted field
+\(F(M)^G = F(M,G)\) of \cite[p.~221]{Saltman1987} neither statement is
+available, and both fail in general.
 
-In the literature this criterion is stated for the \emph{twisted}
-invariant field \(Q(L/K,M) = L(M)^G\)
-of \cite[Theorem~1.3(b)]{Saltman1987} (equivalently, in the language of
-quasi-permutation lattices, \cite[Theorem~1.6]{EndoMiyata1973a}; see
-also \cite[\S1]{EndoMiyata1973b}), where \(L/K\) is Galois with
-group \(G\) and \(G\) acts on the coefficient field as well; the
-field \(F(M)^G\) above is the field \(F(M,G)\) of
-\cite[p.~221]{Saltman1987}, and for it the criterion is an
-assumption rather than a quotation of a proved result.
-\textbf{We use this criterion as a hypothesis}; it is not proved in
-this paper.
+\smallskip
+\noindent(\emph{i}) \emph{Stable rationality does not force
+quasi-permutation.}  Let \(G = C_2 \times C_2\) and \(M = M_2(G)\),
+which is a faithful \(G\)-lattice \cite{Saltman1987}; then \(F(M,G)\) is
+the center of the generic \(G\)-crossed product, and by a theorem of
+Snider this center is rational over \(\mathbb{Q}\).  On the other hand
+\(\eta(M_2(G)) \neq [0]\) \cite[Theorems~2.6 and 2.7]{Saltman1984}, so
+\(\rho(M)\) is not the class of an invertible lattice and \(M\) is not a
+quasi-permutation lattice.  The same phenomenon is recorded in
+\cite[p.~226]{Saltman1987}: ``still assuming \(F(G)/F\) is retract
+rational, \(F(M,G)/F\) can be retract rational for more \(M\).''
+
+\smallskip
+\noindent(\emph{ii}) \emph{Consequently the integral obstruction of this
+paper does not yield a rationality verdict for \(Z_H(F,9)\).}  What it
+yields is that \(M|_H\) is neither quasi-permutation nor stably
+permutation and that \(\rho(M|_H)\) is not invertible
+(Lemma~\ref{lem:not-quasi-perm}, Theorem~\ref{thm:not-stably-perm},
+Proposition~\ref{prop:rho-not-invertible}).
+\end{remark}
+
+In the language of quasi-permutation lattices the twisted criterion is
+\cite[Theorem~1.6]{EndoMiyata1973a}; see also
+\cite[\S1]{EndoMiyata1973b}.
 
 % [2026-09-30 引文勘误] 原句尾挂 \cite[\S1, Lemme~6]{CTS77}，已移除。
 % 核据：CTS77 印刷 Lemme 6（印刷页 181）逐字为「Les applications ρ et ζ
@@ -662,17 +680,15 @@ this paper.
 % \cite[\S7.1, (1) and \S7.2]{Vos98}.
 % \end{theorem}
 
-In the sequel we apply Theorem~\ref{thm:endo-miyata} in the
-contrapositive direction, the criterion being used as a hypothesis
-throughout: if \(M|_H\) is \emph{not} quasi-permutation, then
-\(F(M|_H)^H\), and therefore \(Z_H(F,9)\), is \emph{not} stably rational.
-The cohomological computation of \S\ref{sec:cohom} proves that
+In the sequel we prove that \(M|_H\) is \emph{not} quasi-permutation:
+the cohomological computation of \S\ref{sec:cohom} gives
 \(\coh^2(H, M|_H) \cong C_9\) while permutation lattices have
-\(\coh^2\)-exponent dividing~\(3\); hence \(M|_H\) is not quasi-
-permutation (Lemma~\ref{lem:not-quasi-perm}), and the criterion
-yields non-stable-rationality (Corollary~\ref{thm:not-stably-rational}).
-The same strategy generalizes to \(C_p \times C_p\) in
-\S\ref{sec:generalization}.
+\(\coh^2\)-exponent dividing~\(3\), so \(M|_H\) is neither
+quasi-permutation (Lemma~\ref{lem:not-quasi-perm}) nor stably permutation
+(Theorem~\ref{thm:not-stably-perm}).  By
+Remark~\ref{rem:untwisted-criteria} this does not by itself decide the
+rationality type of \(Z_H(F,9)\).  The same computation generalizes to
+\(C_p \times C_p\) in \S\ref{sec:generalization}.
 
 % [2026-10-01 第十七改，用户指令] `thm:UCT` 移至附录 B（原处仅此一处定义，
 % 其使用全部在附录 B/C：`prop:B0` 证明与附录 C 泛化节）；原文存档如下：
@@ -1494,20 +1510,18 @@ every subgroup \(K \le H\).  Hence \(\coh^2(H, M|_H)\) embeds into
 (Lemma~\ref{lem:H2-MH}).
 \end{proof}
 
-\begin{corollary}\label{thm:not-stably-rational}
-The field \(Z_H(F,9)\) is not stably rational over \(F\).
-\end{corollary}
-
-\begin{proof}
-Recall that \(Z_H(F,9)\) is rational over \(F(M|_H)^H\)
-(Proposition~\ref{rem:procesi-geometric}), the action of \(H\) on
-\(M|_H\) being faithful (Proposition~\ref{prop:faithful-MH}).
-By Lemma~\ref{lem:not-quasi-perm}, \(M|_H\) is not quasi-permutation.
-By Theorem~\ref{thm:endo-miyata}, used as a hypothesis,
-stable rationality of \(F(M|_H)^H\) over \(F\) forces \(M|_H\) to be
-quasi-permutation.  Hence \(F(M|_H)^H\), and therefore \(Z_H(F,9)\),
-is not stably rational.
-\end{proof}
+\begin{remark}\label{rem:open-verdicts}
+\emph{Whether \(Z_H(F,9)\) is rational, stably rational, or retract
+rational over \(F\) is left open.}  What the preceding results establish
+is the lattice-theoretic statement: \(M|_H\) is not quasi-permutation
+(Lemma~\ref{lem:not-quasi-perm}), not stably permutation
+(Theorem~\ref{thm:not-stably-perm}), and \(\rho(M|_H)\) is not the class
+of an invertible lattice (Proposition~\ref{prop:rho-not-invertible}).
+By Remark~\ref{rem:untwisted-criteria} none of these converts into a
+rationality verdict for \(F(M|_H)^H\), and \(Z_H(F,9)\) is rational over
+\(F(M|_H)^H\) (Proposition~\ref{rem:procesi-geometric}), the action of
+\(H\) on \(M|_H\) being faithful (Proposition~\ref{prop:faithful-MH}).
+\end{remark}
 
 % [2026-10-23 注释，用户指令] 本 remark 与引言 Hypotheses 段内容重复
 % （“The cohomological computations are purely integral … Theorem 2.7 and
@@ -1639,33 +1653,29 @@ is, \(h\) acts nontrivially on \(M|_H\).
 % \(F(V)^A\) is retract rational over \(F\).
 % \end{theorem}
 
-\begin{theorem}\label{thm:retract-criterion}
-Let \(G\) be a finite group and let \(M\) be a \(\mathbb{Z}[G]\)-lattice
-on which \(G\) acts faithfully.  Let \(F\) be a field of
-characteristic \(0\).  Then \(F(M)^G\) is retract rational over \(F\)
-if and only if the flasque class \(\rho(M)\)
-(Proposition~\ref{prop:flasque-resolution}) is the class of an
-invertible lattice (Definition~\ref{def:flasque-class}).
-\end{theorem}
+\begin{remark}\label{rem:twisted-criterion}
+For the \emph{twisted} invariant field \(Q(L/K,M) = L(M)^G\) the
+flasque-class criterion is a theorem: \(Q(L/K,M)\) is retract rational
+over \(K\) if and only if \(\rho(M)\) is the class of an invertible
+lattice \cite[Theorem~3.14(a)]{Saltman1984}.  For the untwisted field
+\(F(M)^G = F(M,G)\) of \cite[p.~221]{Saltman1987} the corresponding
+statement is not available and fails in general, by the example of
+Remark~\ref{rem:untwisted-criteria}: for \(G = C_2 \times C_2\) and
+\(M = M_2(G)\) the field \(F(M,G)\) is rational, whereas \(\rho(M)\) is
+not the class of an invertible lattice.  We therefore do not use this
+criterion; from it we keep only the hypothesis-free half proved below,
+namely that \(\rho(M|_H)\) is not the class of an invertible lattice
+(Proposition~\ref{prop:rho-not-invertible}).
+\end{remark}
 
-In the literature this criterion is stated for the \emph{twisted}
-invariant field \(Q(L/K,M) = L(M)^G\) of
-\cite[Theorem~3.14(a)]{Saltman1984}, where the invariant attached to
-\(M\) is its flasque class.  As for
-Theorem~\ref{thm:endo-miyata}, the field \(F(M)^G\) above is the field
-\(F(M,G)\) of \cite[p.~221]{Saltman1987}, and for it the criterion is
-an assumption rather than a quotation of a proved result.
-
-\begin{theorem}\label{thm:not-retract-rational}
-Let \(H = C_3 \times C_3\) and let \(F\) be a field of characteristic
-\(0\).  Then \(Z_H(F,9) = F(M|_H)^H\) is \emph{not} retract rational
-over \(F\).
-\end{theorem}
+\begin{proposition}\label{prop:rho-not-invertible}
+Let \(H = C_3 \times C_3\).  Then the flasque class \(\rho(M|_H)\) is
+not the class of an invertible lattice; more precisely, \(\rho(M|_H)\)
+is not coflasque.
+\end{proposition}
 \begin{proof}
-By Theorem~\ref{thm:retract-criterion} it suffices to show that the
-flasque class \(\rho(M|_H)\) is not invertible.  We show the stronger
-statement that \(\rho(M|_H)\) is not coflasque; then
-Lemma~\ref{lem:invertible-coflasque} applies.
+We show that \(\rho(M|_H)\) is not coflasque; then
+Lemma~\ref{lem:invertible-coflasque} gives the claim.
 
 Let \(P\) be a permutation \(\mathbb{Z}[H]\)-lattice containing
 \(M|_H\) with finite index.  Then \(P\) and \(M|_H\) have the same
@@ -1717,9 +1727,9 @@ Now let \(0 \to M|_H \to P \to F \to 0\) be a flasque resolution of
 so the preceding paragraph applies to it, and \(F\) is not coflasque.
 Since an invertible lattice is coflasque
 (Lemma~\ref{lem:invertible-coflasque}), the class
-\(\rho(M|_H) = [F]\) is not invertible.  By
-Theorem~\ref{thm:retract-criterion}, \(F(M|_H)^H\) is not retract
-rational over \(F\).
+\(\rho(M|_H) = [F]\) is not the class of an invertible lattice.  By
+Remark~\ref{rem:twisted-criterion} this carries no rationality verdict
+for the untwisted field \(F(M|_H)^H\).
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1808,18 +1818,19 @@ but not stably permutation: passing to the coinvariants
 while permutation lattices over the cyclic group \(C_3\) have
 torsion-free coinvariants.  Thus non-permutation does not imply
 non-stable permutation, and non-stable permutation does not imply
-non-quasi-permutation.  The main proof therefore uses
-Lemma~\ref{lem:not-quasi-perm} together with the implication
-``stably rational \(\Rightarrow\) quasi-permutation''
-(Theorem~\ref{thm:endo-miyata}).
+non-quasi-permutation.  The main results of this paper therefore use
+Lemma~\ref{lem:not-quasi-perm} and Theorem~\ref{thm:not-stably-perm}
+alone; the implication ``stably rational \(\Rightarrow\)
+quasi-permutation'' for the untwisted field is not available
+(Remark~\ref{rem:untwisted-criteria}).
 \end{remark}
 
 \section{Generalization to \(C_p \times C_p\)}
 \label{sec:generalization}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We record the generalization of Corollary~\ref{thm:not-stably-rational} to all
-odd primes.
+We record the generalization of the lattice-theoretic results above to
+all odd primes.
 
 \begin{theorem}\label{thm:Cp-general}
 Let \(p\) be an odd prime and let \(H = C_p \times C_p \subset S_{p^2}\)
@@ -1835,11 +1846,10 @@ generic division algebra of degree~\(p^2\) over \(F\)
   \item For any permutation \(\mathbb{Z}[H]\)-lattice \(P\),
     \(\exp(\coh^2(H, P)) \mid p\).
   \item \(M|_H\) is not quasi-permutation.
-  \item The field \(Z_H(F, p^2)\) is neither stably rational nor rational
-    over \(F\).
-  \item The retract rationality of \(Z_H(F, p^2)\) is settled negatively
-    for \(p = 3\) (Theorem~\ref{thm:not-retract-rational}) and is left
-    open for \(p > 3\).
+  \item \(M|_H\) is not stably permutation.
+  \item The rationality type of \(Z_H(F, p^2)\) (rational, stably
+    rational, or retract rational) is left open; no verdict is claimed
+    (Remark~\ref{rem:untwisted-criteria}).
 \end{enumerate}
 \end{theorem}
 
@@ -1867,10 +1877,16 @@ with the subgroups of \(C_p \times C_p\) in place of those of
 \(C_3 \times C_3\), gives \(\exp(\coh^2(H, P)) \mid p\).
 
 \medskip\noindent
-(3)~The same argument as in Lemma~\ref{lem:not-quasi-perm}
-and Corollary~\ref{thm:not-stably-rational}, with \(p\) in place of~\(3\),
-shows that \(M|_H\) is not quasi-permutation and
-\(Z_H(F, p^2)\) is not stably rational.
+(3)~The same argument as in Lemma~\ref{lem:not-quasi-perm}, with \(p\)
+in place of~\(3\), shows that \(M|_H\) is not quasi-permutation.
+
+\medskip\noindent
+(4)~The same argument as in Theorem~\ref{thm:not-stably-perm}, with \(p\)
+in place of~\(3\), shows that \(M|_H\) is not stably permutation.
+
+\medskip\noindent
+(5)~No rationality verdict is claimed, by
+Remark~\ref{rem:untwisted-criteria}.
 \end{proof}
 
 \begin{remark}
@@ -1882,11 +1898,9 @@ Proposition~\ref{prop:embedding-independence}),
 Proposition~\ref{prop:tensor-reg-ZH},
 the cohomological vanishing (Shapiro), and the subgroup
 analysis of \(C_p \times C_p\) are all purely formal and independent
-of~\(p\).  The converse implication, from rationality back to stable
-permutation, remains open for non-cyclic \(p\)-groups; its twisted
-counterparts are \cite[Theorem~1.6]{EndoMiyata1973a} and
-\cite[Theorem~1.3(b)]{Saltman1987}.  It is not required for any of the
-above conclusions.
+of~\(p\).  As explained in Remark~\ref{rem:untwisted-criteria}, the
+corresponding untwisted criteria are unavailable, which is why no
+rationality verdict for \(Z_H(F, p^2)\) is claimed.
 \end{remark}
 
 Our results on \cite[Problem~5.2]{ABGV2011} are summarized in
