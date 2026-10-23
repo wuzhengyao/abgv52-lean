@@ -48,8 +48,6 @@ group action over a field of characteristic \(0\)}
 \begin{document}
 \maketitle
 
-\tableofcontents
-
 \begin{abstract}
 Let \(F\) be a field of characteristic \(0\) and let
 \(H = C_3 \times C_3\) act regularly as a transitive subgroup of \(S_9\).
@@ -80,6 +78,10 @@ integral group cohomology, permutation lattices.
 
 \medskip\noindent
 \textbf{MSC2020:} 14E08, 20J06, 14M20.
+
+\newpage
+\tableofcontents
+\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
@@ -794,12 +796,18 @@ of degree \(9\) over \(F\).
 \item For every subgroup \(H \subseteq S_9\), taking \(H\)-invariants
   gives \(Z_H(F,9) = F((M \oplus U)|_H)^H\).
 \item The field \(Z_H(F,9)\) has transcendence degree \(82 = n^2+1\) over
-  \(F\), and it is \emph{rational} over \(F(M|_H)^H\): apply
-  \cite[Proposition~1.4]{Lenstra1974} to the permutation
-  \(\mathbb{Z}[H]\)-module \(U|_H\) over the base field \(F(M|_H)\),
-  on which \(H\) acts faithfully (Proposition~\ref{prop:faithful-MH}).
+  \(F\), and it is \emph{rational} over \(F(M|_H)^H\).
 \end{enumerate}
 \end{proposition}
+
+\begin{proof}
+Parts 1 and 2 are Procesi's theorem \cite{Procesi1967}; see also
+\cite[\S5]{ABGV2011} and \cite{Formanek2002}.  For part 3, apply
+\cite[Proposition~1.4]{Lenstra1974} to the permutation
+\(\mathbb{Z}[H]\)-module \(U|_H\) over the base field \(F(M|_H)\),
+on which \(H\) acts faithfully (Proposition~\ref{prop:faithful-MH}); the
+transcendence degree is that of \(M \oplus U\), namely \(73 + 9 = 82\).
+\end{proof}
 
 The \(S_9\) identification of this proposition, and the rationality statement
 of its third part, are completely formalized in Lean in the accompanying code
@@ -1813,37 +1821,22 @@ odd primes.
 \begin{theorem}\label{thm:Cp-general}
 Let \(p\) be an odd prime and let \(H = C_p \times C_p \subset S_{p^2}\)
 act regularly (i.e., freely and transitively on
-\(\{1, 2, \dots, p^2\}\)).  Let \(M|_H\) be the restriction of the Procesi
-\(\mathbb{Z}[S_{p^2}]\)-lattice to \(H\).  By the regular identification
-\(U|_H \cong \mathbb{Z}[H]\) and the projection formula
-\(\mathbb{Z}[H] \otimes_{\mathbb{Z}} \mathbb{Z}[H] \cong
-\mathbb{Z}[H]^{\oplus p^2}\),
-% [2026-10-01 去重] 原括号引用 (Proposition~\ref{prop:tensor-reg-ZH}) 已删——
-% 证明首段已引同一命题，陈述不再重复。
-\(M|_H\) fits into the exact sequence of \(\mathbb{Z}[H]\)-modules
-\[
-0 \longrightarrow M|_H \longrightarrow \mathbb{Z}[H]^{\oplus p^2}
-\longrightarrow I[H] \longrightarrow 0 ,
-\]
-where \(I[H] = \ker(\varepsilon \colon \mathbb{Z}[H] \twoheadrightarrow
-\mathbb{Z})\) is the augmentation ideal and the surjection sends each
-standard basis element of \(\mathbb{Z}[H]^{\oplus p^2}\) to a difference
-\(h - h'\) in \(\mathbb{Z}[H]\).
-Let \(F\) be a field of characteristic \(0\), and let
-\(Z_H(F, p^2)\) denote the center of the generic division algebra of
-degree~\(p^2\) over \(F\) (cf.\ Remark~\ref{rem:procesi-geometric}),
-with \(Z_H(F, p^2)\) rational over \(F(M|_H)^H\).  Then:
+\(\{1, 2, \dots, p^2\}\)).  Let \(M|_H\) be the restriction of the
+Procesi \(\mathbb{Z}[S_{p^2}]\)-lattice to \(H\).  Let \(F\) be a field
+of characteristic \(0\), and let \(Z_H(F, p^2)\) denote the center of the
+generic division algebra of degree~\(p^2\) over \(F\)
+(cf.\ Proposition~\ref{rem:procesi-geometric}), rational over
+\(F(M|_H)^H\).  Then:
 \begin{enumerate}
   \item \(\coh^2(H, M|_H) \cong C_{p^2}\).
   \item For any permutation \(\mathbb{Z}[H]\)-lattice \(P\),
     \(\exp(\coh^2(H, P)) \mid p\).
-  \item Consequently, \(M|_H\) is not quasi-permutation, and
-    \(Z_H(F, p^2)\) is not stably rational (hence not rational) over \(F\).
-  \item For \(p = 3\) the retract rationality is settled negatively
-    (Theorem~\ref{thm:not-retract-rational}); for \(p > 3\) it is left
-    open.  The comparison argument of
-    Remark~\ref{rem:retract-comparison} applies verbatim with \(p\) in
-    place of~\(3\).
+  \item \(M|_H\) is not quasi-permutation.
+  \item The field \(Z_H(F, p^2)\) is neither stably rational nor rational
+    over \(F\).
+  \item The retract rationality of \(Z_H(F, p^2)\) is settled negatively
+    for \(p = 3\) (Theorem~\ref{thm:not-retract-rational}) and is left
+    open for \(p > 3\).
 \end{enumerate}
 \end{theorem}
 
