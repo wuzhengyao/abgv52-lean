@@ -306,6 +306,149 @@ theorem isSimilar_add_congr {M M' N N' : Rep.{0,0,0} ℤ H}
     (h : IsSimilar H M M') (k : IsSimilar H N N') : IsSimilar H (M ⊞ N) (M' ⊞ N') :=
   isSimilar_biprod h k
 
+/-! ## §4.3 `eta` 对置换和项不敏感（`eta(M ⊞ P) = eta(M)`，`P` 置换）
+
+**源**：Saltman1984 §2 的 `eta` 取**弱等价**（`M ⊕ I ≅ M′ ⊕ I′`，`I, I′` 可逆），故 `eta`
+对「加置换和项」不变。这是 Saltman1987 的 `<`-相似关系两条生成子之一（另一条是
+「商项可逆的扩张」，需 `Ext¹` 消没，见 §5 缺口表）。
+
+**证明形状**：给定 `R : FlasqueResolution G M`，把消解 `R` 沿 `⊞ P` 搬运——
+`0 → M ⊞ P --(iota ⊞ id)--> R.P ⊞ P --(fst ≫ pi)--> R.F → 0`
+（`R.P ⊞ P` 仍置换、`R.F` 不变），三条 `FlasqueResolution` 义务逐项核：
+单射由 `R.iota` 单射 ＋ `P` 分量恒等；正合性用元素层分解
+`EM.biprod_total_apply`（`x = inl (fst x) + inr (snd x)`）；满射取 `inl`。
+-/
+
+/-- `biprod.map` 的 `fst` 分量（函数层）：`fst ((f ⊞ g) x) = f (fst x)`。 -/
+theorem biprod_map_fst_apply {G : Type} [Group G] {A B C D : Rep.{0,0,0} ℤ G}
+    (f : A ⟶ C) (g : B ⟶ D) (x : ↥(A ⊞ B)) :
+    (biprod.fst (X := C) (Y := D)).hom ((biprod.map f g).hom x)
+      = f.hom ((biprod.fst (X := A) (Y := B)).hom x) := by
+  have h := congrArg (fun m : A ⊞ B ⟶ C => (m : ↥(A ⊞ B) → ↥C) x) (biprod.map_fst f g)
+  simpa only [Rep.comp_apply] using h
+
+/-- `biprod.map` 的 `snd` 分量（函数层）：`snd ((f ⊞ g) x) = g (snd x)`。 -/
+theorem biprod_map_snd_apply {G : Type} [Group G] {A B C D : Rep.{0,0,0} ℤ G}
+    (f : A ⟶ C) (g : B ⟶ D) (x : ↥(A ⊞ B)) :
+    (biprod.snd (X := C) (Y := D)).hom ((biprod.map f g).hom x)
+      = g.hom ((biprod.snd (X := A) (Y := B)).hom x) := by
+  have h := congrArg (fun m : A ⊞ B ⟶ D => (m : ↥(A ⊞ B) → ↥D) x) (biprod.map_snd f g)
+  simpa only [Rep.comp_apply] using h
+
+/-- `fst ∘ inr = 0`（函数层）。 -/
+theorem biprod_inr_fst_apply {G : Type} [Group G] (M P : Rep.{0,0,0} ℤ G) (p : ↥P) :
+    (biprod.fst (X := M) (Y := P)).hom ((biprod.inr (X := M) (Y := P)).hom p) = 0 := by
+  have h : (biprod.fst (X := M) (Y := P)).hom ((biprod.inr (X := M) (Y := P)).hom p)
+      = (0 : P ⟶ M) p := by
+    have h' := congrArg (fun f : P ⟶ M => (f : ↥P → ↥M) p)
+      (biprod.inr_fst (X := M) (Y := P))
+    rw [Rep.comp_apply] at h'
+    exact h'
+  rw [h]
+  exact LinearMap.zero_apply p
+
+/-- **`eta` 对置换和项不敏感**：`eta(M) = 0` ⟹ `eta(M ⊞ P) = 0`（`P` 置换格）。
+
+（反向 `eta(M ⊞ P) = 0 ⟹ eta(M) = 0` 需「置换补项可消」，本条未证——见 §5。） -/
+theorem etaVanishes_biprod_perm {G : Type} [Group G] [Fintype G] {M Pp : Rep.{0,0,0} ℤ G}
+    (h : EtaVanishes G M) (hPp : EM.IsPermutationLattice G Pp) :
+    EtaVanishes G (M ⊞ Pp) := by
+  obtain ⟨R, hInv⟩ := h
+  have hfst : ∀ x : ↥(M ⊞ Pp),
+      (biprod.fst (X := R.P) (Y := Pp)).hom ((biprod.map R.iota (𝟙 Pp)).hom x)
+        = R.iota.hom ((biprod.fst (X := M) (Y := Pp)).hom x) :=
+    fun x => biprod_map_fst_apply R.iota (𝟙 Pp) x
+  have hsnd : ∀ x : ↥(M ⊞ Pp),
+      (biprod.snd (X := R.P) (Y := Pp)).hom ((biprod.map R.iota (𝟙 Pp)).hom x)
+        = (biprod.snd (X := M) (Y := Pp)).hom x := by
+    intro x
+    simpa only [Rep.id_apply] using biprod_map_snd_apply R.iota (𝟙 Pp) x
+  have hinl : ∀ m : ↥M,
+      (biprod.map R.iota (𝟙 Pp)).hom ((biprod.inl (X := M) (Y := Pp)).hom m)
+        = (biprod.inl (X := R.P) (Y := Pp)).hom (R.iota.hom m) := by
+    intro m
+    calc (biprod.map R.iota (𝟙 Pp)).hom ((biprod.inl (X := M) (Y := Pp)).hom m)
+        = (biprod.inl (X := R.P) (Y := Pp)).hom
+            ((biprod.fst (X := R.P) (Y := Pp)).hom
+              ((biprod.map R.iota (𝟙 Pp)).hom ((biprod.inl (X := M) (Y := Pp)).hom m)))
+          + (biprod.inr (X := R.P) (Y := Pp)).hom
+            ((biprod.snd (X := R.P) (Y := Pp)).hom
+              ((biprod.map R.iota (𝟙 Pp)).hom ((biprod.inl (X := M) (Y := Pp)).hom m))) :=
+          (EM.biprod_total_apply R.P Pp _).symm
+      _ = (biprod.inl (X := R.P) (Y := Pp)).hom (R.iota.hom m)
+            + (biprod.inr (X := R.P) (Y := Pp)).hom 0 := by
+          rw [hfst, hsnd, EM.biprod_inl_fst_apply, EM.biprod_inl_snd_apply]
+      _ = (biprod.inl (X := R.P) (Y := Pp)).hom (R.iota.hom m) := by
+          rw [map_zero, add_zero]
+  have hinr : ∀ p : ↥Pp,
+      (biprod.map R.iota (𝟙 Pp)).hom ((biprod.inr (X := M) (Y := Pp)).hom p)
+        = (biprod.inr (X := R.P) (Y := Pp)).hom p := by
+    intro p
+    calc (biprod.map R.iota (𝟙 Pp)).hom ((biprod.inr (X := M) (Y := Pp)).hom p)
+        = (biprod.inl (X := R.P) (Y := Pp)).hom
+            ((biprod.fst (X := R.P) (Y := Pp)).hom
+              ((biprod.map R.iota (𝟙 Pp)).hom ((biprod.inr (X := M) (Y := Pp)).hom p)))
+          + (biprod.inr (X := R.P) (Y := Pp)).hom
+            ((biprod.snd (X := R.P) (Y := Pp)).hom
+              ((biprod.map R.iota (𝟙 Pp)).hom ((biprod.inr (X := M) (Y := Pp)).hom p))) :=
+          (EM.biprod_total_apply R.P Pp _).symm
+      _ = (biprod.inl (X := R.P) (Y := Pp)).hom (R.iota.hom 0)
+            + (biprod.inr (X := R.P) (Y := Pp)).hom p := by
+          rw [hfst, hsnd, biprod_inr_fst_apply, EM.biprod_inr_snd_apply]
+      _ = (biprod.inr (X := R.P) (Y := Pp)).hom p := by
+          rw [map_zero, map_zero, zero_add]
+  refine ⟨{ F := R.F, P := R.P ⊞ Pp, iota := biprod.map R.iota (𝟙 Pp),
+            pi := biprod.fst ≫ R.pi,
+            injective_iota := ?_, exact := ?_, surjective_pi := ?_,
+            perm := isPermutationLattice_biprod R.perm hPp,
+            flasque := R.flasque }, hInv⟩
+  · intro x y hxy
+    have hf : (biprod.fst (X := M) (Y := Pp)).hom x
+        = (biprod.fst (X := M) (Y := Pp)).hom y := by
+      apply R.injective_iota
+      have h2 := congrArg (fun z => (biprod.fst (X := R.P) (Y := Pp)).hom z) hxy
+      simpa only [hfst] using h2
+    have hs : (biprod.snd (X := M) (Y := Pp)).hom x
+        = (biprod.snd (X := M) (Y := Pp)).hom y := by
+      have h2 := congrArg (fun z => (biprod.snd (X := R.P) (Y := Pp)).hom z) hxy
+      simpa only [hsnd] using h2
+    calc x = (biprod.inl (X := M) (Y := Pp)).hom ((biprod.fst (X := M) (Y := Pp)).hom x)
+            + (biprod.inr (X := M) (Y := Pp)).hom ((biprod.snd (X := M) (Y := Pp)).hom x) :=
+          (EM.biprod_total_apply M Pp x).symm
+      _ = (biprod.inl (X := M) (Y := Pp)).hom ((biprod.fst (X := M) (Y := Pp)).hom y)
+            + (biprod.inr (X := M) (Y := Pp)).hom ((biprod.snd (X := M) (Y := Pp)).hom y) := by
+          rw [hf, hs]
+      _ = y := EM.biprod_total_apply M Pp y
+  · intro z
+    constructor
+    · intro hz
+      have hz' : R.pi.hom ((biprod.fst (X := R.P) (Y := Pp)).hom z) = 0 := by
+        simpa only [Rep.comp_apply] using hz
+      obtain ⟨m, hm⟩ := (R.exact ((biprod.fst (X := R.P) (Y := Pp)).hom z)).mp hz'
+      refine ⟨(biprod.inl (X := M) (Y := Pp)).hom m
+        + (biprod.inr (X := M) (Y := Pp)).hom ((biprod.snd (X := R.P) (Y := Pp)).hom z), ?_⟩
+      rw [map_add, hinl, hinr, hm]
+      exact EM.biprod_total_apply R.P Pp z
+    · rintro ⟨x, rfl⟩
+      show R.pi.hom ((biprod.fst (X := R.P) (Y := Pp)).hom
+        ((biprod.map R.iota (𝟙 Pp)).hom x)) = 0
+      rw [hfst]
+      exact (R.exact _).mpr ⟨_, rfl⟩
+  · intro y
+    obtain ⟨p, hp⟩ := R.surjective_pi y
+    exact ⟨(biprod.inl (X := R.P) (Y := Pp)).hom p, by
+      show R.pi.hom ((biprod.fst (X := R.P) (Y := Pp)).hom
+        ((biprod.inl (X := R.P) (Y := Pp)).hom p)) = y
+      rw [EM.biprod_inl_fst_apply]
+      exact hp⟩
+
+/-- **`eta` 的双向置换盲性（一侧）**：`eta(M) = 0 ⟺ eta(M ⊞ ℤ[G/N]-型置换和项) = 0`
+的可用方向——本工程只证 `⟹`（见 §5）。 -/
+theorem etaVanishes_biprod_perm' {G : Type} [Group G] [Fintype G] {M Pp : Rep.{0,0,0} ℤ G}
+    (h : EtaVanishes G M) (hPp : EM.IsPermutationLattice G Pp) :
+    EtaVanishes G (M ⊞ Pp) :=
+  etaVanishes_biprod_perm h hPp
+
 /-! ## §5 缺口登记（M1 段的诚实边界）
 
 | 缺口 | 内容 | 状态 |
@@ -340,5 +483,10 @@ theorem isSimilar_add_congr {M M' N N' : Rep.{0,0,0} ℤ H}
 #print axioms isSimilar_biprod
 #print axioms isSimilar_add_congr
 #print axioms retractCriterionHyp_paper_instance_refuted_registered
+#print axioms biprod_map_fst_apply
+#print axioms biprod_map_snd_apply
+#print axioms biprod_inr_fst_apply
+#print axioms etaVanishes_biprod_perm
+#print axioms etaVanishes_biprod_perm'
 
 end ABGV52
