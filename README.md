@@ -47,18 +47,103 @@ p-general form) and the retract-rationality criterion (`RetractCriterionHyp`,
 non-vacuity probe. Saltman's Corollary 3.13 is no longer quoted in the paper; the
 type-locked interface `SaltmanHyp` is kept in the development for the Saltman track.
 
-## Layout
+## Dependency graph
 
-The dependency graph of the H2 layer (the Procesi identification) is generated mechanically from
-the Lean sources. Blue boxes are self-authored theorems; green dashed boxes are mathlib lemmas
-used directly; an arrow points from a lemma to the statement that uses it.
+The graph below is the dependency graph of the H2 layer (the Procesi identification). Blue nodes
+are self-authored theorems, green dashed nodes are mathlib lemmas used directly, and an arrow
+points from a lemma to the statement that uses it.
 
-* **[`index.html`](index.html)** — the clickable version: every blue box opens its declaration in
-  the Lean sources on GitHub.
-* **[`h2-dependency-graph.pdf`](h2-dependency-graph.pdf)** — the printable version (one A4
-  landscape page).
+```mermaid
+graph BT
+  root["H2: Z_S9(F,9) ≅ F(M ⊕ U)^S9"]
+  h2unc["h2_unconditional"]
+  nv9["nonempty_genericDivisionData_two_nine"]
+  h2sm["h2_of_scalarMem"]
+  smz["scalarMemZHypK'"]
+  nv2["nonempty_genericDivisionData_two"]
+  simp["isSimpleRing_UDK'_of_scalarMem"]
+  nvspan["nonempty_genericDivisionData_of_span"]
+  hspan["adjoin_genericMatrix_map_eq_top"]
+  ideal["udk'_ideal_inf_scalars"]
+  nvac["exists_scalar_mem_of_ne_bot"]
+  cor148["exists_scalar_map_of_mem_genericCenter_of_span"]
+  clear["exists_clear_den"]
+  centimg["mem_centerImage_of_map_eq_scalar"]
+  scalarm["scalar_mem_sprAlgebraK_of_mem_subring"]
+  detmap["det_phiS_map_ne_zero"]
+  spralg["mem_sprAlgebraK_iff"]
+  centk["psiSpr_center_scalar"]
+  centiff["mem_genericCenter_iff"]
+  mcenter2["exists_eq_scalar_of_mem_matrixCenter"]
+  mcenter["matrixCenter_eq_bot"]
+  dets["det_phiS_ne_zero"]
+  detpsi["det_psi_ne_zero"]
+  phimap["phiS_map_evalAt"]
+  lam["lam_injective"]
+  m_induct["Algebra.adjoin_induction"]
+  m_inv["Matrix.nonsing_inv_mul"]
+  m_mapdet["RingHom.map_det"]
+  m_cent["Subalgebra.mem_center_iff"]
+  m_det["Matrix.det_kronecker ＋ det_vandermonde"]
+  m_pow["Matrix.map_pow ＋ diagonal_pow/mul_diagonal"]
+  m_cent -.-> centiff
+  centiff --> centimg
+  centk --> centimg
+  m_induct -.-> clear
+  m_cent -.-> cor148
+  m_induct -.-> cor148
+  mcenter2 --> cor148
+  dets --> detmap
+  m_mapdet -.-> detmap
+  lam --> detpsi
+  m_det -.-> detpsi
+  detpsi --> dets
+  m_mapdet -.-> dets
+  phimap --> dets
+  simp --> h2sm
+  h2sm --> h2unc
+  smz --> h2unc
+  detmap --> hspan
+  m_inv -.-> hspan
+  m_pow -.-> hspan
+  nvac --> ideal
+  m_cent -.-> mcenter
+  mcenter --> mcenter2
+  hspan --> nv2
+  nvspan --> nv2
+  nv2 --> nv9
+  cor148 --> nvspan
+  m_pow -.-> phimap
+  centk --> scalarm
+  spralg --> scalarm
+  ideal --> simp
+  centimg --> smz
+  clear --> smz
+  m_induct -.-> smz
+  scalarm --> smz
+  spralg --> smz
+  classDef self fill:#dbeafe,stroke:#1e40af,stroke-width:1px;
+  classDef ml fill:#dcfce7,stroke:#166534,stroke-dasharray:3 2;
+  classDef root fill:#fde68a,stroke:#92400e,stroke-width:2px;
+  class root,h2unc,nv9,h2sm,smz,nv2,simp,nvspan,hspan,ideal,nvac,cor148,clear,centimg,scalarm,detmap,spralg,centk,centiff,mcenter2,mcenter,dets,detpsi,phimap,lam self;
+  class m_induct,m_inv,m_mapdet,m_cent,m_det,m_pow ml;
+  class root root;
+```
 
-The sources of the graph are in `dag-src/`; regenerate with `python3 dag-src/build_dag.py`.
+Each theorem name below links to its declaration in the Lean sources.
+
+* `Procesi/Cor148.lean` — [exists_scalar_map_of_mem_genericCenter_of_span](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/Cor148.lean#L40), [nonempty_genericDivisionData_of_span](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/Cor148.lean#L96)
+* `Procesi/GenericMatrix.lean` — [exists_eq_scalar_of_mem_matrixCenter](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/GenericMatrix.lean#L148), [matrixCenter_eq_bot](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/GenericMatrix.lean#L136), [mem_genericCenter_iff](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/GenericMatrix.lean#L94)
+* `Procesi/GenericSpan.lean` — [det_phiS_ne_zero](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/GenericSpan.lean#L147), [det_psi_ne_zero](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/GenericSpan.lean#L101), [lam_injective](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/GenericSpan.lean#L45), [phiS_map_evalAt](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/GenericSpan.lean#L123)
+* `Procesi/H2Final.lean` — [psiSpr_center_scalar](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/H2Final.lean#L2843)
+* `Procesi/Nonvacuous.lean` — [adjoin_genericMatrix_map_eq_top](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/Nonvacuous.lean#L52), [det_phiS_map_ne_zero](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/Nonvacuous.lean#L36), [nonempty_genericDivisionData_two](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/Nonvacuous.lean#L128), [nonempty_genericDivisionData_two_nine](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/Nonvacuous.lean#L135)
+* `Procesi/PI/CentralIdeal.lean` — [exists_scalar_mem_of_ne_bot](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/PI/CentralIdeal.lean#L185)
+* `Procesi/ScalarMemZ.lean` — [exists_clear_den](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/ScalarMemZ.lean#L176), [mem_centerImage_of_map_eq_scalar](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/ScalarMemZ.lean#L34)
+* `Procesi/Statement.lean` — [H2:  Z_{S9}(F,9) ≅ F(M⊕U)^{S9}](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/Statement.lean#L127)
+* `Procesi/UDKScalarMem.lean` — [h2_unconditional](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/UDKScalarMem.lean#L248), [scalarMemZHypK'](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/UDKScalarMem.lean#L135), [scalar_mem_sprAlgebraK_of_mem_subring](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/UDKScalarMem.lean#L75)
+* `Procesi/UDKSimple.lean` — [h2_of_scalarMem](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/UDKSimple.lean#L111), [isSimpleRing_UDK'_of_scalarMem](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/UDKSimple.lean#L58), [udk'_ideal_inf_scalars](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/UDKSimple.lean#L42)
+* `Procesi/UDKSpan.lean` — [mem_sprAlgebraK_iff](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/UDKSpan.lean#L51)
+* mathlib: [Algebra.adjoin_induction](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Algebra.adjoin_induction#doc), [Matrix.nonsing_inv_mul](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Matrix.nonsing_inv_mul#doc), [RingHom.map_det](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=RingHom.map_det#doc), [Subalgebra.mem_center_iff](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Subalgebra.mem_center_iff#doc), [Matrix.det_kronecker ＋ det_vandermonde](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Matrix.det_kronecker#doc), [Matrix.map_pow ＋ diagonal_pow/mul_diagonal](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Matrix.map_pow#doc)
 
 ## Build
 
