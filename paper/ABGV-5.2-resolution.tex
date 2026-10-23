@@ -9,7 +9,6 @@
 %\usepackage[backend=biber]{biblatex}
 % filecontents is now built into LaTeX kernel
 
-
 % Theorem environments
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -306,15 +305,8 @@ literature searching, language polishing, and debugging GAP scripts.  DeepSeek
 Harness, with DeepSeek V4.1 Flash as the underlying LLM, was then used, also
 under the author's direction and review, to produce the two verification
 programs in the accompanying code package and the machine-checked Lean
-development.  That development formalizes proof layers behind the two
-criteria of the Hypotheses paragraph, and it proves the identification of
-Remark~\ref{rem:procesi-geometric} itself: in the degree-\(9\) case
-\(Z_{S_9}(F,9) \cong F(M \oplus U)^{S_9}\) holds for every field of
-characteristic~\(0\), with the structure it speaks about constructed, so the
-statement is not vacuous, and taking \(H\)-invariants yields the subgroup
-form used above.  The conclusions are therefore conditional on
-Theorem~\ref{thm:endo-miyata} and Theorem~\ref{thm:retract-criterion}
-only.
+development; the statements that have been formalized are marked where they
+occur.
 
 % [2026-10-01 第二十三改 → 第二十六改] 本块（原自「Code availability」段移入）
 % 已按用户追加指令合并为单段：AI 使用披露＋两个验证程序与 Lean 的 GitHub
@@ -717,6 +709,35 @@ The same strategy generalizes to \(C_p \times C_p\) in
 % \cite[Ch.\ V, Theorem~6.4]{Brown1982}.
 % \end{theorem}
 
+\begin{proposition}\label{rem:procesi-geometric}
+Let \(F\) be a field of characteristic \(0\), let \(M\) and \(U\) be the
+\(\mathbb{Z}[S_9]\)-lattices constructed in \S\ref{sec:procesi}, and let
+\(Z_{S_9}(F,9)\) be the center of the generic matrix algebra of degree
+\(9\) over \(F\).
+\begin{enumerate}
+\item (Procesi \cite{Procesi1967}) The center satisfies
+  \(Z_{S_9}(F,9) \cong F(M \oplus U)^{S_9}\), where
+  \(F(M \oplus U)^{S_9}\) is the invariant field of the purely
+  transcendental extension \(F(M \oplus U)\) under the natural
+  \(S_9\)-action induced by the \(\mathbb{Z}[S_9]\)-module structure of
+  \(M \oplus U\); see also \cite[\S5]{ABGV2011} and
+  \cite{Formanek2002}.
+\item For every subgroup \(H \subseteq S_9\), taking \(H\)-invariants
+  gives \(Z_H(F,9) = F((M \oplus U)|_H)^H\).
+\item The field \(Z_H(F,9)\) has transcendence degree \(82 = n^2+1\) over
+  \(F\), and it is \emph{rational} over \(F(M|_H)^H\): apply
+  \cite[Proposition~1.4]{Lenstra1974} to the permutation
+  \(\mathbb{Z}[H]\)-module \(U|_H\) over the base field \(F(M|_H)\),
+  on which \(H\) acts faithfully (Proposition~\ref{prop:faithful-MH}).
+\end{enumerate}
+\end{proposition}
+
+The \(S_9\) identification of this proposition, and the rationality statement
+of its third part, are completely formalized in Lean in the accompanying code
+package; the structure the statement speaks about is constructed there, so the
+statement is not vacuous, and the identification requires no input beyond
+characteristic~\(0\).
+
 \section{The Procesi Lattice}
 \label{sec:procesi}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -786,28 +807,6 @@ The ranks are
 \rk_{\mathbb{Z}} I[\Omega] = 8,\qquad
 \rk_{\mathbb{Z}} M = 73.
 \]
-
-\begin{remark}\label{rem:procesi-geometric}
-Procesi \cite{Procesi1967} proved that the center of the generic matrix
-algebra satisfies \(Z_{S_9}(F,9) \cong F(M \oplus U)^{S_9}\), where
-\(F(M \oplus U)^{S_9}\) is the invariant field of the purely
-transcendental extension \(F(M \oplus U)\) under the natural
-\(S_9\)-action induced by the \(\mathbb{Z}[S_9]\)-module structure of
-\(M \oplus U\).  For any subgroup \(H \subseteq S_9\), taking
-\(H\)-invariants gives
-\[
-Z_H(F,9) = F((M \oplus U)|_H)^H.
-\]
-This identification holds over any field \(F\) of characteristic~\(0\);
-see \cite[\S5]{ABGV2011}, \cite{Formanek2002}, and the references therein.
-The field \(Z_H(F,9)\) has transcendence degree \(82 = n^2+1\) over
-\(F\), and it is \emph{rational} over \(F(M|_H)^H\): apply
-\cite[Proposition~1.4]{Lenstra1974} to the permutation
-\(\mathbb{Z}[H]\)-module \(U|_H\) over the base field \(F(M|_H)\),
-on which \(H\) acts faithfully (Proposition~\ref{prop:faithful-MH}).
-For the computations that follow, only the exact
-sequence~\eqref{eq:procesi-S9} and this identification are required.
-\end{remark}
 
 \subsection{Restriction to \(H = C_3 \times C_3\)}
 
@@ -2113,9 +2112,6 @@ Table~\ref{tab:main}.
 % restricts integrally to \(H = C_p \times C_p \subset S_{p^2}\) --- a statement
 % we have proved in \S\ref{sec:procesi} without any dependence on~\(p\).
 
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2491,7 +2487,6 @@ Table~\ref{tab:main}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 % [2026-10-09 第三十八改] 被压制条目改为无 @ 形式——bibtex 无注释语法，「% @」会触发
 % 解析错误（rc=2）；去掉 @ 后 bibtex 静默跳过，输出书目不变。
 \begin{filecontents}{wu.bib}
@@ -2553,8 +2548,6 @@ zbMATH = {3736029}, Zbl = {0469.20001} }
     zbMATH = {595200},
     Zbl = {0797.18001}
 }
-
-
 
 @book{HKY,
     author = {Hoshi, A. and Kang, M. and Yamasaki, A.},
@@ -2822,7 +2815,6 @@ Meccanica, Astronomia, Geodesia e Geofisica)}, journal = {Atti Accad. Naz.
 Lincei, Mem., Cl. Sci. Fis. Mat. Nat., VIII. Ser., Sez. I}, issn = {0365-0286},
 volume = {8}, pages = {239--255}, year = {1967}, language = {English}, zbMATH =
 {3323928}, Zbl = {0204.04802} }
-
 
 @article{Saltman1984,
 	author = {Saltman, D. J.},
