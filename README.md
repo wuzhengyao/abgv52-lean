@@ -145,6 +145,38 @@ Each theorem name below links to its declaration in the Lean sources.
 * `Procesi/UDKSpan.lean` — [mem_sprAlgebraK_iff](https://github.com/wuzhengyao/abgv52-lean/blob/main/Procesi/UDKSpan.lean#L51)
 * mathlib: [Algebra.adjoin_induction](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Algebra.adjoin_induction#doc), [Matrix.nonsing_inv_mul](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Matrix.nonsing_inv_mul#doc), [RingHom.map_det](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=RingHom.map_det#doc), [Subalgebra.mem_center_iff](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Subalgebra.mem_center_iff#doc), [Matrix.det_kronecker ＋ det_vandermonde](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Matrix.det_kronecker#doc), [Matrix.map_pow ＋ diagonal_pow/mul_diagonal](https://leanprover-community.github.io/mathlib4_docs/find/?pattern=Matrix.map_pow#doc)
 
+
+## Status note (2026-10-23): the paper no longer claims a rationality verdict
+
+The paper (`paper/ABGV-5.2-resolution.tex`, commit "paper: state the
+rationality type of Z_H as OPEN (conservative route)") now states only the
+*lattice-theoretic* results — `H^2(H, M|_H) ≅ C_9`, `exp(H^2(H,P)) | 3` for
+permutation `P`, `M|_H` is neither quasi-permutation nor stably permutation,
+and `rho(M|_H)` is not the class of an invertible lattice — and explicitly
+leaves open whether `Z_H(F,9)` is rational, stably rational, or retract
+rational.
+
+What changed, and what it means for this Lean development:
+
+* `thm:endo-miyata` (the untwisted implication "stably rational implies
+  quasi-permutation") is **no longer a paper theorem**; the paper now carries
+  `rem:untwisted-criteria`, which records that the literature supplies the
+  criterion only for *twisted* invariant fields and that the untwisted form
+  fails in general (`G = C₂×C₂`, `M = M₂(G)`: the center is rational by
+  Snider while `eta(M₂(G)) ≠ 0`).
+* `thm:retract-criterion` (untwisted "retract rational iff `rho(M)` is
+  invertible") became `rem:twisted-criterion` for the same reason, and
+  `thm:not-retract-rational` became `prop:rho-not-invertible` (its proof is
+  unchanged — it is purely lattice-theoretic).
+* `thm:not-stably-rational` became `rem:open-verdicts`.
+
+Consequently the named hypothesis `EMHyp` in `ABGV52/EM_ABGV52.lean` (and the
+`SaltmanHyp`-style hypotheses attached to the retract criterion) formalise
+statements that the paper has withdrawn. They remain useful as a record of
+*what the twisted theorems do and do not give*, but they must not be read as
+hypotheses of a paper theorem. A decision (keep as illustrative material, or
+retire) is left to the author.
+
 ## Build
 
 The toolchain is `leanprover/lean4:v4.35.0` (see `lean-toolchain`) and the
