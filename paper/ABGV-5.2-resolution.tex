@@ -301,39 +301,20 @@ entire content of this manuscript and approved its submission.
 \medskip\noindent
 \textbf{Use of Large Language Models, AI and Machine Learning Tools}.
 Claude Code, with DeepSeek V4.1 Flash as the underlying LLM, was used in the
-early versions of this paper, under the author's direction and review, to
-assist with literature searching, language polishing, and debugging GAP
-scripts. DeepSeek Harness, with DeepSeek V4.1 Flash as the underlying LLM, was
-then used, also under the author's direction and review, to produce the two
-verification programs in the accompanying code package and the machine-checked
-Lean development, which additionally formalizes proof layers behind the
-three named hypotheses; for the converse-type statement to
-Theorem~\ref{thm:endo-miyata} in the abelian case with roots of unity this
-includes the assembly of the proof from the stably permutation condition
-(there are permutation lattices \(P\), \(Q\) with \(M \oplus P \cong Q\)):
-from this condition, together with faithfulness and a unique-product
-condition on the lattice, the stable rationality of the invariant field is
-derived, with the rationality of the invariant field of a general
-permutation lattice in the presence of enough roots of unity, the
-identification of the two-step localization with the function field of the
-product lattice, and the comparison of the two lattice bases all proved,
-not assumed.
-
-\medskip\noindent The development had recorded the identification of
-Remark~\ref{rem:procesi-geometric} as one of its named inputs; it is no
-longer an input.  In the degree-\(9\) case the identification
-\(Z_{S_9}(F,9) \cong F(M \oplus U)^{S_9}\) is proved for every field of
-characteristic~\(0\): the center is modelled as an intermediate field of
-the field of fractions of the generic matrix ring, and the identification
-is derived from the statement that two generic matrices generate the full
-matrix algebra over that field, with no further hypothesis.  The structure
-the statement speaks about is also constructed, so the statement is not
-vacuous, and taking \(H\)-invariants yields the subgroup form
-\(Z_H(F,9) = F((M \oplus U)|_H)^H\) used above.  Of the three named
-inputs the other two --- the Endo--Miyata criterion
-(Theorem~\ref{thm:endo-miyata}) and Saltman's Corollary~3.13 --- remain
-assumed, and the main chain of this paper is conditional on them (see the
-Data availability statement).
+early versions of this paper, under the author's direction and review, for
+literature searching, language polishing, and debugging GAP scripts.  DeepSeek
+Harness, with DeepSeek V4.1 Flash as the underlying LLM, was then used, also
+under the author's direction and review, to produce the two verification
+programs in the accompanying code package and the machine-checked Lean
+development.  That development formalizes proof layers behind the two
+criteria of the Hypotheses paragraph, and it proves the identification of
+Remark~\ref{rem:procesi-geometric} itself: in the degree-\(9\) case
+\(Z_{S_9}(F,9) \cong F(M \oplus U)^{S_9}\) holds for every field of
+characteristic~\(0\), with the structure it speaks about constructed, so the
+statement is not vacuous, and taking \(H\)-invariants yields the subgroup
+form used above.  The conclusions are therefore conditional on
+Theorem~\ref{thm:endo-miyata} and Theorem~\ref{thm:retract-criterion}
+only.
 
 % [2026-10-01 第二十三改 → 第二十六改] 本块（原自「Code availability」段移入）
 % 已按用户追加指令合并为单段：AI 使用披露＋两个验证程序与 Lean 的 GitHub

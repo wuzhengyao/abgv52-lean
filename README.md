@@ -41,12 +41,17 @@ that used to contain them has been removed). Re-run with `verification/run.sh`; 
 
 * The development compiles with **no `sorry`**, and every declaration depends only on the
 three standard axioms `propext`, `Classical.choice`, `Quot.sound`.
-* **Named hypotheses**, used exactly as in the paper and *not* reproved: the
+* **Named hypotheses**, used as in the paper and *not* reproved: the
 Endo--Miyata--Voskresenskii criterion (`EMHyp` for the H-level form, `EMHypP` for the
-p-general form) and Saltman's Corollary 3.13 (`SaltmanHyp`). Each is a type-locked interface
-with a wiring theorem and a non-vacuity probe. The geometric identification of
-`Z_H(F,p^2)` with the fixed field is consumed through `ProcesiHyp`; **this repository does not
-prove it** (it is proved in the companion development `procesi-lean`).
+p-general form) and the retract-rationality criterion (`RetractCriterionHyp`,
+`ABGV52/RetractCrit_ABGV52.lean`); each is a type-locked interface with a wiring theorem and a
+non-vacuity probe. Saltman's Corollary 3.13 is quoted as a theorem in the paper and also appears
+as a type-locked interface (`SaltmanHyp`).
+* **The geometric identification** of `Z_H(F,9)` with the fixed field is *not* an input in the
+degree-9 case: it is proved in this repository, in `Procesi/` (`Procesi.h2_unconditional`), for
+every field of characteristic `0`, and the structure it names is constructed
+(`Procesi.h2_unconditional_nonvacuous`), so the statement is not vacuous. The p-general form is
+still consumed through `ProcesiHyp`.
 * **Proof layers behind the named hypotheses** are formalized where the paper lists them: the
 converse direction of the criterion in the abelian case with roots of unity, the
 quasi-permutation form together with a machine-checked counterexample to its
