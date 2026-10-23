@@ -7,12 +7,12 @@ Let $F$ be a field of characteristic $0$ and let $H = C_3 \times C_3$ act regula
 transitive subgroup of $S_9$. Let $Z_H(F,9)$ be the center of the generic division algebra of
 degree $9$ with $H$-action. Problem 5.2 of the Auel--Brussel--Garibaldi--Vishne problem list
 asks for its birational class. The answer proved in the paper is that $Z_H(F,9)$ is **not**
-stably rational and **not** rational, but is **retract rational** over $F$. Non-stable
-rationality comes from $H^2(H, M|_H) \cong C_9$ for the restricted Procesi lattice, whose
-exponent $9$ is incompatible with quasi-permutation, while every permutation lattice has
-$H^2$-exponent dividing $3$. For $H = C_p \times C_p \subset S_{p^2}$ with $p$ odd the same
-computation gives $H^2(H, M|_H) \cong C_{p^2}$ against exponent $p$, so $Z_H(F,p^2)$ is not
-stably rational.
+stably rational, **not** rational and **not** retract rational over $F$. Non-stable and
+non-retract rationality both come from $H^2(H, M|_H) \cong C_9$ for the restricted Procesi
+lattice: its exponent $9$ is incompatible with quasi-permutation and with every finite-index
+permutation superlattice, while all permutation lattices have $H^2$-exponent dividing $3$. For
+$H = C_p \times C_p \subset S_{p^2}$ with $p$ odd the same computation gives
+$H^2(H, M|_H) \cong C_{p^2}$ against exponent $p$, so $Z_H(F,p^2)$ is not stably rational.
 
 This repository contains the machine-checked Lean 4 development of that chain: the lattice
 computations, the statement layers, and the wiring from the named inputs to the conclusions.
@@ -52,9 +52,12 @@ converse direction of the criterion in the abelian case with roots of unity, the
 quasi-permutation form together with a machine-checked counterexample to its
 stably-permutation form (`EMQuasi_ABGV52.lean`, `EMCounter_ABGV52.lean`), and the Saltman
 condition layers.
-* **Left open in the paper** (Remark 4.12 of the 2026-10-10 revision): retract rationality of
-`Z_H(F,9)`; the earlier comparison through the linear invariant field is recorded there as
-invalid. The corresponding wiring is kept only as a record of that conditional thread.
+* **Non-retract-rationality** (Theorem 4.13 of the paper) is formalized in
+`ABGV52/NotRetract_ABGV52.lean`, with an independent restatement in
+`ABGV52/NotRetractChallenge_ABGV52.lean`. The passage from the lattice to the field runs through
+the flasque-resolution criterion of the paper, a named input (`RetractCriterionHyp`,
+`ABGV52/RetractCrit_ABGV52.lean`), and through the geometric identification of `Z_H(F,9)` with
+the invariant field.
 * Consequently the stable-rationality chain verified here is **conditional on the named inputs
 above**.
 
@@ -82,6 +85,7 @@ The sources of the graph are in `dag-src/`; regenerate with `python3 dag-src/bui
 | `G1b`--`G4`, `GThm`, `GChallenge` | reduction to the geometric identification (named-hypothesis transport) |
 | `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi track: lattice rank account, named interface, stabilizer layer, its wiring, consumption |
 | `MH`, `MQ`, `MI`, `BR` | the rational model of the Procesi kernel and the base-change bridge |
+| `NotRetract_ABGV52`, `NotRetractChallenge_ABGV52`, `RetractCrit_ABGV52`, `Superlattice_ABGV52`, `StableRationalBricks_ABGV52` | the non-retract-rationality chain (Theorem 4.13) and its independent restatement |
 | `Procesi/` (83 files) | the H2 formalization: statement layer, the scalar-matrix bypass, non-vacuity |
 | `Thm_*`, `Challenge_*`, `Probe*` | type-locked statements with independent restatements, and auxiliary probes |
 | `dag-src/` | the script that regenerates the figure from the sources |
@@ -90,11 +94,9 @@ The sources of the graph are in `dag-src/`; regenerate with `python3 dag-src/bui
 
 ## Build
 
-The development requires Lean `leanprover/lean4:v4.35.0` (there is no
-`lean-toolchain` file in the repository: select that toolchain yourself, for
-example with `elan override set leanprover/lean4:v4.35.0`), and it is pinned to
-mathlib4 commit `aa35a481e5f0cdb3b04a899ead15d6ca7305a624` (see
-`lakefile.toml`) — an
+The toolchain is `leanprover/lean4:v4.35.0` (see `lean-toolchain`) and the
+development is pinned to mathlib4 commit
+`aa35a481e5f0cdb3b04a899ead15d6ca7305a624` (see `lakefile.toml`) — an
 upgrade of 2026-10-15 from `db584cd6d46c92f209a44c0f1c829460d327499d`
 (2026-08-10) and Lean 4.33.
 
