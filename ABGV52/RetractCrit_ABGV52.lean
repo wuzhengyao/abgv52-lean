@@ -449,6 +449,85 @@ theorem etaVanishes_biprod_perm' {G : Type} [Group G] [Fintype G] {M Pp : Rep.{0
     EtaVanishes G (M ⊞ Pp) :=
   etaVanishes_biprod_perm h hPp
 
+/-! ## §4.4 `F(M)^G` 的载体层：`Rep.{0,0,0} ℤ H` 上的格函数域
+
+**目的**（T1／T2 的前置）：把论文的 `F(M)^G` 在 Lean 里对**一般** `M : Rep.{0,0,0} ℤ H`
+造出来，使「retract rational ⟺ …」的**左端**可写。
+
+**三处实例桥（本节新建，mathlib 未自动提供）**：
+1. `DistribMulAction H ↥X`：`Rep` 只带 `X.ρ : Representation ℤ H ↥X`，**没有**把作用注册成
+   `DistribMulAction` 实例（实测 `inferInstance` 失败）——由 `X.ρ` 显式造
+   （`repDistribMulAction`），否则 `SMulCommClass` 也无从谈起（`SMul H ↥X` 不存在）。
+2. `SMulCommClass H ℤ ↥X`：`X.ρ g` 是 `ℤ`-线性 ⟹ 交换；证明用 **`map_zsmul`**
+   （`LinearMap.map_smul` 会撞上 `ZSMul.toSMul` 与 `DistribSMul.toSMul` 的实例菱形）。
+3. `UniqueProds (Multiplicative ↥X)`：mathlib 的 affine 实例需要
+   `AddMonoid.FG` ＋ `HasUniqueDiv`，对 `Rep` 底类型**不**自动成立；改走自由模路线——
+   `Module.Free ℤ ↥X` ⟹ 取基 `b` ⟹ `UniqueSums ↥X`
+   （`UniqueSums.of_injective_addHom` 沿 `b : ↥X ≃ₗ[ℤ] (ι →₀ ℤ)` 搬运）
+   ⟹ `UniqueProds (Multiplicative ↥X)`。
+-/
+
+/-- 由 `Rep.ρ` 造 `H` 在底类型上的分配乘法作用（mathlib 未注册该实例）。 -/
+@[instance_reducible]
+noncomputable def repDistribMulAction {H : Type} [Group H] (X : Rep.{0,0,0} ℤ H) :
+    DistribMulAction H ↥X where
+  smul g x := X.ρ g x
+  one_smul x := by
+    show X.ρ (1 : H) x = x
+    rw [map_one]
+    rfl
+  mul_smul g h x := by
+    show X.ρ (g * h) x = X.ρ g (X.ρ h x)
+    rw [map_mul]
+    rfl
+  smul_zero g := (X.ρ g).map_zero
+  smul_add g x y := (X.ρ g).map_add x y
+
+/-- `H`-作用与 `ℤ`-模结构交换（`X.ρ g` 的 `ℤ`-线性）。
+
+⚠ 工艺：用 **`map_zsmul`**——`LinearMap.map_smul` 会撞上 `ZSMul.toSMul` 与
+`DistribSMul.toSMul` 的实例菱形（实测失败于 `map_smul`）。 -/
+theorem repSMulCommClass {H : Type} [Group H] (X : Rep.{0,0,0} ℤ H) :
+    letI := repDistribMulAction X
+    SMulCommClass H ℤ ↥X := by
+  letI := repDistribMulAction X
+  refine ⟨fun g n x => ?_⟩
+  show (X.ρ g) (n • x) = n • (X.ρ g) x
+  exact map_zsmul (X.ρ g).toAddMonoidHom n x
+
+/-- **自由 `ℤ`-模有唯一和**：沿基 `b : M ≃ₗ[ℤ] (ι →₀ ℤ)` 把 `UniqueSums (ι →₀ ℤ)` 拉回。 -/
+theorem uniqueSums_of_moduleFree (M : Type) [AddCommGroup M] [Module ℤ M]
+    [Module.Free ℤ M] : UniqueSums M := by
+  classical
+  obtain ⟨ι, ⟨b⟩⟩ := Module.Free.exists_basis (R := ℤ) (M := M)
+  exact UniqueSums.of_injective_addHom b.toAddMonoidHom b.injective
+    (inferInstance : UniqueSums (ι →₀ ℤ))
+
+/-- **自由 `ℤ`-模的乘法化有唯一积**（`MonoidAlgebra` 整环性的输入）。 -/
+theorem uniqueProds_of_moduleFree (M : Type) [AddCommGroup M] [Module ℤ M]
+    [Module.Free ℤ M] : UniqueProds (Multiplicative M) := by
+  haveI := uniqueSums_of_moduleFree M
+  infer_instance
+
+/-- **`F(M)^G`（论文的 `F(M)^G`）**，对 `M : Rep.{0,0,0} ℤ H`：
+`M` 取 `Rep.ρ` 的 `H`-作用、`Module.Free ℤ ↥M` 供 `UniqueProds` ⟹ 单项式环的分式域的不变子域。 -/
+noncomputable abbrev repInvariantField {H : Type} [Group H] (F : Type) [Field F]
+    (X : Rep.{0,0,0} ℤ H) [Module.Free ℤ ↥X] : Type :=
+  letI := repDistribMulAction X
+  letI := repSMulCommClass X
+  haveI := uniqueProds_of_moduleFree ↥X
+  ↥(EM.latticeInvariants F H ↥X)
+
+/-- **载体可用性（L1）**：`repInvariantField` 是**域**（非空类型类实例可合成）。 -/
+noncomputable def repInvariantField_field {H : Type} [Group H] (F : Type) [Field F]
+    (X : Rep.{0,0,0} ℤ H) [Module.Free ℤ ↥X] : Field (repInvariantField F X) :=
+  inferInstance
+
+/-- **接口一致性**：`M = ℤ[H]`（正则置换格 `Rep.ofMulAction ℤ H H`）的底类型是 `H → ℤ`，
+是自由 `ℤ`-模 ⟹ `repInvariantField` 可用；此时它即文献的 `F(H)`。 -/
+theorem rep_ofMulAction_free (HH : Type) [Group HH] :
+    Module.Free ℤ ↥(Rep.ofMulAction ℤ HH HH) := inferInstance
+
 /-! ## §5 缺口登记（M1 段的诚实边界）
 
 | 缺口 | 内容 | 状态 |
@@ -488,5 +567,11 @@ theorem etaVanishes_biprod_perm' {G : Type} [Group G] [Fintype G] {M Pp : Rep.{0
 #print axioms biprod_inr_fst_apply
 #print axioms etaVanishes_biprod_perm
 #print axioms etaVanishes_biprod_perm'
+#print axioms repDistribMulAction
+#print axioms repSMulCommClass
+#print axioms uniqueSums_of_moduleFree
+#print axioms uniqueProds_of_moduleFree
+#print axioms repInvariantField_field
+#print axioms rep_ofMulAction_free
 
 end ABGV52
