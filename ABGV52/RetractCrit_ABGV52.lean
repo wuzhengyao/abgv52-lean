@@ -24,6 +24,7 @@
 
   **无 sorry、无自造公理**。
 -/
+import ABGV52.D3_ABGV52
 import ABGV52.Flasque_ABGV52
 import ABGV52.SaltDef_ABGV52
 
@@ -528,6 +529,82 @@ noncomputable def repInvariantField_field {H : Type} [Group H] (F : Type) [Field
 theorem rep_ofMulAction_free (HH : Type) [Group HH] :
     Module.Free ℤ ↥(Rep.ofMulAction ℤ HH HH) := inferInstance
 
+/-! ## §4.5 `F(M)^G` 上的 `F`-代数结构 ＋ 论文 4.12 的**完整形状**（可写性收口）
+
+`§4.4` 给出 `repInvariantField`（`Subfield` 形态）与 `Field`；本节补 `SMul F`／`Algebra F`
+（mathlib 的 `Subfield` **无** `Algebra F ↥·` 实例；D3 的注已指出，`IsRetractRational`
+因此必须走 `Subalgebra` 形态——但 `inferInstanceAs` 从 `Subalgebra` 搬到一般 `Rep` 格上会
+**打爆 kernel**（`Field` 结构大 ＋ `letI` 实例非语法同一），故此处**显式构造**）。
+
+**落点**：论文 4.12 的完整陈述（左手 `F(M)^G`、右手 `IsInvertible R.F`）现在可在 Lean 里**写出**
+——见 `PaperRetractCriterion`。⚠ 该 `Prop` 为**假**（Klein 四元群反例，见 §0），
+故它只是**形状登记**，不得作为证明目标。
+-/
+
+/-- 不变子域上的 `F`-纯量乘法（`c • x = algebraMap c * x`）。 -/
+noncomputable instance invFieldSMul (F : Type) [Field F] {H : Type} [Group H]
+    (X : Rep.{0,0,0} ℤ H) [Module.Free ℤ ↥X] : SMul F (repInvariantField F X) :=
+  letI := repDistribMulAction X
+  letI := repSMulCommClass X
+  haveI := uniqueProds_of_moduleFree ↥X
+  ⟨fun c x =>
+    ⟨algebraMap F (EM.latticeFunctionField F ↥X) c * x.1,
+      (EM.mem_latticeInvariants_iff F H ↥X _).mpr fun g => by
+        rw [smul_mul', EM.smul_algebraMap_latticeFunctionField F H ↥X g c, x.2 g]⟩⟩
+
+/-- 不变子域上的 `F`-代数结构（常数在不动域内：`EM.smul_algebraMap_latticeFunctionField`）。 -/
+noncomputable instance invFieldAlgebra (F : Type) [Field F] {H : Type} [Group H]
+    (X : Rep.{0,0,0} ℤ H) [Module.Free ℤ ↥X] : Algebra F (repInvariantField F X) :=
+  letI := repDistribMulAction X
+  letI := repSMulCommClass X
+  haveI := uniqueProds_of_moduleFree ↥X
+  Algebra.mk
+    { toFun := fun c =>
+        ⟨algebraMap F (EM.latticeFunctionField F ↥X) c,
+          (EM.mem_latticeInvariants_iff F H ↥X _).mpr fun g =>
+            EM.smul_algebraMap_latticeFunctionField F H ↥X g c⟩
+      map_one' := by ext; simp
+      map_mul' := by intro a b; ext; simp
+      map_zero' := by ext; simp
+      map_add' := by intro a b; ext; simp }
+    (by intro r x; ext; simp [mul_comm])
+    (by intro r x; rfl)
+
+/-- **论文 4.12 的左端**：`F(M)^G` 在 `F` 上 retract rational（现在可写、可用）。 -/
+noncomputable def PaperRRat (F : Type) [Field F] {H : Type} [Group H]
+    (X : Rep.{0,0,0} ℤ H) [Module.Free ℤ ↥X] : Prop :=
+  IsRetractRational F (repInvariantField F X)
+
+/-- **论文 4.12 的完整形状**（左手 `F(M)^G`、右手 `IsInvertible R.F`）——
+v52 提示词 §0 的目标陈述，现已成为**可写出**的 `Prop`。
+
+⚠ **本 `Prop` 为假**（`G = C₂×C₂`、`M = M₂(G)`；见 §0 与
+`wiki/proj-ABGV52-retract-criterion-refutation.md` §1）。**只作形状登记，不得作证明目标**；
+可证的替代见同件 §3（T1／T2／T3）。 -/
+noncomputable def PaperRetractCriterion (F : Type) [Field F] {H : Type} [Group H] [Fintype H]
+    (X : Rep.{0,0,0} ℤ H) [Module.Free ℤ ↥X] (R : FlasqueResolution H X) : Prop :=
+  PaperRRat F X ↔ IsInvertible H R.F
+
+/-- **外形锁定**（`PaperRRat`）：即 `IsRetractRational F ↥(F(M)^G)`，改形即失败。 -/
+example (F : Type) [Field F] {H : Type} [Group H] (X : Rep.{0,0,0} ℤ H)
+    [Module.Free ℤ ↥X] : PaperRRat F X ↔ IsRetractRational F (repInvariantField F X) :=
+  Iff.rfl
+
+/-- **外形锁定**（`PaperRetractCriterion`）。 -/
+example (F : Type) [Field F] {H : Type} [Group H] [Fintype H] (X : Rep.{0,0,0} ℤ H)
+    [Module.Free ℤ ↥X] (R : FlasqueResolution H X) :
+    PaperRetractCriterion F X R ↔ (PaperRRat F X ↔ IsInvertible H R.F) :=
+  Iff.rfl
+
+/-- **M1 与论文形状的接线**：把 `PaperRetractCriterion` 的右手边换成 `EtaVanishes`
+（由 `etaVanishes_iff_isInvertible`，代表元无关）。 -/
+theorem paperRetractCriterion_iff_eta {H : Type} [Group H] [Fintype H]
+    (hWD : FlasqueClassWellDefinedHyp H) (F : Type) [Field F]
+    (X : Rep.{0,0,0} ℤ H) [Module.Free ℤ ↥X] (R : FlasqueResolution H X) :
+    PaperRetractCriterion F X R ↔ (PaperRRat F X ↔ EtaVanishes H X) := by
+  unfold PaperRetractCriterion
+  rw [etaVanishes_iff_isInvertible hWD X R]
+
 /-! ## §5 缺口登记（M1 段的诚实边界）
 
 | 缺口 | 内容 | 状态 |
@@ -573,5 +650,8 @@ theorem rep_ofMulAction_free (HH : Type) [Group HH] :
 #print axioms uniqueProds_of_moduleFree
 #print axioms repInvariantField_field
 #print axioms rep_ofMulAction_free
+#print axioms invFieldSMul
+#print axioms invFieldAlgebra
+#print axioms paperRetractCriterion_iff_eta
 
 end ABGV52
