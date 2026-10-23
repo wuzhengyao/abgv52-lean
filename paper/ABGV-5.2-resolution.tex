@@ -795,25 +795,17 @@ of degree \(9\) over \(F\).
   \cite{Formanek2002}.
 \item For every subgroup \(H \subseteq S_9\), taking \(H\)-invariants
   gives \(Z_H(F,9) = F((M \oplus U)|_H)^H\).
-\item The field \(Z_H(F,9)\) has transcendence degree \(82 = n^2+1\) over
-  \(F\), and it is \emph{rational} over \(F(M|_H)^H\).
+\item If \(H\) acts faithfully on \(M|_H\), then \(Z_H(F,9)\) has
+  transcendence degree \(82 = n^2+1\) over \(F\) and is \emph{rational}
+  over \(F(M|_H)^H\) \cite[Proposition~1.4]{Lenstra1974}.
 \end{enumerate}
 \end{proposition}
 
-\begin{proof}
-Parts 1 and 2 are Procesi's theorem \cite{Procesi1967}; see also
-\cite[\S5]{ABGV2011} and \cite{Formanek2002}.  For part 3, apply
-\cite[Proposition~1.4]{Lenstra1974} to the permutation
-\(\mathbb{Z}[H]\)-module \(U|_H\) over the base field \(F(M|_H)\),
-on which \(H\) acts faithfully (Proposition~\ref{prop:faithful-MH}); the
-transcendence degree is that of \(M \oplus U\), namely \(73 + 9 = 82\).
-\end{proof}
-
 The \(S_9\) identification of this proposition, and the rationality statement
-of its third part, are completely formalized in Lean in the accompanying code
-package; the structure the statement speaks about is constructed there, so the
-statement is not vacuous, and the identification requires no input beyond
-characteristic~\(0\).
+of its third part for \(H = C_3 \times C_3\), are completely formalized in Lean
+in the accompanying code package; the structure the statement speaks about is
+constructed there, so the statement is not vacuous, and the identification
+requires no input beyond characteristic~\(0\).
 
 \subsection{Restriction to \(H = C_3 \times C_3\)}
 
@@ -1507,7 +1499,8 @@ The field \(Z_H(F,9)\) is not stably rational over \(F\).
 
 \begin{proof}
 Recall that \(Z_H(F,9)\) is rational over \(F(M|_H)^H\)
-(Remark~\ref{rem:procesi-geometric}).
+(Proposition~\ref{rem:procesi-geometric}), the action of \(H\) on
+\(M|_H\) being faithful (Proposition~\ref{prop:faithful-MH}).
 By Lemma~\ref{lem:not-quasi-perm}, \(M|_H\) is not quasi-permutation.
 By Theorem~\ref{thm:endo-miyata}, used as a hypothesis,
 stable rationality of \(F(M|_H)^H\) over \(F\) forces \(M|_H\) to be
