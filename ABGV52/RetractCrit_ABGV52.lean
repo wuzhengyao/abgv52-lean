@@ -31,6 +31,37 @@ open CategoryTheory CategoryTheory.Limits
 
 namespace ABGV52
 
+/-! ## §0 **已登记：本件假设的「论文实例」被文献反证**（R785，勿反复试填）
+
+⚠ `RetractCriterionHyp M R K RRat` 在**论文的实例**上
+（`RRat := fun _ => IsRetractRational F K`、`K := F(M)^G`、`M` 忠实、`char F = 0`）
+**不是定理**：其（⟹）方向（retract rational ⟹ `ρ(M)` 是可逆格的类）在文献中**为假**。
+
+**反例（拼装，来源已逐字核）**：`G = C₂ × C₂`、`F = ℚ`、`M = M₂(G)`：
+1. `M` 忠实 —— `raw/Saltman1987.tex:335`「An exercise shows that `M` is `G` faithful」；
+2. `F(M,G)` 是 Amitsur–Snider 通用叉积之中心（同处逐字）且**在 ℚ 上有理**
+   —— Snider 定理，经 `raw/OfirDavid2016.tex:233–237`；
+3. `η(M₂(G)) = η(J_G) ≠ 0` —— `raw/Saltman1984.tex` Thm 2.6（取 `N = 1` 得 `f = id`）
+   ＋ Thm 2.7(a)；
+4. `η(M) = 0 ⟺ IsInvertible H R.F`（本件 §4 `etaVanishes_iff_isInvertible`，已机检）。
+
+⟹ 有理 ⟹ retract rational（第 2 条）而 `ρ(M)` **不可逆**（第 3、4 条）。
+
+**且 §0 的「3.14(a) 特化」判读不成立**：3.14 的（⟹）证明承重步
+「Tensoring by `L` we have `G` preserving `F` algebra maps `φ′ : L[M] → L[N]`」
+（`raw/Saltman1984.tex:617`）依赖 **Speiser／半线性下降**（`G` 半线性作用于 `L[M]`）；
+`L = F` 时作用为 `F`-线性、半线性前提消失 ⟹ 该步不可用。全库检索：未扭变侧（⟹）
+**无任何已发表证明**（`raw/Kang2009.tex:342`／`:283`、`raw/OfirDavid2016.tex:1122` 均单向）。
+
+**可证的替代**（见 `wiki/proj-ABGV52-retract-criterion-refutation.md` §3）：
+`eta(M) = 0` ⟹（`F(M,G)` retract rational ⟺ `F(G)` retract rational）（Saltman1987
+Cor 1.4 ＋ Prop 1.7 ＋ Lem 1.1 ＋ Cor 1.6）；twisted 判据 3.14(a) 本体为真。
+-/
+
+/-- **文献反证的登记锚**（本库 `..._gap_registered` 惯例）：**不得**把本件 `hCrit` 当作可证命题；
+填入 `IsRetractRational` 实例即得假陈述（§0 反例）。 -/
+theorem retractCriterionHyp_paper_instance_refuted_registered : True := trivial
+
 /-! ## §1 具名假设外形 ＋ 类型锁定 -/
 
 /-- **`thm:retract-criterion`（4.12）的具名假设**：`M` 的 flasque 消解 `R`（`R.F` 的相似类
@@ -238,6 +269,43 @@ theorem isInvertible_zero_biprod (G : Type) [Group G] :
 
 end ZeroWitness
 
+/-! ## §4.2 相似关系对 `⊞` 同余（`η`／`ρ` 演算的代数基础）
+
+`IsSimilar` 是等价关系（`isSimilar_equivalence`）对 `⊞` 同余 —— 这是「相似类的加法」
+（Saltman1984 §2 的 `[E₁] + [E₂] := [E₁ ⊕ E₂]`、CTS77 `lem:1.7` 的 ρ 算术）的载体层。
+-/
+
+/-- **四元重排**：`(M ⊞ N) ⊞ (A ⊞ C) ≅ (M ⊞ A) ⊞ (N ⊞ C)`（把 `N` 与 `A` 换位）。 -/
+noncomputable def biprod_shuffle (M N A C : Rep.{0,0,0} ℤ H) :
+    (M ⊞ N) ⊞ (A ⊞ C) ≅ (M ⊞ A) ⊞ (N ⊞ C) :=
+  (biprod.associator M N (A ⊞ C)) ≪≫
+  biprod.mapIso (Iso.refl M)
+    ((biprod.associator N A C).symm ≪≫
+     biprod.mapIso (biprod.braiding N A) (Iso.refl C) ≪≫
+     biprod.associator A N C) ≪≫
+  (biprod.associator M A (N ⊞ C)).symm
+
+/-- **相似关系对 `⊞` 同余**：`M ~ M′`、`N ~ N′` ⟹ `M ⊞ N ~ M′ ⊞ N′`。
+
+证明：`M ⊕ A ≅ M′ ⊕ B`、`N ⊕ C ≅ N′ ⊕ D`（`A B C D` 置换）⟹ 取补项 `A ⊞ C`、`B ⊞ D`
+（`isPermutationLattice_biprod`），并用 `biprod_shuffle` 把两侧对齐到 `(M⊞A) ⊞ (N⊞C)` 与
+`(M′⊞B) ⊞ (N′⊞D)`。 -/
+theorem isSimilar_biprod {M M' N N' : Rep.{0,0,0} ℤ H}
+    (h : IsSimilar H M M') (k : IsSimilar H N N') :
+    IsSimilar H (M ⊞ N) (M' ⊞ N') := by
+  obtain ⟨A, B, hA, hB, ⟨e⟩⟩ := h
+  obtain ⟨C, D, hC, hD, ⟨f⟩⟩ := k
+  refine ⟨A ⊞ C, B ⊞ D, isPermutationLattice_biprod hA hC,
+    isPermutationLattice_biprod hB hD, ⟨?_⟩⟩
+  exact biprod_shuffle M N A C ≪≫
+    biprod.mapIso e f ≪≫
+    (biprod_shuffle M' N' B D).symm
+
+/-- **相似类的「加法」良定义**（推论）：相似类之间的 `+` 由 `⊞` 诱导且不依赖代表元。 -/
+theorem isSimilar_add_congr {M M' N N' : Rep.{0,0,0} ℤ H}
+    (h : IsSimilar H M M') (k : IsSimilar H N N') : IsSimilar H (M ⊞ N) (M' ⊞ N') :=
+  isSimilar_biprod h k
+
 /-! ## §5 缺口登记（M1 段的诚实边界）
 
 | 缺口 | 内容 | 状态 |
@@ -268,5 +336,9 @@ end ZeroWitness
 #print axioms isInvertible_of_iso
 #print axioms isInvertible_of_isInvertible_biprod_right
 #print axioms isInvertible_zero_biprod
+#print axioms biprod_shuffle
+#print axioms isSimilar_biprod
+#print axioms isSimilar_add_congr
+#print axioms retractCriterionHyp_paper_instance_refuted_registered
 
 end ABGV52
