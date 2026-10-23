@@ -1,5 +1,4 @@
-# Rationality of the center of a generic division algebra with a group action
-over a field of characteristic 0
+# Rationality of the center of a generic division algebra with a group action over a field of characteristic 0
 
 Lean 4 companion to the paper with the same title.
 
@@ -24,11 +23,11 @@ What is checked here, and which inputs are still named hypotheses, is listed und
 The paper is included in this repository:
 
 * `paper/ABGV-5.2-resolution.tex` — LaTeX source (version of 2026-10-23);
-* `paper/ABGV-5.2-resolution.pdf` — the compiled PDF (21 pages).
+* `paper/ABGV-5.2-resolution.pdf` — the compiled PDF (22 pages).
 
-The PDF was compiled from the TeX source of 2026-10-23. This revision updates the
-paragraph recording the machine-checked status of the formalization and the disclosure of the
-tools used; the mathematical results are unchanged.
+The PDF was compiled from the TeX source of 2026-10-23. This revision adds the paragraph that
+records the machine-checked status of the formalization (after Proposition 3.2) and updates the
+disclosure of the tools used; the mathematical results are unchanged.
 
 ## Verification code
 
@@ -47,27 +46,6 @@ p-general form) and the retract-rationality criterion (`RetractCriterionHyp`,
 `ABGV52/RetractCrit_ABGV52.lean`); each is a type-locked interface with a wiring theorem and a
 non-vacuity probe. Saltman's Corollary 3.13 is no longer quoted in the paper; the
 type-locked interface `SaltmanHyp` is kept in the development for the Saltman track.
-* **The geometric identification** of `Z_H(F,9)` with the fixed field is *not* an input in the
-degree-9 case: it is proved in this repository, in `Procesi/` (`Procesi.h2_unconditional`), for
-every field of characteristic `0`, and the structure it names is constructed
-(`Procesi.h2_unconditional_nonvacuous`), so the statement is not vacuous. The p-general form is
-still consumed through `ProcesiHyp`.
-* **Proof layers behind the named hypotheses** are formalized where the paper lists them: the
-converse direction of the criterion in the abelian case with roots of unity, the
-quasi-permutation form together with a machine-checked counterexample to its
-stably-permutation form (`EMQuasi_ABGV52.lean`, `EMCounter_ABGV52.lean`), and the Saltman
-condition layers.
-* **Non-retract-rationality** (Theorem 4.13 of the paper) is formalized in
-`ABGV52/NotRetract_ABGV52.lean`, with an independent restatement in
-`ABGV52/NotRetractChallenge_ABGV52.lean`. The passage from the lattice to the field runs through
-the flasque-resolution criterion of the paper, a named input (`RetractCriterionHyp`,
-`ABGV52/RetractCrit_ABGV52.lean`), and through the geometric identification of `Z_H(F,9)` with
-the invariant field.
-* Consequently the stable-rationality chain verified here is **conditional on the named inputs
-above**.
-
-See `paper/` for the paper and `verification/` for the two verification programs; `## Layout`
-says where each layer lives.
 
 ## Layout
 
@@ -81,21 +59,6 @@ used directly; an arrow points from a lemma to the statement that uses it.
   landscape page).
 
 The sources of the graph are in `dag-src/`; regenerate with `python3 dag-src/build_dag.py`.
-
-| Files | Content |
-|:--|:--|
-| `Hyp_*`, `C1`--`C8b` | shared setup (group, lattice, Procesi map) and the computation H^2(H, M\|_H) ≅ C_9 |
-| `S1`--`S5` | exponent and stable-* statements |
-| `P1`--`P6` (with `P5a`, `P5b`), `PThm`, `PChallenge` | p-general lattice and theorem statements, with an independent restatement |
-| `G1b`--`G4`, `GThm`, `GChallenge` | reduction to the geometric identification (named-hypothesis transport) |
-| `ProcLat`, `ProcHyp`, `ProcStab`, `ProcStabLink`, `ProcConsume` | the Procesi track: lattice rank account, named interface, stabilizer layer, its wiring, consumption |
-| `MH`, `MQ`, `MI`, `BR` | the rational model of the Procesi kernel and the base-change bridge |
-| `NotRetract_ABGV52`, `NotRetractChallenge_ABGV52`, `RetractCrit_ABGV52`, `Superlattice_ABGV52`, `StableRationalBricks_ABGV52` | the non-retract-rationality chain (Theorem 4.13) and its independent restatement |
-| `Procesi/` (83 files) | the H2 formalization: statement layer, the scalar-matrix bypass, non-vacuity |
-| `Thm_*`, `Challenge_*`, `Probe*` | type-locked statements with independent restatements, and auxiliary probes |
-| `dag-src/` | the script that regenerates the figure from the sources |
-| `paper/` | the paper: TeX source and compiled PDF |
-| `verification/` | the two verification programs and their recorded output |
 
 ## Build
 
@@ -112,10 +75,3 @@ time of the upgrade; `lake build` compiles mathlib locally, which takes
 roughly half an hour on a 20-core machine with sufficient memory.)
 
 `SHA256SUMS` records the SHA-256 of every Lean source file.
-
-## License
-
-The repository — the paper (`paper/`), the Lean development, and the
-verification code — is released under the MIT license (see `LICENSE`).
-The file `verification/LICENSE` carries the same license for the code
-package.
