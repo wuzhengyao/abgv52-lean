@@ -18,3 +18,4 @@ paper/c*.log
 # Lake 构建目录
 .lake/
 .merge-build*.log
+texput.log
