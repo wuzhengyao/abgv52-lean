@@ -45,8 +45,8 @@ three standard axioms `propext`, `Classical.choice`, `Quot.sound`.
 Endo--Miyata--Voskresenskii criterion (`EMHyp` for the H-level form, `EMHypP` for the
 p-general form) and the retract-rationality criterion (`RetractCriterionHyp`,
 `ABGV52/RetractCrit_ABGV52.lean`); each is a type-locked interface with a wiring theorem and a
-non-vacuity probe. Saltman's Corollary 3.13 is quoted as a theorem in the paper and also appears
-as a type-locked interface (`SaltmanHyp`).
+non-vacuity probe. Saltman's Corollary 3.13 is no longer quoted in the paper; the
+type-locked interface `SaltmanHyp` is kept in the development for the Saltman track.
 * **The geometric identification** of `Z_H(F,9)` with the fixed field is *not* an input in the
 degree-9 case: it is proved in this repository, in `Procesi/` (`Procesi.h2_unconditional`), for
 every field of characteristic `0`, and the structure it names is constructed
