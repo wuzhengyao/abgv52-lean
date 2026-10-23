@@ -2,16 +2,16 @@
 
 Lean 4 companion to the paper with the same title.
 
-Let $F$ be a field of characteristic $0$ and let $H = C_3 \times C_3$ act regularly as a
-transitive subgroup of $S_9$. Let $Z_H(F,9)$ be the center of the generic division algebra of
-degree $9$ with $H$-action. Problem 5.2 of the Auel--Brussel--Garibaldi--Vishne problem list
-asks for its birational class. The answer proved in the paper is that $Z_H(F,9)$ is **not**
-stably rational, **not** rational and **not** retract rational over $F$. Non-stable and
-non-retract rationality both come from $H^2(H, M|_H) \cong C_9$ for the restricted Procesi
-lattice: its exponent $9$ is incompatible with quasi-permutation and with every finite-index
-permutation superlattice, while all permutation lattices have $H^2$-exponent dividing $3$. For
-$H = C_p \times C_p \subset S_{p^2}$ with $p$ odd the same computation gives
-$H^2(H, M|_H) \cong C_{p^2}$ against exponent $p$, so $Z_H(F,p^2)$ is not stably rational.
+Let `F` be a field of characteristic `0`, and let `H = C₃ × C₃` act regularly as a transitive
+subgroup of `S₉`. Let `Z_H(F,9)` be the center of the generic division algebra of degree `9` with
+H-action. Problem 5.2 of the Auel--Brussel--Garibaldi--Vishne problem list asks for its birational
+class. The answer proved in the paper is that `Z_H(F,9)` is **not** stably rational, **not**
+rational and **not** retract rational over `F`. Non-stable and non-retract rationality both come
+from the integral cohomology group `H²(H, M|_H) ≅ C₉` of the restricted Procesi lattice: its
+exponent `9` is incompatible with quasi-permutation and with every finite-index permutation
+superlattice, while every permutation lattice has exponent dividing `3`. For `H = Cₚ × Cₚ` inside
+`S(p²)` with `p` odd the same computation gives `H²(H, M|_H) ≅ C_{p²}` against exponent `p`, so
+`Z_H(F,p²)` is not stably rational.
 
 This repository contains the machine-checked Lean 4 development of that chain: the lattice
 computations, the statement layers, and the wiring from the named inputs to the conclusions.
